@@ -1,0 +1,210 @@
+body {
+	margin:2px;
+}
+	
+h1 {
+	margin:0;
+	padding:8px;
+}
+h2 {
+	margin:0;
+	padding:4px;
+}
+h3 {
+	margin:0;
+	padding:4px;
+}
+
+img.resize {
+	width: 50px;
+	height: 40px;
+	margin: auto;
+}
+
+select {
+ 	width: 250px; 
+}
+	
+p + input {
+	font-size: 13px;
+	margin: 0;
+}
+
+p {
+	font-size: 16px;
+	margin: 0;
+}
+
+p.user {
+	background-color: #9DC8B6;
+}
+
+span.user {
+	background-color: #9DC8B6;
+}
+
+hr {
+	margin:2px;
+	height:5px;
+}
+
+a {
+	font-size: 16px;
+	color: #0000ff;
+	margin: 4px;
+}
+
+input {
+	font-size: 13px;
+	/*color: #0000ff;*/
+}
+
+div {
+	text-align:center;
+	line-height:120%;
+}
+
+.centerit {
+	text-align: center;
+}
+
+.leftColumn {
+	text-align: left;
+}
+
+div.top {
+ 	margin:auto;
+	background-color: lightgreen;
+ 	width: 1424px;
+	clear: both;
+	font-size: 8px;
+}
+div.instructions {
+	font-size: 16px;
+ 	margin:auto;
+	background-color: yellow;
+ 	width:1424px; 
+ 	height:55px;
+	clear: both;
+}
+div.middle {
+ 	margin:auto;
+ 	width:1424px; 
+}
+div.left {
+	background-color: lightblue;
+ 	width:300px;
+ 	/* height:200px; */
+ 	float:left;
+	/* font-size: 2px; */
+}
+div.centerg {
+	background-color:#996633;
+ 	float:left;
+	position:relative;
+	outline:none;
+}
+div.right {
+	background-color: brown;
+ 	width:100px;
+ 	float:left;
+}
+div.bottom {
+	background-color: red;
+ 	width:1424px;
+ 	margin: auto; 
+	clear: both;
+}
+
+.center {
+	font-size: 8px;
+	border-width: 2px;
+	width: 28px;
+}
+.centerb {
+	text-align:center;
+	font-size: 10px;
+	border-width: 2px;
+	width: 68px;
+}
+.centerv {
+	//text-align:center;
+	//font-size: 16px;
+	border-width: 1px;
+	background-color: #ffd;
+	margin: 3px;
+	padding: 3px;
+}
+
+.centerbwm { /* wide button margins */
+	text-align:center;
+	font-size: 16px;
+	border-width: 2px;
+	/*width: 80px;*/
+	/*margin: 0 10px 0 10px;*/
+}
+
+#myform {
+	text-align:left;
+}
+
+img.normal {
+	margin:0;
+	padding:0;
+	float:left;
+}
+img.clear {
+	margin:0;
+	padding:0;
+	float:left;
+	clear:both;
+}
+img.absol {
+	clear:both;
+	margin:0;
+	padding:0;
+	position:absolute;
+}
+canvas.inside {
+	margin:0;
+	padding:0;
+	background-color: white;
+ 	width:1024px;
+ 	height:768px;
+ 	display:block;
+	//border-style:none;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}
+#chooseafile {
+	text-decoration: underline;
+	color: #0000ff;
+	margin: 20px;
+	font-size: 16px;
+}
+
+#linkback {
+	background-color: lightgreen;
+}
+
+#myformT {
+	background-color: lightblue;
+}
+
+#myformM {
+	background-color: #0fc0cf;
+}
+
+#myformB {
+	background-color: #8fe0cf;
+}

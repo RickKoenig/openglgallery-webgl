@@ -1,0 +1,193 @@
+h1,h2,h3 {
+	color: #ffffff;
+	margin: 60px;
+}
+
+.chapter {
+	color: Khaki;
+}
+
+div {
+	/*text-align: center;*/
+}
+
+div.whole {
+/*	width: 2000px; */
+}
+
+div.center {
+	margin: auto;
+	text-align: center;
+}
+
+
+.centerit {
+	text-align: center;
+}
+
+.rightit {
+	/*text-align: right;*/
+}
+
+a {
+	color: #54ef06;
+	margin: 8px;
+}
+
+p {
+	/*color: #ff66b3;*/
+	color: white;
+	font-size: 20px;
+}
+
+p.story {
+	margin-left: 150px;
+	margin-right: 150px;
+}
+
+p.center {
+	margin: 50px;
+	/*margin-top: auto;*/
+	/*color: #ff80ff;*/
+	/*text-align: top;*/
+	/*display: table-cell;*/
+	/*vertical-align: middle;*/
+}
+
+.xpar {
+	color: #ffffff00;
+}
+
+img.resize {
+	width: 400px;
+	height: 300px;
+	/*margin: auto;*/
+	/*display: block;*/
+}
+
+img.tiny {
+	width: 200px;
+	height: 150px;
+	/*margin: auto;*/
+	/*display: block;*/
+}
+
+.inline {
+	display: inline;
+}
+
+img.floatLeft { 
+    float: left; 
+    margin: 4px; 
+}
+img.floatRight { 
+    float: right; 
+    margin: 4px; 
+}
+
+
+img.floatRightClear { 
+    float: right; 
+    clear: right; 
+    margin: 4px; 
+}
+
+img.floatClear { 
+    clear: right; 
+    margin: 4px; 
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.invisible {
+	visibility: hidden;
+}
+
+code {
+	color: #00ffff;
+	font-size: medium;
+}
+
+li {
+	color: #ffff00;
+}
+
+input {
+	color: #000000;
+}
+
+body {
+	background-color: #004000;
+	/*margin: 300px;*/
+}
+
+figure {
+	margin: 0;
+}
+
+figure.resize {
+	width: 50%;
+	height: 50%;
+}
+
+figcaption {
+	color: #fff;
+	text-align: center;
+	margin: 0;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}
+
+#chooseafile {
+	text-decoration: underline;
+}
+
+table {
+	border-spacing: 2px 2px;
+	margin: auto;
+    border: 1px solid white;
+}
+
+.alice {
+	border-spacing: 2px 10px;
+}
+
+.bob {
+	border-spacing: 10px 2px;
+}
+
+table.inline {
+	display: inline-table;
+}
+
+th {
+	font-size: 24px;
+	color: #ffffff;
+	text-align: center;
+	margin: 80px;
+    border: 1px solid white;
+}
+
+td {
+    border: 1px solid white;
+	font-size: 24px;
+	color: #ffffff;
+	text-align: center;
+	margin: 180px;
+	padding: 10px;
+}

@@ -1,0 +1,60 @@
+// comments double slash anywhere in a line
+// the manifest of shaders read by engw
+[
+// 0 input textures (4)
+	"cvert",
+	"flat",
+	"red",
+	"shadowmapbuildnotex",
+
+// 1 input texture (14)
+	"basic", // a test shader, has a sine wave
+	"bright",
+	"diffusep",
+	"diffusespecp",
+	"diffusespecv",
+	"diffusev",
+	"font2c",
+	"imageblur",
+	"nopers",
+	"pinch",
+	"shadowmapbuild",
+	"shadowmapshow",
+	"tex",
+	"texc",
+
+// 2 input textures (11)
+	"blend2", // N
+	"blend2b",
+	"blend2b2uvs",
+	"blend2bc", // N
+	"blend2u", // N
+	"daynight",
+	"lightmap",
+	"redblue", // N
+	"shadowmapuse",
+	"shadowmapuseblur", // N
+	"shadowmapusec",
+
+// 3 input textures (1)
+	"blend3", // N, straight blend
+
+// 4 input textures (4)
+	"blend4", // N, straight blend
+	"blend4uv", // N, blending using uvs
+	"interleave4",
+	"tex4", // N, show all for textures in a 2x2 grid
+
+// 16 input textures (1)
+	"blend16", // N
+
+// cubemap texture (5)
+	"cubemap",
+	"cubemaptest",
+	"envmapghostv",
+	"envmapp",
+	"envmapv"
+]
+
+// 40 shaders total
+

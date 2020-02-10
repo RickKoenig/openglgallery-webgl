@@ -1,0 +1,859 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+		<!-- <meta http-equiv="refresh" content="30"> -->
+		<title>Mermin magic square implementation</title>
+		<link rel=stylesheet type="text/css" href='qcomp_mermin_magic_square.css'>
+    </head>
+    <body>
+		<h1 class="centerit">How to implement a Mermin magic square inside a quantum computer without brute force.</h1>
+		
+		<p class="story"> The purpose of this article is to show how to convert a Mermin magic square to very simple quantum gates
+		using just Hadamard, Not, Cnot and Swap to construct 6 different measurement circuits, 3 for Alice and 3 for Bob.</p>
+		<p class="story"> When I was studying quantum computers, I came across this Wikipedia article about
+			<a class="inline" href="https://en.Wikipedia.org/wiki/Quantum_pseudo-telepathy">
+				Quantum_pseudo-telepathy
+			</a>
+			It sorta made sense, but I couldn't figure out how to make quantum circuits out of the measurements of the magic square.
+			I then found Craig Gidney's article on the Twisted Oak website
+			<a class="inline" href="http://twistedoakstudios.com/blog/Post6536_implementing-quantum-pseudo-telepathy">
+				Implementing Quantum Pseudo-Telepathy
+			</a>
+			He successfully generated some circuits using brute force. It had some gates like DEC and Sqrt-Not (different than Wikipedia's Sqrt-Not).
+		</p>
+		<p class="story">
+			This inspired me to build a 
+			<a class="inline" href="index.html?startstate=qcomp&startcircuit=game top right">
+				quantum computer
+			</a>
+			 
+			and study these and many other circuits.
+			The game worked perfectly with Craig's gates.  After about 9 months I had a flash of inspiration, I 
+			figured out how to build quantum gates that can measure the magic square!
+		</p>
+		<p class="story">
+			Also we'll convert from Wikipedia's +,- based game to Craig's coin based game.
+		</p>
+		<p class="story">
+			Let's start.
+		</p>
+<!--	<table>
+			<p>In Progress: TODO make this into some kind of table</p>
+			
+		<hr>
+		<h2 class="centerit">Test a table layout</h2>
+			<th colspan = "2">
+				TT
+			</th>
+			<tr>
+				<td>I &#x2297 S<sub>x</sub></td>
+				<td>S<sub>x</sub> &#x2297 I</td>
+				<td>S<sub>x</sub> &#x2297 S<sub>x</sub></td>
+			</tr>
+			<tr>
+				<td>S<sub>z</sub> &#x2297 I</td>
+				<td>I &#x2297 S<sub>z</sub></td>
+				<td>S<sub>z</sub> &#x2297 S<sub>z</sub></td>
+			</tr>
+			<tr>
+				<td>&#x2212S<sub>z</sub> &#x2297 S<sub>x</sub></td>
+				<td>&#x2212S<sub>x</sub> &#x2297 S<sub>z</sub></td>
+				<td>S<sub>y</sub> &#x2297 S<sub>y</sub></td>
+			</tr>
+		</table>
+		<hr>
+-->
+			
+		<h2 class="centerit chapter">Make some 1 qubit states</h2>
+
+
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+z"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+z.PNG"></a>
+		<p class="clearfix">
+			Make +Sz<br> Red axis pointing up<br>
+			Do nothing since qubit is already initialized as +Sz
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-z"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-z.PNG"></a>
+		<p class="clearfix">
+			Make -Sz<br>Red axis pointing down<br>
+			Flip qubit with NOT or PX, same thing
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+x"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+x.PNG"></a>
+		<p class="clearfix">
+			Make +Sx<br> Red axis pointing closer<br>
+			Hadamard will move from +Sz to +Sx
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-x"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-x.PNG"></a>
+		<p class="clearfix">
+			Make -Sx<br> Red axis pointing away, can't see red axis<br>
+			Flip qubit with PX, Hadamard will move from -Sz to -Sx
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+y"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+y.PNG"></a>
+		<p class="clearfix">
+			Make +Sy<br> Red axis pointing right<br>
+			Hadamard will move from +Sz to +Sx, S will move to +Sy
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-y"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-y.PNG"></a>
+		<p class="clearfix">
+			Make -Sy<br> Red axis pointing left<br>
+			Flip qubit with PX, Hadamard will move from -Sz to -Sx, S will move to -Sy
+		</p>
+		
+		
+		
+		<h2 class="centerit chapter">Make and measure some 1 qubit states</h2>
+		
+
+		<h2 class="centerit">Sz</h2>
+		
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+z_m+z"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+z_m+z.PNG"></a>
+		<p>Measure</p> 
+		<table>
+		  <tr>
+			<td>S<sub>z</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			Make +Sz and measure +Sz
+			Should get Q0 = |0> or +1
+			<br>
+			This is the computational basis of measurement
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-z_m+z"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-z_m+z.PNG"></a>
+		<p class="clearfix">
+			Make -Sz and measure +Sz
+			Should get Q0 = |1> or -1
+		</p>
+		
+		
+		<br>
+		<br>
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+z_m-z"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+z_m-z.PNG"></a>
+		<p>Measure</p> 
+		<table>
+		  <tr>
+			<td>&#x2212S<sub>z</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			Make +Sz and measure -Sz
+			Should get Q0 = |1> or -1
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-z_m-z"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-z_m-z.PNG"></a>
+		<p class="clearfix">
+			Make -Sz and measure -Sz
+			Should get Q0 = |0> or +1
+		</p>
+	
+	
+		<h2 class="centerit">Sx</h2>
+		
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+x_m+x"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+x_m+x.PNG"></a>
+		<p>Measure</p> 
+		<table>
+		  <tr>
+			<td>S<sub>x</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			Make +Sx and measure +Sx
+			Should get Q0 = |0> or +1
+			<br>
+			To measure other states<br> Convert what to measure to Sz state<br> Usually by undoing how
+			to make this state<br> Example to measure Sx, use a Hadamard
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-x_m+x"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-x_m+x.PNG"></a>
+		<p class="clearfix">
+			Make -Sx and measure +Sx
+			Should get Q0 = |1> or -1
+		</p>
+
+		
+		<br>
+		<br>
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+x_m-x"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+x_m-x.PNG"></a>
+		<p>Measure</p> 
+		<table>
+		  <tr>
+			<td>&#x2212S<sub>x</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			Make +Sx and measure -Sx
+			Should get Q0 = |1> or -1
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-x_m-x"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-x_m-x.PNG"></a>
+		<p class="clearfix">
+			Make -Sx and measure -Sx
+			Should get Q0 = |0> or +1
+		</p>
+	
+	
+		<h2 class="centerit">Sy</h2>
+		
+	
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+y_m+y"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+y_m+y.PNG"></a>
+		<p>Measure</p> 
+		<table>
+		  <tr>
+			<td>S<sub>y</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			Make +Sy and measure +Sy
+			Should get Q0 = |0> or +1
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-y_m+y"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-y_m+y.PNG"></a>
+		<p class="clearfix">
+			Make -Sy and measure +Sy
+			Should get Q0 = |1> or -1
+		</p>
+		
+		
+		<br>
+		<br>
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+y_m-y"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g+y_m-y.PNG"></a>
+		<p>Measure</p> 
+		<table>
+		  <tr>
+			<td>&#x2212S<sub>y</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			Make +Sy and measure -Sy
+			Should get Q0 = |1> or -1
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g-y_m-y"><img class="resize floatRightClear" src="qcomp/snapshots/inst_g-y_m-y.PNG"></a>
+		<p class="clearfix">
+			Make -Sy and measure -Sy
+			Should get Q0 = |0> or +1
+		</p>
+		
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=inst_g+y_m+y"><img class="resize floatRightClear invisible" src="qcomp/snapshots/inst_g+y_m-y.PNG"></a>
+		<p>Measure</p> 
+		<div class="center">
+			<table class="inline">
+			  <tr>
+				<td>I</td>
+			  </tr>
+			</table>
+			<p class="inline center">or</p>
+			<table class="inline">
+			  <tr>
+				<td>&#x2212I</td>
+			  </tr>
+			</table>
+		</div>
+		<p class="clearfix">
+			Means don't measure<br>Q0 untouched and measurement result is
+			always +1 for I or -1 for -I
+		</p>
+		
+		
+		
+		
+		
+		<h2 class="centerit chapter">Make and measure some 2 qubit states</h2>
+		
+		
+		
+		<p> 
+			First we take from Wikipedia
+		</p>
+		<table>
+		  <tr>
+			<td>S<sub>x</sub> &#x2297 I</td>
+			<td>S<sub>x</sub> &#x2297 S<sub>x</sub></td>
+			<td>I &#x2297 S<sub>x</sub></td>
+		  </tr>
+		  <tr>
+			<td>&#x2212S<sub>x</sub> &#x2297 S<sub>z</sub></td>
+			<td>S<sub>y</sub> &#x2297 S<sub>y</sub></td>
+			<td>&#x2212S<sub>z</sub> &#x2297 S<sub>x</sub></td>
+		  </tr>
+		  <tr>
+			<td>I &#x2297 S<sub>z</sub></td>
+			<td>S<sub>z</sub> &#x2297 S<sub>z</sub></td>
+			<td>S<sub>z</sub> &#x2297 I</td>
+		  </tr>
+		</table> 
+		<br>
+		<p>
+			Now arrange the rows and columns so the more complicated Sy*Sy is in the lower right. This doesn't effect the game.
+		</p>
+	
+		<table>
+		  <tr>
+			<td>I &#x2297 S<sub>x</sub></td>
+			<td>S<sub>x</sub> &#x2297 I</td>
+			<td>S<sub>x</sub> &#x2297 S<sub>x</sub></td>
+		  </tr>
+		  <tr>
+			<td>S<sub>z</sub> &#x2297 I</td>
+			<td>I &#x2297 S<sub>z</sub></td>
+			<td>S<sub>z</sub> &#x2297 S<sub>z</sub></td>
+		  </tr>
+		  <tr>
+			<td>&#x2212S<sub>z</sub> &#x2297 S<sub>x</sub></td>
+			<td>&#x2212S<sub>x</sub> &#x2297 S<sub>z</sub></td>
+			<td>S<sub>y</sub> &#x2297 S<sub>y</sub></td>
+		  </tr>
+		</table>
+		<br>
+		<p>
+			Now convert the game from +,- to coin based game by negating all of Bob's measurements.
+		</p>
+		<p>
+			Both Alice and Bob will make 3 measurements, the last measurement
+			comes from XORing the first 2 measurements.
+			This means Alice and Bob measure an even number of +'s
+		</p>
+		<p>
+			Alice measures horizontally
+		</p>
+		<table class = "alice">
+		  <tr>
+			<td>I &#x2297 S<sub>x</sub></td>
+			<td>S<sub>x</sub> &#x2297 I</td>
+			<td>S<sub>x</sub> &#x2297 S<sub>x</sub></td>
+		  </tr>
+		  <tr>
+			<td>S<sub>z</sub> &#x2297 I</td>
+			<td>I &#x2297 S<sub>z</sub></td>
+			<td>S<sub>z</sub> &#x2297 S<sub>z</sub></td>
+		  </tr>
+		  <tr>
+			<td>&#x2212S<sub>z</sub> &#x2297 S<sub>x</sub></td>
+			<td>&#x2212S<sub>x</sub> &#x2297 S<sub>z</sub></td>
+			<td>S<sub>y</sub> &#x2297 S<sub>y</sub></td>
+		  </tr>
+		</table>
+		<p>
+			Bob measures vertically, negated
+		</p>
+		<table class = "bob">
+		  <tr>
+			<td>&#x2212I &#x2297 S<sub>x</sub></td>
+			<td>&#x2212S<sub>x</sub> &#x2297 I</td>
+			<td>&#x2212S<sub>x</sub> &#x2297 S<sub>x</sub></td>
+		  </tr>
+		  <tr>
+			<td>&#x2212S<sub>z</sub> &#x2297 I</td>
+			<td>&#x2212I &#x2297 S<sub>z</sub></td>
+			<td>&#x2212S<sub>z</sub> &#x2297 S<sub>z</sub></td>
+		  </tr>
+		  <tr>
+			<td>S<sub>z</sub> &#x2297 S<sub>x</sub></td>
+			<td>S<sub>x</sub> &#x2297 S<sub>z</sub></td>
+			<td>&#x2212S<sub>y</sub> &#x2297 S<sub>y</sub></td>
+		  </tr>
+		</table>
+		<br>
+		
+		
+		<p>
+			Measure Alice's top row
+		</p>
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice top"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice top.PNG"></a>
+		<table>
+		  <tr>
+			<td>I &#x2297 S<sub>x</sub></td>
+			<td>S<sub>x</sub> &#x2297 I</td>
+			<td>S<sub>x</sub> &#x2297 S<sub>x</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			3 measurements all commute, no uncertainty<br>
+			Left cell, measure Q1 in X, output to Q0<br>
+			Middle cell, measure Q0 in X, output to Q1<br>
+			This can be done with 2 Hadamards and a Swap<br>
+			Right cell, measure Q0X and Q1X pointing in same direction<br>
+			Remember |0> is the same as +1, |1> is the same as -1<br>
+			To get the Right cell measurement, xor (|0>, |1>) OR multiply +1,-1 together<br>
+			Or before measurement, use a CNOT to xor the 2 qubits together
+		</p>
+		<br>
+		<br>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice top 00"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice top 00.PNG"></a>
+		<p class="clearfix">
+			Make Sx*Sx and measure, should get +1,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice top 01"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice top 01.PNG"></a>
+		<p class="clearfix">
+			Make Sx*-Sx and measure, should get -1,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice top 10"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice top 10.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*Sx and measure, should get +1,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice top 11"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice top 11.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*-Sx and measure, should get -1,-1<br>
+		</p>
+		
+		<br>
+		
+		
+		<p>
+			Measure Alice's middle row
+		</p>
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice middle"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice middle.PNG"></a>
+		<table>
+		  <tr>
+			<td>S<sub>z</sub> &#x2297 I</td>
+			<td>I &#x2297 S<sub>z</sub></td>
+			<td>S<sub>z</sub> &#x2297 S<sub>z</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			3 measurements all commute, no uncertainty<br>
+			Left cell, measure Q0 in Z, output to Q0<br>
+			Middle cell, measure Q1 in Z, output to Q1<br>
+			This can be done with... nothing! Just how simple can some of this stuff get<br>
+			Right cell, measure Q0Z and Q1Z pointing in same direction<br>
+			To get the Right cell measurement, xor (|0>, |1>) OR multiply +1,-1 together<br>
+			Or before measurement, use a CNOT to xor the 2 qubits together
+		</p>
+		<br>
+		<br>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice middle 00"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice middle 00.PNG"></a>
+		<p class="clearfix">
+			Make Sz*Sz and measure, should get +1,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice middle 01"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice middle 01.PNG"></a>
+		<p class="clearfix">
+			Make Sz*-Sz and measure, should get +1,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice middle 10"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice middle 10.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*Sz and measure, should get -1,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice middle 11"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice middle 11.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*-Sz and measure, should get -1,-1<br>
+		</p>
+		
+		<br>
+		
+		
+		<p>
+			Measure Alice's bottom row
+		</p>
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom.PNG"></a>
+		<table>
+		  <tr>
+			<td>&#x2212S<sub>z</sub> &#x2297 S<sub>x</sub></td>
+			<td>&#x2212S<sub>x</sub> &#x2297 S<sub>z</sub></td>
+			<td>S<sub>y</sub> &#x2297 S<sub>y</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			3 measurements all commute, no uncertainty<br>
+			Left cell, measure -Q0Z*Q1X, output to Q0<br>
+			Middle cell, measure -Q0X*Q1Z, output to Q1<br>
+			This can be done with, use Bob's right column with 1 more Hadamard to flip Q0 X <==> Z,
+			<a href="#bobright">
+				read below
+			</a>
+			<br>
+			Right cell, measure Q0Y*Q1Y pointing in same direction<br>
+			To get the Right cell measurement, xor (|0>, |1>) OR multiply +1,-1 together<br>
+			Or before measurement, use a CNOT to xor the 2 qubits together<br>
+		</p>
+		<br>
+		<br>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 00a"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 00a.PNG"></a>
+		<p class="clearfix">
+			Make Sz*Sx and measure to Q0, should get -1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 01a"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 01a.PNG"></a>
+		<p class="clearfix">
+			Make Sz*-Sx and measure to Q0, should get +1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 10a"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 10a.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*Sx and measure to Q0, should get +1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 11a"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 11a.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*-Sx and measure to Q0, should get -1,?<br>
+		</p>
+		
+		<br>
+		<br>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 00b"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 00b.PNG"></a>
+		<p class="clearfix">
+			Make Sx*Sz and measure to Q1, should get ?,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 01b"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 01b.PNG"></a>
+		<p class="clearfix">
+			Make Sx*-Sz and measure to Q1, should get ?,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 10b"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 10b.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*Sz and measure to Q1, should get ?,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 11b"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 11b.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*-Sz and measure to Q1, should get ?,-1<br>
+		</p>
+		<br>
+		<br>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 00c"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 00c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make Sy*Sy and measure Sy*Sy by using CNOT (xor) to target Q0, should get +1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 01c"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 01c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make Sy*-Sy and measure Sy*Sy by using CNOT (xor) to target Q0, should get -1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 10c"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 10c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make -Sy*Sy and measure Sy*Sy by using CNOT (xor) to target Q0, should get -1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game alice bottom 11c"><img class="resize floatRightClear" src="qcomp/snapshots/new game alice bottom 11c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make -Sy*-Sy and measure Sy*Sy by using CNOT (xor) to target Q0, should get +1,?<br>
+		</p>
+		
+		
+		
+		
+		
+		<br><br><br>
+		<p>
+			Measure Bob's left column
+		</p>
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob left"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob left.PNG"></a>
+		<table>
+		  <tr>
+			<td>&#x2212I &#x2297 S<sub>x</sub></td>
+		  </tr>
+		  <tr>
+			<td>&#x2212S<sub>z</sub> &#x2297 I</td>
+		  </tr>
+		  <tr>
+			<td>S<sub>z</sub> &#x2297 S<sub>x</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			3 measurements all commute, no uncertainty<br>
+			Top cell, measure Q1 in -X, output to Q0<br>
+			Middle cell, measure Q0 in -Z, output to Q1<br>
+			This can be done with 1 Hadamard, a Swap and 2 NOTs<br>
+			Bottom cell, measure Q0Z and Q1X pointing in same directions<br>
+			Remember |0> is the same as +1, |1> is the same as -1<br>
+			To get the Bottom cell measurement, xor (|0>, |1>) OR multiply +1,-1 together<br>
+			Or before measurement, use a CNOT to xor the 2 qubits together
+		</p>
+		<br>
+		<br>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob left 00"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob left 00.PNG"></a>
+		<p class="clearfix">
+			Make Sz*Sx and measure, should get -1,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob left 01"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob left 01.PNG"></a>
+		<p class="clearfix">
+			Make Sz*-Sx and measure, should get +1,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob left 10"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob left 10.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*Sx and measure, should get -1,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob left 11"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob left 11.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*-Sx and measure, should get +1,+1<br>
+		</p>
+		
+		<br>
+		
+		
+		<p>
+			Measure Bob's middle column
+		</p>
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob middle"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob middle.PNG"></a>
+		<table>
+		  <tr>
+			<td>&#x2212S<sub>x</sub> &#x2297 I</td>
+		  </tr>
+		  <tr>
+			<td>&#x2212I &#x2297 S<sub>z</sub></td>
+		  </tr>
+		  <tr>
+			<td>S<sub>x</sub> &#x2297 S<sub>z</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			3 measurements all commute, no uncertainty<br>
+			Top cell, measure Q0 in -X, output to Q0<br>
+			Middle cell, measure Q1 in -Z, output to Q1<br>
+			This can be done with 1 Hadamard and 2 NOTs<br>
+			Bottom cell, measure Q0X and Q1Z pointing in the same direction<br>
+			To get the Bottom cell measurement, xor (|0>, |1>) OR multiply +1,-1 together<br>
+			Or before measurement, use a CNOT to xor the 2 qubits together
+		</p>
+		<br>
+		<br>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob middle 00"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob middle 00.PNG"></a>
+		<p class="clearfix">
+			Make Sx*Sz and measure, should get -1,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob middle 01"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob middle 01.PNG"></a>
+		<p class="clearfix">
+			Make Sx*-Sz and measure, should get -1,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob middle 10"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob middle 10.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*Sz and measure, should get +1,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob middle 11"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob middle 11.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*-Sz and measure, should get +1,+1<br>
+		</p>
+		
+		<br>
+		
+		
+		<a id="bobright"></a>
+		<p>
+			Measure Bob's right column
+		</p>
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right.PNG"></a>
+		<table>
+		  <tr>
+			<td>&#x2212S<sub>x</sub> &#x2297 S<sub>x</sub></td>
+		  </tr>
+		  <tr>
+			<td>&#x2212S<sub>z</sub> &#x2297 S<sub>z</sub></td>
+		  </tr>
+		  <tr>
+			<td>&#x2212S<sub>y</sub> &#x2297 S<sub>y</sub></td>
+		  </tr>
+		</table>
+		<p class="clearfix">
+			3 measurements all commute, no uncertainty<br>
+			Top cell, measure -Q0X*Q1X, output to Q0<br>
+			Middle cell, measure -Q0Z*Q1Z, output to Q1<br>
+			This can be done with a CNOT targeting Q1 to get Sz*Sz on Q1<br>
+			then a NOT to make it -Sz*Sz<br>
+			Using 4 Hadamard CNOT gate conversion rule<br>
+			we can just add 1 more Hadamard to the top get Sx*Sx on Q0<br>
+			then a NOT to make it -Sx*Sx on Q0<br>
+			Bottom cell, measure -Q0Y*Q1Y pointing in opposite directions<br>
+			To get the Bottom cell measurement, xor (|0>, |1>) OR multiply +1,-1 together<br>
+			Or before measurement, use a CNOT to xor the 2 qubits together<br>
+		</p>
+		<br>
+		<br>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 00a"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 00a.PNG"></a>
+		<p class="clearfix">
+			Make Sx*Sx and measure to Q0, should get -1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 01a"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 01a.PNG"></a>
+		<p class="clearfix">
+			Make Sx*-Sx and measure to Q0, should get +1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 10a"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 10a.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*Sx and measure to Q0, should get +1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 11a"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 11a.PNG"></a>
+		<p class="clearfix">
+			Make -Sx*-Sx and measure to Q0, should get -1,?<br>
+		</p>
+		
+		<br>
+		<br>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 00b"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 00b.PNG"></a>
+		<p class="clearfix">
+			Make Sz*Sz and measure to Q1, should get ?,-1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 01b"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 01b.PNG"></a>
+		<p class="clearfix">
+			Make Sz*-Sz and measure to Q1, should get ?,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 10b"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 10b.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*Sz and measure to Q1, should get ?,+1<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 11b"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 11b.PNG"></a>
+		<p class="clearfix">
+			Make -Sz*-Sz and measure to Q1, should get ?,-1<br>
+		</p>
+		<br>
+		<br>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 00c"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 00c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make Sy*Sy and measure -Sy*Sy by using CNOT (xor) to target Q0, should get -1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 01c"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 01c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make Sy*-Sy and measure -Sy*Sy by using CNOT (xor) to target Q0, should get +1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 10c"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 10c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make -Sy*Sy and measure -Sy*Sy by using CNOT (xor) to target Q0, should get +1,?<br>
+		</p>
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bob right 11c"><img class="resize floatRightClear" src="qcomp/snapshots/new game bob right 11c.PNG"></a>
+		<p class="clearfix">
+			Extra credit Make -Sy*-Sy and measure -Sy*Sy by using CNOT (xor) to target Q0, should get -1,?<br>
+		</p>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<h2 class="centerit chapter">Bringing it all together, Make and measure 2 pairs of entangled qubit states and win the coin game all the time!</h2>
+		
+		<p>
+			Split 2 pairs of entangled Qubits and send each half to Alice and Bob.
+		</p>
+		<p>
+			Common entangled Alice-row Bob-column cells should measure opposite values<br> since their measurements are
+			exactly opposite.<br>
+			Also all measurements are even.<br>
+			This is all you need to win the game.
+		</p>
+		
+		
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game top left"><img class="resize floatRightClear" src="qcomp/snapshots/new game top left.PNG"></a>
+		<p class="clearfix">
+			Run Alice top, Bob left<br>
+			Notice how Q0 and Q2 are anti-correlated for all possible measurements
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game top middle"><img class="resize floatRightClear" src="qcomp/snapshots/new game top middle.PNG"></a>
+		<p class="clearfix">
+			Run Alice top, Bob middle<br>
+			Notice how Q1 and Q2 are anti-correlated for all possible measurements
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game top right"><img class="resize floatRightClear" src="qcomp/snapshots/new game top right.PNG"></a>
+		<p class="clearfix">
+			Run Alice top, Bob right<br>
+			Notice how (Q0 xor Q1) and Q2 are anti-correlated for all possible measurements
+		</p>
+
+
+		<br><br><br>
+		
+		
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game middle left"><img class="resize floatRightClear" src="qcomp/snapshots/new game middle left.PNG"></a>
+		<p class="clearfix">
+			Run Alice middle, Bob left<br>
+			Notice how Q0 and Q3 are anti-correlated for all possible measurements
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game middle middle"><img class="resize floatRightClear" src="qcomp/snapshots/new game middle middle.PNG"></a>
+		<p class="clearfix">
+			Run Alice middle, Bob middle<br>
+			Notice how Q1 and Q3 are anti-correlated for all possible measurements
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game middle right"><img class="resize floatRightClear" src="qcomp/snapshots/new game middle right.PNG"></a>
+		<p class="clearfix">
+			Run Alice middle, Bob right<br>
+			Notice how (Q0 xor Q1) and Q3 are anti-correlated for all possible measurements
+		</p>
+
+
+		<br><br><br>
+		
+		
+		
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bottom left"><img class="resize floatRightClear" src="qcomp/snapshots/new game bottom left.PNG"></a>
+		<p class="clearfix">
+			Run Alice bottom, Bob left<br>
+			Notice how Q0 and (Q2 xor Q3) are anti-correlated for all possible measurements
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bottom middle"><img class="resize floatRightClear" src="qcomp/snapshots/new game bottom middle.PNG"></a>
+		<p class="clearfix">
+			Run Alice bottom, Bob middle<br>
+			Notice how Q1 and (Q2 xor Q3) are anti-correlated for all possible measurements
+		</p>
+
+		<a href = "index.html?startstate=qcomp&startcircuit=new game bottom right"><img class="resize floatRightClear" src="qcomp/snapshots/new game bottom right.PNG"></a>
+		<p class="clearfix">
+			Run Alice bottom, Bob right<br>
+			Notice how (Q0 xor Q1) and (Q2 xor Q3) are anti-correlated for all possible measurements
+		</p>
+		
+		<br><br>
+		<p class="story">
+			I hope this article helped explain some of the mysteries of Quantum pseudo telepathy. I guess I'll have to throw out Einstein's pair of gloves.
+		</p>
+		<a class="indent" href="mailto:rkoenig@ix.netcom.com?subject=mermin magic square"> Comments? Suggestions? Shoot me an email.</a> <span style="color: red;">Still works!</span>
+
+
+		<br><br><br>
+		
+<!--		<p> Coming soon... </p> -->
+
+	</body>
+</html>

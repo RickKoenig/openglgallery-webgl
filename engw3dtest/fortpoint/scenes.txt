@@ -1,0 +1,1 @@
+fortpoint.tsn fortpoint.txt 6 skycube skycube.mxs skycube.mxo 64 64 64

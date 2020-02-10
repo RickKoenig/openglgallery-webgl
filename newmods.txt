@@ -1,0 +1,1960 @@
+ Volume in drive C has no label.
+ Volume Serial Number is 72BC-2B1E
+
+ Directory of C:\nodejs\engw
+
+11/24/2018  01:00 AM    <DIR>          engw2dtest
+12/11/2018  07:19 PM    <DIR>          common
+12/30/2019  07:39 PM    <DIR>          engw3dtest
+12/30/2019  07:39 PM    <DIR>          ..
+12/30/2019  07:39 PM                 0 newmods.txt
+12/30/2019  07:39 PM    <DIR>          .
+               1 File(s)              0 bytes
+
+ Directory of C:\nodejs\engw\common
+
+11/10/2018  07:14 PM    <DIR>          sptpics
+11/10/2018  07:14 PM    <DIR>          json
+11/10/2018  07:14 PM    <DIR>          glmatrix
+11/10/2018  07:14 PM    <DIR>          file
+11/10/2018  07:14 PM    <DIR>          dom
+11/10/2018  07:14 PM    <DIR>          complex
+11/10/2018  07:14 PM    <DIR>          ajax
+12/11/2018  07:15 PM    <DIR>          polyfill
+12/11/2018  07:19 PM    <DIR>          ..
+12/11/2018  07:19 PM    <DIR>          .
+05/18/2019  06:56 PM    <DIR>          engw
+06/09/2019  09:13 PM    <DIR>          engw2d
+12/02/2019  07:18 PM    <DIR>          engw3d
+               0 File(s)              0 bytes
+
+ Directory of C:\nodejs\engw\common\ajax
+
+04/30/2013  08:58 PM               682 ajaxCreateRequest.js
+11/10/2018  07:14 PM    <DIR>          ..
+11/10/2018  07:14 PM    <DIR>          .
+12/20/2019  09:28 PM             9,823 ajaxManager.js
+               2 File(s)         10,505 bytes
+
+ Directory of C:\nodejs\engw\common\complex
+
+09/03/2018  08:55 AM            31,961 Complex.js
+11/10/2018  07:14 PM    <DIR>          ..
+11/10/2018  07:14 PM    <DIR>          .
+12/25/2018  06:15 PM             7,077 compf.js
+               2 File(s)         39,038 bytes
+
+ Directory of C:\nodejs\engw\common\dom
+
+08/18/2013  10:42 PM               539 dom.js
+11/10/2018  07:14 PM    <DIR>          ..
+11/10/2018  07:14 PM    <DIR>          .
+               1 File(s)            539 bytes
+
+ Directory of C:\nodejs\engw\common\engw
+
+04/12/2017  06:56 PM             6,682 numath.js
+07/25/2018  05:00 PM             2,739 timers.js
+08/23/2018  09:57 PM               625 input.js
+01/27/2019  10:38 PM             7,220 input_key.js
+05/18/2019  06:56 PM    <DIR>          ..
+05/18/2019  06:56 PM    <DIR>          .
+05/18/2019  08:50 PM             2,495 bezier.js
+05/29/2019  08:08 PM             4,157 stateman.js
+06/22/2019  04:52 PM             5,486 input_map.js
+11/28/2019  06:46 PM            14,222 input_but_printarea.js
+12/21/2019  12:03 PM             6,680 utils.js
+               9 File(s)         50,306 bytes
+
+ Directory of C:\nodejs\engw\common\engw2d
+
+02/01/2019  08:14 PM             8,006 sprites.js
+06/09/2019  09:09 PM             1,461 scroller.js
+06/09/2019  09:13 PM    <DIR>          ..
+06/09/2019  09:13 PM    <DIR>          .
+06/19/2019  07:52 PM             7,620 Bitmap32.js
+11/28/2019  06:55 PM             6,716 main2d.js
+               4 File(s)         23,803 bytes
+
+ Directory of C:\nodejs\engw\common\engw3d
+
+08/18/2013  10:36 PM             9,712 strand.js
+08/08/2016  08:20 PM             1,084 shadowmap.js
+12/26/2016  06:58 PM             4,376 VEC.js
+12/28/2016  09:15 PM             1,534 VECQuat.js
+08/23/2017  08:30 PM             8,196 bws.js
+07/27/2018  09:40 AM            14,477 bwo.js
+07/29/2018  07:14 PM             1,042 lights.js
+06/21/2019  10:34 AM                20 isMobile.js
+08/24/2019  09:55 AM            16,845 main3d.js
+09/02/2019  07:35 PM             5,168 spriter.js
+12/01/2019  07:36 PM            33,818 modelutil.js
+12/02/2019  07:18 PM    <DIR>          .
+12/02/2019  07:18 PM    <DIR>          ..
+12/14/2019  12:48 AM            19,043 texture.js
+12/21/2019  11:58 AM             8,578 font.js
+12/21/2019  11:58 AM            19,863 model.js
+12/21/2019  05:42 PM            16,238 model2.js
+12/22/2019  09:10 PM             7,573 numath3d.js
+12/25/2019  09:09 PM            13,876 tree.js
+12/29/2019  07:03 PM            12,820 webgl.js
+12/29/2019  07:04 PM             9,168 viewport.js
+12/29/2019  08:06 PM            10,534 debprint3d.js
+              20 File(s)        213,965 bytes
+
+ Directory of C:\nodejs\engw\common\file
+
+12/25/2016  07:12 PM            14,704 chunker.js
+08/30/2017  09:10 PM             1,445 factory.js
+06/07/2018  07:18 PM             1,980 file.js
+11/10/2018  07:14 PM    <DIR>          ..
+11/10/2018  07:14 PM    <DIR>          .
+06/24/2019  09:41 PM            11,152 script.js
+               4 File(s)         29,281 bytes
+
+ Directory of C:\nodejs\engw\common\glmatrix
+
+02/15/2013  11:29 AM            10,459 mat3.js
+02/15/2013  11:29 AM            11,310 vec2.js
+02/15/2013  11:29 AM            11,874 quat.js
+02/15/2013  11:29 AM             5,811 mat2.js
+02/15/2013  11:29 AM             6,236 mat2d.js
+02/15/2013  11:29 AM            11,824 vec4.js
+02/15/2013  11:29 AM            25,929 mat4.js
+08/18/2013  10:38 PM             1,880 common.js
+11/10/2018  07:14 PM    <DIR>          .
+11/10/2018  07:14 PM    <DIR>          ..
+12/22/2019  09:10 PM            11,611 vec3.js
+               9 File(s)         96,934 bytes
+
+ Directory of C:\nodejs\engw\common\json
+
+02/24/2012  10:31 PM            16,370 json2.js
+04/23/2016  07:03 PM             4,751 serialize.js
+11/10/2018  07:14 PM    <DIR>          ..
+11/10/2018  07:14 PM    <DIR>          .
+               2 File(s)         21,121 bytes
+
+ Directory of C:\nodejs\engw\common\polyfill
+
+12/11/2018  07:15 PM    <DIR>          ..
+12/11/2018  07:15 PM    <DIR>          .
+09/06/2019  07:32 PM             2,069 polyfill.js
+               1 File(s)          2,069 bytes
+
+ Directory of C:\nodejs\engw\common\sptpics
+
+05/01/1997  08:10 PM            17,972 take0000.jpg
+05/01/1997  08:10 PM            36,660 take0001.jpg
+05/01/1997  08:10 PM            45,486 take0003.jpg
+05/01/1997  08:10 PM            39,153 take0002.jpg
+05/01/1997  08:10 PM            19,283 take0004.jpg
+05/01/1997  08:10 PM            33,318 take0006.jpg
+05/01/1997  08:10 PM            46,598 take0005.jpg
+05/01/1997  08:10 PM            15,402 take0008.jpg
+05/01/1997  08:10 PM            31,211 take0007.jpg
+05/01/1997  08:10 PM            31,413 take0009.jpg
+05/01/1997  08:10 PM            55,052 take0011.jpg
+05/01/1997  08:10 PM            39,916 take0010.jpg
+05/01/1997  08:10 PM            59,692 take0012.jpg
+05/01/1997  08:10 PM            24,326 take0014.jpg
+05/01/1997  08:10 PM            46,429 take0015.jpg
+05/01/1997  08:10 PM            73,861 take0016.jpg
+05/01/1997  08:10 PM            23,206 take0018.jpg
+05/01/1997  08:10 PM            47,191 take0017.jpg
+05/01/1997  08:10 PM            67,442 take0019.jpg
+05/01/1997  08:10 PM            16,816 take0013.jpg
+05/01/1997  08:10 PM            25,964 take0020.jpg
+06/03/2000  05:40 PM           196,652 Bark.tga
+05/30/2002  12:49 AM            13,475 panel.jpg
+07/02/2008  12:35 PM           121,496 track02_d12.png
+07/13/2008  12:46 PM            53,472 wonMedal.png
+07/14/2008  08:48 PM             5,869 coin_logo.png
+04/24/2011  11:49 PM               891 o_maptestnck.jpg
+01/18/2012  11:41 AM            58,618 xpar.png
+10/16/2012  02:04 AM            38,533 fontbiggreen.png
+01/28/2013  10:56 PM               426 brush1.png
+02/10/2013  12:12 AM               205 plank1.png
+02/10/2013  12:12 AM               232 plank2.png
+02/10/2013  12:12 AM               238 plank3.png
+02/10/2013  12:12 AM               245 plank4.png
+02/10/2013  12:12 AM               246 plank5.png
+02/10/2013  12:12 AM               217 plank6.png
+02/10/2013  12:12 AM               321 ball1.png
+02/10/2013  12:12 AM               442 ball2.png
+02/10/2013  12:12 AM               624 ball3.png
+02/10/2013  12:13 AM               854 ball4.png
+02/10/2013  12:13 AM             1,251 ball5.png
+07/14/2013  11:31 PM             3,031 maptestnck.png
+08/06/2013  02:05 PM            43,150 light.jpg
+08/06/2013  02:06 PM            24,704 dark.jpg
+10/14/2013  11:06 PM               781 font1.png
+10/14/2013  11:06 PM               947 font2b.png
+10/14/2013  11:06 PM             1,159 font3b.png
+10/17/2013  07:20 PM               767 font2.png
+10/27/2013  12:17 AM             1,153 font3.png
+10/27/2013  01:32 AM             1,548 font0.png
+06/10/2014  09:52 PM             1,264 font3_new.png
+09/09/2016  07:23 PM           155,091 Bark.png
+09/07/2018  09:31 AM               546 smallfont.png
+11/10/2018  07:14 PM    <DIR>          .
+11/10/2018  07:14 PM    <DIR>          ..
+              53 File(s)      1,524,839 bytes
+
+ Directory of C:\nodejs\engw\engw2dtest
+
+09/20/2013  08:27 PM             1,712 state0.js
+10/15/2013  09:31 PM             2,012 state2.js
+07/30/2014  11:19 PM             3,411 state1.js
+06/05/2017  07:10 PM            28,250 state3.js
+11/14/2018  07:47 PM               272 statelist.js
+11/16/2018  07:46 PM             5,058 state5.js
+11/16/2018  07:48 PM             5,193 state5b.js
+11/24/2018  01:00 AM    <DIR>          ..
+11/24/2018  01:00 AM    <DIR>          .
+01/27/2019  10:34 PM             1,691 engw2dtest_main.css
+06/09/2019  09:04 PM             3,218 index.html
+               9 File(s)         50,817 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest
+
+09/17/2013  08:52 PM    <DIR>          pics
+02/03/2014  10:29 PM               399 socket_client.html
+08/08/2015  10:48 PM             2,513 camblur.js
+08/14/2015  10:10 AM               647 fullscreen.css
+08/23/2015  09:08 PM             4,709 onerps.js
+05/08/2016  07:51 PM             5,520 state12.js
+05/08/2016  08:01 PM             3,894 state13.js
+06/18/2016  07:52 PM             3,936 cubemaptest.js
+07/03/2016  06:52 PM             2,861 temp.js
+09/14/2016  08:44 PM             7,130 state17.js
+12/15/2016  08:28 PM             1,585 ghostcity.js
+12/15/2016  08:45 PM             5,152 fullscreen.html
+12/29/2016  09:09 PM             1,253 physics3dprimcoll.js
+12/30/2016  02:51 PM             9,343 physics3dobjcollisions.js
+12/30/2016  03:44 PM            10,369 physics3dcollutil.js
+05/09/2017  06:39 PM             3,960 inherit.js
+08/24/2017  06:02 PM            12,729 uitesto.js
+09/03/2017  07:25 AM             8,441 uiclass2.js
+06/06/2018  10:20 PM             3,395 test3d.js
+07/06/2018  10:55 AM            11,238 storagetest.js
+07/16/2018  07:11 PM             9,546 uitest.js
+07/17/2018  09:00 PM            16,673 qcomp_old_2018_7_7.js
+07/19/2018  09:34 PM            12,415 caveexplorer.js
+07/31/2018  07:37 PM             3,403 state7.js
+08/24/2018  06:28 PM             2,371 test2d.js
+08/27/2018  11:34 PM             6,898 state14.js
+08/27/2018  11:35 PM             6,052 state15.js
+08/27/2018  11:43 PM             5,983 state16.js
+08/27/2018  11:50 PM            30,626 physics2d.js
+11/10/2018  07:13 PM    <DIR>          ui
+11/10/2018  07:13 PM    <DIR>          textdata
+11/10/2018  07:13 PM    <DIR>          test2d
+11/10/2018  07:13 PM    <DIR>          skybox
+11/10/2018  07:13 PM    <DIR>          prehistoric
+11/10/2018  07:13 PM    <DIR>          physics3d
+11/10/2018  07:13 PM    <DIR>          ghostcity
+11/10/2018  07:14 PM    <DIR>          fortpoint
+12/05/2018  10:50 PM             2,315 qcomp_mermin_magic_square.css
+03/19/2019  07:44 PM             9,509 qcomp_qgatelist.js
+03/21/2019  05:59 PM             7,325 qcomp_qmat.js
+04/28/2019  07:33 PM             5,333 state8.js
+05/06/2019  08:26 PM            16,673 qcomp_old_2018_7_17.js
+05/13/2019  07:55 PM             3,349 qcomp_instructions.html
+05/29/2019  08:41 PM             2,711 engw3dtest_main.css
+06/12/2019  07:01 PM            20,901 uiclass.js
+06/12/2019  07:45 PM             4,759 qcomp_qgate.js
+06/22/2019  03:52 PM               552 engw3dtest_mobile.css
+06/24/2019  10:24 AM            17,034 stoidCommand.js
+06/24/2019  09:47 PM            13,548 state11.js
+07/01/2019  09:05 PM            32,366 qcomp_mermin_magic_square.html
+08/15/2019  05:35 PM    <DIR>          qcomp
+08/24/2019  09:59 AM            29,277 solarTest _2018_7_31.js
+08/24/2019  09:59 AM             8,738 state9.js
+08/24/2019  09:59 AM             4,026 state21.js
+08/24/2019  10:01 AM            25,631 solarTest.js
+08/24/2019  10:01 AM            31,282 solarTest_2018_8_1.js
+08/24/2019  10:01 AM            11,353 state19.js
+08/24/2019  10:01 AM             5,859 state20.js
+09/01/2019  08:48 PM             9,478 qcomp_qstate.js
+09/04/2019  06:07 PM            20,421 qcomp_qcolumn.js
+09/04/2019  07:50 PM            27,456 qcomp_qfield.js
+09/05/2019  09:05 PM            11,786 stoidCommandData.js
+10/08/2019  06:15 PM             3,475 state7p.js
+11/23/2019  08:58 PM            41,222 qcomp.js
+12/04/2019  07:26 PM             1,750 basic4textures.js
+12/04/2019  07:29 PM             1,879 interleave.js
+12/04/2019  07:42 PM             6,921 index.html
+12/04/2019  08:05 PM             1,664 statelist.js
+12/04/2019  08:55 PM             6,108 indexMobile.html
+12/06/2019  07:14 PM             4,350 scratchfont.js
+12/12/2019  09:03 PM             1,350 basic.js
+12/14/2019  09:17 PM            49,726 physics3d.js
+12/18/2019  10:03 PM            10,549 state4.js
+12/21/2019  05:43 PM            11,727 state6.js
+12/26/2019  07:59 PM            30,857 scratch.js
+12/26/2019  07:59 PM             8,716 state10.js
+12/27/2019  08:33 PM            10,039 state18.js
+12/29/2019  08:48 PM            16,020 framebuffer4.js
+12/30/2019  07:17 PM    <DIR>          shaders
+12/30/2019  07:39 PM    <DIR>          .
+12/30/2019  07:39 PM    <DIR>          ..
+              68 File(s)        721,076 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\fortpoint
+
+01/26/2004  02:34 PM            62,604 camball.MXS
+02/18/2004  03:19 PM                30 animatedtextures.txt
+05/10/2004  08:31 PM               207 lab.txt
+08/30/2004  10:27 AM           241,354 Lab.lws
+02/02/2005  03:07 PM               694 watershader.vsh
+02/04/2005  05:10 PM               724 watershader.psh
+03/11/2005  01:27 AM             3,606 fortpoint.mis
+03/15/2005  11:55 AM           290,535 test.x
+03/16/2005  06:55 PM             2,745 fortpointa.tsn
+03/17/2005  09:47 AM                70 scenes.txt
+03/17/2005  08:48 PM               161 fortpoint.txt
+03/23/2005  12:41 PM                14 path.txt
+04/23/2005  10:53 PM           160,760 terrain.bwo
+04/23/2005  10:53 PM             1,080 ocean.bwo
+04/23/2005  10:53 PM            58,760 Restrooms.bwo
+04/23/2005  10:53 PM           368,628 Impala.bwo
+04/23/2005  10:53 PM            21,476 Impala_windows.bwo
+04/23/2005  10:53 PM           319,848 Minivan.bwo
+04/23/2005  10:53 PM             6,336 MV_windows.bwo
+04/23/2005  10:53 PM           416,204 SFPD_car1.bwo
+04/23/2005  10:53 PM           438,644 SFPD_car.bwo
+04/23/2005  10:53 PM           416,576 Ppolice_car.bwo
+04/23/2005  10:53 PM           357,584 SUV.bwo
+04/23/2005  10:53 PM             9,256 SUV_windows.bwo
+04/23/2005  10:53 PM           120,124 Tree.bwo
+04/23/2005  10:53 PM           251,392 TreeLeaves.bwo
+04/23/2005  10:53 PM            32,440 Entrance_sign.bwo
+04/23/2005  10:53 PM            23,184 entrance.bwo
+04/23/2005  10:53 PM           211,536 ShorebarrierC.bwo
+04/23/2005  10:53 PM           221,992 ShorebarrierB.bwo
+04/23/2005  10:53 PM           359,208 ShorebarrierA.bwo
+04/23/2005  10:53 PM           385,832 ShorebarrierD.bwo
+04/23/2005  10:53 PM           407,032 ShorebarrierE.bwo
+04/23/2005  10:53 PM           415,912 ShorebarrierF.bwo
+04/23/2005  10:53 PM            31,800 SFPDwindows.bwo
+04/23/2005  10:53 PM            40,520 SFPD_car1W.bwo
+04/23/2005  10:53 PM            40,388 Ppolice_carW.bwo
+04/23/2005  10:53 PM             2,392 concrete_divider.bwo
+04/23/2005  10:53 PM            53,936 sign_1.bwo
+04/23/2005  10:53 PM            14,448 Donation_box.bwo
+04/23/2005  10:53 PM            18,048 danger_sign.bwo
+04/23/2005  10:53 PM            35,724 Trashcan.bwo
+04/23/2005  10:53 PM            10,772 Cone_reflective.bwo
+04/23/2005  10:53 PM             5,932 Cone_Small.bwo
+04/23/2005  10:53 PM            16,292 Metal_barrier.bwo
+04/23/2005  10:53 PM             5,740 Cone02.bwo
+04/23/2005  10:53 PM               800 Metal_barrier_bars.bwo
+04/23/2005  10:53 PM            38,812 blockade.bwo
+04/23/2005  10:53 PM            31,328 sign_02.bwo
+04/23/2005  10:53 PM            58,856 Table.bwo
+04/23/2005  10:53 PM            24,256 Caution_sign.bwo
+04/23/2005  10:53 PM            15,528 Table2.bwo
+04/23/2005  10:53 PM            53,952 Bunk_bed.bwo
+04/23/2005  10:53 PM            24,216 Bed.bwo
+04/23/2005  10:53 PM            11,796 Money.bwo
+04/23/2005  10:53 PM            15,924 ParkingLot_curbsA.bwo
+04/23/2005  10:53 PM             1,004 Donation_box_glass.bwo
+04/23/2005  10:53 PM            16,404 ParkingLot_curbsB.bwo
+04/23/2005  10:53 PM           116,164 Tree01.bwo
+04/23/2005  10:53 PM           249,768 TreeLeaves01.bwo
+04/23/2005  10:53 PM            26,564 ParkingLot_curbsD.bwo
+04/23/2005  10:53 PM            31,328 sign_03.bwo
+04/23/2005  10:53 PM           135,416 ShorebarrierF_c.bwo
+04/23/2005  10:53 PM            51,736 ShorebarrierC_c.bwo
+04/23/2005  10:53 PM           116,716 blockade2.bwo
+04/23/2005  10:53 PM            31,800 SFPDwindows01.bwo
+04/23/2005  10:53 PM           438,644 SFPD_car02.bwo
+04/23/2005  10:53 PM               800 Metal_barrier_bars01.bwo
+04/23/2005  10:53 PM            16,292 Metal_barrier01.bwo
+04/23/2005  10:53 PM            52,024 Light_Fixture.bwo
+04/23/2005  10:53 PM            24,804 Barrel1_LP.bwo
+04/23/2005  10:53 PM            24,804 Barrel_LP.bwo
+04/23/2005  10:53 PM         1,872,848 Barrelrack1.bwo
+04/23/2005  10:53 PM            94,728 cannonballs.bwo
+04/23/2005  10:53 PM           123,072 Benches.bwo
+04/23/2005  10:53 PM           144,928 cannonS_LP.bwo
+04/23/2005  10:53 PM           224,220 CannonT_LP.bwo
+04/23/2005  10:53 PM            87,124 Shell_display_HP.bwo
+04/23/2005  10:53 PM            27,888 Pallet.bwo
+04/23/2005  10:53 PM           224,220 CannonT_LP01.bwo
+04/23/2005  10:53 PM            98,168 Barrels.bwo
+04/23/2005  10:53 PM            45,124 ParkingLot_curbsE.bwo
+04/23/2005  10:53 PM            94,404 ParkingLot_curbsF.bwo
+04/23/2005  10:53 PM            43,520 Pictures.bwo
+04/23/2005  10:53 PM           123,840 CypressTreeT01.bwo
+04/23/2005  10:53 PM           303,396 CypressTree01.bwo
+04/23/2005  10:53 PM            95,668 Cypress2T.bwo
+04/23/2005  10:53 PM           325,752 Cypress2L.bwo
+04/23/2005  10:53 PM            30,188 ParkinglinesA.bwo
+04/23/2005  10:53 PM             7,944 Roadblock.bwo
+04/23/2005  10:53 PM             8,344 Roadblock2.bwo
+04/23/2005  10:53 PM           145,356 ParkinglinesB.bwo
+04/23/2005  10:53 PM            21,588 Cone_reflective02.bwo
+04/23/2005  10:53 PM            78,564 blockadeFrnt.bwo
+04/23/2005  10:53 PM            16,764 Cones_PL.bwo
+04/23/2005  10:53 PM           563,836 ChainlinkF02.bwo
+04/23/2005  10:53 PM            12,936 Chainlink02.bwo
+04/23/2005  10:53 PM           101,548 ChainlinkF01.bwo
+04/23/2005  10:53 PM             2,240 Chainlink01.bwo
+04/23/2005  10:53 PM           155,120 Pallets.bwo
+04/23/2005  10:53 PM            39,380 ParkingLot_curbsG.bwo
+04/23/2005  10:53 PM            26,212 ParkingLot_curbsH.bwo
+04/23/2005  10:53 PM            70,272 cannonballs01.bwo
+04/23/2005  10:53 PM            40,152 benches2.bwo
+04/23/2005  10:53 PM            23,972 ChainlinkF03.bwo
+04/23/2005  10:53 PM               624 Chainlink03.bwo
+04/23/2005  10:53 PM               480 Treesclip.bwo
+04/23/2005  10:53 PM             3,904 Treesclip01.bwo
+04/23/2005  10:53 PM            10,544 Chainlink04.bwo
+04/23/2005  10:53 PM           432,244 ChainlinkF04.bwo
+04/23/2005  10:53 PM             3,044 shrub_clip.bwo
+04/23/2005  10:53 PM               384 Treesclip2.bwo
+04/23/2005  10:53 PM            27,028 BridgeAB_alpha.bwo
+04/23/2005  10:53 PM         2,292,496 fortpointL3.bwo
+04/23/2005  10:53 PM           340,080 fortpointO.bwo
+04/23/2005  10:53 PM             2,412 fortpoint_glass.bwo
+04/23/2005  10:53 PM         1,540,784 fortpointL2.bwo
+04/23/2005  10:53 PM         1,418,912 fortpointL1.bwo
+04/23/2005  10:53 PM            85,124 BridgeCalpha.bwo
+04/23/2005  10:53 PM           303,892 BridgeC.bwo
+04/23/2005  10:53 PM           809,504 BridgeB.bwo
+04/23/2005  10:53 PM         1,268,480 BridgeA.bwo
+04/23/2005  10:53 PM           171,876 Bridge_concrete.bwo
+04/23/2005  10:53 PM            90,960 Thing.bwo
+04/23/2005  10:53 PM               384 Treesclip03.bwo
+04/23/2005  10:53 PM               384 Treesclip05.bwo
+04/23/2005  10:53 PM               384 Treesclip04.bwo
+04/23/2005  10:53 PM               384 Treesclip06.bwo
+04/23/2005  10:53 PM           361,048 Cypress3L.bwo
+04/23/2005  10:53 PM            91,148 Cypress3T.bwo
+04/23/2005  10:53 PM            93,084 Tree3.bwo
+04/23/2005  10:53 PM            93,084 Tree04.bwo
+04/23/2005  10:53 PM            93,084 Tree05.bwo
+04/23/2005  10:53 PM           230,832 CannonF.bwo
+04/23/2005  10:53 PM            16,136 Thing_trans.bwo
+04/23/2005  10:53 PM               372 Frisco.bwo
+04/23/2005  10:53 PM            97,576 Terrain_D.bwo
+04/23/2005  10:53 PM           171,876 Bridge_concrete01.bwo
+04/23/2005  10:53 PM         1,268,480 BridgeA01.bwo
+04/23/2005  10:53 PM            27,028 BridgeAB_alpha01.bwo
+04/23/2005  10:53 PM           809,504 BridgeB01.bwo
+04/23/2005  10:53 PM           303,892 BridgeC01.bwo
+04/23/2005  10:53 PM            85,124 BridgeCalpha01.bwo
+04/23/2005  10:53 PM            28,348 fp7opt.BWS
+09/21/2013  11:50 PM           425,370 Asphalt.png
+09/21/2013  11:50 PM             1,834 baricadebars.png
+09/21/2013  11:50 PM           114,829 Barrel.png
+09/21/2013  11:50 PM           118,277 Barrel1.png
+09/21/2013  11:50 PM           690,813 beach.png
+09/21/2013  11:50 PM           221,472 Bench.png
+09/21/2013  11:50 PM             3,522 blkplastic.png
+09/21/2013  11:50 PM           559,996 Brick_01.png
+09/21/2013  11:50 PM           424,556 Brick_White_01.png
+09/21/2013  11:50 PM           178,612 Brick_White_02.png
+09/21/2013  11:50 PM           481,624 Brick_White_Ceiling_01.png
+09/21/2013  11:50 PM         1,100,443 BridgeCon1.png
+09/21/2013  11:50 PM           464,987 bridgedetail.png
+09/21/2013  11:50 PM               153 bridgelight.png
+09/21/2013  11:50 PM            82,669 bridgemetal.png
+09/21/2013  11:50 PM           700,453 brushleaves.png
+09/21/2013  11:50 PM           954,270 Bulkhd01.png
+09/21/2013  11:50 PM           459,571 B_rack.png
+09/21/2013  11:50 PM           345,618 cable.png
+09/21/2013  11:50 PM            99,213 Cannonballs.png
+09/21/2013  11:50 PM           365,808 CannonF.png
+09/21/2013  11:50 PM           425,987 cannonS_LP.png
+09/21/2013  11:50 PM           500,978 cannonT.png
+09/21/2013  11:50 PM         1,859,579 Casement_Arches_01.png
+09/21/2013  11:50 PM         1,840,107 Casement_Walls_01.png
+09/21/2013  11:50 PM            36,593 Cautionsign.png
+09/21/2013  11:50 PM            37,894 Chainlink.png
+09/21/2013  11:50 PM           154,298 Cliffrock1.png
+09/21/2013  11:50 PM         2,196,195 Cliffrock2.png
+09/21/2013  11:50 PM           121,757 Concrete01.png
+09/21/2013  11:50 PM           602,647 Concrete02.png
+09/21/2013  11:50 PM           139,381 ConcreteDiv.png
+09/21/2013  11:50 PM           477,102 Concrete_512_01.png
+09/21/2013  11:50 PM            91,738 concrete_tan_01.png
+09/21/2013  11:50 PM           361,182 Cypress2.png
+09/21/2013  11:50 PM           541,314 CypressBrk.png
+09/21/2013  11:50 PM           491,868 CypressL.png
+09/21/2013  11:50 PM            71,414 dangersign.png
+09/21/2013  11:50 PM            90,654 donationbox.png
+09/21/2013  11:50 PM            70,863 Dumpster_90.png
+09/21/2013  11:50 PM            31,351 entrance_sign.png
+09/21/2013  11:50 PM            88,810 Floor256_01.png
+09/21/2013  11:50 PM           357,455 Floor_Wood_01.png
+09/21/2013  11:50 PM           363,527 frisco.png
+09/21/2013  11:50 PM            23,556 GALVPLAT.png
+09/21/2013  11:50 PM           257,731 GGbridge.png
+09/21/2013  11:50 PM            39,454 Glass01.png
+09/21/2013  11:50 PM            27,655 Glass_Fort_01.png
+09/21/2013  11:50 PM           464,005 Granite_01.png
+09/21/2013  11:50 PM           130,489 Grass01.png
+09/21/2013  11:50 PM            29,215 grassC.png
+09/21/2013  11:50 PM             6,030 grassCA.png
+09/21/2013  11:50 PM            46,760 GrimeA.png
+09/21/2013  11:50 PM            93,662 GrimeB.png
+09/21/2013  11:50 PM           126,148 Impala.png
+09/21/2013  11:50 PM             1,611 Lightfixture.png
+09/21/2013  11:50 PM            12,184 lm_Barrel1_LP.png
+09/21/2013  11:50 PM           134,859 lm_Barrelrack1.png
+09/21/2013  11:50 PM            11,679 lm_Barrels.png
+09/21/2013  11:50 PM             6,507 lm_Barrel_LP.png
+09/21/2013  11:50 PM             8,387 lm_Bed.png
+09/21/2013  11:50 PM            12,272 lm_Benches.png
+09/21/2013  11:50 PM             1,016 lm_Benches2.png
+09/21/2013  11:50 PM             4,665 lm_blockade.png
+09/21/2013  11:50 PM            18,433 lm_blockade2.png
+09/21/2013  11:50 PM             3,152 lm_blockadeFrnt.png
+09/21/2013  11:50 PM           254,992 lm_BridgeA.png
+09/21/2013  11:50 PM            17,273 lm_BridgeAB_alpha.png
+09/21/2013  11:50 PM            17,133 lm_BridgeA_B_alpha.png
+09/21/2013  11:50 PM           147,318 lm_BridgeB.png
+09/21/2013  11:50 PM            83,683 lm_bridgeC.png
+09/21/2013  11:50 PM            57,684 lm_bridgeCalpha.png
+09/21/2013  11:50 PM            86,708 lm_Bridge_concrete.png
+09/21/2013  11:50 PM             2,573 lm_Bunk_bed.png
+09/21/2013  11:50 PM            18,636 lm_cannonballs.png
+09/21/2013  11:50 PM            18,116 lm_CannonF.png
+09/21/2013  11:50 PM            18,828 lm_cannonS_LP.png
+09/21/2013  11:50 PM            44,720 lm_cannonT_LP.png
+09/21/2013  11:50 PM            15,964 lm_cannonT_LP01.png
+09/21/2013  11:50 PM             3,384 lm_Caution_sign.png
+09/21/2013  11:50 PM             6,032 lm_Cdivider.png
+09/21/2013  11:50 PM             7,001 lm_Chainlink01.png
+09/21/2013  11:50 PM            34,768 lm_ChainLink02.png
+09/21/2013  11:50 PM             1,148 lm_Chainlink03.png
+09/21/2013  11:50 PM             8,800 lm_Chainlink04.png
+09/21/2013  11:50 PM            13,812 lm_ChainlinkF01.png
+09/21/2013  11:50 PM            78,111 lm_ChainlinkF02.png
+09/21/2013  11:50 PM            12,246 lm_ChainlinkF03.png
+09/21/2013  11:50 PM            59,883 lm_ChainlinkF04.png
+09/21/2013  11:50 PM             1,360 lm_Cone02.png
+09/21/2013  11:50 PM             3,980 lm_Cones_PL.png
+09/21/2013  11:50 PM             3,440 lm_Cone_reflective.png
+09/21/2013  11:50 PM             1,097 lm_Cone_reflective02.png
+09/21/2013  11:50 PM             1,619 lm_Cone_Small.png
+09/21/2013  11:50 PM            37,085 lm_Cypress2L.png
+09/21/2013  11:50 PM            35,850 lm_Cypress2T.png
+09/21/2013  11:50 PM            36,394 lm_Cypress3L.png
+09/21/2013  11:50 PM            36,577 lm_Cypress3T.png
+09/21/2013  11:50 PM            47,577 lm_CypressTree01.png
+09/21/2013  11:50 PM            46,617 lm_CypressTreeT01.png
+09/21/2013  11:50 PM             2,927 lm_danger_sign.png
+09/21/2013  11:50 PM            11,884 lm_Donation_box.png
+09/21/2013  11:50 PM             2,569 lm_Donation_box_glass.png
+09/21/2013  11:50 PM            11,299 lm_entrance.png
+09/21/2013  11:50 PM             9,063 lm_Entrance_sign.png
+09/21/2013  11:50 PM           692,613 lm_fortpointL1.png
+09/21/2013  11:51 PM           666,572 lm_fortpointL2.png
+09/21/2013  11:51 PM           717,861 lm_fortpointL3.png
+09/21/2013  11:51 PM           177,985 lm_fortpointO.png
+09/21/2013  11:51 PM             9,831 lm_fortpoint_glass.png
+09/21/2013  11:51 PM            33,528 lm_Impala.png
+09/21/2013  11:51 PM             3,478 lm_Impala_windows.png
+09/21/2013  11:51 PM             4,842 lm_Light_Fixture.png
+09/21/2013  11:51 PM               981 lm_Metal_barrier.png
+09/21/2013  11:51 PM             1,028 lm_Metal_barrier01.png
+09/21/2013  11:51 PM               687 lm_Metal_barrier_bars.png
+09/21/2013  11:51 PM             2,092 lm_Metal_barrier_bars01.png
+09/21/2013  11:51 PM            33,628 lm_Minivan.png
+09/21/2013  11:51 PM             1,100 lm_Money.png
+09/21/2013  11:51 PM             1,734 lm_MV_windows.png
+09/21/2013  11:51 PM             3,864 lm_Pallet.png
+09/21/2013  11:51 PM            10,121 lm_Pallets.png
+09/21/2013  11:51 PM             6,985 lm_ParkinglinesA.png
+09/21/2013  11:51 PM            30,299 lm_ParkinglinesB.png
+09/21/2013  11:51 PM            10,189 lm_ParkingLot_curbsA.png
+09/21/2013  11:51 PM            12,215 lm_ParkingLot_curbsB.png
+09/21/2013  11:51 PM            10,912 lm_ParkingLot_curbsD.png
+09/21/2013  11:51 PM            40,244 lm_ParkingLot_curbsE.png
+09/21/2013  11:51 PM            42,861 lm_ParkingLot_curbsF.png
+09/21/2013  11:51 PM            14,470 lm_ParkingLot_curbsG.png
+09/21/2013  11:51 PM            10,060 lm_ParkingLot_curbsH.png
+09/21/2013  11:51 PM            18,213 lm_Pictures.png
+09/21/2013  11:51 PM            35,899 lm_Ppolice_car.png
+09/21/2013  11:51 PM             4,398 lm_Ppolice_carW.png
+09/21/2013  11:51 PM            88,506 lm_restroom.png
+09/21/2013  11:51 PM            21,347 lm_Roadblock.png
+09/21/2013  11:51 PM             3,127 lm_Roadblock2.png
+09/21/2013  11:51 PM             4,044 lm_SFPDwindows.png
+09/21/2013  11:51 PM             3,978 lm_SFPDwindows01.png
+09/21/2013  11:51 PM            37,430 lm_SFPD_car.png
+09/21/2013  11:51 PM            38,255 lm_SFPD_car02.png
+09/21/2013  11:51 PM            35,298 lm_SFPD_car1.png
+09/21/2013  11:51 PM             4,074 lm_SFPD_car1W.png
+09/21/2013  11:51 PM            32,617 lm_Shell_display_HP.png
+09/21/2013  11:51 PM            42,434 lm_shorebarrierA.png
+09/21/2013  11:51 PM            34,999 lm_shorebarrierB.png
+09/21/2013  11:51 PM            12,596 lm_shorebarrierC.png
+09/21/2013  11:51 PM            17,076 lm_shorebarrierC_c.png
+09/21/2013  11:51 PM            47,511 lm_shorebarrierD.png
+09/21/2013  11:51 PM            15,037 lm_shorebarrierE.png
+09/21/2013  11:51 PM             7,491 lm_shorebarrierF.png
+09/21/2013  11:51 PM             9,836 lm_shorebarrierF_c.png
+09/21/2013  11:51 PM               620 lm_sign_02.png
+09/21/2013  11:51 PM               629 lm_sign_03.png
+09/21/2013  11:51 PM            14,173 lm_sign_1.png
+09/21/2013  11:51 PM            35,354 lm_SUV.png
+09/21/2013  11:51 PM             3,513 lm_SUV_windows.png
+09/21/2013  11:51 PM             2,090 lm_Table.png
+09/21/2013  11:51 PM             1,597 lm_Table2.png
+09/21/2013  11:51 PM         1,058,368 lm_terrain.png
+09/21/2013  11:51 PM            72,882 lm_Terrain_D.png
+09/21/2013  11:51 PM            29,850 lm_Thing.png
+09/21/2013  11:51 PM             4,521 lm_Thing_trans.png
+09/21/2013  11:51 PM             9,131 lm_Trashcan.png
+09/21/2013  11:51 PM            20,905 lm_Tree.png
+09/21/2013  11:51 PM            19,821 lm_Tree01.png
+09/21/2013  11:51 PM            16,694 lm_Tree04.png
+09/21/2013  11:51 PM            15,847 lm_Tree05.png
+09/21/2013  11:51 PM            16,311 lm_Tree3.png
+09/21/2013  11:51 PM            23,738 lm_TreeLeaves.png
+09/21/2013  11:51 PM            24,060 lm_TreeLeaves01.png
+09/21/2013  11:51 PM             5,460 Lthouse_Metal_Black.png
+09/21/2013  11:51 PM           191,159 Lthouse_Metal_Tan.png
+09/21/2013  11:51 PM           103,210 Minivan.png
+09/21/2013  11:51 PM             2,422 money.png
+09/21/2013  11:51 PM               155 Ocean.png
+09/21/2013  11:51 PM            32,721 Oceanb.png
+09/21/2013  11:51 PM           185,426 PaintedBoards.png
+09/21/2013  11:51 PM           214,323 Palette.png
+09/21/2013  11:51 PM           645,897 Parkinglines.png
+09/21/2013  11:51 PM           589,346 Parkingmarkings.png
+09/21/2013  11:51 PM            34,103 parkstop.png
+09/21/2013  11:51 PM           358,245 Pictures.png
+09/21/2013  11:51 PM            17,955 plasticblockade.png
+09/21/2013  11:51 PM               946 plasticblockB.png
+09/21/2013  11:51 PM           143,865 Ppolice.png
+09/21/2013  11:51 PM             2,854 reflectblur.png
+09/21/2013  11:51 PM           140,499 Rest_barrier.png
+09/21/2013  11:51 PM           117,886 Rest_details.png
+09/21/2013  11:51 PM           172,826 Rest_roof.png
+09/21/2013  11:51 PM            58,712 Rest_siding.png
+09/21/2013  11:51 PM            21,938 Rest_trim.png
+09/21/2013  11:51 PM           547,181 Roadside.png
+09/21/2013  11:51 PM           113,566 rust256.png
+09/21/2013  11:51 PM           329,334 Sdisplay.png
+09/21/2013  11:51 PM           151,356 SFPDcar.png
+09/21/2013  11:51 PM           146,934 SFPDcar1.png
+09/21/2013  11:51 PM            63,248 Sign1.png
+09/21/2013  11:51 PM            38,058 Sign2.png
+09/21/2013  11:51 PM           208,739 Signwood.png
+09/21/2013  11:51 PM            89,485 skycube.png
+09/21/2013  11:51 PM           102,188 SUV.png
+09/21/2013  11:51 PM            82,996 terrainD.png
+09/21/2013  11:51 PM         2,211,956 Terrain_01.png
+09/21/2013  11:51 PM           269,519 Thing.png
+09/21/2013  11:52 PM           492,853 Tleaves2.png
+09/21/2013  11:52 PM           408,180 TowerTop_01.png
+09/21/2013  11:52 PM           174,710 TowerTop_02.png
+09/21/2013  11:52 PM            16,930 trashcan.png
+09/21/2013  11:52 PM            21,990 trashcanlid.png
+09/21/2013  11:52 PM           941,229 treesclip.png
+09/21/2013  11:52 PM           227,397 treesclip2.png
+09/21/2013  11:52 PM           161,561 Ttrunk.png
+09/21/2013  11:52 PM           136,246 Wall256_01.png
+09/21/2013  11:52 PM           379,758 Wall_01.png
+09/21/2013  11:52 PM            64,631 wood1.png
+09/21/2013  11:52 PM            43,148 wood2.png
+11/10/2018  07:13 PM    <DIR>          skycube
+11/10/2018  07:13 PM    <DIR>          lighting
+11/10/2018  07:14 PM    <DIR>          .
+11/10/2018  07:14 PM    <DIR>          ..
+             361 File(s)     61,732,512 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\fortpoint\lighting
+
+09/21/2013  11:52 PM             1,482 diffuse.png
+09/21/2013  11:52 PM            16,282 lightflare.png
+09/21/2013  11:52 PM               140 specular.png
+11/10/2018  07:13 PM    <DIR>          ..
+11/10/2018  07:13 PM    <DIR>          .
+               3 File(s)         17,904 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\fortpoint\skycube
+
+06/13/2003  12:49 AM            76,533 skycube.mxs
+09/21/2013  11:52 PM           151,297 bskycube.png
+09/21/2013  11:52 PM            89,485 skycube.png
+11/10/2018  07:13 PM    <DIR>          ..
+11/10/2018  07:13 PM    <DIR>          .
+               3 File(s)        317,315 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\ghostcity
+
+05/29/2008  01:44 PM             2,837 ColWall.png
+04/28/2009  04:30 PM           100,332 woodbridge01.bwo
+04/28/2009  04:39 PM           223,428 Box01.bwo
+04/28/2009  04:39 PM            25,112 4p_glass.bwo
+04/30/2009  12:50 PM           212,296 city09.bwo
+05/01/2009  10:25 AM             1,264 chk02r.bwo
+05/01/2009  11:34 AM             1,264 chk18r.bwo
+05/04/2009  09:08 AM            13,124 skydome.bwo
+05/04/2009  09:47 AM               760 bridgerail.bwo
+05/04/2009  01:22 PM            18,860 CityBackdrop.bwo
+05/04/2009  03:09 PM            19,900 barn.bwo
+05/04/2009  04:22 PM             4,396 roof.bwo
+05/04/2009  04:22 PM            26,092 redbarn.bwo
+05/05/2009  02:41 PM           112,940 applecart.bwo
+05/05/2009  02:41 PM           314,616 apples.bwo
+05/06/2009  01:06 PM               468 water.bwo
+05/14/2009  10:12 AM             2,804 Horse_Neck01.bwo
+05/14/2009  10:12 AM             1,652 Horse_ShinBL03.bwo
+05/14/2009  10:12 AM             1,460 Horse_LegFL03.bwo
+05/14/2009  10:12 AM             1,876 Horse_ShinFL02.bwo
+05/14/2009  10:12 AM             1,908 Horse_LegBL03.bwo
+05/14/2009  10:12 AM             1,908 Horse_LegBL02.bwo
+05/14/2009  10:12 AM             1,972 Horse_HoofFL03.bwo
+05/14/2009  10:12 AM             1,876 Horse_ShinFL03.bwo
+05/14/2009  10:12 AM             1,972 Horse_HoofFL02.bwo
+05/14/2009  10:12 AM             3,188 Horse_Pelvis01.bwo
+05/14/2009  10:12 AM             2,484 Horse_HoofBL02.bwo
+05/14/2009  10:12 AM             6,516 Horse_Head01.bwo
+05/14/2009  10:12 AM             1,652 Horse_CalfFL03.bwo
+05/14/2009  10:12 AM             1,652 Horse_CalfFL02.bwo
+05/14/2009  10:12 AM             1,428 Horse_CalfBL03.bwo
+05/14/2009  10:12 AM             1,428 Horse_CalfBL02.bwo
+05/14/2009  10:12 AM             1,780 Horse_Tail05.bwo
+05/14/2009  10:12 AM             3,188 Horse_Torso01.bwo
+05/14/2009  10:12 AM             2,068 Horse_Tail04.bwo
+05/14/2009  10:12 AM             3,028 Horse_NeckBase01.bwo
+05/14/2009  10:12 AM             2,484 Horse_HoofBL03.bwo
+05/14/2009  10:12 AM             1,652 Horse_ShinBL02.bwo
+05/14/2009  10:12 AM             1,460 Horse_LegFL02.bwo
+05/14/2009  10:12 AM             1,588 Horse_Tail06.bwo
+05/18/2009  03:33 PM           219,278 ghostcity.jpg
+05/19/2009  10:46 AM               760 bridgeentry.bwo
+07/01/2009  09:14 AM           474,632 city02.bwo
+07/01/2009  09:51 AM            30,904 lampPost03.bwo
+07/01/2009  09:51 AM            30,904 lampPost04.bwo
+07/01/2009  09:51 AM            30,904 lampPost01.bwo
+07/01/2009  09:51 AM            30,904 lampPost02.bwo
+07/01/2009  09:51 AM            30,904 lampPost05.bwo
+07/01/2009  09:51 AM            30,904 lampPost06.bwo
+07/01/2009  09:51 AM            30,904 lampPost07.bwo
+07/01/2009  09:51 AM            30,904 lampPost08.bwo
+07/01/2009  11:27 AM             1,276 chk14.bwo
+07/01/2009  11:27 AM             2,208 Plane01.bwo
+07/01/2009  11:27 AM           601,356 masoleum.bwo
+07/01/2009  11:27 AM           338,508 lampPost09.bwo
+07/01/2009  11:27 AM             4,864 cityBG.bwo
+07/01/2009  11:27 AM            14,400 colwall.bwo
+07/01/2009  11:27 AM             1,276 chk13.bwo
+07/01/2009  11:27 AM               928 colwall2.bwo
+07/01/2009  11:27 AM             1,276 chk15r.bwo
+07/01/2009  11:27 AM             1,276 chk16.bwo
+07/01/2009  11:27 AM             1,752 Cow_Calf2BL.bwo
+07/01/2009  11:27 AM             1,752 Cow_Calf2BL01.bwo
+07/01/2009  11:27 AM             1,752 Cow_Calf2BL02.bwo
+07/01/2009  11:27 AM             1,752 Cow_Calf2BL03.bwo
+07/01/2009  11:27 AM             2,104 Cow_Calf2FL.bwo
+07/01/2009  11:27 AM             2,104 Cow_Calf2FL01.bwo
+07/01/2009  11:27 AM             2,104 Cow_Calf2FL02.bwo
+07/01/2009  11:27 AM             2,104 Cow_Calf2FL03.bwo
+07/01/2009  11:27 AM             1,976 Cow_CalfBL.bwo
+07/01/2009  11:27 AM             1,976 Cow_CalfBL01.bwo
+07/01/2009  11:27 AM             1,976 Cow_CalfBL02.bwo
+07/01/2009  11:27 AM             1,976 Cow_CalfBL03.bwo
+07/01/2009  11:27 AM             1,720 Cow_CalfLF.bwo
+07/01/2009  11:27 AM             1,720 Cow_CalfLF01.bwo
+07/01/2009  11:27 AM             1,720 Cow_CalfLF02.bwo
+07/01/2009  11:27 AM             1,720 Cow_CalfLF03.bwo
+07/01/2009  11:27 AM             3,832 Cow_Chest.bwo
+07/01/2009  11:27 AM             1,276 chk17.bwo
+07/01/2009  11:27 AM             3,096 Cow_FootBL.bwo
+07/01/2009  11:27 AM             3,096 Cow_FootBL01.bwo
+07/01/2009  11:27 AM             3,096 Cow_FootBL02.bwo
+07/01/2009  11:27 AM             3,096 Cow_FootBL03.bwo
+07/01/2009  11:27 AM             2,392 Cow_FootFL.bwo
+07/01/2009  11:27 AM             2,392 Cow_FootFL01.bwo
+07/01/2009  11:27 AM             2,392 Cow_FootFL02.bwo
+07/01/2009  11:27 AM             2,392 Cow_FootFL03.bwo
+07/01/2009  11:27 AM             7,096 Cow_Head.bwo
+07/01/2009  11:27 AM             7,096 Cow_Head01.bwo
+07/01/2009  11:27 AM             2,040 Cow_LegBL.bwo
+07/01/2009  11:27 AM             2,040 Cow_LegBL01.bwo
+07/01/2009  11:27 AM             2,040 Cow_LegBL02.bwo
+07/01/2009  11:27 AM             2,040 Cow_LegBL03.bwo
+07/01/2009  11:27 AM               984 Cow_LegFL.bwo
+07/01/2009  11:27 AM               984 Cow_LegFL01.bwo
+07/01/2009  11:27 AM               984 Cow_LegFL02.bwo
+07/01/2009  11:27 AM               984 Cow_LegFL03.bwo
+07/01/2009  11:27 AM             1,272 Cow_Neck.bwo
+07/01/2009  11:27 AM             1,272 Cow_Neck01.bwo
+07/01/2009  11:27 AM             8,344 Cow_Pelvis.bwo
+07/01/2009  11:27 AM             8,344 Cow_Pelvis01.bwo
+07/01/2009  11:27 AM             2,744 Cow_Tail.bwo
+07/01/2009  11:27 AM             2,744 Cow_Tail02.bwo
+07/01/2009  11:27 AM             3,704 Cow_Tail03.bwo
+07/01/2009  11:27 AM             2,936 Cow_Tail04.bwo
+07/01/2009  11:27 AM             2,744 Cow_Tail05.bwo
+07/01/2009  11:27 AM             2,744 Cow_Tail06.bwo
+07/01/2009  11:27 AM             3,704 Cow_Tail07.bwo
+07/01/2009  11:27 AM             1,276 chk19.bwo
+07/01/2009  11:27 AM             1,276 chk20.bwo
+07/01/2009  11:27 AM             1,276 chk23r.bwo
+07/01/2009  11:27 AM             1,276 chk22.bwo
+07/01/2009  11:27 AM             1,276 chk21.bwo
+07/01/2009  11:27 AM             3,832 Cow_Chest01.bwo
+07/01/2009  11:27 AM            30,904 lampPost.bwo
+07/01/2009  11:27 AM            28,460 fallentree.bwo
+07/01/2009  11:27 AM             3,196 Horse_Torso03.bwo
+07/01/2009  11:27 AM             3,196 Horse_Torso02.bwo
+07/01/2009  11:27 AM             2,012 Gar_Calf2BL.bwo
+07/01/2009  11:27 AM             2,012 Gar_Calf2BL01.bwo
+07/01/2009  11:27 AM             2,012 Gar_Calf2BR.bwo
+07/01/2009  11:27 AM             2,012 Gar_Calf2BR01.bwo
+07/01/2009  11:27 AM             1,372 Gar_CalfBL.bwo
+07/01/2009  11:27 AM             1,372 Gar_CalfBL01.bwo
+07/01/2009  11:27 AM             1,372 Gar_CalfBR.bwo
+07/01/2009  11:27 AM             1,372 Gar_CalfBR01.bwo
+07/01/2009  11:27 AM             3,932 Gar_Chest.bwo
+07/01/2009  11:27 AM             3,932 Gar_Chest01.bwo
+07/01/2009  11:27 AM             9,340 Gar_Head.bwo
+07/01/2009  11:27 AM             9,340 Gar_Head01.bwo
+07/01/2009  11:27 AM             2,812 Gar_Hip.bwo
+07/01/2009  11:27 AM             2,812 Gar_Hip01.bwo
+07/01/2009  11:27 AM             2,268 Gar_Jaw.bwo
+07/01/2009  11:27 AM             2,268 Gar_Jaw01.bwo
+07/01/2009  11:27 AM             1,692 Gar_LegBL.bwo
+07/01/2009  11:27 AM             1,692 Gar_LegBL01.bwo
+07/01/2009  11:27 AM             1,692 Gar_LegBR.bwo
+07/01/2009  11:27 AM             1,692 Gar_LegBR01.bwo
+07/01/2009  11:27 AM             1,308 Gar_LegFL.bwo
+07/01/2009  11:27 AM             1,308 Gar_LegFL01.bwo
+07/01/2009  11:27 AM             1,308 Gar_LegFR.bwo
+07/01/2009  11:27 AM             1,308 Gar_LegFR01.bwo
+07/01/2009  11:27 AM             2,940 Gar_LegLowerFL.bwo
+07/01/2009  11:27 AM             2,940 Gar_LegLowerFL01.bwo
+07/01/2009  11:27 AM             2,940 Gar_LegLowerFR.bwo
+07/01/2009  11:27 AM             2,940 Gar_LegLowerFR01.bwo
+07/01/2009  11:27 AM             1,244 Gar_PawBL.bwo
+07/01/2009  11:27 AM             1,244 Gar_PawBL01.bwo
+07/01/2009  11:27 AM             1,244 Gar_PawBR.bwo
+07/01/2009  11:27 AM             1,244 Gar_PawBR01.bwo
+07/01/2009  11:27 AM             1,116 Gar_PawFL.bwo
+07/01/2009  11:27 AM             1,116 Gar_PawFL01.bwo
+07/01/2009  11:27 AM             1,116 Gar_PawFR.bwo
+07/01/2009  11:27 AM             1,116 Gar_PawFR01.bwo
+07/01/2009  11:27 AM               956 Gar_WingL01.bwo
+07/01/2009  11:27 AM             1,068 Gar_WingL02.bwo
+07/01/2009  11:27 AM               764 Gar_WingL03.bwo
+07/01/2009  11:27 AM               764 Gar_WingL04.bwo
+07/01/2009  11:27 AM               924 Gar_WingL05.bwo
+07/01/2009  11:27 AM               956 Gar_WingL06.bwo
+07/01/2009  11:27 AM             1,068 Gar_WingL07.bwo
+07/01/2009  11:27 AM               924 Gar_WingL08.bwo
+07/01/2009  11:27 AM               764 Gar_WingL09.bwo
+07/01/2009  11:27 AM               764 Gar_WingL10.bwo
+07/01/2009  11:27 AM               956 Gar_WingR01.bwo
+07/01/2009  11:27 AM             1,068 Gar_WingR02.bwo
+07/01/2009  11:27 AM               764 Gar_WingR03.bwo
+07/01/2009  11:27 AM               764 Gar_WingR04.bwo
+07/01/2009  11:27 AM               924 Gar_WingR05.bwo
+07/01/2009  11:27 AM               956 Gar_WingR06.bwo
+07/01/2009  11:27 AM             1,068 Gar_WingR07.bwo
+07/01/2009  11:27 AM               924 Gar_WingR08.bwo
+07/01/2009  11:27 AM               764 Gar_WingR09.bwo
+07/01/2009  11:27 AM               764 Gar_WingR10.bwo
+07/01/2009  11:27 AM           486,576 geo.bwo
+07/01/2009  11:27 AM             1,276 chk12r.bwo
+07/01/2009  11:27 AM             2,936 Cow_Tail08.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepL02.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepL03.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepL04.bwo
+07/01/2009  11:27 AM             1,276 chk11.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepR02.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepR03.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepR04.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepR06.bwo
+07/01/2009  11:27 AM             1,596 Horse_Tail12.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmL02.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmL03.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmL04.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmL06.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmR02.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmR03.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmR04.bwo
+07/01/2009  11:27 AM             1,476 Ghost_ForearmR06.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandL02.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandL03.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandL04.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandL06.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandR02.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandR03.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandR04.bwo
+07/01/2009  11:27 AM             2,180 Ghost_HandR06.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexL02.bwo
+07/01/2009  11:27 AM             1,788 Horse_Tail11.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexL04.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexL06.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexR02.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexR03.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexR04.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexR06.bwo
+07/01/2009  11:27 AM             5,924 Ghost_Jaw02.bwo
+07/01/2009  11:27 AM             5,924 Ghost_Jaw03.bwo
+07/01/2009  11:27 AM             5,924 Ghost_Jaw04.bwo
+07/01/2009  11:27 AM             5,924 Ghost_Jaw06.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleL02.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleL03.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleL04.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleL06.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleR02.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleR03.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleR04.bwo
+07/01/2009  11:27 AM             2,820 Ghost_MiddleR06.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyL02.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyL03.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyL04.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyL06.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyR02.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyR03.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyR04.bwo
+07/01/2009  11:27 AM             2,820 Ghost_PinkyR06.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingL02.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingL03.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingL04.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingL06.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingR02.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingR03.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingR04.bwo
+07/01/2009  11:27 AM             2,820 Ghost_RingR06.bwo
+07/01/2009  11:27 AM             4,772 Ghost_Skull02.bwo
+07/01/2009  11:27 AM             4,772 Ghost_Skull03.bwo
+07/01/2009  11:27 AM             4,772 Ghost_Skull04.bwo
+07/01/2009  11:27 AM            19,268 Ghost_Skull06.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineEnd02.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineEnd03.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineEnd04.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineEnd06.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineMid02.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineMid03.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineMid04.bwo
+07/01/2009  11:27 AM               708 Ghost_SpineMid06.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndB02.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndB03.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndB04.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndB06.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndF02.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndF03.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndF04.bwo
+07/01/2009  11:27 AM               772 Ghost_TailEndF06.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidB02.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidB03.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidB04.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidB06.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidF02.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidF03.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidF04.bwo
+07/01/2009  11:27 AM               772 Ghost_TailMidF06.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbL02.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbL03.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbL04.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbL06.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbR02.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbR03.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbR04.bwo
+07/01/2009  11:27 AM             2,436 Ghost_ThumbR06.bwo
+07/01/2009  11:27 AM             7,140 Ghost_Torso02.bwo
+07/01/2009  11:27 AM             7,140 Ghost_Torso03.bwo
+07/01/2009  11:27 AM             7,140 Ghost_Torso04.bwo
+07/01/2009  11:27 AM             7,140 Ghost_Torso06.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLB02.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLB03.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLB04.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLB06.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLF02.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLF03.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLF04.bwo
+07/01/2009  11:27 AM               484 Ghost_WingLF06.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRB02.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRB03.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRB04.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRB06.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRF02.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRF03.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRF04.bwo
+07/01/2009  11:27 AM               484 Ghost_WingRF06.bwo
+07/01/2009  11:27 AM             2,076 Horse_Tail10.bwo
+07/01/2009  11:27 AM           124,156 hay.bwo
+07/01/2009  11:27 AM             1,596 Horse_Tail09.bwo
+07/01/2009  11:27 AM             1,788 Horse_Tail08.bwo
+07/01/2009  11:27 AM             1,276 chk10.bwo
+07/01/2009  11:27 AM             1,276 chk09.bwo
+07/01/2009  11:27 AM             1,436 Horse_CalfBL04.bwo
+07/01/2009  11:27 AM             1,436 Horse_CalfBL05.bwo
+07/01/2009  11:27 AM             1,436 Horse_CalfBL06.bwo
+07/01/2009  11:27 AM             1,436 Horse_CalfBL07.bwo
+07/01/2009  11:27 AM             1,276 chk08r.bwo
+07/01/2009  11:27 AM             1,276 chk07.bwo
+07/01/2009  11:27 AM             1,660 Horse_CalfFL04.bwo
+07/01/2009  11:27 AM             1,660 Horse_CalfFL05.bwo
+07/01/2009  11:27 AM             1,660 Horse_CalfFL06.bwo
+07/01/2009  11:27 AM             1,660 Horse_CalfFL07.bwo
+07/01/2009  11:27 AM             1,276 chk06r.bwo
+07/01/2009  11:27 AM             6,524 Horse_Head02.bwo
+07/01/2009  11:27 AM             6,524 Horse_Head03.bwo
+07/01/2009  11:27 AM             1,276 chk05.bwo
+07/01/2009  11:27 AM             1,276 chk04.bwo
+07/01/2009  11:27 AM             2,492 Horse_HoofBL04.bwo
+07/01/2009  11:27 AM             2,492 Horse_HoofBL05.bwo
+07/01/2009  11:27 AM             2,492 Horse_HoofBL06.bwo
+07/01/2009  11:27 AM             2,492 Horse_HoofBL07.bwo
+07/01/2009  11:27 AM             1,276 chk03r.bwo
+07/01/2009  11:27 AM             1,276 chk02.bwo
+07/01/2009  11:27 AM             1,980 Horse_HoofFL04.bwo
+07/01/2009  11:27 AM             1,980 Horse_HoofFL05.bwo
+07/01/2009  11:27 AM             1,980 Horse_HoofFL06.bwo
+07/01/2009  11:27 AM             1,980 Horse_HoofFL07.bwo
+07/01/2009  11:27 AM             1,276 chk01.bwo
+07/01/2009  11:27 AM            19,312 cemetaryFence.bwo
+07/01/2009  11:27 AM             1,916 Horse_LegBL04.bwo
+07/01/2009  11:27 AM             1,916 Horse_LegBL05.bwo
+07/01/2009  11:27 AM             1,916 Horse_LegBL06.bwo
+07/01/2009  11:27 AM             1,916 Horse_LegBL07.bwo
+07/01/2009  11:27 AM           141,196 cart.bwo
+07/01/2009  11:27 AM               548 bridgeunder.bwo
+07/01/2009  11:27 AM             1,468 Horse_LegFL04.bwo
+07/01/2009  11:27 AM             1,468 Horse_LegFL05.bwo
+07/01/2009  11:27 AM             1,468 Horse_LegFL06.bwo
+07/01/2009  11:27 AM             1,468 Horse_LegFL07.bwo
+07/01/2009  11:27 AM             1,276 chk18.bwo
+07/01/2009  11:27 AM             2,812 Horse_Neck02.bwo
+07/01/2009  11:27 AM             2,812 Horse_Neck03.bwo
+07/01/2009  11:27 AM             7,908 bridgebase.bwo
+07/01/2009  11:27 AM             3,036 Horse_NeckBase02.bwo
+07/01/2009  11:27 AM             3,036 Horse_NeckBase03.bwo
+07/01/2009  11:27 AM           306,896 bridge.bwo
+07/01/2009  11:27 AM             3,196 Horse_Pelvis02.bwo
+07/01/2009  11:27 AM             3,196 Horse_Pelvis03.bwo
+07/01/2009  11:27 AM           267,628 tombstone.bwo
+07/01/2009  11:27 AM            52,572 track.bwo
+07/01/2009  11:27 AM             1,660 Horse_ShinBL04.bwo
+07/01/2009  11:27 AM             1,660 Horse_ShinBL05.bwo
+07/01/2009  11:27 AM             1,660 Horse_ShinBL06.bwo
+07/01/2009  11:27 AM             1,660 Horse_ShinBL07.bwo
+07/01/2009  11:27 AM            18,916 treedead.bwo
+07/01/2009  11:27 AM            19,824 trimcrap.bwo
+07/01/2009  11:27 AM             1,884 Horse_ShinFL04.bwo
+07/01/2009  11:27 AM             1,884 Horse_ShinFL05.bwo
+07/01/2009  11:27 AM             1,884 Horse_ShinFL06.bwo
+07/01/2009  11:27 AM             1,884 Horse_ShinFL07.bwo
+07/01/2009  11:27 AM            14,424 barbWireFence.bwo
+07/01/2009  11:27 AM             1,380 Ghost_BicepL06.bwo
+07/01/2009  11:27 AM             2,884 Ghost_IndexL03.bwo
+07/01/2009  11:27 AM             2,076 Horse_Tail07.bwo
+07/01/2009  11:42 AM           508,504 ghostcity.BWS
+07/01/2009  11:42 AM         1,338,660 city01.bwo
+09/09/2016  07:23 PM             1,768 Barbed_wire.png
+09/09/2016  07:23 PM            23,444 bark.png
+09/09/2016  07:23 PM            13,072 branchA.png
+09/09/2016  07:23 PM            17,478 branchLeaves.png
+09/09/2016  07:23 PM            86,270 brickStucco.png
+09/09/2016  07:23 PM            50,326 brickwater.png
+09/09/2016  07:23 PM            33,132 cityBG.png
+09/09/2016  07:23 PM           190,417 cobbles.png
+09/09/2016  07:23 PM           189,941 cobbles2.png
+09/09/2016  07:23 PM           493,974 cobbles2dirt.png
+09/09/2016  07:23 PM           417,759 cobblesToDirtroad.png
+09/09/2016  07:23 PM            33,077 concrete.png
+09/09/2016  07:23 PM           181,769 cowText.png
+09/09/2016  07:23 PM            26,890 curb.png
+09/09/2016  07:23 PM           492,032 dirt.png
+09/09/2016  07:23 PM           447,421 dirtroad.png
+09/09/2016  07:23 PM           103,582 dirtwater.png
+09/09/2016  07:23 PM           495,543 dirt_grass.png
+09/09/2016  07:23 PM             1,220 fence.png
+09/09/2016  07:23 PM             7,346 door.png
+09/09/2016  07:23 PM           379,757 gargoyle.png
+09/09/2016  07:23 PM           292,526 ghost_bod.png
+09/09/2016  07:23 PM            28,414 greenTiles.png
+09/09/2016  07:23 PM           126,612 hay.png
+09/09/2016  07:23 PM             9,395 iron.png
+09/09/2016  07:23 PM           203,800 horseText.png
+09/09/2016  07:23 PM            71,755 lamps.png
+09/09/2016  07:23 PM            34,011 peelingwood.png
+09/09/2016  07:23 PM            13,735 puffy2.png
+09/09/2016  07:23 PM            41,986 railing.png
+09/09/2016  07:23 PM           125,358 shingledRoof.png
+09/09/2016  07:23 PM           100,526 track03_d15.png
+09/09/2016  07:23 PM               612 treeTops.png
+09/09/2016  07:23 PM            61,421 treesrender.png
+09/09/2016  07:23 PM           126,614 water.png
+09/09/2016  07:23 PM            11,149 window.png
+09/09/2016  07:23 PM               237 wiref.png
+09/09/2016  07:23 PM            49,653 woodPosts.png
+09/09/2016  07:23 PM           121,546 woodsiding.png
+09/09/2016  07:23 PM            47,952 Wrought_Iron_Gate.png
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+             404 File(s)     12,183,735 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\physics3d
+
+04/09/2001  12:34 PM             2,678 phyobjs.txt
+04/09/2001  12:34 PM             1,018 testang.txt
+04/10/2001  04:05 PM               547 tops.txt
+05/12/2001  01:53 PM               125 testcoll.txt
+10/23/2016  07:07 PM            10,844 footballfield.bwo
+10/23/2016  07:07 PM             1,268 footballfield.BWS
+10/23/2016  07:08 PM             1,268 box1.bwo
+10/23/2016  07:08 PM               488 box1.BWS
+10/23/2016  07:08 PM               728 box45.BWS
+10/23/2016  07:08 PM            12,336 box45.bwo
+10/23/2016  07:08 PM            11,232 cyl1.bwo
+10/23/2016  07:08 PM               488 cyl1.BWS
+10/23/2016  07:09 PM               488 ellipse.BWS
+10/23/2016  07:09 PM             9,204 ellipse.bwo
+10/23/2016  07:10 PM               492 football.BWS
+10/23/2016  07:10 PM             6,644 football.bwo
+10/23/2016  07:10 PM            73,020 Box02.bwo
+10/23/2016  07:10 PM               488 patchwork.BWS
+10/23/2016  07:11 PM            10,612 rock.bwo
+10/23/2016  07:11 PM               488 rock.BWS
+10/23/2016  07:13 PM            12,096 sph1.bwo
+10/23/2016  07:13 PM               488 sph1.BWS
+10/23/2016  07:13 PM           283,148 Curve01.bwo
+10/23/2016  07:13 PM               488 testcar.BWS
+10/23/2016  07:13 PM               488 tetra.BWS
+10/23/2016  07:13 PM               756 tetra.bwo
+10/23/2016  07:14 PM            15,700 vector.bwo
+10/23/2016  07:14 PM               488 vector.BWS
+11/06/2016  11:12 PM             9,973 testscriptconfig.txt
+11/08/2016  11:18 PM           155,091 Bark.png
+11/08/2016  11:18 PM           137,537 base.png
+11/08/2016  11:18 PM            89,178 Fencewd.png
+11/08/2016  11:18 PM               264 maptestnck.png
+11/21/2016  08:11 PM             1,506 building.txt
+11/28/2016  10:02 PM             1,409 dominos.txt
+11/30/2016  09:08 PM               661 testscriptdevice.txt
+12/04/2016  09:51 PM                11 testscript.txt
+12/19/2016  08:58 PM               304 objects.txt
+12/28/2016  08:04 PM               117 pickscene.txt
+12/29/2016  09:33 PM               377 testtime.txt
+12/30/2016  02:34 PM               266 simple.txt
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+              41 File(s)        854,802 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\pics
+
+09/17/2013  08:52 PM    <DIR>          ..
+09/17/2013  08:52 PM    <DIR>          .
+               0 File(s)              0 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\prehistoric
+
+08/08/2008  11:07 AM            67,378 pter.jpg
+08/27/2008  04:07 PM            89,157 bronto1.ogg
+08/27/2008  04:07 PM            68,471 bronto2.ogg
+08/27/2008  04:07 PM            39,637 rumbling.ogg
+08/27/2008  04:07 PM            25,754 t-rexRoar.ogg
+08/27/2008  04:07 PM            41,046 wingFlaps.ogg
+05/18/2009  09:15 AM               282 prehistoric.txt
+05/18/2009  01:23 PM           250,434 Prehistoric.jpg
+06/09/2009  01:04 PM         2,280,137 Prehistoric.ogg
+06/30/2009  10:49 AM            31,424 APhead01.bwo
+06/30/2009  10:49 AM            31,424 APhead02.bwo
+06/30/2009  10:49 AM            11,008 APjaw01.bwo
+06/30/2009  10:49 AM            11,008 APjaw02.bwo
+06/30/2009  10:49 AM            10,368 APneck04.bwo
+06/30/2009  10:49 AM            11,072 APneck05.bwo
+06/30/2009  10:49 AM            10,368 APneck06.bwo
+06/30/2009  10:49 AM            16,768 APneck07.bwo
+06/30/2009  10:49 AM            13,760 APneck08.bwo
+06/30/2009  10:49 AM            10,368 APneck09.bwo
+06/30/2009  10:49 AM            11,072 APneck10.bwo
+06/30/2009  10:49 AM            10,368 APneck11.bwo
+06/30/2009  10:49 AM            16,768 APneck12.bwo
+06/30/2009  10:49 AM            13,760 APneck13.bwo
+06/30/2009  10:49 AM            11,072 APneckbase01.bwo
+06/30/2009  10:49 AM            11,072 APneckbase02.bwo
+06/30/2009  10:49 AM            13,120 APtail05.bwo
+06/30/2009  10:49 AM            12,480 APtail06.bwo
+06/30/2009  10:49 AM            12,448 APtail07.bwo
+06/30/2009  10:49 AM            12,448 APtail08.bwo
+06/30/2009  10:49 AM             7,424 APtail09.bwo
+06/30/2009  10:49 AM            13,120 APtail10.bwo
+06/30/2009  10:49 AM            12,480 APtail11.bwo
+06/30/2009  10:49 AM            12,448 APtail12.bwo
+06/30/2009  10:49 AM            12,448 APtail13.bwo
+06/30/2009  10:49 AM             7,424 APtail14.bwo
+06/30/2009  10:49 AM           261,440 Box01.bwo
+06/30/2009  10:49 AM            13,408 APchest01.bwo
+06/30/2009  10:49 AM            55,520 APbody02.bwo
+06/30/2009  10:49 AM            57,124 Trex_torso.bwo
+06/30/2009  10:49 AM               728 burst02.bwo
+06/30/2009  10:49 AM           796,868 bushfern01.bwo
+06/30/2009  10:49 AM            17,880 Trex_toesRT2.bwo
+06/30/2009  10:49 AM            17,880 Trex_toesRT.bwo
+06/30/2009  10:49 AM               480 checkpoint_01.bwo
+06/30/2009  10:49 AM             1,276 chk01.bwo
+06/30/2009  10:49 AM             1,276 chk02r.bwo
+06/30/2009  10:49 AM             1,276 chk03.bwo
+06/30/2009  10:49 AM             1,276 chk04.bwo
+06/30/2009  10:49 AM            10,752 APclavicle02.bwo
+06/30/2009  10:49 AM             1,276 chk06r.bwo
+06/30/2009  10:49 AM             1,276 chk07.bwo
+06/30/2009  10:49 AM             1,276 chk08.bwo
+06/30/2009  10:49 AM             1,276 chk09.bwo
+06/30/2009  10:49 AM             1,276 chk10.bwo
+06/30/2009  10:49 AM             1,276 chk11r.bwo
+06/30/2009  10:49 AM             1,276 chk12.bwo
+06/30/2009  10:49 AM             1,276 chk13.bwo
+06/30/2009  10:49 AM             1,276 chk14.bwo
+06/30/2009  10:49 AM             1,276 chk15.bwo
+06/30/2009  10:49 AM             1,276 chk16r.bwo
+06/30/2009  10:49 AM             1,276 chk17.bwo
+06/30/2009  10:49 AM             1,276 chk18.bwo
+06/30/2009  10:49 AM             1,276 chk19.bwo
+06/30/2009  10:49 AM             1,276 chk20r.bwo
+06/30/2009  10:49 AM             1,276 chk21.bwo
+06/30/2009  10:49 AM             1,276 chk22.bwo
+06/30/2009  10:49 AM             1,276 chk23.bwo
+06/30/2009  10:49 AM             1,276 chk24r.bwo
+06/30/2009  10:49 AM             1,276 chk25.bwo
+06/30/2009  10:49 AM             1,276 chk26.bwo
+06/30/2009  10:49 AM            55,520 APbody01.bwo
+06/30/2009  10:49 AM             1,276 chk28.bwo
+06/30/2009  10:49 AM            17,880 Trex_toesLFT2.bwo
+06/30/2009  10:49 AM            42,428 cliptree14.bwo
+06/30/2009  10:49 AM            12,760 colwall.bwo
+06/30/2009  10:49 AM            17,880 Trex_toesLFT.bwo
+06/30/2009  10:49 AM             7,928 Trex_tail042.bwo
+06/30/2009  10:49 AM             6,584 eyes.bwo
+06/30/2009  10:49 AM             5,560 eyes2.bwo
+06/30/2009  10:49 AM           141,404 fern05.bwo
+06/30/2009  10:49 AM             7,928 Trex_tail04.bwo
+06/30/2009  10:49 AM             8,312 Trex_tail032.bwo
+06/30/2009  10:49 AM             4,240 JUMPROCK.bwo
+06/30/2009  10:49 AM           188,324 lilbush.bwo
+06/30/2009  10:49 AM             8,312 Trex_tail03.bwo
+06/30/2009  10:49 AM             8,312 Trex_tail022.bwo
+06/30/2009  10:49 AM           470,800 prehistoric.BWS
+06/30/2009  10:49 AM             8,312 Trex_tail02.bwo
+06/30/2009  10:49 AM            10,752 APclavicle01.bwo
+06/30/2009  10:49 AM             1,276 chk05.bwo
+06/30/2009  10:49 AM            13,408 APchest02.bwo
+06/30/2009  10:49 AM            11,736 Trex_tail012.bwo
+06/30/2009  10:49 AM            27,864 PTbody.bwo
+06/30/2009  10:49 AM            27,864 PTbody01.bwo
+06/30/2009  10:49 AM            47,832 Trex_torso2.bwo
+06/30/2009  10:49 AM            36,952 PThead.bwo
+06/30/2009  10:49 AM            36,952 PThead01.bwo
+06/30/2009  10:49 AM            20,472 PTjaw.bwo
+06/30/2009  10:49 AM            20,472 PTjaw01.bwo
+06/30/2009  10:49 AM            17,688 PTleg01_LFT.bwo
+06/30/2009  10:49 AM            17,688 PTleg01_LFT01.bwo
+06/30/2009  10:49 AM            17,688 PTleg01_RT.bwo
+06/30/2009  10:49 AM            17,688 PTleg01_RT01.bwo
+06/30/2009  10:49 AM            10,872 PTneck01.bwo
+06/30/2009  10:49 AM             8,824 PTneck02.bwo
+06/30/2009  10:49 AM            11,064 PTneck03.bwo
+06/30/2009  10:49 AM            10,872 PTneck04.bwo
+06/30/2009  10:49 AM             8,824 PTneck05.bwo
+06/30/2009  10:49 AM            11,064 PTneck06.bwo
+06/30/2009  10:49 AM             6,616 PTtail.bwo
+06/30/2009  10:49 AM             6,616 PTtail01.bwo
+06/30/2009  10:49 AM            17,656 PTwing01_LFT.bwo
+06/30/2009  10:49 AM            17,656 PTwing01_LFT01.bwo
+06/30/2009  10:49 AM            17,656 PTwng01_RT.bwo
+06/30/2009  10:49 AM            17,656 PTwng01_RT01.bwo
+06/30/2009  10:49 AM            44,440 PTwng02_LFT.bwo
+06/30/2009  10:49 AM            44,440 PTwng02_LFT01.bwo
+06/30/2009  10:49 AM            44,440 PTwng02_RT.bwo
+06/30/2009  10:49 AM            44,440 PTwng02_RT01.bwo
+06/30/2009  10:49 AM            12,600 PTwng03_LFT.bwo
+06/30/2009  10:49 AM            12,600 PTwng03_LFT01.bwo
+06/30/2009  10:49 AM            12,600 PTwng03_RT.bwo
+06/30/2009  10:49 AM            12,600 PTwng03_RT01.bwo
+06/30/2009  10:49 AM             6,104 PTwng04_LFT.bwo
+06/30/2009  10:49 AM             6,104 PTwng04_LFT01.bwo
+06/30/2009  10:49 AM             6,104 PTwng04_RT.bwo
+06/30/2009  10:49 AM             6,104 PTwng04_RT01.bwo
+06/30/2009  10:49 AM            11,736 Trex_tail01.bwo
+06/30/2009  10:49 AM            13,912 rays01.bwo
+06/30/2009  10:49 AM            20,184 Trex_neck2.bwo
+06/30/2009  10:49 AM           328,820 road.bwo
+06/30/2009  10:49 AM            20,184 Trex_neck.bwo
+06/30/2009  10:49 AM            19,384 Trex_legRT2.bwo
+06/30/2009  10:49 AM            36,416 rock03.bwo
+06/30/2009  10:49 AM            19,384 Trex_legRT.bwo
+06/30/2009  10:49 AM            65,984 rocks01.bwo
+06/30/2009  10:49 AM            73,664 rocks06.bwo
+06/30/2009  10:49 AM            19,128 Trex_legLFT2.bwo
+06/30/2009  10:49 AM             1,712 water.bwo
+06/30/2009  10:49 AM            19,128 Trex_legLFT.bwo
+06/30/2009  10:49 AM             1,276 chk27.bwo
+06/30/2009  10:49 AM           115,160 Trex_jaw2.bwo
+06/30/2009  10:49 AM            29,112 Trex_jaw.bwo
+06/30/2009  10:49 AM            26,108 tree4.bwo
+06/30/2009  10:49 AM           204,248 Trex_head2.bwo
+06/30/2009  10:49 AM           123,436 Trexprints.bwo
+06/30/2009  10:49 AM             4,728 Trex_armRT.bwo
+06/30/2009  10:49 AM             4,728 Trex_armRT2.bwo
+06/30/2009  10:49 AM             4,728 Trex_bicepLFT.bwo
+06/30/2009  10:49 AM             4,728 Trex_bicepLFT2.bwo
+06/30/2009  10:49 AM            36,344 Trex_body.bwo
+06/30/2009  10:49 AM            36,344 Trex_body2.bwo
+06/30/2009  10:49 AM            12,984 Trex_calfRT.bwo
+06/30/2009  10:49 AM            11,064 Trex_calfRT01.bwo
+06/30/2009  10:49 AM            11,064 Trex_calfRT012.bwo
+06/30/2009  10:49 AM            12,984 Trex_calfRT2.bwo
+06/30/2009  10:49 AM            12,984 Trex_doglegLFT.bwo
+06/30/2009  10:49 AM            10,904 Trex_doglegLFT01.bwo
+06/30/2009  10:49 AM            10,904 Trex_doglegLFT012.bwo
+06/30/2009  10:49 AM            12,984 Trex_doglegLFT2.bwo
+06/30/2009  10:49 AM            16,888 Trex_foorLFT.bwo
+06/30/2009  10:49 AM            16,888 Trex_foorLFT2.bwo
+06/30/2009  10:49 AM            16,888 Trex_footRT.bwo
+06/30/2009  10:49 AM            16,888 Trex_footRT2.bwo
+06/30/2009  10:49 AM             4,408 Trex_frarmLFT.bwo
+06/30/2009  10:49 AM             4,408 Trex_frarmLFT2.bwo
+06/30/2009  10:49 AM             4,408 Trex_frarmRT.bwo
+06/30/2009  10:49 AM             4,408 Trex_frarmRT2.bwo
+06/30/2009  10:49 AM             6,488 Trex_handLFT.bwo
+06/30/2009  10:49 AM             6,488 Trex_handLFT2.bwo
+06/30/2009  10:49 AM             6,488 Trex_handRT.bwo
+06/30/2009  10:49 AM             6,488 Trex_handRT2.bwo
+06/30/2009  10:49 AM           203,896 Trex_head.bwo
+06/30/2009  10:50 AM             1,141 prehistoric.cfg
+09/23/2009  02:26 PM             4,916 prehistoric_top.png
+11/02/2009  12:57 AM               432 mat2shader.txt
+09/21/2013  11:52 PM            95,125 apatosaurus.png
+09/21/2013  11:52 PM            23,135 burst.png
+09/21/2013  11:52 PM           144,587 bushtops.png
+09/21/2013  11:52 PM            21,007 checkered.png
+09/21/2013  11:52 PM           502,440 cliffs01.png
+09/21/2013  11:52 PM               136 ColWall.png
+09/21/2013  11:52 PM            53,150 Con_clp.png
+09/21/2013  11:52 PM           106,164 footprint01.png
+09/21/2013  11:52 PM            34,030 greyrock.png
+09/21/2013  11:52 PM           584,518 logbark.png
+09/21/2013  11:52 PM            20,002 rays.png
+09/21/2013  11:52 PM            19,697 rckwater.png
+09/21/2013  11:52 PM           630,147 road01.png
+09/21/2013  11:52 PM           138,508 rock.png
+09/21/2013  11:52 PM           132,952 rockbush.png
+09/21/2013  11:52 PM           136,829 rockshore.png
+09/21/2013  11:52 PM           275,895 shrubs01.png
+09/21/2013  11:52 PM           124,144 track01_water.png
+09/21/2013  11:52 PM           631,306 track05_d04.png
+09/21/2013  11:52 PM           116,259 trex.png
+09/21/2013  11:52 PM               124 underwater.png
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+             197 File(s)     11,659,964 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\qcomp
+
+11/14/2017  01:05 AM               392 factor.qcmp
+11/14/2017  01:05 AM               675 game bottom middle.qcmp
+11/14/2017  01:05 AM               697 game middle left.qcmp
+11/14/2017  01:05 AM               686 game middle middle.qcmp
+11/14/2017  01:05 AM               704 game top left.qcmp
+11/14/2017  01:05 AM               693 game top middle.qcmp
+11/14/2017  01:06 AM               605 hads.qcmp
+11/14/2017  01:06 AM               183 nothad.qcmp
+11/14/2017  11:40 PM               185 splitter mirror.qcmp
+11/18/2017  11:42 PM               340 splitter mirror detect.qcmp
+11/24/2017  09:04 PM             1,299 hadnot.qcmp
+11/27/2017  09:38 PM             6,068 grover4link.qcmp
+11/27/2017  09:43 PM             4,816 grover3link.qcmp
+11/27/2017  09:47 PM             3,276 grover2link.qcmp
+11/27/2017  11:28 PM             7,500 grover5link.qcmp
+01/03/2018  08:42 PM             4,055 cz gate.qcmp
+01/03/2018  09:11 PM             4,060 teleport.qcmp
+01/08/2018  10:43 PM             2,839 cnot hadamard test.qcmp
+01/21/2018  05:38 PM             2,812 mermin square.qcmp
+04/02/2018  07:13 PM             4,080 teleport2.qcmp
+04/09/2018  08:25 PM             2,823 entangle 1.qcmp
+04/12/2018  08:02 PM             1,596 s and t gates.qcmp
+04/21/2018  09:07 PM             4,034 cat state.qcmp
+04/21/2018  09:09 PM             4,054 GHZ.qcmp
+04/21/2018  09:15 PM             4,062 GHZ YYX.qcmp
+04/21/2018  09:21 PM             4,062 GHZ YXY.qcmp
+04/21/2018  09:21 PM             4,062 GHZ XYY.qcmp
+04/21/2018  09:21 PM             4,066 GHZ XXX.qcmp
+04/25/2018  06:38 PM             4,049 Deutsch-Jozsa.qcmp
+04/25/2018  08:32 PM             2,824 you dont know NFY.qcmp
+04/25/2018  08:32 PM             2,839 you dont know 0FY.qcmp
+04/25/2018  08:32 PM             2,835 you dont know 1FY.qcmp
+04/25/2018  08:32 PM             2,828 you dont know AFY.qcmp
+05/07/2018  05:49 PM             1,611 G gate.qcmp
+05/07/2018  06:43 PM             2,823 Controlled X.qcmp
+05/07/2018  06:47 PM             2,831 Controlled Z.qcmp
+05/08/2018  06:14 PM             4,086 W state.qcmp
+05/13/2018  08:21 PM             2,819 Controlled Z2.qcmp
+05/14/2018  09:18 PM             8,836 grover6link.qcmp
+05/14/2018  09:31 PM             3,024 control gates.qcmp
+05/14/2018  10:00 PM             1,610 phase test 0.qcmp
+05/15/2018  07:13 PM             2,823 bell state 00.qcmp
+05/15/2018  07:22 PM             2,831 bell state 11.qcmp
+05/15/2018  07:22 PM             2,827 bell state 01.qcmp
+05/15/2018  07:22 PM             2,827 bell state 10.qcmp
+05/15/2018  07:25 PM             2,831 bell state measure.qcmp
+05/15/2018  07:45 PM             2,871 BellState measure CP 30.qcmp
+05/16/2018  09:00 PM             2,816 Controlled Y.qcmp
+05/19/2018  09:40 PM             2,840 Controlled Hadamard.qcmp
+05/22/2018  09:11 PM             1,621 Controlled H test 1.qcmp
+05/22/2018  09:12 PM             1,614 Controlled H test 0.qcmp
+05/24/2018  11:07 PM             1,650 90 degrees Y.qcmp
+06/14/2018  08:25 PM             2,808 qubit 2.qcmp
+06/15/2018  07:59 PM             1,633 test bloch.qcmp
+06/15/2018  07:59 PM               671 game bottom right.qcmp
+06/15/2018  07:59 PM               682 game middle right.qcmp
+06/15/2018  07:59 PM               689 game top right.qcmp
+06/25/2018  09:38 AM             1,608 blank.qcmp
+06/30/2018  09:14 PM               123 NONE.png
+06/30/2018  09:14 PM               197 HADAMARD.png
+06/30/2018  09:14 PM               283 SPLITTER.png
+06/30/2018  09:14 PM               215 MIRROR.png
+06/30/2018  09:14 PM               246 SNOT_TWOAK.png
+06/30/2018  09:14 PM               253 SNOT_WIKIPEDIA.png
+06/30/2018  09:14 PM               196 NOT_(PX).png
+06/30/2018  09:14 PM               229 PX_(NOT).png
+06/30/2018  09:14 PM               216 PY.png
+06/30/2018  09:14 PM               229 PZ.png
+06/30/2018  09:14 PM               216 S.png
+06/30/2018  09:14 PM               229 St.png
+06/30/2018  09:14 PM               195 T.png
+06/30/2018  09:14 PM               214 Tt.png
+06/30/2018  09:14 PM               227 G1Over3.png
+06/30/2018  09:14 PM               223 P_45.png
+06/30/2018  09:14 PM               224 P_-45.png
+06/30/2018  09:14 PM               216 P_30.png
+06/30/2018  09:14 PM               220 P_-30.png
+06/30/2018  09:14 PM               218 SWAP_TOP.png
+06/30/2018  09:14 PM               221 SWAP_BOTTOM.png
+06/30/2018  09:14 PM               186 CNOT_TOP.png
+06/30/2018  09:14 PM               222 CNOT_BOTTOM.png
+06/30/2018  09:14 PM               218 CZ_TOP.png
+06/30/2018  09:14 PM               238 CZ_BOTTOM.png
+06/30/2018  09:14 PM               214 CY_TOP.png
+06/30/2018  09:14 PM               235 CY_BOTTOM.png
+06/30/2018  09:14 PM               210 CH_TOP.png
+06/30/2018  09:14 PM               232 CH_BOTTOM.png
+06/30/2018  09:14 PM               232 CP_45_TOP.png
+06/30/2018  09:14 PM               242 CP_45_BOTTOM.png
+06/30/2018  09:14 PM               238 CP_-45_TOP.png
+06/30/2018  09:14 PM               246 CP_-45_BOTTOM.png
+06/30/2018  09:14 PM               229 CP_30_TOP.png
+06/30/2018  09:14 PM               237 CP_30_BOTTOM.png
+06/30/2018  09:14 PM               234 CP_-30_TOP.png
+06/30/2018  09:14 PM               244 CP_-30_BOTTOM.png
+06/30/2018  09:14 PM               223 FREDKIN_TOP.png
+06/30/2018  09:14 PM               260 FREDKIN_MIDDLE.png
+06/30/2018  09:14 PM               254 FREDKIN_BOTTOM.png
+06/30/2018  09:14 PM               220 TOFFOLI_TOP.png
+06/30/2018  09:14 PM               227 TOFFOLI_MIDDLE.png
+06/30/2018  09:14 PM               256 TOFFOLI_BOTTOM.png
+06/30/2018  09:14 PM               245 TOFFOLI_4C0.png
+06/30/2018  09:14 PM               242 TOFFOLI_4C1.png
+06/30/2018  09:14 PM               250 TOFFOLI_4C2.png
+06/30/2018  09:14 PM               297 TOFFOLI_4T.png
+06/30/2018  09:14 PM               245 TOFFOLI_5C0.png
+06/30/2018  09:14 PM               236 TOFFOLI_5C1.png
+06/30/2018  09:14 PM               240 TOFFOLI_5C2.png
+06/30/2018  09:14 PM               235 TOFFOLI_5C3.png
+06/30/2018  09:14 PM               291 TOFFOLI_5T.png
+06/30/2018  09:14 PM               246 TOFFOLI_6C0.png
+06/30/2018  09:14 PM               243 TOFFOLI_6C1.png
+06/30/2018  09:14 PM               249 TOFFOLI_6C2.png
+06/30/2018  09:14 PM               240 TOFFOLI_6C3.png
+06/30/2018  09:14 PM               244 TOFFOLI_6C4.png
+06/30/2018  09:14 PM               296 TOFFOLI_6T.png
+07/20/2018  08:14 PM             1,624 bloch test.qcmp
+07/21/2018  10:56 PM             5,287 game bottom left.qcmp
+07/23/2018  09:08 PM             5,273 Cat 4.qcmp
+07/23/2018  09:10 PM             6,492 Cat 5.qcmp
+08/23/2018  11:11 PM               240 DEC_TOP.png
+08/23/2018  11:11 PM               236 DEC_BOTTOM.png
+09/09/2018  11:28 PM             4,062 3qubit gates.qcmp
+09/09/2018  11:28 PM             5,235 4qubit gates.qcmp
+09/09/2018  11:29 PM             6,442 5qubit gates.qcmp
+09/09/2018  11:30 PM             7,649 6qubit gates.qcmp
+09/15/2018  06:09 PM             2,948 2qubit gates.qcmp
+09/15/2018  06:21 PM               213 CS_TOP.png
+09/15/2018  06:21 PM               222 CSt_TOP.png
+09/15/2018  06:21 PM               247 CS_BOTTOM.png
+09/15/2018  06:21 PM               228 CT_BOTTOM.png
+09/15/2018  06:21 PM               240 CTt_BOTTOM.png
+09/15/2018  06:21 PM               209 CT_TOP.png
+09/15/2018  06:21 PM               261 CSt_BOTTOM.png
+09/15/2018  06:21 PM               220 CTt_TOP.png
+09/15/2018  06:55 PM             4,064 Quantum Fourier Transform.qcmp
+09/16/2018  09:05 AM             1,637 1qubit gates.qcmp
+09/16/2018  09:08 AM               238 GM1Over3.png
+10/27/2018  08:27 PM             5,798 two 3 cats.qcmp
+11/04/2018  11:46 AM             3,035 new ghz.qcmp
+11/04/2018  11:49 AM             3,047 new ghz xxx.qcmp
+11/04/2018  11:49 AM             3,043 new ghz xyy.qcmp
+11/04/2018  11:50 AM             3,043 new ghz yxy.qcmp
+11/04/2018  08:10 PM             3,043 new ghz yyx.qcmp
+11/06/2018  08:50 PM             3,985 new game bottom left.qcmp
+11/06/2018  08:53 PM             3,977 new game top left.qcmp
+11/06/2018  08:56 PM             3,985 new game bottom right.qcmp
+11/06/2018  08:59 PM             3,977 new game top right.qcmp
+11/06/2018  09:01 PM             3,974 new game bottom middle.qcmp
+11/06/2018  09:05 PM             3,966 new game top middle.qcmp
+11/06/2018  09:11 PM             3,958 new game middle left.qcmp
+11/06/2018  09:14 PM             3,958 new game middle right.qcmp
+11/06/2018  09:15 PM             3,947 new game middle middle.qcmp
+11/06/2018  09:21 PM             2,124 new game alice top.qcmp
+11/06/2018  09:22 PM             2,105 new game alice middle 00.qcmp
+11/06/2018  09:22 PM             2,105 new game alice middle.qcmp
+11/06/2018  09:26 PM             2,132 new game alice bottom.qcmp
+11/06/2018  09:27 PM             2,128 new game bob left.qcmp
+11/06/2018  09:28 PM             2,117 new game bob middle.qcmp
+11/06/2018  09:32 PM             2,128 new game bob right.qcmp
+11/09/2018  09:03 PM             2,137 super dense coding 11.qcmp
+11/10/2018  07:13 PM    <DIR>          mermin square solve orig
+11/29/2018  12:38 AM             1,619 inst_g-y_m-y.qcmp
+11/29/2018  12:39 AM             1,615 inst_g-y_m+y.qcmp
+11/29/2018  12:40 AM             1,615 inst_g+y_m-y.qcmp
+11/29/2018  12:40 AM             1,611 inst_g+y_m+y.qcmp
+11/29/2018  01:05 AM             1,620 inst_g+x_m-x.qcmp
+11/29/2018  01:06 AM             1,616 inst_g+x_m+x.qcmp
+11/29/2018  01:06 AM             1,608 inst_g+z_m+z.qcmp
+11/29/2018  01:06 AM             1,612 inst_g+z_m-z.qcmp
+11/29/2018  01:06 AM             1,620 inst_g-x_m+x.qcmp
+11/29/2018  01:07 AM             1,624 inst_g-x_m-x.qcmp
+11/29/2018  01:07 AM             1,612 inst_g-z_m+z.qcmp
+11/29/2018  01:07 AM             1,612 inst_g-z.qcmp
+11/29/2018  01:21 AM             1,612 inst_g+x.qcmp
+11/29/2018  01:21 AM             1,609 inst_g+y.qcmp
+11/29/2018  01:21 AM             1,608 inst_g+z.qcmp
+11/29/2018  01:21 AM             1,616 inst_g-x.qcmp
+11/29/2018  01:22 AM             1,613 inst_g-y.qcmp
+11/29/2018  01:43 AM             1,616 inst_g-z_m-z.qcmp
+12/06/2018  09:44 PM             2,132 new game alice top 00.qcmp
+12/06/2018  10:29 PM             2,136 new game alice top 01.qcmp
+12/06/2018  10:32 PM             2,136 new game alice top 10.qcmp
+12/06/2018  10:36 PM             2,140 new game alice top 11.qcmp
+12/06/2018  11:12 PM             2,109 new game alice middle 01.qcmp
+12/06/2018  11:18 PM             2,109 new game alice middle 10.qcmp
+12/06/2018  11:19 PM             2,113 new game alice middle 11.qcmp
+12/07/2018  08:32 PM             2,136 new game alice bottom 00a.qcmp
+12/07/2018  08:36 PM             2,140 new game alice bottom 01a.qcmp
+12/07/2018  08:42 PM             2,140 new game alice bottom 10a.qcmp
+12/07/2018  08:45 PM             2,144 new game alice bottom 11a.qcmp
+12/07/2018  08:55 PM             2,136 new game alice bottom 00b.qcmp
+12/07/2018  08:59 PM             2,140 new game alice bottom 01b.qcmp
+12/07/2018  09:00 PM             2,140 new game alice bottom 10b.qcmp
+12/07/2018  09:01 PM             2,144 new game alice bottom 11b.qcmp
+12/07/2018  09:09 PM             2,145 new game alice bottom 00c.qcmp
+12/07/2018  09:19 PM             2,149 new game alice bottom 01c.qcmp
+12/07/2018  09:21 PM             2,149 new game alice bottom 10c.qcmp
+12/07/2018  09:22 PM             2,153 new game alice bottom 11c.qcmp
+12/07/2018  10:16 PM             1,097 qcompres.txt
+12/08/2018  07:55 PM             2,132 new game bob left 00.qcmp
+12/08/2018  07:57 PM             2,136 new game bob left 01.qcmp
+12/08/2018  08:00 PM             2,136 new game bob left 10.qcmp
+12/08/2018  08:03 PM             2,140 new game bob left 11.qcmp
+12/08/2018  08:08 PM             2,121 new game bob middle 00.qcmp
+12/08/2018  08:13 PM             2,125 new game bob middle 01.qcmp
+12/08/2018  08:16 PM             2,125 new game bob middle 10.qcmp
+12/08/2018  08:19 PM             2,129 new game bob middle 11.qcmp
+12/08/2018  08:34 PM             2,136 new game bob right 00a.qcmp
+12/08/2018  08:36 PM             2,140 new game bob right 01a.qcmp
+12/08/2018  08:37 PM             2,140 new game bob right 10a.qcmp
+12/08/2018  08:38 PM             2,144 new game bob right 11a.qcmp
+12/08/2018  08:43 PM             2,128 new game bob right 00b.qcmp
+12/08/2018  08:52 PM             2,132 new game bob right 01b.qcmp
+12/08/2018  08:54 PM             2,132 new game bob right 10b.qcmp
+12/08/2018  08:55 PM             2,136 new game bob right 11b.qcmp
+12/08/2018  09:00 PM             2,141 new game bob right 00c.qcmp
+12/08/2018  09:09 PM             2,145 new game bob right 01c.qcmp
+12/08/2018  09:10 PM             2,145 new game bob right 10c.qcmp
+12/08/2018  09:11 PM             2,149 new game bob right 11c.qcmp
+12/08/2018  10:30 PM    <DIR>          snapshots
+12/25/2018  07:03 PM             4,847 2 entangled.qcmp
+12/27/2018  08:54 PM             4,843 2 entangled ibmqx4fail.qcmp
+01/22/2019  08:27 PM             3,073 teleport2random.qcmp
+01/23/2019  08:19 PM             1,217 qbit_random.qcmp
+02/25/2019  07:47 PM             2,159 entangled measurements.qcmp
+03/11/2019  08:21 PM             1,604 measure.qcmp
+03/17/2019  04:47 PM             2,828 measure 2 qubits.qcmp
+03/17/2019  05:20 PM             2,842 measure entangle test.qcmp
+03/19/2019  07:10 PM               212 M0.png
+03/19/2019  07:10 PM               209 M1.png
+03/22/2019  06:08 PM                18 lastfile.txt
+03/22/2019  06:20 PM             1,612 measure 0.qcmp
+03/28/2019  07:46 PM             4,014 adder 1bit.qcmp
+03/28/2019  08:00 PM             5,912 adder 2bit.qcmp
+04/01/2019  08:19 PM             3,088 Toffoli.qcmp
+04/01/2019  08:28 PM             3,081 Fredkin.qcmp
+04/03/2019  07:51 PM             3,951 prebuilt.txt
+04/19/2019  07:02 PM             2,156 bell 45.qcmp
+04/19/2019  07:22 PM             1,211 py 45 degrees.qcmp
+04/19/2019  08:04 PM             1,208 py 45 degrees 2.qcmp
+04/19/2019  08:11 PM             1,210 py 90 degrees.qcmp
+08/15/2019  05:35 PM    <DIR>          .
+08/15/2019  05:35 PM    <DIR>          ..
+             240 File(s)        458,599 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\qcomp\mermin square solve orig
+
+11/04/2018  11:59 AM             3,973 new game top left.qcmp
+11/04/2018  12:00 PM             3,984 new game top right.qcmp
+11/04/2018  12:01 PM             3,987 new game bot right.qcmp
+11/04/2018  07:32 PM             3,987 new game bot middle.qcmp
+11/04/2018  07:34 PM             3,984 new game top middle.qcmp
+11/05/2018  08:57 PM             2,135 new game bob right.qcmp
+11/05/2018  09:02 PM             2,124 new game bob left.qcmp
+11/05/2018  09:02 PM             2,135 new game bob middle.qcmp
+11/05/2018  09:20 PM             2,830 new game alice bot.qcmp
+11/05/2018  09:20 PM             2,827 new game alice top.qcmp
+11/05/2018  09:27 PM             5,279 new game bot left.qcmp
+11/05/2018  10:38 PM             2,139 new game alice middle.qcmp
+11/05/2018  11:00 PM             3,988 new game middle left.qcmp
+11/05/2018  11:06 PM             3,999 new game middle right.qcmp
+11/05/2018  11:13 PM             3,999 new game middle middle.qcmp
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+              15 File(s)         51,370 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\qcomp\snapshots
+
+11/29/2018  11:37 PM            59,416 inst_g-y_m-y.PNG
+11/29/2018  11:41 PM            60,296 inst_g+y_m-y.PNG
+11/29/2018  11:43 PM            60,078 inst_g-y_m+y.PNG
+11/29/2018  11:45 PM            59,026 inst_g+y_m+y.PNG
+11/29/2018  11:47 PM            58,967 inst_g-x_m-x.PNG
+11/29/2018  11:58 PM            59,598 inst_g+x_m-x.PNG
+11/30/2018  12:00 AM            59,141 inst_g-x_m+x.PNG
+11/30/2018  12:01 AM            58,305 inst_g+x_m+x.PNG
+11/30/2018  12:04 AM            58,106 inst_g-z_m-z.PNG
+11/30/2018  12:05 AM            58,428 inst_g+z_m-z.PNG
+11/30/2018  12:06 AM            58,542 inst_g-z_m+z.PNG
+11/30/2018  12:07 AM            57,459 inst_g+z_m+z.PNG
+11/30/2018  12:12 AM            58,341 inst_g-y.PNG
+11/30/2018  12:15 AM            62,794 inst_g+y.PNG
+11/30/2018  12:18 AM            57,514 inst_g-x.PNG
+11/30/2018  12:19 AM            62,809 inst_g+x.PNG
+11/30/2018  12:21 AM            57,990 inst_g-z.PNG
+11/30/2018  12:21 AM            57,392 inst_g+z.PNG
+12/06/2018  09:28 PM            42,643 new game alice top.PNG
+12/06/2018  09:41 PM            16,555 new game alice top 00.PNG
+12/06/2018  10:29 PM            16,689 new game alice top 01.PNG
+12/06/2018  10:32 PM            16,829 new game alice top 10.PNG
+12/06/2018  10:36 PM            16,892 new game alice top 11.PNG
+12/06/2018  10:54 PM            17,051 new game alice middle 00.PNG
+12/06/2018  10:57 PM            17,051 new game alice middle.PNG
+12/06/2018  11:12 PM            25,593 new game alice middle 01.PNG
+12/06/2018  11:18 PM            14,495 new game alice middle 10.PNG
+12/06/2018  11:19 PM            14,692 new game alice middle 11.PNG
+12/07/2018  07:26 PM            26,961 new game alice bottom.PNG
+12/07/2018  08:34 PM            18,886 new game alice bottom 00a.PNG
+12/07/2018  08:37 PM            19,431 new game alice bottom 01a.PNG
+12/07/2018  08:43 PM            19,416 new game alice bottom 10a.PNG
+12/07/2018  08:46 PM            19,287 new game alice bottom 11a.PNG
+12/07/2018  08:56 PM            18,370 new game alice bottom 00b.PNG
+12/07/2018  08:59 PM            18,886 new game alice bottom 01b.PNG
+12/07/2018  09:01 PM            18,540 new game alice bottom 10b.PNG
+12/07/2018  09:02 PM            18,577 new game alice bottom 11b.PNG
+12/07/2018  09:10 PM            20,452 new game alice bottom 00c.PNG
+12/07/2018  09:20 PM            20,275 new game alice bottom 01c.PNG
+12/07/2018  09:22 PM            20,446 new game alice bottom 10c.PNG
+12/07/2018  09:23 PM            20,490 new game alice bottom 11c.PNG
+12/08/2018  06:31 PM            17,814 new game bob left.PNG
+12/08/2018  06:32 PM            17,158 new game bob middle.PNG
+12/08/2018  06:33 PM            17,727 new game bob right.PNG
+12/08/2018  07:55 PM            16,408 new game bob left 00.PNG
+12/08/2018  07:59 PM            16,385 new game bob left 01.PNG
+12/08/2018  08:02 PM            16,243 new game bob left 10.PNG
+12/08/2018  08:03 PM            16,428 new game bob left 11.PNG
+12/08/2018  08:10 PM            15,034 new game bob middle 00.PNG
+12/08/2018  08:14 PM            15,730 new game bob middle 01.PNG
+12/08/2018  08:18 PM            15,645 new game bob middle 10.PNG
+12/08/2018  08:19 PM            15,526 new game bob middle 11.PNG
+12/08/2018  08:35 PM            18,625 new game bob right 00a.PNG
+12/08/2018  08:36 PM            19,075 new game bob right 01a.PNG
+12/08/2018  08:38 PM            18,976 new game bob right 10a.PNG
+12/08/2018  08:39 PM            19,169 new game bob right 11a.PNG
+12/08/2018  08:43 PM            17,722 new game bob right 00b.PNG
+12/08/2018  08:53 PM            17,892 new game bob right 01b.PNG
+12/08/2018  08:55 PM            17,958 new game bob right 10b.PNG
+12/08/2018  08:56 PM            18,158 new game bob right 11b.PNG
+12/08/2018  09:01 PM            19,792 new game bob right 00c.PNG
+12/08/2018  09:09 PM            19,873 new game bob right 01c.PNG
+12/08/2018  09:11 PM            19,946 new game bob right 10c.PNG
+12/08/2018  09:12 PM            19,951 new game bob right 11c.PNG
+12/08/2018  09:48 PM            28,108 new game top left.PNG
+12/08/2018  09:52 PM            27,713 new game top middle.PNG
+12/08/2018  09:57 PM            28,244 new game top right.PNG
+12/08/2018  10:18 PM            26,349 new game middle left.PNG
+12/08/2018  10:21 PM            26,100 new game middle middle.PNG
+12/08/2018  10:23 PM            26,476 new game middle right.PNG
+12/08/2018  10:27 PM            27,929 new game bottom left.PNG
+12/08/2018  10:29 PM            27,567 new game bottom middle.PNG
+12/08/2018  10:30 PM    <DIR>          ..
+12/08/2018  10:30 PM    <DIR>          .
+12/08/2018  10:30 PM            28,028 new game bottom right.PNG
+              73 File(s)      2,176,458 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\shaders
+
+07/08/2013  11:17 PM               334 basic.vs
+07/08/2013  11:17 PM               334 blend2b.vs
+07/08/2013  11:17 PM               334 blend2.vs
+07/08/2013  11:17 PM               453 blend2b2uvs.vs
+07/08/2013  11:17 PM               320 cubemap.vs
+07/08/2013  11:17 PM               306 cvert.vs
+07/08/2013  11:17 PM               217 flat.vs
+07/08/2013  11:17 PM               453 lightmap.vs
+07/08/2013  11:17 PM               660 red.vs
+07/12/2013  11:59 PM               662 envmapv.vs
+07/14/2013  12:07 AM               732 envmapghostv.vs
+07/15/2013  11:50 PM               675 diffusespecp.vs
+07/24/2013  01:30 AM               167 cvert.ps
+07/24/2013  11:27 PM               334 imageblur.vs
+07/24/2013  11:27 PM               334 texc.vs
+07/26/2013  02:04 AM             1,368 diffusespecv.vs
+08/06/2013  02:28 PM               475 daynight.vs
+08/12/2013  01:52 AM               336 tex4.vs
+08/12/2013  01:52 AM               336 interleavetest.vs
+08/12/2013  01:52 AM               336 tex.vs
+08/12/2013  01:52 AM               336 interleave4.vs
+08/28/2013  12:17 AM               372 shadowmapshow.vs
+09/15/2013  07:50 PM             1,759 shadowmapuse.vs
+10/15/2013  09:44 PM               336 font2c.vs
+12/24/2014  06:55 PM               602 diffusev.vs
+12/24/2014  06:55 PM               505 diffusep.vs
+12/25/2014  03:48 PM             1,523 shadowmapusec.vs
+09/23/2015  09:27 PM               588 envmapp.vs
+09/30/2015  07:40 PM               415 cubemaptest.vs
+12/05/2015  09:10 PM               810 nopers.vs
+05/15/2016  01:36 AM             2,719 shadowmapbuild.vs
+05/15/2016  01:42 AM             2,719 shadowmapbuildnotex.vs
+08/01/2018  01:55 PM             1,759 shadowmapuseblur.vs
+09/14/2018  07:38 PM               166 flat.ps
+11/29/2019  06:21 PM               532 basic.ps
+11/29/2019  06:21 PM               241 cubemap.ps
+11/29/2019  06:21 PM               503 cubemaptest.ps
+11/29/2019  06:21 PM               758 daynight.ps
+11/29/2019  06:21 PM               463 diffusep.ps
+11/29/2019  06:21 PM             1,087 diffusespecp.ps
+11/29/2019  06:21 PM               393 diffusespecv.ps
+11/29/2019  06:21 PM               323 diffusev.ps
+11/29/2019  06:21 PM               430 envmapghostv.ps
+11/29/2019  06:21 PM               454 envmapp.ps
+11/29/2019  06:21 PM               402 envmapv.ps
+11/29/2019  06:21 PM               444 font2c.ps
+11/29/2019  06:21 PM               676 imageblur.ps
+11/29/2019  06:21 PM               544 lightmap.ps
+11/29/2019  06:21 PM               798 nopers.ps
+11/29/2019  06:21 PM               556 red.ps
+11/29/2019  06:21 PM             2,485 shadowmapbuild.ps
+11/29/2019  06:21 PM             2,485 shadowmapbuildnotex.ps
+11/29/2019  06:21 PM               535 shadowmapshow.ps
+11/29/2019  06:21 PM             1,607 shadowmapuse.ps
+11/29/2019  06:21 PM             2,136 shadowmapuseblur.ps
+11/29/2019  06:21 PM             1,666 shadowmapusec.ps
+11/29/2019  06:21 PM               280 texc.ps
+12/01/2019  06:45 PM               334 blend3.vs
+12/01/2019  06:45 PM               334 blend16.vs
+12/01/2019  06:45 PM               334 blend4.vs
+12/01/2019  06:45 PM               334 blend4uv.vs
+12/01/2019  06:46 PM               334 blend2bc.vs
+12/01/2019  06:46 PM               334 blend2u.vs
+12/03/2019  09:27 PM               775 tex4.ps
+12/04/2019  07:32 PM             1,288 interleavetest.ps
+12/04/2019  07:32 PM             1,288 interleave4.ps
+12/17/2019  07:47 PM               832 blend4uv.ps
+12/17/2019  07:47 PM               460 blend2u.ps
+12/17/2019  07:47 PM               430 blend2bc.ps
+12/17/2019  07:47 PM               407 blend2b2uvs.ps
+12/17/2019  07:48 PM               372 blend2b.ps
+12/20/2019  08:58 PM             2,429 shaderlist_ref.txt
+12/21/2019  06:54 PM               334 redblue.vs
+12/23/2019  06:04 PM               558 blend4.ps
+12/24/2019  07:45 PM               504 blend3.ps
+12/24/2019  07:58 PM             1,691 blend16.ps
+12/25/2019  10:38 PM               246 tex.ps
+12/26/2019  08:36 PM               935 shaderlist.txt
+12/26/2019  08:41 PM               415 blend2.ps
+12/29/2019  08:04 PM               607 redblue.ps
+12/30/2019  07:17 PM    <DIR>          .
+12/30/2019  07:17 PM    <DIR>          ..
+              80 File(s)         59,148 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\skybox
+
+10/30/2007  05:52 PM            28,420 normal.jpg
+10/31/2007  09:02 PM             8,240 ts18_2crop.jpg
+11/19/2007  08:40 PM            82,708 243-normal.jpg
+12/11/2007  10:43 AM            70,828 cube.jpg
+12/11/2007  10:43 AM            92,309 cube2.jpg
+12/11/2007  10:12 PM            28,921 cubicmap.jpg
+12/12/2007  01:19 AM            58,853 cubemap_mountains.jpg
+06/11/2009  09:33 AM           311,007 Space.jpg
+06/24/2009  09:27 AM           150,243 prehistoric.jpg
+06/30/2009  12:41 PM           198,113 aftermath.jpg
+06/30/2009  03:23 PM           304,164 tarpits.jpg
+07/01/2009  09:25 AM           100,697 ghostcity.jpg
+07/07/2009  08:21 AM           141,836 Mechworld.jpg
+11/10/2018  07:13 PM    <DIR>          Skansen4
+11/10/2018  07:13 PM    <DIR>          Skansen
+11/10/2018  07:13 PM    <DIR>          Footballfield
+11/10/2018  07:13 PM    <DIR>          FishPond
+11/10/2018  07:13 PM    <DIR>          cube02
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+              13 File(s)      1,576,339 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\skybox\cube02
+
+09/16/2015  09:05 PM             9,619 posz.jpg
+09/16/2015  09:05 PM             9,245 negx.jpg
+09/16/2015  09:05 PM             8,584 negy.jpg
+09/16/2015  09:05 PM             9,440 negz.jpg
+09/16/2015  09:05 PM             9,690 posx.jpg
+09/16/2015  09:05 PM            11,448 posy.jpg
+11/10/2018  07:13 PM    <DIR>          ..
+11/10/2018  07:13 PM    <DIR>          .
+               6 File(s)         58,026 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\skybox\FishPond
+
+11/08/2007  11:21 PM               576 readme.txt
+03/24/2011  01:53 AM           151,102 posx.jpg
+03/24/2011  01:54 AM            55,503 posy.jpg
+03/24/2011  01:54 AM           186,861 posz.jpg
+03/24/2011  01:54 AM           166,882 negx.jpg
+03/24/2011  01:54 AM           165,037 negz.jpg
+03/24/2011  01:55 AM           261,125 negy.jpg
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+               7 File(s)        987,086 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\skybox\Footballfield
+
+11/08/2007  11:21 PM               576 readme.txt
+03/24/2011  01:55 AM           207,791 negz.jpg
+03/24/2011  01:55 AM           359,261 negy.jpg
+03/24/2011  01:56 AM           201,565 posx.jpg
+03/24/2011  01:56 AM           204,228 posz.jpg
+03/24/2011  01:56 AM           188,470 negx.jpg
+03/24/2011  01:56 AM            65,180 posy.jpg
+05/01/2011  10:37 PM             4,589 smallnegx.jpg
+05/01/2011  10:37 PM             6,391 smallnegy.jpg
+05/01/2011  10:37 PM             4,992 smallnegz.jpg
+05/01/2011  10:38 PM             5,065 smallposx.jpg
+05/01/2011  10:38 PM             2,995 smallposy.jpg
+05/01/2011  10:38 PM             5,039 smallposz.jpg
+07/05/2011  02:51 PM            53,397 negx512.jpg
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+              14 File(s)      1,309,539 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\skybox\Skansen
+
+11/08/2007  11:21 PM               576 readme.txt
+03/24/2011  11:05 PM           220,519 posx.jpg
+03/24/2011  11:05 PM           186,597 posz.jpg
+03/24/2011  11:05 PM           222,761 negy.jpg
+03/24/2011  11:06 PM           149,652 posy.jpg
+03/24/2011  11:06 PM           272,245 negz.jpg
+03/24/2011  11:07 PM           217,853 negx.jpg
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+               7 File(s)      1,270,203 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\skybox\Skansen4
+
+11/08/2007  11:21 PM               576 readme.txt
+03/24/2011  11:08 PM            32,092 posy.jpg
+03/24/2011  11:08 PM           211,505 negz.jpg
+03/24/2011  11:08 PM           193,346 negx.jpg
+03/24/2011  11:09 PM           386,866 negy.jpg
+03/24/2011  11:09 PM           188,925 posx.jpg
+03/24/2011  11:09 PM           216,886 posz.jpg
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+               7 File(s)      1,230,196 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\test2d
+
+05/01/1997  08:10 PM            16,816 pencil.jpg
+11/03/1999  08:38 AM             3,090 maptest.tga
+01/12/2000  11:03 AM           123,405 clinton.pcx
+06/03/2000  05:40 PM           196,652 Bark.tga
+10/01/2000  10:57 AM            49,954 rengst.jpg
+03/31/2001  09:21 AM             3,090 maptestnck.tga
+01/22/2005  07:36 PM            11,884 EuropeFlag.jpg
+02/11/2006  12:30 PM           850,528 mayor1.jpg
+10/20/2006  07:19 PM           208,413 GAMESEL.pcx
+04/04/2007  09:32 AM             4,224 alphacir.dds
+04/28/2007  11:15 AM            22,000 ncrass_head.dds
+04/28/2007  11:15 AM            22,000 torso5.dds
+04/28/2007  06:59 PM           681,153 Stones.jpg
+04/28/2007  07:25 PM           585,135 Sand.jpg
+10/15/2007  06:59 PM               961 TEST8X8.PCX
+10/18/2007  09:42 PM             1,527 LETTERS.PCX
+12/06/2007  11:34 AM               929 WHITE.PCX
+12/23/2007  12:42 PM            22,000 torso3.dds
+12/23/2007  12:43 PM            11,064 torso1.dds
+06/29/2008  10:01 PM             1,560 seq0.png
+06/29/2008  10:01 PM               446 seq1.png
+06/29/2008  10:01 PM               766 seq2.png
+06/29/2008  10:01 PM             1,711 seq3.png
+06/29/2008  10:01 PM               591 seq4.png
+06/29/2008  10:01 PM               863 seq5.png
+06/29/2008  10:01 PM             1,811 seq6.png
+06/29/2008  10:01 PM               546 seq7.png
+06/29/2008  10:01 PM             1,831 seq8.png
+06/29/2008  10:01 PM             1,842 seq9.png
+12/11/2008  12:36 AM            58,618 xpar.png
+06/16/2009  01:17 PM            16,512 carshadow.dds
+04/24/2011  11:49 PM               891 maptestnck.jpg
+07/14/2013  11:31 PM             3,031 maptestnck.png
+12/12/2017  07:07 PM           980,744 stone_wall.jpg
+12/28/2017  01:59 PM         4,079,029 shiney_copper_bumpy_wet.jpg
+02/19/2018  11:23 AM             6,281 wood_door.jpg
+02/19/2018  11:23 AM         3,453,302 wood_floor_ceiling.jpg
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+              37 File(s)     11,425,200 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\textdata
+
+06/08/2014  12:32 AM               118 json1.txt
+06/08/2014  12:36 AM                20 text1.js
+06/08/2014  12:36 AM                20 text1.ps
+06/08/2014  12:45 AM                24 text1.txt
+11/10/2018  07:13 PM    <DIR>          ..
+11/10/2018  07:13 PM    <DIR>          .
+               4 File(s)            182 bytes
+
+ Directory of C:\nodejs\engw\engw3dtest\ui
+
+08/15/2007  10:56 PM               208 testscript.txt
+10/05/2007  09:53 PM               351 testloadscript.uis
+10/05/2007  10:00 PM            10,912 default2.uis
+10/05/2007  10:52 PM               538 testnewsave.uis
+10/06/2007  12:53 AM             7,269 who.uis
+10/06/2007  10:17 PM               556 changename.uis
+10/06/2007  10:23 PM               546 load.uis
+10/06/2007  10:27 PM               547 save.uis
+10/15/2007  06:19 PM             5,120 default.uis
+11/15/2013  11:35 PM               536 testbark.uis
+11/15/2013  11:36 PM               538 ren.uis
+08/31/2017  09:02 AM               218 testhier.uis
+09/01/2017  12:39 PM               483 overlap.uis
+11/10/2018  07:13 PM    <DIR>          .
+11/10/2018  07:13 PM    <DIR>          ..
+              13 File(s)         27,822 bytes
+
+     Total Files Listed:
+            1710 File(s)    110,180,693 bytes
+             104 Dir(s)  574,682,824,704 bytes free

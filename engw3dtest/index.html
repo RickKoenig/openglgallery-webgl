@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<!--		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> -->
+		<link rel="stylesheet" type="text/css" href="engw3dtest_main.css" />
+		<title>HTML5 WebGL 3D Engine Demo, &quot;engw&quot;</title>
+		<script src="../common/json/serialize.js"></script>
+		<script  src="../common/json/json2.js"></script>
+		<script  src="../common/polyfill/polyfill.js"></script>
+		
+		<script  src="../common/ajax/ajaxCreateRequest.js"></script>
+		<script  src="../common/ajax/ajaxManager.js"></script>
+		
+		<script  src="../common/glmatrix/common.js"></script>
+		<script  src="../common/glmatrix/vec2.js"></script>
+		<script  src="../common/glmatrix/vec3.js"></script>
+		<script  src="../common/glmatrix/vec4.js"></script>
+		<script  src="../common/glmatrix/mat2.js"></script>
+		<script  src="../common/glmatrix/mat2d.js"></script>
+		<script  src="../common/glmatrix/mat3.js"></script>
+		<script  src="../common/glmatrix/mat4.js"></script>
+		<script  src="../common/glmatrix/quat.js"></script>
+		
+		<script  src="../common/complex/compf.js"></script>
+
+		<script  src="../common/file/file.js"></script>
+		<script  src="../common/file/chunker.js"></script>
+		<script  src="../common/file/script.js"></script>
+		<script  src="../common/file/factory.js"></script>
+		
+		<script  src="../common/engw/utils.js"></script>
+		<script  src="../common/engw/numath.js"></script>
+		<script  src="../common/engw/bezier.js"></script>
+		
+		<script  src="../common/engw/input.js"></script>
+		<script  src="../common/engw/input_but_printarea.js"></script>
+		<script  src="../common/engw/input_key.js"></script>
+		<script  src="../common/engw/input_map.js"></script>
+		<script  src="../common/engw/timers.js"></script>
+		
+		<script  src="../common/engw/stateman.js"></script>
+		
+		<script  src="../common/engw2d/Bitmap32.js"></script>
+		
+		<script  src="../common/engw3d/numath3d.js"></script>
+		<script  src="../common/engw3d/VEC.js"></script>
+		<script  src="../common/engw3d/VECQuat.js"></script>
+		<script  src="../common/engw3d/texture.js"></script>
+		<script  src="../common/engw3d/shadowmap.js"></script>
+		<script  src="../common/engw3d/model.js"></script>
+		<script  src="../common/engw3d/model2.js"></script>
+		<script  src="../common/engw3d/font.js"></script>
+		<script  src="../common/engw3d/tree.js"></script>
+		<script  src="../common/engw3d/lights.js"></script>
+		<script  src="../common/engw3d/modelutil.js"></script>
+		<script  src="../common/engw3d/strand.js"></script>
+		<script  src="../common/engw3d/viewport.js"></script>
+		<script  src="../common/engw3d/bwo.js"></script>
+		<script  src="../common/engw3d/bws.js"></script>
+
+		<script  src="../common/engw3d/spriter.js"></script>
+		
+		<script  src="../common/engw3d/main3d.js"></script>
+		<script  src="../common/engw3d/debprint3d.js"></script>
+		<script  src="../common/engw3d/webgl.js"></script>
+		
+		<script src="/socket.io/socket.io.js"></script>
+		
+		<script src="../../telemetry/page_counts.js"></script>
+
+		<!-- common user code 
+		<script  src="inherit.js"></script>
+-->
+		<!-- different states -->
+		<script  src="test3d.js"></script>
+		<script  src="state4.js"></script>
+		<script  src="state6.js"></script>
+		<script  src="state7.js"></script>
+		<script  src="state7p.js"></script>
+		<script  src="ghostcity.js"></script>
+		<script  src="state8.js"></script>
+		<script  src="state9.js"></script>
+		<script  src="state10.js"></script>
+		<script  src="state11.js"></script>
+		<script  src="state12.js"></script>
+		<script  src="state13.js"></script>
+		<script  src="state14.js"></script>
+		<script  src="state15.js"></script>
+		<script  src="state16.js"></script>
+		<script  src="state17.js"></script> 
+		<script  src="state18.js"></script>
+		<script  src="state19.js"></script>
+		<script  src="state20.js"></script>
+		<script  src="state21.js"></script>
+		<script  src="caveexplorer.js"></script>
+		<script  src="camblur.js"></script>
+		<script  src="scratch.js"></script>
+		<script  src="cubemaptest.js"></script>
+		<script  src="onerps.js"></script>
+		<script  src="uitesto.js"></script>
+		<script  src="uitest.js"></script>
+		<script  src="uiclass2.js"></script>
+		<script  src="uiclass.js"></script>
+		<script  src="physics2d.js"></script>
+		<script  src="physics3d.js"></script>
+		<script  src="physics3dcollutil.js"></script>
+		<script  src="physics3dobjcollisions.js"></script>
+		<script  src="physics3dprimcoll.js"></script>
+		<script  src="storagetest.js"></script>
+		<script  src="scratchfont.js"></script>
+		<script  src="test2d.js"></script>
+		<script  src="basic.js"></script>
+		<script  src="basic4textures.js"></script>
+		<script  src="stoidCommand.js"></script>
+		<script  src="stoidCommandData.js"></script>
+
+		<script  src="qcomp.js"></script>
+		<script  src="qcomp_qstate.js"></script>
+		<script  src="qcomp_qmat.js"></script>
+		<script  src="qcomp_qgatelist.js"></script>
+		<script  src="qcomp_qgate.js"></script>
+		<script  src="qcomp_qcolumn.js"></script>
+		<script  src="qcomp_qfield.js"></script>
+
+		<script  src="solarTest.js"></script>
+		
+		<script  src="framebuffer4.js"></script>
+		<script  src="pinch.js"></script>
+		<script  src="lattice2d.js"></script>
+		<script  src="lattice3d.js"></script>
+		<script  src="interlaceAPI.js"></script>
+		
+		<script  src="statelist.js"></script>
+		
+		
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="top" >
+				<h1>Welcome to WebGL 3D Engine Demo &quot;engw&quot;</h1>
+			</div>
+			<div class="instructions" id="instructions">
+				Loading base assets...
+			</div>
+			<div class="middle">
+				<div class="left">
+					<p id="linkback">Go back to <a href="../../index.html"> Main page.</a></p>
+					<hr>
+					<div name="myFormT" id="myformT" class="leftColumn">
+					 </div>
+					<div name="myFormM" id="myformM" class="leftColumn">
+					 </div>
+					<div name="myFormB" id="myformB" class="leftColumn">
+					 </div>
+				</div>
+				<!-- This is the map viewer -->
+<!--
+				<div class="centerg" id="drawarea">
+-->
+				<div class="centerg" id="drawarea" tabindex='0'>
+					<canvas id="mycanvas2" class="inside" width="320" height="240"> 
+						HTML5 canvas tag not supported.
+					</canvas>
+				</div>
+				<div class="right">
+					<h3>Some random text</h3>
+					<p>a man a plan a canal panama</p>
+				</div>
+			</div>
+			<div class="bottom">
+				Copyright &copy; 2012 - 2020 &nbsp; &nbsp; Rick Koenig
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				Your visits <span id="pagecounteridY">xxxx </span>, Unique visits <span id="pagecounterid">xxxx </span>, Regular unique visits <span id="pagecounteridR">xxxx </span>, Total visits <span id="pagecounteridT">xxxx </span> so far.
+
+			</div>
+		</div>
+	</body>
+</html>

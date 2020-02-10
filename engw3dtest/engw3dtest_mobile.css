@@ -1,0 +1,37 @@
+body {
+	margin:0px;
+}
+
+div.centerg {
+	background-color:green; /*#996633;*/
+ 	/*float:left;
+	position:relative;*/
+	margin:auto;
+	//width:1024px;
+ 	margin: auto; 
+	clear: both;
+	text-align: center;
+	/*outline:none;*/
+}
+
+canvas.inside {
+	margin:auto;
+	padding:0;
+	background-color: white;
+ 	width: 640px;
+ 	height: 480px;
+ 	display:block;
+	text-align: center;
+	//border-style:none;
+}
+
+div.bottom {
+	background-color: red;
+ 	//width:1024px;
+ 	margin: auto; 
+	clear: both;
+	text-align: center;
+	/*font-size: 20px;*/
+}
+
+

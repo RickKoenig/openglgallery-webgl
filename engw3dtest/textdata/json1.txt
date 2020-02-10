@@ -1,0 +1,7 @@
+{
+	"info":"some JSON data",
+	"pi":3.14159,
+	"e":2.72,
+	"contraction":"isn't",
+	"arr":[2,3,5,7,11,"thirteen"]
+}

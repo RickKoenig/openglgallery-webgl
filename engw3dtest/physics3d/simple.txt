@@ -1,0 +1,23 @@
+object box1
+	scale 1 10 5
+	pos 0 5 0
+	elast .97
+//	rot 0 0 -10
+	mass 50 
+
+object box1
+	scale 1 10 5
+	pos 0 15 0
+	elast .97
+	rot 0 0 -1
+	mass 50
+
+/*
+object box1
+	pos	20 85 20
+	scale 10 10 10
+	rot 40 0 40
+	rotvel 0 300 0
+	elast .9
+	mass 1000 */
+	

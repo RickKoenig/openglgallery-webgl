@@ -1,0 +1,122 @@
+//--- OBJECT WRITE BEGIN ---
+new SimGroup(MissionGroup) {
+      musicTrack = "Lush";
+      cdTrack = "2";
+      CTF_scoreLimit = "5";
+
+   new ScriptObject(MissionInfo) {
+         descLines = "2";
+         name = "fortpoint";
+         desc0 = "Max Exported Mission";
+   };
+   new MissionArea(MissionArea) {
+      area = "-360 -648 720 1296";
+      flightCeiling = "300";
+      flightCeilingRange = "20";
+         locked = "1";
+   };
+   new Sky(Sky) {
+      position = "36 136 0";
+      rotation = "1 0 0 0";
+      scale = "1 1 1";
+      materialList = "~/data/skies/sky_day.dml";
+      cloudHeightPer[0] = "0.349971";
+      cloudHeightPer[1] = "0.3";
+      cloudHeightPer[2] = "0.199973";
+      cloudSpeed1 = "0.0005";
+      cloudSpeed2 = "0.001";
+      cloudSpeed3 = "0.0003";
+      visibleDistance = "5900";
+      fogDistance = "1";
+      fogColor = "0.600000 0.750000 0.950000 1.000000";
+      fogStorm1 = "1";
+      fogStorm2 = "1";
+      fogStorm3 = "0";
+      fogVolume1 = "128 128 128";
+      fogVolume2 = "128 128 128";
+      fogVolume3 = "128 128 128";
+      fogVolumeColor1 = "128.000000 128.000000 128.000000 0.000000";
+      fogVolumeColor2 = "128.000000 128.000000 128.000000 0.000000";
+      fogVolumeColor3 = "128.000000 128.000000 128.000000 0.000000";
+      windVelocity = "1 1 0";
+      windEffectPrecipitation = "1";
+      SkySolidColor = "0.600000 0.600000 0.600000 1.000000";
+      useSkyTextures = "1";
+      renderBottomTexture = "0";
+      noRenderBans = "0";
+      skyGlow = "0";
+      skyGlowColor = "1.000000 1.000000 1.000000 1.000000";
+         locked = "1";
+   };
+   new Sun() {
+      direction = "0.57735 0.57735 -0.57735";
+      color = "0.600000 0.500000 0.400000 0.350000";
+      ambient = "0.060000 0.100000 0.140000 1.000000";
+         locked = "0";
+         rotation = "1 0 0 0";
+         azimuth = "95";
+         scale = "1 1 1";
+         elevation = "20";
+         position = "0 0 0";
+   };
+   new SimGroup(PlayerDropPoints) {
+
+      new SpawnSphere() {
+         position = "54.7134 -16.1525 50.8988";
+         rotation = "1 0 0 0";
+         scale = "1 1 1";
+         dataBlock = "SpawnSphereMarker";
+         radius = "1";
+         sphereWeight = "1";
+         indoorWeight = "1";
+         outdoorWeight = "1";
+            locked = "false";
+            homingCount = "0";
+            lockCount = "0";
+      };
+   };
+   new ShapeTSN() {
+      position = "0 0 0";
+      rotation = "1 0 0 0";
+      scale = "1 1 1";
+      shapeFile = "./fortpoint.tsn";
+      fogDensity = "0.0007";
+      fogColor_r = "116";
+      fogColor_g = "157";
+      fogColor_b = "184";
+      mSkyBoxRot = "0";
+      skyCube = "./skycube.dds";
+   };
+   new Path(testPath) {
+      isLooping = "1";
+
+      new Marker(mark1) {
+         position = "20.941 22.0211 49.8";
+         rotation = "1 0 0 0";
+         scale = "1 1 1";
+         seqNum = "1";
+         type = "Normal";
+         msToNext = "1000";
+         smoothingType = "Spline";
+      };
+      new Marker(mark2) {
+         position = "20.9661 3.2711 50.2";
+         rotation = "1 0 0 0";
+         scale = "1 1 1";
+         seqNum = "2";
+         type = "Normal";
+         msToNext = "1000";
+         smoothingType = "Spline";
+      };
+      new Marker(mark3) {
+         position = "55.5912 2.9211 49.8";
+         rotation = "1 0 0 0";
+         scale = "1 1 1";
+         seqNum = "3";
+         type = "Normal";
+         msToNext = "1000";
+         smoothingType = "Spline";
+      };
+   };
+};
+//--- OBJECT WRITE END ---
