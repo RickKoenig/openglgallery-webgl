@@ -22,6 +22,7 @@ basic.init = function() {
 	basic.roottree.linkchild(plane);
 
 	mainvp = defaultviewport();	
+	mainvp.clearcolor = [.5,.5,1,1];
 };
 
 basic.proc = function() {
