@@ -17,6 +17,9 @@ physics3d.NCORNERS = 8;
 physics3d.FIRSTMESHOBJ = 1;
 physics3d.scenearea;
 
+physics3d.ho // helper objects
+physics3d.showVector = false;
+
 
 physics3d.resetScene = function() {
 	logger("in resetScene " + physics3d.curscene + "\n");
@@ -29,6 +32,10 @@ physics3d.nextScene = function() {
 		physics3d.curscene = 0;
 	logger("in nextScene " + physics3d.curscene + "\n");
 	changestate("physics3d");
+};
+
+physics3d.showVectors = function() {
+	physics3d.showVector = !physics3d.showVector;
 };
 
 physics3d.prevScene = function() {
@@ -1241,6 +1248,22 @@ physics3d.drawprepphysicsobjects = function() {
 		VEC.copy4(po.s0.rot,po.t.qrot);
 		po.t.scale = [];
 		VEC.copy3(po.scale,po.t.scale);
+
+		if (physics3d.showVector) {
+			var scaleVec = .0055;
+			var scaleRotVel = 10.0;
+			var p1 = {};
+			p1.x = po.st.pos.x + po.st.angmomentum.x*scaleVec;
+			p1.y = po.st.pos.y + po.st.angmomentum.y*scaleVec;
+			p1.z = po.st.pos.z + po.st.angmomentum.z*scaleVec;
+			physics3d.ho.addvector(physics3d.roottree, po.st.pos, p1, F32CYAN); // ang mom
+			p1.x = po.st.pos.x + po.st.rotvel.x*scaleRotVel;
+			p1.y = po.st.pos.y + po.st.rotvel.y*scaleRotVel;
+			p1.z = po.st.pos.z + po.st.rotvel.z*scaleRotVel;
+			physics3d.ho.addvector(physics3d.roottree, po.st.pos, p1, F32LIGHTRED); // rot vel
+		}
+
+
 /*            po.t.trans.copy(po.st.pos; // world rel
 		po.t.scale.copy{po.scale; // world rel
 		po.t.rot.copy = po.st.rot; */
@@ -1385,6 +1408,7 @@ physics3d.load = function() {
 	preloadbws("physics3d/footballfield.BWS");
 	preloadtext("physics3d/pickscene.txt");
 
+	preloadtext("physics3d/spinning.txt");
 	preloadtext("physics3d/building.txt");
 	preloadtext("physics3d/phyobjs.txt");
 	preloadtext("physics3d/testang.txt");
@@ -1486,6 +1510,8 @@ physics3d.init = function() {
 	makeabut("prev scene",physics3d.prevScene);
 	makeabut("reset scene",physics3d.resetScene);
 	makeabut("next scene",physics3d.nextScene);
+	makeabut("show vectors",physics3d.showVectors);
+	//makeabut("toggle vectors",null);
 
 	// main scene
 	physics3d.roottree = new Tree2("roottree");
@@ -1541,6 +1567,7 @@ physics3d.init = function() {
 	physics3d.origuvs = clone(physics3d.fbfm.uvs);
 	// done play with footballfield
 */
+	physics3d.ho = new helperobj();
 };
 
 physics3d.slow = 0;
@@ -1572,7 +1599,11 @@ physics3d.proc = function() {
 	*/
 	// proc
 	if (physics3d.slow == 0) {
+		physics3d.ho.reset();
 		physics3d.procphysicsobjects(physics3d.timestep, physics3d.iterations);
+		//physics3d.ho.addvector(physics3d.roottree,
+		//	{x:0,y:2,z:0},
+		//	{x:30,y:2,z:0}, F32CYAN); // ang mom
 		physics3d.slow = 2;
 	}
 	--physics3d.slow;
@@ -1599,6 +1630,8 @@ physics3d.exit = function() {
 	logger("before roottree glfree\n");
 	physics3d.roottree.log();
 	logrc(); // show all allocated resources
+	physics3d.ho.glfree();
+	physics3d.ho = null;
 	// cleanup
 
 

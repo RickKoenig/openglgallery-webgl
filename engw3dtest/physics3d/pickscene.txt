@@ -1,9 +1,9 @@
-simple.txt
+spinning.txt
 building.txt
+dominos.txt
 phyobjs.txt
 testang.txt
-dominos.txt
-//simple.txt
+simple.txt
 tops.txt
 testtime.txt
 testcoll.txt

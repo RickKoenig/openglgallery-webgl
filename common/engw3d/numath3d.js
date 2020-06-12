@@ -73,6 +73,29 @@ vec3.inv = function(out, a) {
 };
 
 /**
+ * Normalize a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to normalize
+ * @returns {float} length
+ */
+vec3.normalize3d = function(out, a) {
+    var x = a[0],
+        y = a[1],
+        z = a[2];
+    var len = x*x + y*y + z*z;
+    if (len > 0) {
+        //TODO: evaluate use of glm_invsqrt here?
+        len = Math.sqrt(len);
+		var ilen = 1 / len;
+        out[0] = a[0] * ilen;
+        out[1] = a[1] * ilen;
+        out[2] = a[2] * ilen;
+    }
+    return len;
+};
+
+/**
  * Transforms the vec3 with a mat4.
  * 4th vector component is implicitly '0'
  *
