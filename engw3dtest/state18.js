@@ -320,7 +320,7 @@ state18.updatelevel = function() {
 	printareadraw(state18.levelarea,"Level : " + state18.curlevel + "/10 = " + Math.floor(state18.curlevel/10));
 	var i,f;
 	/*
-	var childcopy = roottree.children.slice(0);
+	var childcopy = roottree.children.slice();
 	for (i=0;i<childcopy.length;++i) {
 		childcopy[i].glfree();
 		childcopy[i].unlinkchild();

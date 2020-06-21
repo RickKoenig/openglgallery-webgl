@@ -343,7 +343,7 @@ Tree2.prototype.proc = function() {
 	if (this.userproc)
 		this.userproc(this);
 // children last
-	var childcopy = this.children.slice(0);
+	var childcopy = this.children.slice();
 	var i,n=childcopy.length;
 	for (i=0;i<n;++i) {
 		++Tree2level;

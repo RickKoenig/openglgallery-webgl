@@ -70,7 +70,7 @@ ModelFont.prototype.setfudge = function(dofudge) {
 ModelFont.prototype.print = function(text) { // commit
 	if (this.text == text)
 		return; // nothing to change
-	this.text = text.slice(0);
+	this.text = text.slice();
 	var i;
 	if (!this.shader)
 		alert("missing shader '" + this.shadername + "' on model '" + this.name + "'");

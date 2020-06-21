@@ -329,7 +329,7 @@ qcomp.resetui = function() {
 	// build qubit start labels
 	var nqb = qcomp.qf.getnumqubits();
 	var printstring = "\n\n\n";
-	var printstringred = printstring.slice(0);
+	var printstringred = printstring.slice();
 	for (var i=0;i<nqb;++i) {
 		printstring += " Q" + i + " |0>---\n\n\n\n\n";
 		printstringred += "\n\n\n\n\n";

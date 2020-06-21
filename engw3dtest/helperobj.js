@@ -18,8 +18,8 @@ helperobj.buildavectory = function() {
         //pushandsetdir("gfxtest");
 		//vector<pointf3> v(prismverts,prismverts+24);
 		//vector<uv> uvs(prismuvs,prismuvs+24);
-		var v = prismmesh.baseverts.slice(0);
-		var uvs = prismmesh.uvs.slice(0);
+		var v = prismmesh.baseverts.slice();
+		var uvs = prismmesh.uvs.slice();
 		
 		var i;
 		var thinscaler = 1.0/helperobj.thinscale;

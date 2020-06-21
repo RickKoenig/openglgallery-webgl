@@ -59,7 +59,7 @@ function resetarrows() {
 	/*
 	arrowcnt = 0;
 	var i;
-	var childcopy = arrowlist.children.slice(0);
+	var childcopy = arrowlist.children.slice();
 	for (i=0;i<childcopy.length;++i) {
 		childcopy[i].glfree();
 		childcopy[i].unlinkchild();
