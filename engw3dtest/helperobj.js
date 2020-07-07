@@ -86,7 +86,7 @@ helperobj.prototype.reset = function() {
 	for (i=0;i<this.helplist.length;++i) {
 		var tre = this.helplist[i];
 		tre.glfree();
-		//tre.unlinkchild();
+		tre.unlinkchild();
 	}
 	//vector<tree2*>::iterator i;
 	//for (i=helplist.begin();i!=helplist.end();++i)
