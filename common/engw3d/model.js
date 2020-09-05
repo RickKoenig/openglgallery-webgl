@@ -4,6 +4,8 @@ var modelflagenums = {
 	HASALPHA:0x2,
 	ISSKYBOX:0x10, // puts object at location eye space 0,0,0
     DOUBLESIDED:0x20,
+	FAN:0x40, // default TRIANGLES
+	STRIP:0x80,
 };
 
 var refcountmodellist = {};
@@ -52,6 +54,7 @@ function Model(aname) {
 	this.name = aname;
 	this.mat = {}; // uniform materials, all user defined
 	this.flags = 0;
+	this.bad = false; // are we missing something ?
 	this.texturenames = new Array(maxTextures);
 	this.reftextures = new Array(maxTextures);
 	//this.texflags = globaltexflags;
@@ -139,6 +142,7 @@ Model.prototype.setmesh = function(mesh) {
 		this.setcverts(mesh.cverts);
 	if (mesh.faces)
 		this.setfaces(mesh.faces);
+	this.numVerts = mesh.numVerts;
 };
 
 // set model shader
@@ -170,19 +174,29 @@ Model.prototype.settextureNArray = function(textureNameArray) {
 
 // copy model to gl
 Model.prototype.commit = function() {
-	if (!this.shader)
-		alert("missing shader '" + this.shadername + "' on model '" + this.name + "'");
-	if (!this.verts)
+	if (!this.shader) {
+		//alert("missing shader '" + this.shadername + "' on model '" + this.name + "'");
+		this.setshader("tex");
+	}
+	if (!this.verts && !this.numVerts) {
 		alert("missing verts on model '" + this.name + "'");
+	}
 	if (this.glverts)
 		alert("can only commit once on model '" + this.name + "'");
 		
     // build tri vertex buffer
-   	this.glverts = gl.createBuffer();
-    ++nglbuffers;
-    gl.bindBuffer(gl.ARRAY_BUFFER,this.glverts);
-    var arrverts = meshvert2array(this.verts,3);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arrverts),gl.STATIC_DRAW);
+	if (this.shader.vertexPositionAttribute !== undefined) {
+		if (this.verts) {
+			this.glverts = gl.createBuffer();
+			++nglbuffers;
+			gl.bindBuffer(gl.ARRAY_BUFFER,this.glverts);
+			var arrverts = meshvert2array(this.verts,3);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arrverts),gl.STATIC_DRAW);
+		} else {
+			//alert("missing verts on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			this.bad = true;
+		}
+	}
     
 	// build tri norms
 	if (this.shader.normalAttribute !== undefined) {
@@ -193,7 +207,8 @@ Model.prototype.commit = function() {
 			var arrnorms = meshvert2array(this.norms,3);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arrnorms),gl.STATIC_DRAW);
 		} else {
-			alert("missing norms on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			//alert("missing norms on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			this.bad = true;
 		}
 	}	
 	
@@ -206,7 +221,8 @@ Model.prototype.commit = function() {
 			var arrcverts = meshvert2array(this.cverts,4);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arrcverts),gl.STATIC_DRAW);
 		} else {
-			alert("missing cverts on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			//alert("missing cverts on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			this.bad = true;
 		}
 	}
 	
@@ -219,7 +235,8 @@ Model.prototype.commit = function() {
 			var arruvs = meshvert2array(this.uvs,2);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arruvs),gl.STATIC_DRAW);
 		} else {
-			alert("missing uvs on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			//alert("missing uvs on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			this.bad = true;
 		}	
 	}
 	
@@ -232,7 +249,8 @@ Model.prototype.commit = function() {
 			var arruvs2 = meshvert2array(this.uvs2,2);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arruvs2),gl.STATIC_DRAW);
 		} else {
-			alert("missing uvs2 on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			//alert("missing uvs2 on model '" + this.name + "'  shader '" + this.shader.name + "'");
+			this.bad = true;
 		}	
 	}
 
@@ -245,13 +263,13 @@ Model.prototype.commit = function() {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.glfaces);
 		var arrfaces = meshface2array(this.faces,3);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(arrfaces),gl.STATIC_DRAW);
-//		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(this.faces),gl.STATIC_DRAW);
-	} else if (this.verts.length%3) {
-		alert("no faces and verts not a multiple of 3 on model '" + this.name + "'");
+	} else if (!this.numVerts && this.verts.length%3) {
+		if (!(this.flags & (modelflagenums.FAN|modelflagenums.STRIP))) {
+			alert("no faces and verts not a multiple of 3 on model '" + this.name + "'");
+		}
 	}
 	
 	// build textureN
-	//this.hasalpha = false;
 	for(var i = 0;i < maxTextures;++i) {
 		if (this.shader["uSampler" + i] !== undefined) {
 			if (this.texturenames[i]) {
@@ -380,11 +398,26 @@ function setUserModelUniforms(shader,mat) {
 	var keys = Object.keys(mat);
 	for (var i=0;i<keys.length;++i) {
 		var key = keys[i];
-		var au = shader.actunifs[key];
+		var keyA = key;
+		if (key.startsWith("UA")) { // array uniforms have an [0] added at the end
+			keyA += "[0]";
+		}
+			
+		var au = shader.actunifs[keyA];
 		if (au) {
-			var unf = shader[key];
+			var unf = shader[keyA];
 			var val = mat[key];
+			//var isArr = Array.isArray(val);
+			//if (isArr) {
+			//	logger("is array!");
+			//}
 			var type = au.type;
+			var size = au.size;
+			if (size != 1) {
+				//logger("size = " + size); // do just float array uniforms for now
+				gl.uniform1fv(unf,val); // upload a uniform of an array of floats
+				continue;
+			}
 			switch(type) {
 			case glenums.GL_FLOAT:
 				gl.uniform1f(unf,val);
@@ -409,6 +442,8 @@ function setUserModelUniforms(shader,mat) {
 // draw with gl
 Model.prototype.draw = function() {
 	//checkglerror("glerr model draw start");
+	if (this.bad) // are we missing something ?
+		return;
 	if ((this.flags & modelflagenums.NOZBUFFER) && !shadowmap.inshadowmapbuild)
 	    gl.disable(gl.DEPTH_TEST);                               // turn off zbuffer
 	if (this.flags & modelflagenums.DOUBLESIDED)
@@ -512,13 +547,26 @@ Model.prototype.draw = function() {
 	//gl.disable(gl.BLEND);
 	//checkglerror("glerr model draw 11.5");
 	//logger("drawing " + this.name);
+	//if (this.numVerts > 0)
+	//	return;
     if (this.glfaces) {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.glfaces);
      	gl.drawElements(gl.TRIANGLES,this.faces.length*3,gl.UNSIGNED_SHORT,0);
     } else {
-    	gl.drawArrays(gl.TRIANGLES,0,this.verts.length); // *3 ?
-    }
-    
+		var vertLength;
+		if (this.numVerts)
+			vertLength = this.numVerts;
+		else
+			vertLength = this.verts.length;
+		if (this.flags & modelflagenums.STRIP) { // no faces, let's try GL_TRIANGLE_STRIP
+			gl.drawArrays(gl.TRIANGLE_STRIP,0,vertLength); // *3 ?
+		} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_STRIP
+			gl.drawArrays(gl.TRIANGLE_FAN,0,vertLength); // *3 ?
+		} else { // no faces, let's try GL_TRIANGLE_STRIP
+			gl.drawArrays(gl.TRIANGLES,0,vertLength); // *3 ?
+		}
+	}
+    //GL_TRIANGLE_STRIP
 	//checkglerror("glerr model draw 12");
 	if (!(this.flags & modelflagenums.HASALPHA)) { // turn it back on
 		if (shadowmap.inshadowmapbuild)
@@ -555,9 +603,11 @@ Model.prototype.glfree = function() {
 	}
 	delete refcountmodellist[this.name];
 
-	gl.deleteBuffer(this.glverts);
-	decnglbuffers();
-	this.glverts = null;
+	if (this.glverts) {
+		gl.deleteBuffer(this.glverts);
+		decnglbuffers();
+		this.glverts = null;
+	}
 
 	if (this.glnorms) {
 		gl.deleteBuffer(this.glnorms);

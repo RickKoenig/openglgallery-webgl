@@ -88,6 +88,8 @@ function bmousem(e) {
 		input.my = glc.clientHeight - 1;
 	input.fmx= 2*input.mx/glc.clientWidth - 1;
 	input.fmy = -2*input.my/glc.clientHeight + 1; // flip y
+	if (gl.asp === undefined) // incase there is no webgl context
+		return;
 	if (gl.asp > 1) {
 		input.fmx *= gl.asp;
 	} else {

@@ -1470,10 +1470,32 @@ function buildpaperairplane(name,shadername) {
 	return ret;
 }
 
+function buildMeshModel(name, texname, shadername, mesh, modelFlags) {
+    var mod = Model.createmodel(name);
+	if (mod.refcount == 1) {
+		mod.setshader(shadername);
+	    mod.setmesh(mesh);
+	    mod.settexture(texname);
+		if (modelFlags)
+			mod.flags = modelFlags;
+	    mod.commit();
+	}
+    return mod;
+}
+
+function buildMesh(name, texname, shadername, mesh, modelFlags) {
+	var mod = buildMeshModel(name, texname, shadername, mesh, modelFlags);
+	var ret = new Tree2(name);
+	ret.setmodel(mod);
+	return ret;
+}
+
 function setbbox(mod) {
 	var boxmin = new VEC(1e20,1e20,1e20);
 	var boxmax = new VEC(-1e20,-1e20,-1e20);
 	var verts = mod.verts;
+	if (!verts)
+		return;
 	var nv=verts.length;
 	for (var i=0;i<nv;++i) {
 		if (verts[i].x < boxmin.x)

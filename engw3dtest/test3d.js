@@ -77,6 +77,7 @@ test3d.init = function() {
 
 	// move view back some using LHC
 	//mainvp.trans = [0,0,-3]; // flycam
+	mainvp = defaultviewport();
 	mainvp.rot = [0,0,0]; // flycam
 
 	// ui, realtime log update

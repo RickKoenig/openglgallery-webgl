@@ -1,3 +1,4 @@
+// webgl 2.0 seems to make this state look worse somehow, look at the edges, an edge case probably
 var solarTest = {}; // a state, like an Android Activity, a static class, has a title text init proc exit onresize
 
 solarTest.title = "Solar Test";

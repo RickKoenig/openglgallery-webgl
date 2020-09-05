@@ -41,6 +41,7 @@ var statelist = [
 	framebuffer4, // test 4 textures using framebuffers as textures, pratice state for the multi view system, currently working!!
 	lattice2d, // draw with 1 view a test scene to be used by lattice3d
 	lattice3d, // draw with 4 views, testing interlaceAPI's system, an API to help switch between 1 view and multi view
+	vertexShadersV1, // play with vertex shaders
 ];
 
-var startstate = lattice3d;
+var startstate = vertexShadersV1;

@@ -4,6 +4,7 @@ var glc; // canvas to make webgl
 var gllores = 1; // lower resolution on a given canvas, the lower the number the faster the fragment shaders will be
 var dowebgl = true;
 var maxTextures = 16;
+var webglVersion = 0;
 // list of all shaders
 var shaderlist;
 /* = [
@@ -64,7 +65,7 @@ function gl_resize() {
 }
 
 function gl_init() {
-	logger_str += " gl_init\n";	
+	logger("gl_init\n");
 	checkglerror("start gl_init()");
 	gl = null;
 	glc = document.getElementById('mycanvas2');
@@ -79,28 +80,43 @@ function gl_init() {
 	// get a webgl context (gl)
 	if (dowebgl) {
 		try {
-			// Try to grab the standard context. If it fails, fallback to experimental.
-			gl = glc.getContext("webgl",glattr);
-			if (gl) {
-				logger_str += "webgl\n";
-			checkglerror("just got GL 'webgl'",false); // I get some weird GL_MAX_SAMPLES_ANGLE enum error
-													  // on Android Emulator when creating the context, so ignore
+			
+			// Try to grab the new 'webgl2' context.
+			if (!gl) {
+				gl = glc.getContext("webgl2",glattr);
+				if (gl) {
+					logger("context = webgl2\n");
+					webglVersion = 2;
+				}
+			} 
+			
+			// Try to grab the standard 'webgl' context.
+			if (!gl) {
+				gl = glc.getContext("webgl",glattr);
+				if (gl) {
+					logger("context = webgl\n");
+					webglVersion = 1;
+				}
 			}
+			
+			// Try to get the experimental-webgl context.
 			if (!gl) {
 				gl = glc.getContext("experimental-webgl",glattr);
-				if (gl)
-					logger_str += "experimental-webgl\n";
+				if (gl) {
+					logger("context = experimental-webgl\n");
+					webglVersion = 1;
+				}
 			}
-			//gl = edrawarea.getContext("experimental-webgl");
-		checkglerror("just got GL");
+
 		}
 		catch(e) {
-			logger_str += "err gl context\n";
+			logger("err gl context\n");
 		}
 	}
 	// If we don't have a GL context, give up now
+	checkglerror("tried to get some webgl");
 	if (!gl) {
-		logger_str += "no webgl\n";
+		logger("no webgl\n");
 		var ctx=glc.getContext("2d");
         glc.width = glc.clientWidth;
         glc.height = glc.clientHeight;
@@ -110,8 +126,8 @@ function gl_init() {
 		ctx.fillText("Your browser doesn't support WebGL.",20,40);
 		var instele = document.getElementById('instructions');
 		if (instele)
-			instele.innerHTML = 'Get webgl ' +
-			'<a href="http://get.webgl.org"> here</a> .';
+			instele.innerHTML = 'GET WEBGL ' +
+			'<a href="http://get.webgl.org"> HERE</a>.';
 		//ctx=edrawarea.getContext("2d");
 		//ctx.font="30px Arial";
 		//ctx.fillText("2d Your browser doesn't support WebGL.",10,50);
@@ -119,6 +135,7 @@ function gl_init() {
 		//glc.style.opacity = 1;	// hide the 2d canvas by showing the 3d canvas
 	}
 	if (gl) {
+		logger("yes some webgl\n");
 /*		if (!myform) {
 			//var sw = screen.availWidth;
 			//var sh = screen.availHeight;
@@ -170,6 +187,10 @@ var shadershadowmapbuildnotex = null;
 
 function getShader2v(gl,id) {
     var str = preloadedtext[id];
+	if (webglVersion == 1 && str.startsWith("#version 3")) {
+		logger("shader version is too advanced for webgl 1.0");
+		return null;
+	}
 	if (!str)
 		return null;
     var shader = gl.createShader(gl.VERTEX_SHADER);
@@ -217,6 +238,9 @@ function initShaders() {
 	    //var vertexShader = getShader(gl, "shader-vs");
 	    //var fragmentShader = getShader(gl, "shader-fs");
 	    var vertexShader = getShader2v(gl, shadName + ".vert.glsl");
+		if (!vertexShader) {
+			continue;
+		}
 	    var fragmentShader = getShader2p(gl, shadName + ".frag.glsl");
 	
 	    var shaderProgram = gl.createProgram();
@@ -241,11 +265,21 @@ function initShaders() {
 		
 		shaderProgram.nattrib = gl.getProgramParameter(shaderProgram,gl.ACTIVE_ATTRIBUTES);
 		//shaderProgram.attribs = [];
+		logger("======== shader name = " + shaderProgram.name);
+		var decAtt = false;
 		for (i=0;i<shaderProgram.nattrib;++i) {
 			var aa = gl.getActiveAttrib(shaderProgram,i);
-			shaderProgram[aa.name] = gl.getAttribLocation(shaderProgram,aa.name);
+			logger("shader attribute = " + aa.name);
+			if (aa.name == "gl_VertexID") { // built in attribute should not be included in the list of attributes
+				logger("########## skipping built in attribute " + aa.name);
+				decAtt = true;
+			} else {
+				shaderProgram[aa.name] = gl.getAttribLocation(shaderProgram,aa.name);
+			}
 			//shaderProgram.attribs.push(aa);
 		}
+		if (decAtt)
+			shaderProgram.nattrib--;
 /*		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
 		shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
 		shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
@@ -287,11 +321,13 @@ function setAttributes(shaderProgram) {
 	var i,n = shaderProgram.nattrib;
 	// assume attribs count from 0
 	if (n > nactiveattribs) {
-		for (i=nactiveattribs;i<n;++i)
+		for (i=nactiveattribs;i<n;++i) {
 			gl.enableVertexAttribArray(i);
+		}
 	} else if (n < nactiveattribs) {
-		for (i=n;i<nactiveattribs;++i)
+		for (i=n;i<nactiveattribs;++i) {
 			gl.disableVertexAttribArray(i);	
+		}
 		
 	}
 	/*
@@ -377,6 +413,7 @@ function exitShaders() {
 }
 
 function checkglerror(m,ignore) {
+	ignore = true;
 	//return;
 	//alert("checkglerror");
 	//ignore = false;
