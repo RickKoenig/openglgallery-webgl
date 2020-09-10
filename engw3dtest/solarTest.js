@@ -5,7 +5,7 @@ solarTest.title = "Solar Test";
 
 solarTest.text = "Right mouse button moves the camera.  Mouse wheel changes camera distance to the house.\n" +
 	"Left mouse button picks and moves inverters and the tree around.\n" +
-	"Slider below changes time of day."
+	"Slider below changes time of day. webgl 2.0 makes this state look worse. Edge cases., <How to allocate a float texture in webgl 2.0 ???>"
 
 // declare some variables we'll need later
 

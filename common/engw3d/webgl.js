@@ -77,12 +77,13 @@ function gl_init() {
 		premultipliedAlpha:true,
 		preserveDrawingBuffer:false
 	};
+	doUrlparams();
 	// get a webgl context (gl)
 	if (dowebgl) {
 		try {
 			
 			// Try to grab the new 'webgl2' context.
-			if (!gl) {
+			if (!gl && URLparams.webgl != 1) {
 				gl = glc.getContext("webgl2",glattr);
 				if (gl) {
 					logger("context = webgl2\n");
@@ -413,7 +414,7 @@ function exitShaders() {
 }
 
 function checkglerror(m,ignore) {
-	ignore = true;
+	//ignore = true;
 	//return;
 	//alert("checkglerror");
 	//ignore = false;

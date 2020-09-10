@@ -6,7 +6,8 @@ uniform sampler2D uSampler3;
 uniform mediump float alphacutoff;      
 uniform highp vec2 resolution;
      
-#define BLENDY // if defined don't try to do vertical pixelation
+// if defined don't try to do vertical pixelation
+#define BLENDY
 
 precision highp float;
 const float numViews = 4.0;

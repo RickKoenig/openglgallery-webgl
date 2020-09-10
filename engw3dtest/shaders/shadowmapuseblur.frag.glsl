@@ -46,7 +46,7 @@ void main(void) {
 	} else {
 		inTheLight = 0.0; // not facing light
 	}
-	//inTheLight = true;
+	//inTheLight = 1.0;
 	// fetch main texture color
     mediump vec4 fc = texture2D(uSampler0,vTextureCoord,-1.0);
 	if (fc.a < alphacutoff)

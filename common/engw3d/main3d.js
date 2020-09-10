@@ -73,14 +73,13 @@ var logstrs = ["Log Disabled","Log Enabled"];
 var minWheelDelta = 0;
 var maxWheelDelta = 0;
 
-var URLparams = {};
 
 // debug on the elements
 function drawelements() {
 	// show state
 	if (showstate) {
 		//eoutstateman.firstChild.nodeValue = "State " + state;
-		printareadraw(eoutstateman,"State " + statelist.indexOf(state));
+		printareadraw(eoutstateman,"State " + statelist.indexOf(state) + " WebGL version " + webglVersion + ".0");
 	}
 	
 	// show scroll
@@ -487,6 +486,27 @@ function exitfullscreenHandler()
     }
 }
 
+function doUrlparams() {
+	var ss = window.location.search;
+	
+//URLparams;
+	URLparams = {};
+
+	if (ss.charAt(0) == '?') {
+		// we have args
+		ss = ss.substring(1); // past '?'
+		var namevals = ss.split('&');
+		var i;
+		for (i=0;i<namevals.length;++i) {
+			var nv = namevals[i];
+			var nvs = nv.split('=');
+			if (nvs.length == 2) {
+				URLparams[nvs[0]] = decodeURI(nvs[1]);
+			}
+		}
+	}
+}
+
 function maininit() {
 	loadstatus = 0;
 	defaultimage = preloadedimages["maptestnck.png"];
@@ -498,24 +518,7 @@ function maininit() {
 	//maindebug();
 	//initstate();
 	if (gl) {
-		var ss = window.location.search;
-		
-//URLparams;
-
-		if (ss.charAt(0) == '?') {
-			// we have args
-			ss = ss.substring(1); // past '?'
-			var namevals = ss.split('&');
-			var i;
-			for (i=0;i<namevals.length;++i) {
-				var nv = namevals[i];
-				var nvs = nv.split('=');
-				if (nvs.length == 2) {
-					URLparams[nvs[0]] = decodeURI(nvs[1]);
-				}
-			}
-		}
-		
+		//doUrlparams();
 		var stst = URLparams.startstate;
 		if (stst != null) {
 			var so = window[stst];

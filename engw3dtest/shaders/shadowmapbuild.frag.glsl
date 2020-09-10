@@ -10,6 +10,7 @@ void main(void) {
 		discard;
 	mediump float w = 1.0 - gl_FragCoord.z;
 //	w = .5;
+//	w -= .01;
 	gl_FragColor = vec4(w,w,w,1.0);
 //	gl_FragColor.r = 1.0;
 //	gl_FragColor = vec4(1.0,0.0,0.0,1.0);

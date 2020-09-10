@@ -135,6 +135,7 @@ lattice3d.init = function() {
 	
 	mainvp = defaultviewport(); // VIEWPORT
 	mainvp.trans = [0,0,5];
+	//mainvp.clearcolor = F32RED;
 	
 	//// build the scene
 	lattice3d.roottree = new Tree2("rootn");
