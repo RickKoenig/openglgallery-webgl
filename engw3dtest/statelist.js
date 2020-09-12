@@ -44,4 +44,4 @@ var statelist = [
 	vertexShadersV1, // play with vertex shaders
 ];
 
-var startstate = vertexShadersV1;
+var startstate = basic;

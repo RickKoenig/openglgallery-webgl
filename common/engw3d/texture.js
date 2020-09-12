@@ -472,14 +472,23 @@ function FrameBufferTexture(aname,wid,hit) {
 		logger("don't use float textures");
 		ext1 = false;
 	}
+	
+	var extf = gl.getExtension("EXT_color_buffer_float"); // is this not built in?
+	
 	if (webglVersion == 2) { // webgl 2.0 has this built in by default
-		;//ext1 = true; // can't seem to get float textures working in webgl 2.0 ???
+		ext1 = true; // needed to turn on extension above
 	}
-    if (ext1)
-    	gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,wid,hit,0,gl.RGBA,gl.FLOAT,null);
-    else
+    if (ext1) {
+		if (webglVersion == 2) {
+			// webgl 2.0 correctly does the internal format
+			gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA32F,wid,hit,0,gl.RGBA,gl.FLOAT,null);
+		} else {
+			gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,wid,hit,0,gl.RGBA,gl.FLOAT,null);
+		}
+    } else {
     	gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,wid,hit,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
-    //gl.generateMipmap(gl.TEXTURE_2D);
+    }
+	//gl.generateMipmap(gl.TEXTURE_2D);
 		checkglerror("gl.texImage2D");
 	this.name = aname;
 	this.width = wid;

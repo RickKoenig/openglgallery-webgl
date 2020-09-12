@@ -607,6 +607,7 @@ solarTest.init = function() {
 	var shadowmapres = 2048;
 	solarTest.shadowtexturesharp = FrameBufferTexture.createtexture("shadowmapsharp",shadowmapres,shadowmapres);
 	//solarTest.shadowtextureblur = FrameBufferTexture.createtexture("shadowmapblur",shadowmapres,shadowmapres);
+	checkglerror("got frame buffer texture");
 
 // main viewport for solarTest state
 	solarTest.mvp = {
@@ -759,6 +760,8 @@ solarTest.init = function() {
 	solarTest.dragSlider = false;
 	solarTest.oldTOD = -1;
 	solarTest.updateTOD();
+	checkglerror("done solar test init");
+
 };
 
 // adjust asp if viewport is resized
@@ -787,8 +790,11 @@ solarTest.proc = function() {
 	if (solarTest.renderShadowMap) {
 		// render shadow map
 		solarTest.shadowvp.clearflags = gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT;
+		checkglerror("start beginscene shadow map");
 		beginscene(solarTest.shadowvp);
+		checkglerror("done beginscene shadow map");
 		solarTest.roottree.draw();
+		checkglerror("done draw shadow map");
 		
 /*		// render shadow blur map
 		beginscene(solarTest.shadowblurvp);

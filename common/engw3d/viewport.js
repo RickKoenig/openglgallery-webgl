@@ -23,10 +23,12 @@ function tohex2(val) {
 }
 */
 function beginscene(vp) {
+	checkglerror("start beginscene");
 	//if (defaulttarget != vp.target) {
 		FrameBufferTexture.useframebuffer(vp.target);
 	//	defaulttarget = vp.target;
 	//}
+	checkglerror("done useframebuffer");
 	if (vp.clearflags & gl.COLOR_BUFFER_BIT) {
 		// I'm not sure why css background-color has an effect on alpha blending ??
 		gl.clearColor(vp.clearcolor[0],vp.clearcolor[1],vp.clearcolor[2],vp.clearcolor[3]);
@@ -35,7 +37,9 @@ function beginscene(vp) {
 	}
     if (vp.clearflags)
 		gl.clear(vp.clearflags);
+	checkglerror("start setview");
 	setview(vp);
+	checkglerror("end setview");
 	if (vp.target) {
 	    gl.viewport(0, 0, vp.target.width,vp.target.height);
 	} else {
