@@ -475,7 +475,7 @@ function FrameBufferTexture(aname,wid,hit) {
 	
 	var extf = gl.getExtension("EXT_color_buffer_float"); // is this not built in?
 	
-	if (webglVersion == 2) { // webgl 2.0 has this built in by default
+	if (webglVersion == 2 && extf) { // webgl 2.0 has this built in by default
 		ext1 = true; // needed to turn on extension above
 	}
     if (ext1) {
@@ -560,18 +560,26 @@ FrameBufferTexture.prototype.resize = function(nX,nY) {
 		//alert("no float textures with linear filtering");
 		logger("no float textures with linear filtering");
 	}
+	var extf = gl.getExtension("EXT_color_buffer_float"); // is this not built in?
+	
+	if (webglVersion == 2 && extf) { // webgl 2.0 has this built in by default
+		ext1 = true; // needed to turn on extension above
+	}
 	if (globaltexflags & textureflagenums.NOFLOAT) {
 		logger("don't use float textures");
 		ext1 = false;
 	}
-	if (webglVersion == 2) { // webgl 2.0 has this built in by default
-		;//ext1 = true; // can't seem to get float textures working in webgl 2.0 ???
-	}
-    if (ext1)
-    	gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,wid,hit,0,gl.RGBA,gl.FLOAT,null);
-    else
-    	gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,wid,hit,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
 	
+    if (ext1) {
+		if (webglVersion == 2) {
+			// webgl 2.0 correctly does the internal format
+			gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA32F,wid,hit,0,gl.RGBA,gl.FLOAT,null);
+		} else {
+			gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,wid,hit,0,gl.RGBA,gl.FLOAT,null);
+		}
+    } else {
+    	gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,wid,hit,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+    }
 	this.framebuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER,this.framebuffer);
 	// create zbuffer

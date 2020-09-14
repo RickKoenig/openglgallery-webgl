@@ -414,7 +414,7 @@ function exitShaders() {
 }
 
 function checkglerror(m,ignore) {
-	//ignore = true;
+	ignore = true;
 	//return;
 	//alert("checkglerror");
 	//ignore = false;
