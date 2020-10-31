@@ -1,7 +1,7 @@
 // comments double slash anywhere in a line
 // the manifest of shaders read by engw
 [
-// 0 input textures (7)
+// 0 input textures (12)
 	"cvert",
 	"flat",
 	"red",
@@ -9,6 +9,11 @@
 	"verttestversion",
 	"verttestnomesh",
 	"verttestuniformarray",
+	"gridlinesy",
+	"gridlinesxz",
+	"gridlinesxyz",
+	"gridlineslen",
+	"gridlineslenatan",
 
 // 1 input texture (14)
 	"basic", // a test shader, has a sine wave
@@ -59,5 +64,5 @@
 	"envmapv"
 ]
 
-// 43 shaders total
+// 48 shaders total
 

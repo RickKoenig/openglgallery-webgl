@@ -165,6 +165,7 @@ function gl_init() {
 	    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);      // Clear the color as well as the depth buffer.
 		// convert to d3d like left handed coord system by negating z, z now increases away in front of the camera, towards the horizon
 		//pMatrix[8] = -pMatrix[8]; pMatrix[9] = -pMatrix[9]; pMatrix[10] = -pMatrix[10]; pMatrix[11] = -pMatrix[11];
+		var dxdy = gl.getExtension("OES_standard_derivatives"); 
 	    initShaders();
 	    gl.frontFace(gl.CW);
 	    gl.cullFace(gl.BACK);
@@ -174,6 +175,8 @@ function gl_init() {
 		//resetviewport(mainvp);
 /*	    initBuffers();
 	    inittextures(); */
+		
+
 		checkglerror("after gl_init()");
 	}
 }
@@ -243,6 +246,9 @@ function initShaders() {
 			continue;
 		}
 	    var fragmentShader = getShader2p(gl, shadName + ".frag.glsl");
+		if (!fragmentShader) {
+			continue;
+		}
 	
 	    var shaderProgram = gl.createProgram();
 	    shaderProgram.name = shadName;

@@ -320,14 +320,14 @@ function buildpatch(np,nq,tileu,tilev,funcsurf) {
 	var norms = []; //struct pointf3* verts=new pointf3[nv];
 	var uvs = []; //struct uv* uvs=new uv[nv];
 	var faces = [];
-	var i,j,k=0;
+	var i,j;
 	var trati = tileu/np;
 	var tratj = tilev/nq;
 	for (i=0;i<=np;++i) {
 	    var s = i/np;
 		for (j=0;j<=nq;++j) {
 			var t = j/nq;
-			coord = funcsurf(s,t);
+			var coord = funcsurf(s,t);
 			verts.push(coord.v[0]);
 			verts.push(coord.v[1]);
 			verts.push(coord.v[2]);
@@ -358,6 +358,54 @@ function buildpatch(np,nq,tileu,tilev,funcsurf) {
 	mesh.verts = verts;
 	if (norms.length)
 		mesh.norms = norms;
+	mesh.uvs = uvs;
+	mesh.faces = faces;
+	return mesh;
+}
+
+// always from -1,-1 to +1,+1 in x and z
+function buildpatcharray(tileu,tilev,arr) {
+	var mesh = {};
+	var np = arr[0].length -1;
+	var nq = arr.length - 1;
+/// build the verts, uvs and norms for the model
+	var nv = (np+1)*(nq+1);
+	var nf = np*nq*2;
+	var verts = []; //struct pointf3* verts=new pointf3[nv];
+	var uvs = []; //struct uv* uvs=new uv[nv];
+	var faces = [];
+	var i,j;
+	var trati = tileu/np;
+	var tratj = tilev/nq;
+	for (i=0;i<=np;++i) {
+	    var s = i/np;
+		for (j=0;j<=nq;++j) {
+			var t = j/nq;
+			var height = arr[j][i];
+			var v = [-1 + 2*s,height,1 - 2*t];
+			verts.push(v[0]);
+			verts.push(v[1]);
+			verts.push(v[2]);
+ 			uvs.push(i*trati);
+ 			uvs.push(j*tratj);
+		}
+	}
+
+	for (i=0;i<np;++i) {
+		for (j=0;j<nq;++j) {
+			var f0=j+(nq+1)*i;
+			var f1=f0+(nq+1);
+			var f2=f0+1;
+			var f3=f1+1;
+			faces.push(f0);
+			faces.push(f1);
+			faces.push(f2);
+			faces.push(f3);
+			faces.push(f2);
+			faces.push(f1);
+		}
+	}
+	mesh.verts = verts;
 	mesh.uvs = uvs;
 	mesh.faces = faces;
 	return mesh;

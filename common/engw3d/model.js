@@ -149,6 +149,9 @@ Model.prototype.setmesh = function(mesh) {
 Model.prototype.setshader = function(shadername) {
 	this.shadername = shadername;
 	this.shader = shaderPrograms[shadername];
+	if (!this.shader) {
+		this.setshader("tex");
+	}
 };
 
 // set model texture 0

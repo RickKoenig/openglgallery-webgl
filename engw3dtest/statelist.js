@@ -42,6 +42,7 @@ var statelist = [
 	lattice2d, // draw with 1 view a test scene to be used by lattice3d
 	lattice3d, // draw with 4 views, testing interlaceAPI's system, an API to help switch between 1 view and multi view
 	vertexShadersV1, // play with vertex shaders
+	gridlines, // play with fwidth etc.
 ];
 
-var startstate = basic;
+var startstate = gridlines;
