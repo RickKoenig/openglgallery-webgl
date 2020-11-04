@@ -9,11 +9,11 @@
 	"verttestversion",
 	"verttestnomesh",
 	"verttestuniformarray",
-	"gridlinesy",
-	"gridlinesxz",
-	"gridlinesxyz",
-	"gridlineslen",
-	"gridlineslenatan",
+	"V2gridlinesy", // use shaders from V2 folder if webgl version 2.0 is enabled
+	"V2gridlinesxz",
+	"V2gridlinesxyz",
+	"V2gridlineslen",
+	"V2gridlineslenatan",
 
 // 1 input texture (14)
 	"basic", // a test shader, has a sine wave

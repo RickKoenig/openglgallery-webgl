@@ -1,6 +1,9 @@
-#extension GL_OES_standard_derivatives : enable
+#version 300 es
+// License: CC0 (http://creativecommons.org/publicdomain/zero/1.0/)
 
-varying highp vec3 vertex;
+in highp vec3 vertex;
+
+out lowp vec4 color;
 
 void main() {
   // Pick a coordinate to visualize in a grid
@@ -34,5 +37,5 @@ void main() {
   highp float line = min(grid.x, grid.y);
 
   // Just visualize the grid lines directly
-  gl_FragColor = vec4(vec3(1.0 - min(line, 1.0)), 1.0);
+  color = vec4(vec3(1.0 - min(line, 1.0)), 1.0);
 }

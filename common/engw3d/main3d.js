@@ -297,6 +297,7 @@ function buildlayout() {
 function mainload() {
 	if (!dojavascript)
 		return;
+	gl_preinit();
 	//preloadShaders();
 	preloadshaderlist("shaders/shaderlist.txt");
 	//preloadtext("shaders/basic.ps");

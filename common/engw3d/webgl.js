@@ -63,10 +63,9 @@ function gl_resize() {
 //	mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, gl.asp, 0.5, 2.0);
 	//mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, gl.asp, 0.002,10000.0);
 }
-
-function gl_init() {
-	logger("gl_init\n");
-	checkglerror("start gl_init()");
+function gl_preinit() {
+	logger("gl_preinit\n");
+	checkglerror("start gl_preinit()");
 	gl = null;
 	glc = document.getElementById('mycanvas2');
 	var glattr = {
@@ -83,7 +82,7 @@ function gl_init() {
 		try {
 			
 			// Try to grab the new 'webgl2' context.
-			if (!gl && URLparams.webgl != 1) {
+			if (!gl && URLparams.webglversion != 1) {
 				gl = glc.getContext("webgl2",glattr);
 				if (gl) {
 					logger("context = webgl2\n");
@@ -114,6 +113,11 @@ function gl_init() {
 			logger("err gl context\n");
 		}
 	}
+}
+
+function gl_init() {
+	logger("gl_init\n");
+	checkglerror("start gl_init()");
 	// If we don't have a GL context, give up now
 	checkglerror("tried to get some webgl");
 	if (!gl) {
@@ -165,7 +169,8 @@ function gl_init() {
 	    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);      // Clear the color as well as the depth buffer.
 		// convert to d3d like left handed coord system by negating z, z now increases away in front of the camera, towards the horizon
 		//pMatrix[8] = -pMatrix[8]; pMatrix[9] = -pMatrix[9]; pMatrix[10] = -pMatrix[10]; pMatrix[11] = -pMatrix[11];
-		var dxdy = gl.getExtension("OES_standard_derivatives"); 
+		if (webglVersion == 1)
+			var dxdy = gl.getExtension("OES_standard_derivatives"); 
 	    initShaders();
 	    gl.frontFace(gl.CW);
 	    gl.cullFace(gl.BACK);
@@ -225,10 +230,19 @@ function preloadShaders() {
 	var i,n = shaderlist.length;
 	for (i=0;i<n;++i) {
 		var shadName = shaderlist[i];
-		//if (!shadName.startsWith("//")) {
+		var isV2 = shadName.startsWith("V2");
+		if (isV2) {
+			// remove V2 prefix from shader and if webglVersion == 2 use V2 directory
+			shadName = shadName.slice(2);
+			shaderlist[i] = shadName; // put back shader name into the list without the V2 prefix
+		}
+		if (webglVersion == 2 && isV2) {
+			preloadtext("shaders/V2/" + shadName + ".vert.glsl");
+			preloadtext("shaders/V2/" + shadName + ".frag.glsl");
+		} else {
 			preloadtext("shaders/" + shadName + ".vert.glsl");
 			preloadtext("shaders/" + shadName + ".frag.glsl");
-		//}
+		}
 	}
 }
 
@@ -420,7 +434,7 @@ function exitShaders() {
 }
 
 function checkglerror(m,ignore) {
-	ignore = true;
+	//ignore = true; // uncomment to stop the alerts
 	//return;
 	//alert("checkglerror");
 	//ignore = false;

@@ -1,13 +1,11 @@
-#version 300 es
-
 uniform mat4 mvMatrixUniform;
 uniform mat4 pMatrixUniform;
 
-in vec3 vertexPositionAttribute;
-in vec2 textureCoordAttribute;
+attribute vec3 vertexPositionAttribute;
+attribute vec2 textureCoordAttribute;
 
-out mediump vec2 vTextureCoord;
-out highp vec3 vertex;
+varying mediump vec2 vTextureCoord;
+varying highp vec3 vertex;
 
 void main() {
 	vertex = vec3(vertexPositionAttribute) * 10.0;
