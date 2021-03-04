@@ -23,7 +23,9 @@ scratch.debvars = {
 	transz:0,
 	scalex:0,
 	scaley:0,
-	scalez:0
+	scalez:0,
+	testarr:[3,4,[5,7],6],
+	testobj:{"hi":40,"ho":[50,99]},
 };
 
 scratch.infocnt;

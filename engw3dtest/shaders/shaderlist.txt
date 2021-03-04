@@ -15,7 +15,7 @@
 	"V2gridlineslen",
 	"V2gridlineslenatan",
 
-// 1 input texture (14)
+// 1 input texture (15)
 	"basic", // a test shader, has a sine wave
 	"bright",
 	"diffusep",
@@ -30,6 +30,7 @@
 	"shadowmapshow",
 	"tex",
 	"texc",
+	"bargraph",
 
 // 2 input textures (11)
 	"blend2", // N
@@ -64,5 +65,5 @@
 	"envmapv"
 ]
 
-// 48 shaders total
+// 49 shaders total
 
