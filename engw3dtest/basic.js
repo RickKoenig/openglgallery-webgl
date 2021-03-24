@@ -17,7 +17,12 @@ basic.init = function() {
 	basic.roottree = new Tree2("basic root tree");
 
 	// build a planexy (a square)
-	var plane = buildplanexy("aplane",1,1,"maptestnck.png","diffusespecp");
+	// make double sided and test gl_FrontFace (TODO: check spelling)
+	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","diffusespecp");
+	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","tex");
+	var plane = buildplanexy("aplane",1,1,"maptestnck.png","texDoubleSided");
+	plane.mod.flags |= modelflagenums.DOUBLESIDED;
+
 	plane.trans = [0,0,1];
 	basic.roottree.linkchild(plane);
 

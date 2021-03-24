@@ -46,4 +46,4 @@ var statelist = [
 	bargraph, // draw some bargraphs different ways
 ];
 
-var startstate = bargraph;
+var startstate = basic;
