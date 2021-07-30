@@ -312,6 +312,12 @@ function torusxz_surf(rad0,rad1) {
 }
 
 function buildpatch(np,nq,tileu,tilev,funcsurf) {
+	if (!np) {
+		np = planepatchi;
+	}
+	if (!nq) {
+		nq = planepatchj;
+	}
 	var mesh = {};
 /// build the verts, uvs and norms for the model
 	var nv = (np+1)*(nq+1);
@@ -1281,8 +1287,8 @@ function buildconexy2t(name,rad,hit,texname,texname2,shadername) {
 }
 
 // planexy,planexz
-var planepatchi = 2;
-var planepatchj = 2;
+var planepatchi = 1;//2; // default tessalation
+var planepatchj = 1;//2; // default tessalation
 //var planepatchu = 3;
 //var planepatchv = 3;
 var planepatchu = 1;
@@ -1307,11 +1313,11 @@ function planexz_surf(wid,hit) {
 	return functor;
 }
 
-function buildplanexzmesh(wid,hit) {
-	return buildpatch(planepatchi,planepatchj,planepatchu,planepatchv,planexz_surf(wid,hit));
+function buildplanexzmesh(wid,hit,tessx,tessy) {
+	return buildpatch(tessx,tessy,planepatchu,planepatchv,planexz_surf(wid,hit));
 }
 
-function buildplanexzmodel(name,wid,hit,texname,shadername) {
+function buildplanexzmodel(name,wid,hit,texname,shadername,tessx,tessy) {
 	var mod = Model.createmodel(name);
 	if (mod.refcount == 1) {
 	    mod.setshader(shadername);
@@ -1324,8 +1330,8 @@ function buildplanexzmodel(name,wid,hit,texname,shadername) {
     return mod;
 }
 
-function buildplanexz(name,wid,hit,texname,shadername) {
-	var mod = buildplanexzmodel(name,wid,hit,texname,shadername);
+function buildplanexz(name,wid,hit,texname,shadername,tessx,tessy) {
+	var mod = buildplanexzmodel(name,wid,hit,texname,shadername,tessx,tessy);
 	var ret = new Tree2(name);
 	ret.setmodel(mod);
 	return ret;
@@ -1370,15 +1376,15 @@ function planexy_surf(wid,hit) {
 	return functor;
 }
 
-function buildplanexymesh(wid,hit) {
-	return buildpatch(planepatchi,planepatchj,planepatchu,planepatchv,planexy_surf(wid,hit));
+function buildplanexymesh(wid,hit,tessx,tessy) {
+	return buildpatch(tessx,tessy,planepatchu,planepatchv,planexy_surf(wid,hit));
 }
 
-function buildplanexymodel(name,wid,hit,texname,shadername) {
+function buildplanexymodel(name,wid,hit,texname,shadername,tessx,tessy) {
 	var mod = Model.createmodel(name);
 	if (mod.refcount == 1) {
 	    mod.setshader(shadername);
-		var planexymesh = buildplanexymesh(wid,hit);
+		var planexymesh = buildplanexymesh(wid,hit,tessx,tessy);
 	    mod.setmesh(planexymesh);
 	    mod.settexture(texname);
 	    mod.commit();
@@ -1386,8 +1392,8 @@ function buildplanexymodel(name,wid,hit,texname,shadername) {
     return mod;
 }
 
-function buildplanexy(name,wid,hit,texname,shadername) {
-	var mod = buildplanexymodel(name,wid,hit,texname,shadername);
+function buildplanexy(name,wid,hit,texname,shadername,tessx,tessy) {
+	var mod = buildplanexymodel(name,wid,hit,texname,shadername,tessx,tessy);
 	var ret = new Tree2(name);
 	ret.setmodel(mod);
 	return ret;
@@ -1408,15 +1414,15 @@ function planexy_surf01(wid,hit) {
 	return functor;
 }
 
-function buildplanexymesh01(wid,hit) {
-	return buildpatch(planepatchi,planepatchj,planepatchu,planepatchv,planexy_surf01(wid,hit));
+function buildplanexymesh01(wid,hit,tessx,tessy) {
+	return buildpatch(tessx,tessy,planepatchu,planepatchv,planexy_surf01(wid,hit));
 }
 
-function buildplanexymodel01(name,wid,hit,texname,shadername) {
+function buildplanexymodel01(name,wid,hit,texname,shadername,tessx,tessy) {
 	var mod = Model.createmodel(name);
 	if (mod.refcount == 1) {
 	    mod.setshader(shadername);
-		var planexymesh = buildplanexymesh01(wid,hit);
+		var planexymesh = buildplanexymesh01(wid,hit,tessx,tessy);
 	    mod.setmesh(planexymesh);
 	    mod.settexture(texname);
 	    mod.commit();
@@ -1424,8 +1430,8 @@ function buildplanexymodel01(name,wid,hit,texname,shadername) {
     return mod;
 }
 
-function buildplanexy01(name,wid,hit,texname,shadername) {
-	var mod = buildplanexymodel01(name,wid,hit,texname,shadername);
+function buildplanexy01(name,wid,hit,texname,shadername,tessx,tessy) {
+	var mod = buildplanexymodel01(name,wid,hit,texname,shadername,tessx,tessy);
 	var ret = new Tree2(name);
 	ret.setmodel(mod);
 	return ret;

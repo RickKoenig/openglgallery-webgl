@@ -135,6 +135,7 @@ vertexShadersV1.init = function() {
 	// build a vertex pattern using no mesh
 	patt = buildMesh("aPattNoMesh", "maptestnck.png", "verttestnomesh", 
 		vertexShadersV1.pattMesh4, modelflagenums.DOUBLESIDED | modelflagenums.NOZBUFFER | modelflagenums.FAN);
+	patt.mod.numInstances = 5;
 	patt.trans = [500,400,0];
 	patt.scale = [.5,.5,.5];
 	vertexShadersV1.roottree.linkchild(patt);

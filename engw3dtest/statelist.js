@@ -44,6 +44,7 @@ var statelist = [
 	vertexShadersV1, // play with vertex shaders
 	gridlines, // play with fwidth etc.
 	bargraph, // draw some bargraphs different ways
+	tubedots, // patterns inside a tube
 ];
 
 var startstate = basic;

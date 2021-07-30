@@ -14,8 +14,10 @@ var shaderlist;
 	"cvert",
 	"tex"
 ]; */
-
+/*
+// these enums are defined in gl.
 var glenums = {
+	"GL_INT":5124,
 	"GL_FLOAT":5126,
 	"GL_FLOAT_VEC2":35664,
 	"GL_FLOAT_VEC3":35665,
@@ -23,7 +25,7 @@ var glenums = {
 	"GL_FLOAT_MAT4":35676
 	//"GL_SAMPLER_2D":35678
 };
-
+*/
 var globalmat = {
 	hi:3,
 	"ho":5,
@@ -197,7 +199,7 @@ var shadershadowmapbuildnotex = null;
 function getShader2v(gl,id) {
     var str = preloadedtext[id];
 	if (webglVersion == 1 && str.startsWith("#version 3")) {
-		logger("shader version is too advanced for webgl 1.0");
+		logger("shader version is too advanced for webgl 1.0 for shader " + id + " reverting to 'tex'");
 		return null;
 	}
 	if (!str)
@@ -206,7 +208,8 @@ function getShader2v(gl,id) {
     gl.shaderSource(shader,str);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert("VERTEX SHADER ERROR '" + id + "' " + gl.getShaderInfoLog(shader));
+		var err = "VERTEX SHADER ERROR '" + id + "' " + gl.getShaderInfoLog(shader);
+        alert(err);
         return null;
     }
     return shader;
@@ -220,7 +223,8 @@ function getShader2p(gl,id) {
     gl.shaderSource(shader,str);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert("PIXEL SHADER ERROR '" + id + "' " + gl.getShaderInfoLog(shader));
+		var err = "PIXEL SHADER ERROR '" + id + "' " + gl.getShaderInfoLog(shader);
+        alert(err);
         return null;
     }
     return shader;
@@ -287,20 +291,23 @@ function initShaders() {
 		shaderProgram.nattrib = gl.getProgramParameter(shaderProgram,gl.ACTIVE_ATTRIBUTES);
 		//shaderProgram.attribs = [];
 		logger("======== shader name = " + shaderProgram.name);
-		var decAtt = false;
+		var decAtt = 0;
 		for (i=0;i<shaderProgram.nattrib;++i) {
 			var aa = gl.getActiveAttrib(shaderProgram,i);
 			logger("shader attribute = " + aa.name);
-			if (aa.name == "gl_VertexID") { // built in attribute should not be included in the list of attributes
+			if (aa.name == "gl_InstanceID") { // built in attribute should not be included in the list of attributes
 				logger("########## skipping built in attribute " + aa.name);
-				decAtt = true;
+				++decAtt;
+			} else if (aa.name == "gl_VertexID") { // built in attribute should not be included in the list of attributes
+				logger("########## skipping built in attribute " + aa.name);
+				++decAtt;
 			} else {
 				shaderProgram[aa.name] = gl.getAttribLocation(shaderProgram,aa.name);
 			}
 			//shaderProgram.attribs.push(aa);
 		}
-		if (decAtt)
-			shaderProgram.nattrib--;
+		if (decAtt > 0)
+			shaderProgram.nattrib -= decAtt;
 /*		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
 		shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
 		shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");

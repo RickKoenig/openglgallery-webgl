@@ -6,6 +6,7 @@ var modelflagenums = {
     DOUBLESIDED:0x20,
 	FAN:0x40, // default TRIANGLES
 	STRIP:0x80,
+	BACKFACE:0x100
 };
 
 var refcountmodellist = {};
@@ -422,19 +423,22 @@ function setUserModelUniforms(shader,mat) {
 				continue;
 			}
 			switch(type) {
-			case glenums.GL_FLOAT:
+			case gl.INT:
+				gl.uniform1i(unf,val);
+				break;
+			case gl.FLOAT:
 				gl.uniform1f(unf,val);
 				break;
-			case glenums.GL_FLOAT_VEC2:
+			case gl.FLOAT_VEC2:
 				gl.uniform2fv(unf,val);
 				break;
-			case glenums.GL_FLOAT_VEC3:
+			case gl.FLOAT_VEC3:
 				gl.uniform3fv(unf,val);
 				break;
-			case glenums.GL_FLOAT_VEC4:
+			case gl.FLOAT_VEC4:
 				gl.uniform4fv(unf,val);
 				break;
-			case glenums.GL_FLOAT_MAT4:
+			case gl.FLOAT_MAT4:
 				gl.uniformMatrix4fv(unf,false,val);
 				break;
 			}
@@ -451,6 +455,8 @@ Model.prototype.draw = function() {
 	    gl.disable(gl.DEPTH_TEST);                               // turn off zbuffer
 	if (this.flags & modelflagenums.DOUBLESIDED)
 	    gl.disable(gl.CULL_FACE);
+	if (this.flags & modelflagenums.BACKFACE)
+		gl.cullFace(gl.FRONT);
 	//checkglerror("glerr model draw 9");
 	//var hasTexture = true;
 	var i;
@@ -552,21 +558,43 @@ Model.prototype.draw = function() {
 	//logger("drawing " + this.name);
 	//if (this.numVerts > 0)
 	//	return;
-    if (this.glfaces) {
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.glfaces);
-     	gl.drawElements(gl.TRIANGLES,this.faces.length*3,gl.UNSIGNED_SHORT,0);
-    } else {
-		var vertLength;
-		if (this.numVerts)
-			vertLength = this.numVerts;
-		else
-			vertLength = this.verts.length;
-		if (this.flags & modelflagenums.STRIP) { // no faces, let's try GL_TRIANGLE_STRIP
-			gl.drawArrays(gl.TRIANGLE_STRIP,0,vertLength); // *3 ?
-		} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_STRIP
-			gl.drawArrays(gl.TRIANGLE_FAN,0,vertLength); // *3 ?
-		} else { // no faces, let's try GL_TRIANGLE_STRIP
-			gl.drawArrays(gl.TRIANGLES,0,vertLength); // *3 ?
+
+	if (webglVersion > 1 && this.numInstances > 1) {
+		//logger("instance hit, num instances = " + this.numInstances);
+		if (this.glfaces) {
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.glfaces);
+			gl.drawElementsInstanced(gl.TRIANGLES,this.faces.length*3,gl.UNSIGNED_SHORT,0,this.numInstances);
+		} else {
+			var vertLength;
+			if (this.numVerts)
+				vertLength = this.numVerts;
+			else
+				vertLength = this.verts.length;
+			if (this.flags & modelflagenums.STRIP) { // no faces, let's try GL_TRIANGLE_STRIP
+				gl.drawArraysInstanced(gl.TRIANGLE_STRIP,0,vertLength,this.numInstances); // *3 ?
+			} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_STRIP
+				gl.drawArraysInstanced(gl.TRIANGLE_FAN,0,vertLength,this.numInstances); // *3 ?
+			} else { // no faces, let's try GL_TRIANGLE_STRIP
+				gl.drawArraysInstanced(gl.TRIANGLES,0,vertLength,this.numInstances); // *3 ?
+			}
+		}
+	} else {
+		if (this.glfaces) {
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.glfaces);
+			gl.drawElements(gl.TRIANGLES,this.faces.length*3,gl.UNSIGNED_SHORT,0);
+		} else {
+			var vertLength;
+			if (this.numVerts)
+				vertLength = this.numVerts;
+			else
+				vertLength = this.verts.length;
+			if (this.flags & modelflagenums.STRIP) { // no faces, let's try GL_TRIANGLE_STRIP
+				gl.drawArrays(gl.TRIANGLE_STRIP,0,vertLength); // *3 ?
+			} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_STRIP
+				gl.drawArrays(gl.TRIANGLE_FAN,0,vertLength); // *3 ?
+			} else { // no faces, let's try GL_TRIANGLE_STRIP
+				gl.drawArrays(gl.TRIANGLES,0,vertLength); // *3 ?
+			}
 		}
 	}
     //GL_TRIANGLE_STRIP
@@ -582,6 +610,8 @@ Model.prototype.draw = function() {
 	if (this.flags & modelflagenums.DOUBLESIDED)
 	    gl.enable(gl.CULL_FACE);
 	//checkglerror("glerr model draw end");
+	if (this.flags & modelflagenums.BACKFACE)
+		gl.cullFace(gl.BACK);
 };
 
 function incnglbuffers() {

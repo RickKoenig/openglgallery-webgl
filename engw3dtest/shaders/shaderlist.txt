@@ -34,37 +34,44 @@
 	"texDoubleSided",
 
 // 2 input textures (11)
-	"blend2", // N
+	"blend2",
 	"blend2b",
 	"blend2b2uvs",
-	"blend2bc", // N
-	"blend2u", // N
+	"blend2bc",
+	"blend2u",
 	"daynight",
 	"lightmap",
-	"redblue", // N
+	"redblue",
 	"shadowmapuse",
-	"shadowmapuseblur", // N
+	"shadowmapuseblur",
 	"shadowmapusec",
 
 // 3 input textures (1)
-	"blend3", // N, straight blend
+	"blend3", // straight blend
 
 // 4 input textures (4)
-	"blend4", // N, straight blend
-	"blend4uv", // N, blending using uvs
+	"blend4", // straight blend
+	"blend4uv", // blending using uvs
 	"interleave4",
-	"tex4", // N, show all for textures in a 2x2 grid
+	"tex4", // show all for textures in a 2x2 grid
 
 // 16 input textures (1)
-	"blend16", // N
+	"blend16",
 
 // cubemap texture (5)
 	"cubemap",
 	"cubemaptest",
 	"envmapghostv",
 	"envmapp",
-	"envmapv"
+	"envmapv",
+	
+// new shaders (2)
+// some ways to draw tubes
+	"meshstrip", // like a raster scan, backface removes come back
+	"meshparticle", // instanced rendering of a quad
+	"meshparticlealwaysfacing" // instanced rendering of a quad, good aspect ratio, always facing
+	
 ]
 
-// 50 shaders total
+// 52 shaders total
 

@@ -1,6 +1,8 @@
 ////// Model2 3d class, multi material
 // reference counted
 
+// TODO: port some new stuff from model.js
+
 function Model2(aname) {
 	this.refcount = 1;
 	this.name = aname;
