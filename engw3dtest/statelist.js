@@ -45,6 +45,7 @@ var statelist = [
 	gridlines, // play with fwidth etc.
 	bargraph, // draw some bargraphs different ways
 	tubedots, // patterns inside a tube
+	nim, // the game
 ];
 
 var startstate = basic;
