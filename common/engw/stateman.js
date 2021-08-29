@@ -180,3 +180,15 @@ function getstatetitles() {
 	}
 	return ret;
 }
+
+function updateInstructions() {
+	var instele = document.getElementById('instructions');
+	var inst = state.text;
+	var noesc = state.noesc;
+	if (instele) {
+		if (noesc)
+			instele.innerHTML = inst;
+		else
+			instele.innerHTML = escapehtml(inst);
+	}
+}
