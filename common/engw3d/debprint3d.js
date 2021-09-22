@@ -21,6 +21,7 @@ debprint.enable = true;
 debprint.lastmwheel;
 debprint.step = .125;
 debprint.stepchange = 2; // 4; // how much to change step for each press of + or -
+debprint.recurseLevel = 0;
 
 debprint.list = {
 	main:[
@@ -93,6 +94,9 @@ debprint.removelist = function(name) {
 debprint.nicestr = function(obj) {
 	if (obj === undefined || obj === null)
 		return obj;
+	if (isElement(obj)) {
+		return "element <" + obj.localName + ">";
+	}
 	switch(obj.constructor) {
 	case Number:
 		if ((obj%1) == 0) {
@@ -141,11 +145,14 @@ debprint.alter = function(parent,key,amount,clear) {
 debprint.buildstr = function(name,parent,key) {
 	if (!name || !parent || key === null || key === undefined)
 		alert("bad buildstr !!"); // just checking
+	var ret = [];
+	if (debprint.recurseLevel > 10)
+		return ret;
+	++debprint.recurseLevel;
 	var obj = parent[key];
 	var j,an;
-	var ret = [];
 	var ele = {parent:parent,key:key};
-	if (obj !== undefined && obj !== null) {
+	if (obj !== undefined && obj !== null & !isElement(obj)) {
 		switch(obj.constructor) {
 		case Number:
 		case String:
@@ -195,6 +202,7 @@ debprint.buildstr = function(name,parent,key) {
 		ele.name = name;
 		ret.push(ele);
 	}
+	--debprint.recurseLevel;
 	return ret;
 };
 	
@@ -381,6 +389,8 @@ debprint.proc = function() {
 		else
 			ext = "  ";
 		var ele = debprint.strarr[i];
+		if (!ele)
+			alert("no ele");
 		if (ele.header) {
 			text += ext + "===== " + ele.header + " =====\n";
 		} else { 

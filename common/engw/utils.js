@@ -110,9 +110,14 @@ function clone(obj) {
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
-// creates an n diminsional array
+// creates an n dimensional array
 // like createArray(3,4,5) will make an array like arr[3][4][5]
 function createArray(length) {
+	if (isArray(length)) {
+		return createArray.apply(null,length);
+	}
+	if (length === undefined)
+		return null;
     var arr = new Array(length);
 	var i = length;
     if (arguments.length > 1) {
@@ -121,6 +126,23 @@ function createArray(length) {
 			arr[i] = createArray.apply(null,args);
     }
     return arr;
+}
+
+// fill an n dimensional array with a value
+function isArray(obj) {
+    return obj instanceof Array || obj instanceof Int32Array || obj instanceof Int8Array || obj instanceof Float32Array;
+}
+
+function fillArray(arr, val) {
+    if (isArray(arr) && arr.length > 0) {
+		for (var ele of arr) {
+			if (isArray(ele)) {
+				fillArray(ele, val);
+			} else {
+				arr.fill(val);
+			}
+		}
+	}
 }
 
 function extend(base, sub) {
@@ -296,3 +318,27 @@ function floatToString(f,precision) {
 }
 
 
+function isElement(obj) {
+	try {
+		//Using W3 DOM2 (works for FF, Opera and Chrome)
+		return obj instanceof HTMLElement;
+	} catch(e) {
+		//Browsers not supporting W3 DOM2 don't have HTMLElement and
+		//an exception is thrown and we end up here. Testing some
+		//properties that all elements have (works on IE7)
+		return (typeof obj==="object") &&
+						(obj.nodeType===1) && (typeof obj.style === "object") &&
+						(typeof obj.ownerDocument ==="object");
+	}
+}
+
+function arrayEquals(a, b) {
+    return Array.isArray(a) &&
+        Array.isArray(b) &&
+        a.length === b.length &&
+        a.every((val, index) => val === b[index]);
+}
+
+function getRandomInt(max) {
+	return Math.floor(Math.random() * max);
+}
