@@ -112,6 +112,7 @@ function clone(obj) {
 
 // creates an n dimensional array
 // like createArray(3,4,5) will make an array like arr[3][4][5]
+// also createArray([3,4,5]) will make an array like arr[3][4][5]
 function createArray(length) {
 	if (isArray(length)) {
 		return createArray.apply(null,length);

@@ -1,3 +1,5 @@
+'use strict';
+
 // nim game
 var nim = {}; // the nim game state
 
