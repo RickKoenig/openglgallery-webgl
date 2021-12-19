@@ -11,7 +11,7 @@ state18.text = "WebGL: Menger sponge, upto level 4.  " +
 state18.title = "Menger sponge";
 
 state18.curlevel = null;
-state18.maxlevel = 4 * 10; // *10 is a test, 0 to 40, 41 different items, *TEST* slider
+state18.maxlevel = 4;
 
 state18.sellev = null;
 state18.sellev2 = null;
@@ -34,7 +34,7 @@ state18.selectlevel = function(sel) {
 	state18.updatelevel();
 };
 	
-state18.pow3 = [1,3,9,27,81,243,729];
+state18.pow3 = [];
 state18.trin;
 
 // return an value of binary has ones, base3 to base2 like
@@ -317,8 +317,8 @@ state18.updatelevel = function() {
 		slidersetidx(state18.sellev2,state18.curlevel);
 	//else
 	//	curlevel = 2;
-	printareadraw(state18.levelarea,"Level : " + state18.curlevel + "/10 = " + Math.floor(state18.curlevel/10));
-	var i,f;
+	printareadraw(state18.levelarea,"Level : " + state18.curlevel);
+	var lev,f;
 	/*
 	var childcopy = roottree.children.slice();
 	for (i=0;i<childcopy.length;++i) {
@@ -333,14 +333,14 @@ state18.updatelevel = function() {
 		state18.roottree.linkchild(tree1);
 		return;
 	}
-	i = Math.floor(state18.curlevel/10); // test must be an integer
-	//for (i=cur;i<=3;++i) {
+	lev = Math.floor(state18.curlevel);
+	//for (lev=cur;lev<=3;++lev) {
 		for (var g=0;g<6;++g) {
 			// a modelpart
-			var amod = Model2.createmodel("spongemod m" + i + "s" + g);
+			var amod = Model2.createmodel("spongemod m" + lev + "s" + g);
 			if (amod.refcount == 1) {
 				//amod.setmesh(smeshtemplate);
-				var msh = state18.makesponge(i,g);//,[0,-i*1.5,0]);
+				var msh = state18.makesponge(lev,g);//,[0,-lev*1.5,0]);
 				amod.setmesh(msh);
 				//amod.settexture("maptestnck.png");
 				//amod.setshader("tex");
@@ -358,12 +358,12 @@ state18.updatelevel = function() {
 				//amod.mat.color = [.75,.75,.75,1];
 				amod.commit();
 				//amod.settexture();
-				var atree = new Tree2("spongepart" + i);
+				var atree = new Tree2("spongepart" + lev);
 				atree.setmodel(amod);
-				//atree.trans = [0,(4-i)*1.5,0];
+				//atree.trans = [0,(4-lev)*1.5,0];
 				//atree.trans = [-.45,-.45,0];
 				atree.trans = [-.5,-.5,0];
-				var scl = 1.0/state18.pow3[i];
+				var scl = 1.0/state18.pow3[lev];
 				atree.scale = [scl,scl,scl];
 				//pendpce0.rotvel = [.1,.5,0];
 				//pendpce0.flags |= treeflagenums.ALWAYSFACING;
@@ -400,7 +400,10 @@ state18.makeLevelSelect = function() {
 
 state18.init = function() {
 //	gl_mode(true);
-	state18.curlevel = 25; // actually 2
+
+state18.pow3 = [1,3,9,27,81,243,729];
+
+	state18.curlevel = 2; // actually 2
 //	if (!gl)
 //		return;
 	logger("entering webgl state18\n");
@@ -418,7 +421,7 @@ state18.init = function() {
 	var selstr = state18.makeLevelSelect();
 	state18.sellev = makeaselect(selstr,state18.selectlevel);
 	//sellev = makeaselect(["Level 0","Level 1","Level 2","Level 3","Level 4"],selectlevel);
-	state18.sellev2 = makeaslider(0,state18.maxlevel,state18.curlevel,state18.sliderCallback);
+	state18.sellev2 = makeaslider(0, state18.maxlevel, state18.curlevel, state18.sliderCallback);
 	//paslider = makeaprintarea("slider output");
 	//printareadraw(paslider,sellev2.value);
 	state18.updatelevel();

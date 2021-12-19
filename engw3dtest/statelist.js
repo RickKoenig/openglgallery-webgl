@@ -46,6 +46,7 @@ var statelist = [
 	bargraph, // draw some bargraphs different ways
 	tubedots, // patterns inside a tube
 	nim, // the game
+	mandl, // the Mandelbrot set
 ];
 
-var startstate = basic;
+var startstate = mandl;

@@ -7,8 +7,10 @@ var lastrepbut = null;
 var repdelay = 0;
 var repperiod = 0;
 
+var myformT0;
 var myformT;
 var myformM;
+var myformB0;
 var myformB;
 var myform;
 
@@ -122,6 +124,7 @@ function makeabut(name,clickfunc,repfunc,upfunc,widemargins) {
 	//	bn.setAttribute('class','centerbwm');
 	//else
 		bn.setAttribute('class','centerv');
+		//bn.setAttribute('class','topmargin');
 	bn.onclick = buthandleclick_this;
 	if (!repfunc)
 		bn.onclicknotthis = clickfunc;
@@ -172,17 +175,22 @@ function makeaselect(options,clickfunc) {
 	return sl;
 }
 
-function makeaslider(minVal,maxVal,startVal,clickfunc) {
+function makeaslider(minVal, maxVal, startVal, clickfunc, stepVal) {
 	if (!myform)
 		return;
+	if (!stepVal) {
+		stepVal = 1; // default
+	}
 	//var p = document.createElement('p');
 	//setUserStyle(p);
 	var sl = document.createElement('input');
 	sl.setAttribute('type','range');
+	sl.setAttribute('step',stepVal);
+	sl.setAttribute('class','slider'); // for css
 	sl.setAttribute('min',minVal);
 	sl.setAttribute('max',maxVal);
-	sl.setAttribute('value',startVal);
-	sl.setAttribute('class','slider'); // for css
+	//sl.setAttribute('value',.4999 + .00000001);
+	sl.value = startVal
 	//setUserStyle(sl);
 	//sl.type = 'slider-one';
 	sl.name = curname;
@@ -525,8 +533,10 @@ function setbutsname(nam) {
 }
 
 function clearbuts(nam) {
+	clearbutsEle(myformT0,nam);
 	clearbutsEle(myformT,nam);
 	clearbutsEle(myformM,nam);
+	clearbutsEle(myformB0,nam);
 	clearbutsEle(myformB,nam);
 	clearbutsEle(myform,nam);
 }
@@ -552,8 +562,10 @@ function butinit() {
 //	var i;
 //	var n;
 	// try to add new buttons
+	myformT0 = document.getElementById('myformT0');
 	myformT = document.getElementById('myformT');
 	myformM = document.getElementById('myformM');
+	myformB0 = document.getElementById('myformB0');
 	myformB = document.getElementById('myformB');
 	// check for 2D
 	if (myformM) // 3D ?
@@ -579,13 +591,29 @@ function butinit() {
 	//logger_str += "(added " + bts + " buts)\n"; */
 }
 
+var defaultParmRep = 4;
+var defaultParmDelay = 40;
+var parmRep = defaultParmRep;
+var parmDelay = defaultParmDelay;
+
+function setRepDelay(r, d) {
+	parmRep = r;
+	parmDelay = d;
+}
+
+function resetRepDelay() {
+	parmDelay = defaultParmDelay;
+	parmRep = defaultParmRep;
+	
+}
+
 function butproc() {
 	// button repeat
 	//if (true) { // no delay
-	if (repdelay >= 50) {
+	if (repdelay >= parmDelay) {
 		if (lastrepbut) {
 			++repperiod;
-			if (repperiod >= 6) {
+			if (repperiod >= parmRep) {
 				buthandledownrep(lastrepbut);
 				repperiod = 0;
 			}

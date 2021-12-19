@@ -1,3 +1,15 @@
+.topmargin {
+	background-color: yellow;
+}
+
+.botmargin {
+	background-color: red;
+}
+
+.noshow {
+	display: none;
+}
+
 body {
 	margin:2px;
 }
@@ -197,12 +209,20 @@ canvas.inside {
 	background-color: lightgreen;
 }
 
+#myformT0 {
+	background-color: lightblue;
+}
+
 #myformT {
 	background-color: lightblue;
 }
 
 #myformM {
 	background-color: #0fc0cf;
+}
+
+#myformB0 {
+	background-color: #8fe0cf;
 }
 
 #myformB {

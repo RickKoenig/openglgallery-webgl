@@ -135,20 +135,7 @@ framebuffer4.buildFancyScene = function() {
 framebuffer4.toggleFlycam = function() {
 	framebuffer4.flycamFBn = !framebuffer4.flycamFBn;	
 };
-/*
-framebuffer4.floatToString = function(f,precision) {
-	var fs = "" + f;
-	if (precision === undefined)
-		precision = 6;
-	if (fs.charAt(0) == '-') {
-		++precision;
-	}
-	if (fs.length > precision) {
-		fs = fs.substr(0,precision);
-	}
-	return fs;
-}
-*/
+
 framebuffer4.updateGainText = function() {
 	var gainStr = floatToString(framebuffer4.gain);
 	printareadraw(framebuffer4.gainPrint,"Gain = " + gainStr);	
@@ -160,12 +147,12 @@ framebuffer4.updateConvergenceText = function() {
 };
 
 framebuffer4.gainSliderCallback = function(val) {
-	framebuffer4.gain = val.value/framebuffer4.gainMul;
+	framebuffer4.gain = parseFloat(val.value);
 	framebuffer4.updateGainText();
 };
 
 framebuffer4.convergenceSliderCallback = function(val) {
-	framebuffer4.convergence = val.value/framebuffer4.convergenceMul;
+	framebuffer4.convergence = parseFloat(val.value);
 	framebuffer4.updateConvergenceText();
 };
 
@@ -186,13 +173,15 @@ framebuffer4.init = function() {
 	framebuffer4.minGain = -.25;
 	framebuffer4.maxGain = .25;
 	//framebuffer4.gain = 0;//.75;
-	framebuffer4.gainMul = 100.0;
+	//framebuffer4.gainMul = 100;//99.3587865;
+	framebuffer4.gainStep = .01;
 	
 	// convergence
 	framebuffer4.minConvergence = -1;
 	framebuffer4.maxConvergence = 1;
 	//framebuffer4.convergence = 0;//.75;
-	framebuffer4.convergenceMul = 100.0;
+	//framebuffer4.convergenceMul = 100;//99.247;
+	framebuffer4.convergenceStep = .01;
 
 	// UI
 	setbutsname('framebuffer4');
@@ -201,19 +190,21 @@ framebuffer4.init = function() {
 	// gain
 	framebuffer4.gainPrint = makeaprintarea('GAIN:');
 	makeaslider(
-		framebuffer4.minGain*framebuffer4.gainMul,
-		framebuffer4.maxGain*framebuffer4.gainMul,
-		framebuffer4.gain*framebuffer4.gainMul,
-		framebuffer4.gainSliderCallback
+		framebuffer4.minGain,
+		framebuffer4.maxGain,
+		framebuffer4.gain,
+		framebuffer4.gainSliderCallback,
+		framebuffer4.gainStep
 	);
 
 	// convergence
 	framebuffer4.convergencePrint = makeaprintarea('CONVERGENCE:');
 	makeaslider(
-		framebuffer4.minConvergence*framebuffer4.convergenceMul,
-		framebuffer4.maxConvergence*framebuffer4.convergenceMul,
-		framebuffer4.convergence*framebuffer4.convergenceMul,
-		framebuffer4.convergenceSliderCallback
+		framebuffer4.minConvergence,
+		framebuffer4.maxConvergence,
+		framebuffer4.convergence,
+		framebuffer4.convergenceSliderCallback,
+		framebuffer4.convergenceStep
 	);
 	
 	framebuffer4.updateGainText();

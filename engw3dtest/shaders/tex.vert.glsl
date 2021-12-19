@@ -8,5 +8,6 @@ varying mediump vec2 vTextureCoord;
 
 void main(void) {
 	gl_Position = pMatrixUniform * (mvMatrixUniform * vec4(vertexPositionAttribute, 1.0));
+	//gl_Position = (pMatrixUniform * mvMatrixUniform) * vec4(vertexPositionAttribute, 1.0);
 	vTextureCoord = textureCoordAttribute;
 }

@@ -1,3 +1,9 @@
+/*
+
+hi this is fraction 
+
+*/
+
 // simple fraction class
 // Thanks to Brandon Jones, Colin MacKenzie IV. for the template borrowed from vec2.js
 // Rick Koenig, from vec2.js to fraction.js

@@ -302,7 +302,7 @@ function stripComments(str) {
 	}
 	return reCombined;
 }
-
+/*
 function floatToString(f,precision) {
 	if (Math.abs(f) < .00001)
 		return "0";
@@ -316,6 +316,15 @@ function floatToString(f,precision) {
 		fs = fs.substr(0,precision);
 	}
 	return fs;
+}
+*/
+
+function floatToString(f,precision) {
+	if (Math.abs(f) < .00000000001)
+		return "0";
+	if (precision === undefined)
+		precision = 3;
+	return f.toFixed(precision);
 }
 
 

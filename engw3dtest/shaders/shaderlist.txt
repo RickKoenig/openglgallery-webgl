@@ -65,13 +65,16 @@
 	"envmapp",
 	"envmapv",
 	
-// new shaders (2)
+// new shaders (3)
 // some ways to draw tubes
 	"meshstrip", // like a raster scan, backface removes come back
 	"meshparticle", // instanced rendering of a quad
-	"meshparticlealwaysfacing" // instanced rendering of a quad, good aspect ratio, always facing
+	"meshparticlealwaysfacing", // instanced rendering of a quad, good aspect ratio, always facing
+	
+	// V2 only
+	"mandl"
 	
 ]
 
-// 52 shaders total
+// 54 shaders total
 

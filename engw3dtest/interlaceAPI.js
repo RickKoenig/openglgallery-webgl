@@ -8,13 +8,15 @@ function Interleave3D() {
 	Interleave3D.minGain = -.25;
 	Interleave3D.maxGain = .25;
 	//Interleave3D.gain = 0;//.75;
-	Interleave3D.gainMul = 100.0;
+	//Interleave3D.gainMul = 100.0;
+	Interleave3D.gainStep = .01;
 
 	// convergence
 	Interleave3D.minConvergence = -1;
 	Interleave3D.maxConvergence = 1;
 	//Interleave3D.convergence = 0;//.75;
-	Interleave3D.convergenceMul = 100.0;
+	//Interleave3D.convergenceMul = 100.0;
+	Interleave3D.convergenceStep = .01;
 
 	// UI
 	setbutsname("Multiview");
@@ -22,19 +24,21 @@ function Interleave3D() {
 	// gain
 	Interleave3D.gainPrint = makeaprintarea('GAIN:');
 	makeaslider(
-		Interleave3D.minGain*Interleave3D.gainMul,
-		Interleave3D.maxGain*Interleave3D.gainMul,
-		Interleave3D.gain*Interleave3D.gainMul,
-		Interleave3D.gainSliderCallback
+		Interleave3D.minGain,
+		Interleave3D.maxGain,
+		Interleave3D.gain,
+		Interleave3D.gainSliderCallback,
+		Interleave3D.gainStep
 	);
 
 	// convergence
 	Interleave3D.convergencePrint = makeaprintarea('CONVERGENCE:');
 	makeaslider(
-		Interleave3D.minConvergence*Interleave3D.convergenceMul,
-		Interleave3D.maxConvergence*Interleave3D.convergenceMul,
-		Interleave3D.convergence*Interleave3D.convergenceMul,
-		Interleave3D.convergenceSliderCallback
+		Interleave3D.minConvergence,
+		Interleave3D.maxConvergence,
+		Interleave3D.convergence,
+		Interleave3D.convergenceSliderCallback,
+		Interleave3D.convergenceStep
 	);
 	makeahr();
 	makeabut("3D toggle",Interleave3D.toggle3D);
@@ -115,12 +119,12 @@ Interleave3D.updateConvergenceText = function() {
 };
 
 Interleave3D.gainSliderCallback = function(val) {
-	Interleave3D.gain = val.value/Interleave3D.gainMul;
+	Interleave3D.gain = parseFloat(val.value);
 	Interleave3D.updateGainText();
 };
 
 Interleave3D.convergenceSliderCallback = function(val) {
-	Interleave3D.convergence = val.value/Interleave3D.convergenceMul;
+	Interleave3D.convergence = parseFloat(val.value);
 	Interleave3D.updateConvergenceText();
 };
 

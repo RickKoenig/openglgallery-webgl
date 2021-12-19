@@ -157,13 +157,53 @@ function maindebugclear() {
 	clearbuts('stateman');
 }
 
+var topShow = false;
+var botShow = false;
+var topBut;
+var botBut;
+
+function topToggle(e) {
+	if (e.value == 'Engw Options +') {
+		e.value = 'Engw Options -';
+		myformT.classList.add("noshow");
+		e.setAttribute("title", "Show Engw Options");
+		topShow = false;
+	} else if (e.value == 'Engw Options -') {
+		e.value = 'Engw Options +';
+		myformT.classList.remove("noshow");
+		e.setAttribute("title", "Hide Engw Options");
+		topShow = true;
+	}
+}
+
+function botToggle(e) {
+	if (e.value == 'Show Log +') {
+		e.value = 'Show Log -';
+		myformB.classList.add("noshow");
+		e.setAttribute("title", "Show Log");
+		botShow = false;
+	} else if (e.value == 'Show Log -') {
+		e.value = 'Show Log +';
+		myformB.classList.remove("noshow");
+		e.setAttribute("title", "Hide Log");
+		botShow = true;
+	}
+}
+
 function maindebugsetbefore() {
 
 	if (showstate && myform) {
 		var oldform = myform;
-		myform = myformT;
+		myform = myformT0;
 		// eoutstateman = document.getElementById('stateman');
 		setbutsname('stateman');
+		if (topShow) {
+			topBut = makeabut('Engw Options +',topToggle);
+		} else {
+			topBut = makeabut('Engw Options -',topToggle);
+		}
+		topBut.setAttribute("title", "Show Engw Options");
+		myform = myformT;
 		eoutstateman = makeaprintarea();
 		var statetitles = getstatetitles();
 		statesel = makeaselect(statetitles,selstate);
@@ -174,7 +214,8 @@ function maindebugsetbefore() {
 		makeabut(logstrs[logmode],clearlog,null,null,true); // wide margins
 		makeabut("FULLSCREEN!",gofullscreen);
 		makeabut("Change Res",changeres);
-		//makeahr();
+		myform = myformT0;
+		makeahr();
 		//userStyle = true;
 		//oldform.appendChild(myform);
 		myform = oldform;
@@ -197,11 +238,20 @@ function maindebugsetafter() {
 	}
 	if (showprint) {
 		var oldform = myform;
-		myform = myformB;
+		myform = myformB0;
 		//myform = document.createElement('p');
 		setbutsname('debprint');
 		// eoutkeystate = document.getElementById('keystate');
-		//makeahr();
+		makeahr();
+		if (botShow) {
+			botBut = makeabut('Show Log +',botToggle);
+		} else {
+			botBut = makeabut('Show Log -',botToggle);
+		}
+		if (botBut) {
+			botBut.setAttribute("title", "Show Log");
+		}
+		myform = myformB;
 		eoutkeystate = makeaprintarea();
 		// eoutinputstate = document.getElementById('inputstate');
 		eoutinputstate = makeaprintarea();
