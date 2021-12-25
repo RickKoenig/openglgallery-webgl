@@ -297,6 +297,8 @@ debprint.buildstrarr = function() {
 	}
 };
 	
+debprint.hideAlert = false;
+
 debprint.proc = function() {
 	// toggle debprint
 	if (debprint.enable && input.key == debprint.debugkey) {
@@ -368,12 +370,26 @@ debprint.proc = function() {
 		input.key = 0;
 		break;
 	}
-	// wheel
-	debprint.idx -= input.wheelDelta;
-	if (debprint.idx < 0)
+	// wheel, need an integer for idx
+	var wd = input.wheelDelta;
+	if (wd == 0) { // do nothing
+	} else {
+		// make wheel delta a whole number, numbers close to 0 become a 1
+		var sign = wd >= 0 ? 1 : -1;
+		var abs = wd * sign;
+		if (abs < 1.0) {
+			abs = 1.0;
+		} else { // other numbers go towards 0
+			abs = Math.floor(abs);
+		}
+		wd = abs * sign;
+	}
+	debprint.idx -= wd;
+	if (debprint.idx < 0) {
 		debprint.idx = 0;
-	else if (debprint.idx >= n)
+	} else if (debprint.idx >= n) {
 		debprint.idx = n - 1;
+	}
 	// scrolling text
 	debprint.sclidx = debprint.idx - Math.floor((d-1)/2);
 	if (debprint.sclidx < 0)
@@ -389,8 +405,15 @@ debprint.proc = function() {
 		else
 			ext = "  ";
 		var ele = debprint.strarr[i];
-		if (!ele)
-			alert("no ele");
+		if (!ele) { // TODO: hmm, why no ele ???
+			if (!debprint.hideAlert) { // try to debug on suspect computer
+				alert("no ele"); // show only once
+				debprint.hideAlert = true;
+			} else {
+				console.log("no ele");
+			}
+			continue;
+		}
 		if (ele.header) {
 			text += ext + "===== " + ele.header + " =====\n";
 		} else { 

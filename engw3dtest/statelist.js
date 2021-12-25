@@ -49,4 +49,4 @@ var statelist = [
 	mandl, // the Mandelbrot set
 ];
 
-var startstate = mandl;
+var startstate = basic;

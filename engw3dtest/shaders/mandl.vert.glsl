@@ -1,10 +1,10 @@
 #version 300 es
 // webgl 2.0
 
-uniform mat4 mvMatrixUniform;
-uniform mat4 pMatrixUniform;
+uniform highp mat4 mvMatrixUniform;
+uniform highp mat4 pMatrixUniform;
 
-in vec3 vertexPositionAttribute;
+in highp vec3 vertexPositionAttribute;
 
 out highp vec2 pos;
 
