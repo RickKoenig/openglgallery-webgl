@@ -2,78 +2,69 @@
 
 precision highp float;
 
-uniform float palettePos;
+#define M_PI 3.1415926535897932384626433832795
 
-in highp vec2 pos; // -2, -2 in lower left to +2, +2 in upper right
+uniform float palettePos; // for showing palette 0 to 1
+uniform float paletteCycleOffset; // [0 to 1)
+uniform float paletteRepeat;
+uniform float paletteAmp;
+uniform float paletteFreq;
+
+in vec2 pos; // -2, -2 in lower left to +2, +2 in upper right
 
 out lowp vec4 color;
 
-//#define testPalette
+const float segments = 7.0;
+const int iSegments = int(segments);
+const vec4 colors[iSegments + 1] = vec4[iSegments + 1] (
+	vec4(0.0, .25, .5, 1.0), // 0
+	vec4(.75, .25, .5, 1.0), // 1
+	vec4(.75, .75, .5, 1.0), // 2
+	vec4(.25, .75, .5, 1.0), // 3
+	vec4(.25, .25, .75, 1.0), // 4
+	vec4(.5, .25, 1.0, 1.0), // 5
+	vec4(.75, .5, .75, 1.0), // 6
+	vec4(1.0, .75, .5, 1.0) // 7
+);
 
-vec4 getColor(int i)
+// index runs from 0.0 to 1.0 in segments each one twice the size of the previous segment
+vec4 getColor4(float index)
 {
-#ifdef testPalette
-	const vec4 colorTab[8] = vec4[] (
-		vec4(0.0, 0.0, 1.0, 1.0),
-		vec4(0.0, 1.0, 0.0, 1.0),
-		vec4(0.0, 1.0, 1.0, 1.0),
-		vec4(1.0, 0.0, 0.0, 1.0),
-		vec4(1.0, 0.0, 1.0, 1.0),
-		vec4(1.0, 1.0, 0.0, 1.0),
-		vec4(1.0, 1.0, 1.0, 1.0),
-		vec4(0.0, 0.0, 0.0, 1.0)
-	);
-	if (i < 8) {
-		return colorTab[i];
+	if (index >= 1.0) { // in the set, return black
+		return vec4(0.0);
 	}
-#endif
-	float r,g,b;
-	float f = float(i);
-	if (i < 64) {
-		r = 2.0 * f;
-		g = 64.0;
-		b = 128.0;
-	} else if (i < 128) {
-		r = (((f - 64.0) * 128.0) / 126.0) + 128.0;
-		g = 32.0;
-		b = 128.0;
-	} else if (i < 256) {
-		r = (((f - 128.0) * 62.0) / 127.0) + 193.0;
-		g = 0.0;
-		b = 128.0;
-	} else if (i < 512) {
-		r = 255.0;
-		g = (((f - 256.0) * 62.0) / 255.0) + 1.0;
-		b = 128.0;
-	} else if (i < 1024) {
-		r = 255.0;
-		g = (((f - 512.0) * 63.0) / 511.0) + 64.0;
-		b = 128.0;
-	} else if (i < 2048) {
-		r = 255.0;
-		g = (((f - 1024.0) * 63.0) / 1023.0) + 128.0;
-		b = 128.0;
-	} else if (i < 4096) {
-		r = 255.0;
-		g = (((f - 2048.0) * 63.0) / 2047.0) + 192.0;
-		b = 128.0;
-	} else { // >= 4095
-		r = 0.0;
-		g = 0.0;
-		b = 0.0;
+	float small = exp2(segments - 1.0);
+	float logIndex; // 0.0 to segments
+	float firstSegment = small * index;
+	if (firstSegment >= 1.0) {
+		logIndex = log2(index) + segments; // 1.0 to segments
+	} else {
+		logIndex = firstSegment; // do linear on first part 0.0 to 1.0
 	}
-	return vec4(r / 255.0, g / 255.0, b / 255.0, 1.0);
+	// logIndex runs from [0 to segments)
+	logIndex *= paletteRepeat;
+	logIndex += paletteCycleOffset * segments;
+	logIndex = mod(logIndex, segments);
+	float modLogIndex = fract(logIndex);
+	int intLogIndex = int(logIndex);
+	vec4 col = mix(colors[intLogIndex], colors[intLogIndex + 1], modLogIndex);
+	float intensity = mix(1.0, cos(logIndex / segments * paletteFreq * (2.0 * M_PI)), paletteAmp * .25);
+	//paletteAmp;
+	//paletteFreq;
+	col.rgb *= intensity;
+	return col;
 }
 
 void main() 
 {
 	// draw the color palette if visible
-	if (palettePos > .00001) { // don't draw edge cases
+	if (palettePos > .000001) { // don't draw edge cases
 		float palShow = -2.0 + .125 * palettePos;
 		// display the color palette
 		if (pos.x < palShow) {
-			int colorIndex = int ((2.0 - pos.y) * (1024.0 + 1.0));
-			color = getColor(colorIndex);
+			const float eps = .005;
+			float colorIndex = (2.0 + eps - pos.y) * .25;
+			color = getColor4(colorIndex);
 			return;
 		}
 	}
@@ -92,19 +83,5 @@ void main()
 		if (mag2 > 4.0)
 			break;
 	}
-#if 0
-	// test big circle
-	color = vec4(.5,.5,.5,1.0);
-	if (dot(pos, pos) > 4.0) {
-		color = getColor(0);
-		return;
-	}
-	// test smaller offset circle
-	vec2 off = pos - vec2(.8, .2);
-	if (dot(off, off) <= .25) {
-		color = getColor(2);
-		return;
-	}
-#endif	
-	color = getColor(depth);
+	color = getColor4(float(depth) / float(maxDepth));
 }
