@@ -47,6 +47,7 @@ var statelist = [
 	tubedots, // patterns inside a tube
 	nim, // the game
 	mandl, // the Mandelbrot set
+	neural6, // use deep learning to recognize hand written digits
 ];
 
 var startstate = basic;

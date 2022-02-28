@@ -7,7 +7,12 @@ function fopen(ab)
 	return fh;
 }
 
-function freadI32(fh)
+// these are platform dependent for endian !!!, most likely little endian
+// TODO: maybe a bad idea assuming little endian !!
+
+// how about this, if endian is undefined, just use TypedArray
+
+function freadI32(fh, littleEndian)
 {
 	if (fh.offset + 4 > fh.ab.byteLength)
 		return null;
@@ -15,9 +20,34 @@ function freadI32(fh)
 		logger("bad file handle!");
 	if (!fh.ab)
 		logger("bad buffer!");
-	var i32a = new Int32Array(fh.ab,fh.offset,1);
+	if (littleEndian !== undefined) {
+		var dv = new DataView(fh.ab);
+		var i32 = dv.getInt32(fh.offset, littleEndian);
+	} else {
+		var i32a = new Int32Array(fh.ab,fh.offset,1);
+		var i32 = i32a[0];
+	}
 	fh.offset += 4;
-	return i32a[0];
+	return i32;
+}
+
+function freadU32(fh, littleEndian)
+{
+	if (fh.offset + 4 > fh.ab.byteLength)
+		return null;
+	if (!fh)
+		logger("bad file handle!");
+	if (!fh.ab)
+		logger("bad buffer!");
+	if (littleEndian !== undefined) {
+		var dv = new DataView(fh.ab);
+		var u32 = dv.getUint32(fh.offset, littleEndian);
+	} else {
+		var u32a = new Uint32Array(fh.ab,fh.offset,1);
+		var u32 = u32a[0];
+	}
+	fh.offset += 4;
+	return u32;
 }
 
 function freadF32(fh)
@@ -29,7 +59,16 @@ function freadF32(fh)
 	return f32a[0];
 }
 
-function freadI8v(fh,nele)
+function freadF64(fh)
+{
+	if (fh.offset + 8 > fh.ab.byteLength)
+		return null;
+	var f64a = new Float64Array(fh.ab,fh.offset,1);
+	fh.offset += 8;
+	return f64a[0];
+}
+
+function freadI8v(fh, nele)
 {
 	if (fh.offset + nele > fh.ab.byteLength)
 		return null;
@@ -38,15 +77,65 @@ function freadI8v(fh,nele)
 	return i8a;
 }
 
-function freadI32v(fh,nele)
+function freadU8v(fh, nele)
 {
-	var nb = nele*4;
+	if (fh.offset + nele > fh.ab.byteLength)
+		return null;
+	var i8a = new Uint8Array(fh.ab,fh.offset,nele);
+	fh.offset += nele;
+	return i8a;
+}
+
+function freadI32v(fh, nele)
+{
+	var nb = nele * 4;
 	if (fh.offset + nb > fh.ab.byteLength)
 		return null;
 	var i32a = new Int32Array(fh.ab,fh.offset,nele);
 	fh.offset += nb;
 	return i32a;
 }
+
+function freadU32v(fh, nele)
+{
+	var nb = nele * 4;
+	if (fh.offset + nb > fh.ab.byteLength)
+		return null;
+	var u32a = new Uint32Array(fh.ab,fh.offset,nele);
+	fh.offset += nb;
+	return u32a;
+}
+
+function freadF64v(fh, nele)
+{
+	var nb = nele * 8;
+	if (fh.offset + nb > fh.ab.byteLength)
+		return null;
+	var f64a = new Float64Array(fh.ab,fh.offset,nele);
+	fh.offset += nb;
+	return f64a;
+}
+
+function freadF64DV(fh)
+{
+	var dv = new DataView(fh.ab);
+	var f64 = dv.getFloat64(fh.offset, true);
+	fh.offset += 8;
+	return f64;
+}
+
+
+function freadF64DVv(fh, nele)
+{ 
+	var f64a = [];
+	for (var i = 0; i < nele ; ++i) {
+		var v = freadF64DV(fh);
+		f64a.push(v);
+	}
+	return f64a;
+}
+
+
 
 function fskip(fh,nbytes)
 {

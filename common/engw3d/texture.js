@@ -326,7 +326,8 @@ Texture.prototype.glfree = function() {
 // aname,width,height,data = Uint32Array   OR
 // aname,width,height,data = Uint8Array   OR
 // aname,width,height,data = Uint8ClampedArray NOT !!!, doesn't work   OR
-// aname,canvas
+// aname,canvas OR
+// aname,Bitmap32
 function DataTexture(aname,wid,hit,data) {
 	var numbits = 0;
 	var c = null; // <canvas>
