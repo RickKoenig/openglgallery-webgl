@@ -23,6 +23,8 @@ neural6.output;
 neural6.fontSize = .1;
 neural6.dataYoffset = .8; // results
 
+neural6.extraSlopeAmount = .01;
+
 // helper
 neural6.getUserInputsFromBM = function(bm, inp) {
 		var prod = bm.size.x * bm.size.y;
@@ -102,18 +104,15 @@ neural6.loadNetwork = function() {
 		var kSize = neural6.topo[k];
 		var kPrevSize = neural6.topo[pK];
 		var alayer = {};
-		alayer.w = [];
-		//alayer.b = [];
+		alayer.W = [];
 		if (k < nLayers - 1)
 			alayer.A = new Array(kSize);
 		alayer.Z = new Array(kSize);
 		for (var j = 0; j < kSize; ++j) {
 			var wr = freadF64DVv(fhmd, kPrevSize);
-			alayer.w.push(wr);
+			alayer.W.push(wr);
 		}
-		//var br = freadF64DVv(fhmd, kSize);
-		alayer.b = freadF64DVv(fhmd, kSize);
-		//alayer.b.push(br);
+		alayer.B = freadF64DVv(fhmd, kSize);
 		neural6.layers.push(alayer);
 	}
 };
@@ -175,78 +174,39 @@ neural6.updateStatus = function(out) {
 };
 
 neural6.runNetwork = function(inData, out) {
-/*	for (var i = 0; i < 10; ++i) {
-		out[i] = -i * .2123456 + .5;
-	}
-	out[8] = 5.43; */
-	var i, j;
-	var k;
+	var i, j, k;
 	var lastK;
 	for (k = 1; k < neural6.topo.length; ++k) {
 		lastK = k - 1;
-		/*
-		layer& lastLayer = layers[lastK];
-		layer& curLayer = layers[k];
-		bool outputLayer = k == topo.size() - 1;
-		vector<double>& curA = outputLayer ? out : curLayer.A;
-		const vector<double>& lastA = lastK ? lastLayer.A : in;
-		U32 ic = topo[lastK];
-		U32 jc = topo[k];
-		vector<double>& curB = curLayer.B;
-		vector<vector<double>>& curW = curLayer.W;
-		vector<double>& curZ = curLayer.Z;
+		var lastLayer = neural6.layers[lastK];
+		var curLayer = neural6.layers[k];
+		var outputLayer = k == neural6.topo.length - 1;
+		var curA = outputLayer ? out : curLayer.A;
+		var lastA = lastK != 0 ? lastLayer.A : inData;
+		var ic = neural6.topo[lastK];
+		var jc = neural6.topo[k];
+		var curB = curLayer.B;
+		var curW = curLayer.W;
+		var curZ = curLayer.Z;
 		for (j = 0; j < jc; ++j) {
-			vector<double>& curWrow = curW[j];
-			curZ[j] = curB[j];
-			double& ZjRow = curZ[j];
+			var curWrow = curW[j];
+			var ZjRow = curB[j];
 			for (i = 0; i < ic; ++i) {
 				ZjRow += lastA[i] * curWrow[i];
 			}
-			curA[j] = outputLayer ? neuralNet::sigmoid(ZjRow) : neuralNet::tangentH(ZjRow);
+			curZ[j] = ZjRow;
+			curA[j] = outputLayer ? neural6.sigmoid(ZjRow) : neural6.tangentH(ZjRow);
 		}
-		*/
-		out[3] = 5;
-		out[4] = 6.80;
 	}
 };
 
+neural6.sigmoid = function(x) {
+	return 1.0 / (1.0 + Math.exp(-x)) + x * neural6.extraSlopeAmount;
+};
 
-/*
-void neuralNet::runNetwork(const vector<double>& in, vector<double>& out)
-{
-	perf_start(RUN_NETWORK);
-	U32 i, j;
-	U32 k;
-	U32 lastK;
-	for (k = 1; k < topo.size(); ++k) {
-		lastK = k - 1;
-		layer& lastLayer = layers[lastK];
-		layer& curLayer = layers[k];
-		bool outputLayer = k == topo.size() - 1;
-		vector<double>& curA = outputLayer ? out : curLayer.A;
-		const vector<double>& lastA = lastK ? lastLayer.A : in;
-		U32 ic = topo[lastK];
-		U32 jc = topo[k];
-		vector<double>& curB = curLayer.B;
-		vector<vector<double>>& curW = curLayer.W;
-		vector<double>& curZ = curLayer.Z;
-		for (j = 0; j < jc; ++j) {
-			vector<double>& curWrow = curW[j];
-			curZ[j] = curB[j];
-			double& ZjRow = curZ[j];
-			for (i = 0; i < ic; ++i) {
-				ZjRow += lastA[i] * curWrow[i];
-			}
-#ifdef USE_TANH_HIDDEN
-			curA[j] = outputLayer ? neuralNet::sigmoid(ZjRow) : neuralNet::tangentH(ZjRow);
-#else
-			curA[j] = neuralNet::sigmoid(ZjRow);
-#endif
-		}
-	}
-	perf_end(RUN_NETWORK);
-}
-*/
+neural6.tangentH = function(x) {
+	return Math.tanh(x) + x * neural6.extraSlopeAmount;
+};
 
 
 // load these before init
@@ -340,7 +300,7 @@ neural6.proc = function() {
 	}
 	if (input.mbut[Input.MMIDDLE]) {
 		var prod = neural6.xSize * neural6.ySize;
-		neural6.curData = new Array(prod).fill(250);
+		neural6.curData = new Array(prod).fill(0);
 		neural6.updateTex(neural6.curData);
 	}
 	neural6.font0.print("User: TestIdx = " + neural6.testIdx);
