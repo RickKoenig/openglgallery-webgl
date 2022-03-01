@@ -44,6 +44,18 @@ Bitmap32.prototype.clipPutPixel = function(x,y,color) {
 	}
 }
 
+Bitmap32.prototype.fastGetPixel = function(x,y) {
+	return this.data[this.size.x*y + x];
+}
+
+Bitmap32.prototype.clipGetPixel = function(x,y) {
+	if (x >= 0 && x < this.size.x && y >= 0 && y < this.size.y) {
+		return this.fastGetPixel(x,y);
+	} else {
+		return 0;
+	}
+}
+
 
 ////////// horizontal lines
 Bitmap32.prototype.xClip = function(x0,x1) {

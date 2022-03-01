@@ -1,8 +1,9 @@
 // run a neural network nmodel
 var neural6 = {}; // the 'neural6' state
 
-neural6.text = "WebGL: Recognize hand written digits\nLeft mouse button: draw   Right mouse button: erase\n" +
-			"Middle mouse button: clear";
+neural6.text = "WebGL: Recognize hand written digits\n"
+			+ "Left mouse button: draw   Right mouse button: erase " +
+			"Middle mouse button: clear\nleft key prev test, right key next test";
 neural6.title = "Neural6";
 
 neural6.topo = null; // structure of network
@@ -19,6 +20,11 @@ neural6.font2;
 neural6.bm;
 neural6.input;
 neural6.output;
+
+neural6.mx = 0;
+neural6.my = 0;
+neural6.lastmx = 0;
+neural6.lastmy = 0;
 
 neural6.fontSize = .1;
 neural6.dataYoffset = .8; // results
@@ -82,7 +88,7 @@ neural6.makeBMfromImage = function(img, wid, hit) {
 	var prod = wid * hit;
 	for (j = 0; j < prod; ++j) {
 		var rawVal = img[j];
-		var c32Val = C32([rawVal, rawVal, rawVal]);//C32BLUE;//C32(rawVal, rawVal, rawVal);
+		var c32Val = C32([rawVal, rawVal, rawVal]);
 		data[j] = c32Val;
 	}
 	return ret;
@@ -139,9 +145,6 @@ neural6.loadTestData = function() {
 
 neural6.updateTex = function() {
 	// update texture
-	neural6.bm = neural6.makeBMfromImage(neural6.curData
-		, neural6.xSize
-		, neural6.ySize);
 	neural6.dataTex.updateData(neural6.bm);
 	// update input
 	neural6.input = [];
@@ -159,9 +162,8 @@ neural6.updateStatus = function(out) {
 			maxOut = v;
 		}
 	}
-	
 	for (var i = 0; i < 10; ++i) {
-		var row = "D " + i + ", V = " + (out[i] * 100).toFixed(4).padStart(9) + "%";
+		var row = "D " + i + ", V =" + (out[i] * 100).toFixed(4).padStart(9) + "%";
 		if (i == p) {
 			neural6.treef2.trans[1] = neural6.dataYoffset - neural6.fontSize * p;
 			neural6.font2.print("* " + row);
@@ -208,6 +210,55 @@ neural6.tangentH = function(x) {
 	return Math.tanh(x) + x * neural6.extraSlopeAmount;
 };
 
+neural6.drawToUser = function(drawColor) {
+	var x = neural6.mx;
+	var y = neural6.my;
+	var xl = neural6.lastmx;
+	var yl = neural6.lastmy;
+	const xsize = neural6.bm.size.x;
+	const ysize = neural6.bm.size.y;
+	if (x >= 0 && x < xsize && y >=0 && y < ysize) {
+		const A = 255;
+		const B = 180;
+		const C = 92;
+		const D = 64;
+		const E = 32;
+		const F = 0;
+		const brush = [
+			[F,E,D,E,F],
+			[E,C,B,C,E],
+			[D,B,A,B,D],
+			[E,C,B,C,E],
+			[F,E,D,E,F]
+		];
+		const lineStep = 20;
+		for (var k = 0; k <= lineStep; ++k) {
+			var xc = Math.floor(xl + (x - xl) * k / lineStep);
+			var yc = Math.floor(yl + (y - yl) * k / lineStep);
+			for (var j = 0; j < 5; ++j) {
+				for (var i = 0; i < 5; ++i) {
+					var brushVal = brush[j][i];
+					if (brushVal) {
+						var xi = xc + i - 2;
+						var yj = yc + j - 2;
+						if (drawColor == C32BLACK) {
+							// erase: just clear to black if brush is non zero
+							neural6.bm.clipPutPixel(xi, yj, drawColor);
+						} else {
+							// draw: only when output would be greater then the input
+							var oldVal = neural6.bm.clipGetPixel(xi, yj);
+							if ((oldVal & 0xff) < brushVal) {
+								neural6.bm.clipPutPixel(xi, yj, C32([brushVal, brushVal, brushVal]));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	neural6.lastmx = x;
+	neural6.lastmy = y;
+};
 
 // load these before init
 neural6.load = function() {
@@ -233,7 +284,10 @@ neural6.init = function() {
 	neural6.dataTex = DataTexture.createtexture("digit", neural6.bm);
 	var plane = buildplanexy("aplane",1,1,"digit","texDoubleSided");
 	plane.mod.flags |= modelflagenums.DOUBLESIDED;
-	neural6.curData = neural6.testDataRaw[neural6.testIdx];
+	neural6.curData = neural6.testDataRaw[neural6.testIdx].slice();
+	neural6.bm = neural6.makeBMfromImage(neural6.curData
+		, neural6.xSize
+		, neural6.ySize);
 	neural6.updateTex();
 
 	plane.trans = [1,0,2];
@@ -249,7 +303,6 @@ neural6.init = function() {
 	neural6.treef0.trans = [-2.5, 1, 2];
 	neural6.treef0.setmodel(neural6.font0);
 	neural6.roottree.linkchild(neural6.treef0);
-		
 
 	// build model font1, data
 	neural6.font1 = new ModelFont("font1","font0.png","font2c",neural6.fontSize,neural6.fontSize,100,100);
@@ -295,13 +348,29 @@ neural6.proc = function() {
 		break;
 	}
 	if (updateTex) {
-		neural6.curData = neural6.testDataRaw[neural6.testIdx];
-		neural6.updateTex(neural6.curData);
+		neural6.curData = neural6.testDataRaw[neural6.testIdx].slice();
+	neural6.bm = neural6.makeBMfromImage(neural6.curData
+		, neural6.xSize
+		, neural6.ySize);
+		neural6.updateTex();
 	}
+	const xsize = neural6.bm.size.x;
+	const ysize = neural6.bm.size.y;
+	neural6.mx = Math.floor(input.fmx * xsize);
+	neural6.my = Math.floor((.5 - input.fmy) * ysize);
 	if (input.mbut[Input.MMIDDLE]) {
-		var prod = neural6.xSize * neural6.ySize;
-		neural6.curData = new Array(prod).fill(0);
-		neural6.updateTex(neural6.curData);
+		neural6.bm.fastClear(C32BLACK);
+		neural6.updateTex();
+	}
+	if (input.mbut[Input.MLEFT]) {
+		neural6.drawToUser(C32WHITE);
+		neural6.updateTex();
+	} else if (input.mbut[Input.MRIGHT]) {
+		neural6.drawToUser(C32BLACK);
+		neural6.updateTex();
+	} else {
+		neural6.lastmx = neural6.mx;
+		neural6.lastmy = neural6.my;
 	}
 	neural6.font0.print("User: TestIdx = " + neural6.testIdx);
 	
