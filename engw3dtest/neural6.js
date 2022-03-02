@@ -218,12 +218,24 @@ neural6.drawToUser = function(drawColor) {
 	const xsize = neural6.bm.size.x;
 	const ysize = neural6.bm.size.y;
 	if (x >= 0 && x < xsize && y >=0 && y < ysize) {
-		const A = 255;
-		const B = 180;
-		const C = 92;
-		const D = 64;
-		const E = 32;
-		const F = 0;
+		var smallBrush = true;
+		var largeBrush = false;
+		if (smallBrush) {
+			var A = 255;
+			var B = 180;
+			var C = 90;
+			var D = 45;
+			var E = 0;
+			var F = 0;
+		}
+		if (largeBrush) {
+			var A = 255;
+			var B = 180;
+			var C = 92;
+			var D = 64;
+			var E = 32;
+			var F = 0;
+		}
 		const brush = [
 			[F,E,D,E,F],
 			[E,C,B,C,E],
