@@ -158,7 +158,7 @@ fraction.set = function(out, w, n, d) {
 		n = res[1];
 		d = res[2];
 	}
-	// shift args left if no 'd'
+	// shift args right if no 'd'
 	var to = typeof d;
 	if (to !== 'number' && to!== 'bigint' && to !== 'string') {
 		d = n;
@@ -187,7 +187,7 @@ fraction.set = function(out, w, n, d) {
 	} else {
 		out[0] = n;
 	}
-		out[1] = d;
+	out[1] = d;
 	fraction.reduce(out);
     return out;
 };
