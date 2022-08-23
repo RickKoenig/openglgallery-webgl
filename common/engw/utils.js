@@ -1,9 +1,14 @@
+// hi there
 function range(a,b,c) {
 	if (b<a)
 		return a;
 	if (b>c)
 		return c;
 	return b;
+}
+
+function lerp(a, b, t) {
+	return a + t * (b - a);
 }
 
 // inc but wrap
