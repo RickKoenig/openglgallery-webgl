@@ -44,7 +44,8 @@ function bmouseov(e) {
 
 // event mouse exit
 function bmouseou(e) {
-	//mbuthold[e.button] = 0;
+	mbutcur[0] = mbutcur[1] = mbutcur[2] = 0;
+	mbuthold[0] = mbuthold[1] = mbuthold[2] = 0;
 	lastinside[0] = mbutcur[0];
 	lastinside[1] = mbutcur[1];
 	lastinside[2] = mbutcur[2];
