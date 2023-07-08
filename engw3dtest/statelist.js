@@ -50,4 +50,4 @@ var statelist = [
 	neural6, // use deep learning to recognize hand written digits
 ];
 
-var startstate = basic;
+var startstate = state8;

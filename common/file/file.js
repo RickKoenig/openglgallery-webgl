@@ -150,12 +150,9 @@ function fclose(fh)
 var logger_str = "";
 
 function logger(str) {
-	//var estr = escapehtml(str);
 	if (logmode)
 		logger_str += str;
 	console.log(str);
-	//if (str.startsWith("treeglobals"))
-	//	logger("MORE");
 }
 
 function spliturl(url) {
