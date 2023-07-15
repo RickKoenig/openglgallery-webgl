@@ -459,7 +459,7 @@ function FrameBufferTexture(aname,wid,hit) {
     //gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_NEAREST);
 	var extensions = gl.getSupportedExtensions();
 	var ext1 = gl.getExtension("OES_texture_float"); 
-	if (!ext1) { // webgl 2.0 does not have this extension because it's built in
+	if (!ext1 && webglVersion == 1) { // webgl 2.0 does not have this extension because it's built in
 		//alert("no float textures");
 		logger("no float textures");
 	}
@@ -551,7 +551,7 @@ FrameBufferTexture.prototype.resize = function(nX,nY) {
 	var hit = nY;
 	var extensions = gl.getSupportedExtensions();
 	var ext1 = gl.getExtension("OES_texture_float"); 
-	if (!ext1) {
+	if (!ext1 && webglVersion == 1) {
 		//alert("no float textures");
 		logger("no float textures");
 	}

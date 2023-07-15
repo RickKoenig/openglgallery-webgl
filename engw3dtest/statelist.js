@@ -8,7 +8,8 @@ var statelist = [
 	state7, // more webgl Tree2, the whole fortpoint scene, tree level
 	state7p, // more webgl Tree2, prehistoric
 	ghostcity, // another .bws of ghost city race track
-	state8, // many, tree level
+	state8, // many, tree level, test web sockets
+	multiplayer, // test out multiplayer stuff
 	state9, // scratch, test render targets
 	state10, // multi texture, tree level, font test
 	state11, // shader test, lighting

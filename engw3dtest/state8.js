@@ -137,11 +137,6 @@ state8.proc = function() {
 };
 
 state8.updateinfo = function() {
-	//state8.myId;
-	//state8.infocnt;
-	//state8.hostname;
-	//state8.protocol;
-	state8.serverNews;
 	printareadraw(state8.infoarea, "myId = " + state8.myId
 		+ "\nmy count = " + state8.infocnt
 		+ "\nhostname = " + state8.hostname
