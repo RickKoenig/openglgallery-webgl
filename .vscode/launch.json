@@ -7,9 +7,23 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
+            "name": "Run Many Cubes",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=state8",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Simple multiplayer Test",
             "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=multiplayer",
             "webRoot": "${workspaceFolder}"
-        }
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_login",
+            "webRoot": "${workspaceFolder}"
+        },
     ]
 }

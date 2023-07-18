@@ -1,38 +1,29 @@
+// big TODO: make less global !!
 var state = null;
 var newstate = null;
 var dochangestate = false;
 var stateinited = false;
+var passIntent = null; // data to be passed from one state to another
 
-function changestate(news) {
+function changestate(news, intent) {
 	if (typeof news == 'string') {
 		news = window[news];
 	}
-	//if (!news)
-	//	return;
-	//while (ns >= nstates)
-	//	ns -= nstates;
-	//while (ns < 0)
-	//	ns += nstates;
 	newstate = news;
+	passIntent = intent;
 	dochangestate = true;
 	havemousedown = false;
 }
 
-function showandgo(m,s) {
-	var cbf = state[s];
-	logger("^^^^^^^^^^^ " + s + "." + m + " ^^^^^^^^^^^\n");
-//	if (s>=0 && s<nstates) {
-	//var cbf = window[s];
-	if (cbf) {
-		cbf();
+// call a method in a 'state' object
+function showandgo(title, method, data) {
+	var callBack = state[method];
+	logger("^^^^^^^^^^^ " + method + "." + title + " ^^^^^^^^^^^\n");
+	if (callBack) {
+		callBack(data);
 	}
-	logger("vvvvvvvvvvvvv " + s + "." + m + " vvvvvvvvvvvv\n");
-//		return true;	
-//	} else {
-//		return false;
-//	} else {
-//		return false;
-//	}
+	data = null;
+	logger("vvvvvvvvvvvvv " + method + "." + title + " vvvvvvvvvvvv\n");
 }
 
 function loadstate() {
@@ -60,20 +51,18 @@ function loadstate() {
 }
 
 function initstate() {
-	if (window.checkglerror)
-		checkglerror("start init state");
+	if (window.checkglerror) checkglerror("start init state");
 	//if (loadingmodelfont)
 	//	loadingmodelfont.print("");
 	loadstatus = 0;
 	maindebugclear();
 	maindebugsetbefore(); // but debug before user
 	//showandgo("init" + state);
-	showandgo(newstate.title,"init");
+	showandgo(newstate.title, "init", passIntent);
 	maindebugsetafter(); // but debug after user
 	stateinited = true;
 	resetframestep();
-	if (window.checkglerror)
-		checkglerror("done init state");
+	if (window.checkglerror) checkglerror("done init state");
 }
 
 function procstate() {

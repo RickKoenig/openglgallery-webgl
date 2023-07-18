@@ -4,12 +4,21 @@ var statelist = [
 	caveexplorer, // explore tree nodes;
 	camblur, // camera bluring shaders, etc.
 	state4, // test webgl, model level, webgl level
+
 	state6, // more webgl Model and Model2, some bwo's and a floor of fortpoint, model level
 	state7, // more webgl Tree2, the whole fortpoint scene, tree level
 	state7p, // more webgl Tree2, prehistoric
 	ghostcity, // another .bws of ghost city race track
+
 	state8, // many, tree level, test web sockets
 	multiplayer, // test out multiplayer stuff
+
+	race_login,
+	race_lobby,
+	race_fill,
+	race_ingame,
+	race_results,
+	
 	state9, // scratch, test render targets
 	state10, // multi texture, tree level, font test
 	state11, // shader test, lighting
