@@ -13,6 +13,7 @@ var statelist = [
 	state8, // many, tree level, test web sockets
 	multiplayer, // test out multiplayer stuff
 
+	race_console,
 	race_login,
 	race_lobby,
 	race_fill,
@@ -60,4 +61,4 @@ var statelist = [
 	neural6, // use deep learning to recognize hand written digits
 ];
 
-var startstate = state8;
+var startstate = race_console;

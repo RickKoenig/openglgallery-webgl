@@ -7,7 +7,7 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Run Many Cubes",
+            "name": "Run Many Cubes, controller test",
             "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=state8",
             "webRoot": "${workspaceFolder}"
         },
@@ -21,8 +21,15 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Run Race Net",
+            "name": "Run Race Net login",
             "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_login",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net console",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_console",
             "webRoot": "${workspaceFolder}"
         },
     ]
