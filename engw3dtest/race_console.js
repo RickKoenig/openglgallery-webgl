@@ -1,4 +1,4 @@
-// very minimalist 3D state
+// terminal
 var race_console = {}; // the 'race_console' state
 
 race_console.text = "WebGL: race_console 3D drawing";
@@ -31,21 +31,65 @@ race_console.init = function(intentData) {
 	race_console.roottree = new Tree2("race_console root tree");
 
 	// build a planexy (a square)
-	// make double sided and test gl_FrontFace (TODO: check spelling)
-	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","diffusespecp");
-	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","tex");
-	var plane = buildplanexy("aplane",1,1,"maptestnck.png","texDoubleSided");
+	const plane = buildplanexy("aplane",2,2,"maptestnck.png","texDoubleSided");
 	plane.mod.flags |= modelflagenums.DOUBLESIDED;
-
-	plane.trans = [0,0,1];
+	plane.flags = treeflagenums.DONTDRAWC;
+	plane.trans = [0,0,2];
 	race_console.roottree.linkchild(plane);
+
+	const cols = 60;
+	const rows = 20;
+	const depth = 384;
+	const offx = -400;
+	const offy = 300;
+	const glyphx = 16;
+	const glyphy = 32;
+
+	const backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
+	backgnd.mod.flags |= modelflagenums.NOZBUFFER;
+	backgnd.mod.mat.color = [.2, 0, 0, 1];
+	backgnd.trans = [offx, offy, depth];
+	race_console.roottree.linkchild(backgnd);
+
+	const amodf1big = new ModelFont("amodf1big", "font0.png", "tex", glyphx, glyphy, cols, rows, false);
+	amodf1big.flags |= modelflagenums.NOZBUFFER;
+	const treef1 = new Tree2("amodf1big");
+	treef1.setmodel(amodf1big);
+	treef1.trans = [offx, offy, depth];
+	race_console.roottree.linkchild(treef1);
+
+	race_console.terminal = new Terminal(amodf1big, race_console.doCommand);
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 };
 
+race_console.doCommand = function(cmdStr) {
+	console.log("got a command from terminal '" + cmdStr + "'");
+	const words = cmdStr.trim().split(/\s+/);
+	if (!words[0])
+		return "";
+	switch(words[0]) {
+		case "help":
+			return "commands are:\nhelp, echo, add"
+		case "echo":
+			words.shift();
+			return words.join(' ');
+		case "add":
+			let sum = 0;
+			words.shift();
+			for (let ele of words) {
+				sum += parseFloat(ele);
+			}
+			return sum;
+		default:
+			return "unrecognized command '" + cmdStr + "'";
+	}
+}
+
 race_console.proc = function() {
 	// proc
+	race_console.terminal.proc(input.key);
 	++race_console.count;
 	// do something after 4 seconds
 	if (race_console.count == 4*fpswanted) {
@@ -53,10 +97,11 @@ race_console.proc = function() {
 		//window.history.back();
 		//window.location.href = "../../index.html";
 		//window.location.href = "http://janko.at";
+		//return;
 	}
 	race_console.roottree.proc(); // probably does nothing
-	doflycam(mainvp); // modify the trs of mainvp using flycam
-	
+	//doflycam(mainvp); // modify the trs of mainvp using flycam
+
 	// draw
 	beginscene(mainvp);
 	race_console.roottree.draw();

@@ -1,7 +1,16 @@
 ////// Model 3d class, one material per model
 // try using reference counter
-function ModelFont(aname,fontname,shadname,cw,ch,maxcols,maxrows,wwrap) {
-
+/*
+	aname: model name
+	fontname: texture name to use a the font 8 by 16 chars
+	shadname: shader to use
+	cw: model 'x' values between chars, glyph x size, usually 16
+	ch: model 'y' values between chars, glyph y size, usually 32
+	maxcols: // max columns before either wraping or not drawing
+	maxrows: // max rows before not drawing anymore
+	wrap: do simple wrap
+*/
+function ModelFont(aname, fontname, shadname, cw, ch, maxcols, maxrows, wrap) {
 // do reference counter now
 	var amod = refcountmodellist[aname];
 	if (amod) {
@@ -31,7 +40,7 @@ function ModelFont(aname,fontname,shadname,cw,ch,maxcols,maxrows,wwrap) {
 	this.ch = ch;
 	this.maxrows = maxrows;
 	this.maxcols = maxcols;
-	this.wwrap = wwrap;
+	this.wrap = wrap;
 /*	this.verts = new Float32Array([
 		-1.0,  1.0,  0.0,
          1.0,  1.0,  0.0,
@@ -77,74 +86,76 @@ ModelFont.prototype.print = function(text) { // commit
 	//if (!this.verts)
 	//	alert("missing verts on model '" + this.name + "'");
 	this.nc = text.length;
-	var j = 0;
+	var numVerts = 0;
 	var x = 0;
 	var y = 0;
 	
     // build tri verts and uvs
 	this.verts = new Float32Array(this.nc*12); // 4 vec3's
 	this.uvs = new Float32Array(this.nc*8);	// 4 vec2's
+
+	// first parse the string
 	for (i=0;i<this.nc;++i) {
 		var cc = text.charCodeAt(i);
-		if (cc >= 128)
+		if (cc >= 128) { // skip non-printable chars
 			continue;
-/*		if (cc == 32) { // space, invisible
-			++x;
-			continue;
-	} */
-		if (cc == 10) { // \n
+		}
+		const visibleSpace = true;
+		if (!visibleSpace) {
+			if (cc == 32) { // space, invisible, skip over
+				++x;
+				continue;
+			}
+		}
+		
+		if (cc == 10) { // \n, new line
 			x = 0;
 			++y;
 			continue;
 		}
-		if (cc < 32)
-			var boo = cc;
 		if (x >= this.maxcols) {
-			if (this.wwrap) {
+			if (this.wrap) { // simple wrap
 				x = 0;
 				++y;
 			} else {
 				continue;
 			}
 		}
-		if (y >= this.maxrows)
+		if (y >= this.maxrows) {
 			break;
+		}
+		
+		// build verts with uvs
 		var r = cc>>3;
 		var c = cc&7;
-		//r = 6;
-		//c = 6;
-		//this.fudgex = .025; // fudge in for fonts, helps prevent wrap around effects (stray pixels from next glyph), but loses precise pixel mapping
-		//this.fudgey = .025;
-		//var this.fudgex = 0;
-		//var this.fudgey = 0;
 		var u0 = c/8.0 + this.fudgex/8.0;
 		var v0 = r/16.0 + this.fudgey/16.0;
 		var u1 = (c+1)/8.0-this.fudgex/8.0;
 		var v1 = (r+1)/16.0-this.fudgey/16.0;
-		this.verts[12*j   ] = this.cw*x;
-		this.verts[12*j+ 1] = -this.ch*y;
-		this.verts[12*j+ 2] = 0;
-		this.verts[12*j+ 3] = this.cw*(x + 1);
-		this.verts[12*j+ 4] = -this.ch*y;
-		this.verts[12*j+ 5] = 0;
-		this.verts[12*j+ 6] = this.cw*x;
-		this.verts[12*j+ 7] = -this.ch*(y + 1);
-		this.verts[12*j+ 8] = 0;
-		this.verts[12*j+ 9] = this.cw*(x + 1);
-		this.verts[12*j+10] = -this.ch*(y + 1);
-		this.verts[12*j+11] = 0;
-		this.uvs[8*j  ] = u0;
-		this.uvs[8*j+1] = v0;
-		this.uvs[8*j+2] = u1;
-		this.uvs[8*j+3] = v0;
-		this.uvs[8*j+4] = u0;
-		this.uvs[8*j+5] = v1;
-		this.uvs[8*j+6] = u1;
-		this.uvs[8*j+7] = v1;
+		this.verts[12*numVerts   ] = this.cw*x;
+		this.verts[12*numVerts+ 1] = -this.ch*y;
+		this.verts[12*numVerts+ 2] = 0;
+		this.verts[12*numVerts+ 3] = this.cw*(x + 1);
+		this.verts[12*numVerts+ 4] = -this.ch*y;
+		this.verts[12*numVerts+ 5] = 0;
+		this.verts[12*numVerts+ 6] = this.cw*x;
+		this.verts[12*numVerts+ 7] = -this.ch*(y + 1);
+		this.verts[12*numVerts+ 8] = 0;
+		this.verts[12*numVerts+ 9] = this.cw*(x + 1);
+		this.verts[12*numVerts+10] = -this.ch*(y + 1);
+		this.verts[12*numVerts+11] = 0;
+		this.uvs[8*numVerts  ] = u0;
+		this.uvs[8*numVerts+1] = v0;
+		this.uvs[8*numVerts+2] = u1;
+		this.uvs[8*numVerts+3] = v0;
+		this.uvs[8*numVerts+4] = u0;
+		this.uvs[8*numVerts+5] = v1;
+		this.uvs[8*numVerts+6] = u1;
+		this.uvs[8*numVerts+7] = v1;
 		++x;
-		++j;
+		++numVerts;
 	}
-	this.ng = j;
+	this.ng = numVerts;
 	if (this.glverts) {
 		gl.deleteBuffer(this.glverts);
 		decnglbuffers();
@@ -282,7 +293,7 @@ ModelFont.prototype.newdup = function() {
 		//var scratchfontmodel = new ModelFont("reffont","font3.png","tex",2*16/glc.clientHeight,2*32/glc.clientHeight,64,8,true);
 		var ret = new ModelFont(newname,this.texturenames[0],
 		  this.shadername,this.cw,this.ch,
-		  this.maxcols,this.maxrows,this.wwrap);
+		  this.maxcols,this.maxrows,this.wrap);
 		ret.print("copy");
 		return ret;
 	}
