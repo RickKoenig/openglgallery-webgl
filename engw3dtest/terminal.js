@@ -7,6 +7,8 @@ class Terminal {
         this.maxY = this.modelFont.maxrows;
         this.cmdCallback = cmdCallback;
         this.prompt = ">";
+        this.blinkDelay = 60; // 1 second
+        this.blink = 0;
         this.cursor = "_";
         this.mainStr = '\n'.repeat(this.maxY - 2);
         this.mainStr += "Welcome"; // results, etc.
@@ -42,7 +44,15 @@ class Terminal {
     }
 
     #update(str) { // update model font
-        this.modelFont.print(this.mainStr + '\n' + this.prompt + this.cmdStr + this.cursor);
+        var pStr = this.mainStr + '\n' + this.prompt + this.cmdStr;
+        if (this.blink * 2 >= this.blinkDelay) pStr += this.cursor;
+        this.modelFont.print(pStr);
+    }
+
+    print(str) {
+        this.mainStr += '\n' + str + '\n';
+        this.mainStr = this.#pruneStr(this.mainStr);
+        this.#update();
     }
 
     proc(key) {
@@ -53,16 +63,23 @@ class Terminal {
                     break;
                 case keycodes.RETURN:
                     this.mainStr += '\n' + this.prompt + this.cmdStr;
-                    let result = this.cmdCallback(this.cmdStr);
-                    this.mainStr += '\n' + result + '\n';
                     this.mainStr = this.#pruneStr(this.mainStr);
+                    this.cmdCallback(this.cmdStr);
                     this.cmdStr = "";
                     break;
                 default:
-                    this.cmdStr += String.fromCharCode(key);
+                    if (key >= 32 && key < 128) { // plain old ascii characters
+                        this.cmdStr += String.fromCharCode(key);
+                    }
                     break;
             }
-            this.#update(); // redraw
         }
+        // do blink
+        ++this.blink;
+        if (this.blink > this.blinkDelay) {
+            this.blink = 0;
+        }
+        // rebuild model if necessary
+        this.#update(); // redraw
     }
 };

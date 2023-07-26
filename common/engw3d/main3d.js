@@ -157,7 +157,7 @@ function maindebugclear() {
 	clearbuts('stateman');
 }
 
-var topShow = true;
+var topShow = false;
 var botShow = false;
 var topBut;
 var botBut;

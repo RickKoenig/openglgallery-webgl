@@ -37,17 +37,17 @@ race_console.init = function(intentData) {
 	plane.trans = [0,0,2];
 	race_console.roottree.linkchild(plane);
 
-	const cols = 60;
-	const rows = 20;
-	const depth = 384;
-	const offx = -400;
-	const offy = 300;
-	const glyphx = 16;
-	const glyphy = 32;
+	const cols = 80;
+	const rows = 45;
+	const depth = glc.clientHeight / 2; //
+	const offx = -glc.clientWidth / 2 + 16;
+	const offy = glc.clientHeight / 2 - 16;
+	const glyphx = 8;
+	const glyphy = 16;
 
 	const backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
 	backgnd.mod.flags |= modelflagenums.NOZBUFFER;
-	backgnd.mod.mat.color = [.2, 0, 0, 1];
+	backgnd.mod.mat.color = [.1, 0, 0, 1];
 	backgnd.trans = [offx, offy, depth];
 	race_console.roottree.linkchild(backgnd);
 
@@ -68,22 +68,43 @@ race_console.doCommand = function(cmdStr) {
 	console.log("got a command from terminal '" + cmdStr + "'");
 	const words = cmdStr.trim().split(/\s+/);
 	if (!words[0])
-		return "";
+		return;
 	switch(words[0]) {
 		case "help":
-			return "commands are:\nhelp, echo, add"
+			this.print("commands are:\nhelp echo add connect disconnect status");
+			break;
 		case "echo":
-			words.shift();
-			return words.join(' ');
+			// add a delay
+			setTimeout(function() {
+				words.shift(); // remove 'echo' and print it
+				this.print(words.join(' '));
+			}.bind(race_console.terminal), 3000);
+			break;
 		case "add":
 			let sum = 0;
 			words.shift();
 			for (let ele of words) {
 				sum += parseFloat(ele);
 			}
-			return sum;
-		default:
-			return "unrecognized command '" + cmdStr + "'";
+			this.print(sum);
+			break;
+			case "connect":
+				if (!race_console.socker && typeof io !== 'undefined') {
+					// upgrade to websocket
+					race_console.socker = io.connect("http://" + location.host);
+				}
+				break;
+			case "disconnect":
+				if (race_console.socker) {
+					race_console.socker.disconnect();
+					race_console.socker = null;
+				}
+				break;
+			case "status":
+				break;
+			default:
+			this.print("unrecognized command '" + cmdStr + "'");
+			return;
 	}
 }
 
