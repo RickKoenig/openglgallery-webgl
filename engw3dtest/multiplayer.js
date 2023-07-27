@@ -20,13 +20,7 @@ multiplayer.init = function() {
 	logger("entering webgl multiplayer with location host of " + location.host + "\n");
 	multiplayer.roottree = new Tree2("root");
 	multiplayer.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "tex");
-	//multiplayer.roottree.linkchild(multiplayer.tree0);
-	//multiplayer.tree0.trans = [0, 0, 5];
 	mainvp.incamattach = false;
-	/*
-	debprint.addlist( "multiplayer",[
-		"multiplayer.tree0.trans",
-	]);*/
 	// ui
 	setbutsname('many');
 
@@ -134,7 +128,6 @@ multiplayer.updateinfo = function() {
 };
 	
 multiplayer.exit = function() {
-	//debprint.removelist("multiplayer");
 	if (multiplayer.socker) {
 		multiplayer.socker.disconnect();
 		multiplayer.socker = null;

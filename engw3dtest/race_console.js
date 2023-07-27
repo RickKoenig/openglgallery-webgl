@@ -67,44 +67,101 @@ race_console.init = function(intentData) {
 race_console.doCommand = function(cmdStr) {
 	console.log("got a command from terminal '" + cmdStr + "'");
 	const words = cmdStr.trim().split(/\s+/);
-	if (!words[0])
-		return;
-	switch(words[0]) {
+	if (!words[0]) return;
+	const first = words.shift();
+	switch(first) {
 		case "help":
-			this.print("commands are:\nhelp echo add connect disconnect status");
+			// local
+			this.print("commands are:\nhelp echo add mul enter exit status kickme");
 			break;
 		case "echo":
-			// add a delay
+			// local with delay
 			setTimeout(function() {
-				words.shift(); // remove 'echo' and print it
 				this.print(words.join(' '));
 			}.bind(race_console.terminal), 3000);
 			break;
 		case "add":
+			// local
 			let sum = 0;
-			words.shift();
 			for (let ele of words) {
 				sum += parseFloat(ele);
 			}
 			this.print(sum);
 			break;
-			case "connect":
-				if (!race_console.socker && typeof io !== 'undefined') {
+		case "mul":
+			// local, make remote for testing
+			let prod = 1;
+			for (let ele of words) {
+				prod *= parseFloat(ele);
+			}
+			this.print(prod);
+			break;
+		case "enter":
+			// connect
+			if (typeof io !== 'undefined') {
+				if (race_console.socker) {
+					race_console.terminal.print("already connected!");
+				} else {
 					// upgrade to websocket
 					race_console.socker = io.connect("http://" + location.host);
+					// get id
+					race_console.socker.on('id', function (data) {
+						console.log("your ID from server: " + JSON.stringify(data));	
+						race_console.myId = data;
+						race_console.terminal.setPrompt("" + data + " >");
+						race_console.terminal.print("myid = " + race_console.myId);
+					});
+					race_console.socker.on('status', function (data) {
+						console.log("status from server: " + data);	
+						race_console.terminal.print("status = " + data);
+					});
+					// response from server after a 'kickme'
+					race_console.socker.on('disconnect', function (data) {
+						console.log("disconnect from server: " + data);	
+						race_console.terminal.print("disconnect = " + data);
+						if (race_console.socker) {
+							//race_console.socker.disconnect();
+							race_console.socker = null;
+							race_console.myId = null;
+							race_console.terminal.setPrompt(">");
+						}
+					});
 				}
-				break;
-			case "disconnect":
-				if (race_console.socker) {
-					race_console.socker.disconnect();
-					race_console.socker = null;
-				}
-				break;
-			case "status":
-				break;
-			default:
+			} else {
+				race_console.terminal.print("no 'socket IO' library!");
+			}
+			break;
+		case "exit":
+			// disconnect
+			if (race_console.socker) {
+				race_console.socker.disconnect();
+				race_console.socker = null;
+				race_console.myId = null;
+				race_console.terminal.setPrompt(">");
+			} else {
+				race_console.terminal.print("already disconnected!");
+			}
+			break;
+		case "status":
+			// remote, status
+			if (race_console.socker) {
+				race_console.socker.emit('status', null);
+			} else {
+				race_console.terminal.print("please connect first with 'enter'!");
+			}
+			break;
+		case "kickme":
+			// remote, kill my connection in about 5 seconds
+			if (race_console.socker) {
+				race_console.socker.emit('kickme', null);
+			} else {
+				race_console.terminal.print("not connected!");
+			}
+			break;
+		default:
+			// local, not a valid command
 			this.print("unrecognized command '" + cmdStr + "'");
-			return;
+			break;
 	}
 }
 
@@ -129,6 +186,10 @@ race_console.proc = function() {
 };
 
 race_console.exit = function() {
+	if (race_console.socker) {
+		race_console.socker.disconnect();
+		race_console.socker = null;
+	}
 	// show current usage before cleanup
 	race_console.roottree.log();
 	logrc();

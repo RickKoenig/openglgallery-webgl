@@ -49,6 +49,11 @@ class Terminal {
         this.modelFont.print(pStr);
     }
 
+    setPrompt(id) {
+        this.prompt = id;
+        this.#update();
+    }
+
     print(str) {
         this.mainStr += '\n' + str + '\n';
         this.mainStr = this.#pruneStr(this.mainStr);
