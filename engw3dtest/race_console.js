@@ -72,7 +72,7 @@ race_console.doCommand = function(cmdStr) {
 	switch(first) {
 		case "help":
 			// local
-			this.print("commands are:\nhelp echo add mul enter exit status kickme");
+			this.print("commands are:\nhelp echo add mul enter exit status kickme chat");
 			break;
 		case "echo":
 			// local with delay
@@ -102,14 +102,17 @@ race_console.doCommand = function(cmdStr) {
 				if (race_console.socker) {
 					race_console.terminal.print("already connected!");
 				} else {
+					const name = words[0] ? words[0] : "player";
 					// upgrade to websocket
 					race_console.socker = io.connect("http://" + location.host);
+					// handle all events from SERVER
 					// get id
 					race_console.socker.on('id', function (data) {
 						console.log("your ID from server: " + JSON.stringify(data));	
 						race_console.myId = data;
-						race_console.terminal.setPrompt("" + data + " >");
+						race_console.terminal.setPrompt("" + name + " : " + data + " >");
 						race_console.terminal.print("myid = " + race_console.myId);
+						race_console.socker.emit('name', name);
 					});
 					race_console.socker.on('status', function (data) {
 						console.log("status from server: " + data);	
@@ -125,6 +128,11 @@ race_console.doCommand = function(cmdStr) {
 							race_console.myId = null;
 							race_console.terminal.setPrompt(">");
 						}
+					});
+					race_console.socker.on('broadcast', function (data) {
+						const strData = JSON.stringify(data);
+						console.log("broadcast from server: " + strData);
+						race_console.terminal.print(strData);
 					});
 				}
 			} else {
@@ -147,13 +155,21 @@ race_console.doCommand = function(cmdStr) {
 			if (race_console.socker) {
 				race_console.socker.emit('status', null);
 			} else {
-				race_console.terminal.print("please connect first with 'enter'!");
+				race_console.terminal.print("please connect first with 'enter (name)'!");
 			}
 			break;
 		case "kickme":
 			// remote, kill my connection in about 5 seconds
 			if (race_console.socker) {
 				race_console.socker.emit('kickme', null);
+			} else {
+				race_console.terminal.print("not connected!");
+			}
+			break;
+		// send a message to everyone
+		case "chat":
+			if (race_console.socker) {
+				race_console.socker.emit('broadcast', words.join(' '));
 			} else {
 				race_console.terminal.print("not connected!");
 			}
