@@ -112,7 +112,11 @@ race_console.doCommand = function(cmdStr) {
 						race_console.myId = data;
 						race_console.terminal.setPrompt("" + name + " : " + data + " >");
 						race_console.terminal.print("myid = " + race_console.myId);
-						race_console.socker.emit('name', name);
+						if (race_console.socker) {
+							race_console.socker.emit('name', name);
+						} else {
+							console.log('on id with null socker!!');
+						}
 					});
 					race_console.socker.on('status', function (data) {
 						console.log("status from server: " + data);	
@@ -132,7 +136,7 @@ race_console.doCommand = function(cmdStr) {
 					race_console.socker.on('broadcast', function (data) {
 						const strData = JSON.stringify(data);
 						console.log("broadcast from server: " + strData);
-						race_console.terminal.print(strData);
+						race_console.terminal.print(data.name + data.id + ": '" + data.data + "'");
 					});
 				}
 			} else {
@@ -169,7 +173,9 @@ race_console.doCommand = function(cmdStr) {
 		// send a message to everyone
 		case "chat":
 			if (race_console.socker) {
-				race_console.socker.emit('broadcast', words.join(' '));
+				const message = words.join(' ');
+				race_console.socker.emit('broadcast', message);
+				race_console.terminal.print("broadcast '" + message + "'");
 			} else {
 				race_console.terminal.print("not connected!");
 			}
