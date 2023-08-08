@@ -108,10 +108,10 @@ race_console.doCommand = function(cmdStr) {
 					race_console.socker = io.connect("http://" + location.host);
 					// handle all events from SERVER
 					// get id
-					race_console.socker.on('id', function (data) {
-						console.log("your ID from server: " + JSON.stringify(data));	
-						race_console.myId = data;
-						race_console.terminal.setPrompt("" + name + " : " + data + " >");
+					race_console.socker.on('id', function (id) {
+						console.log("your ID from server: " + id);	
+						race_console.myId = id;
+						race_console.terminal.setPrompt("{" + name + id + "} >");
 						race_console.terminal.print("myid = " + race_console.myId);
 						if (race_console.socker) {
 							race_console.socker.emit('name', name);
@@ -124,9 +124,9 @@ race_console.doCommand = function(cmdStr) {
 						race_console.terminal.print("status = " + data);
 					});
 					// response from server after a 'kickme'
-					race_console.socker.on('disconnect', function (data) {
-						console.log("disconnect from server: " + data);	
-						race_console.terminal.print("disconnect = " + data);
+					race_console.socker.on('disconnect', function (reason) {
+						console.log("disconnect reason '" + reason + "'");	
+						race_console.terminal.print("disconnect reason '" + reason + "'");
 						if (race_console.socker) {
 							race_console.socker.disconnect();
 							race_console.socker = null;
@@ -137,7 +137,7 @@ race_console.doCommand = function(cmdStr) {
 					race_console.socker.on('broadcast', function (broadPack) {
 						if (typeof broadPack.data === 'string') {
 							console.log("broadcast from server: " + JSON.stringify(broadPack));
-							race_console.terminal.print(broadPack.name + broadPack.id + ": '" + broadPack.data + "'");
+							race_console.terminal.print("{" + broadPack.name + "} '" + broadPack.data + "'");
 						}
 					});
 					// display news from server

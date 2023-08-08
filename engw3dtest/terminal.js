@@ -49,8 +49,8 @@ class Terminal {
         this.modelFont.print(pStr);
     }
 
-    setPrompt(id) {
-        this.prompt = id;
+    setPrompt(p) {
+        this.prompt = p;
         this.#update();
     }
 
