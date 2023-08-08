@@ -5,11 +5,11 @@ var dochangestate = false;
 var stateinited = false;
 var passIntent = null; // data to be passed from one state to another
 
-function changestate(news, intent) {
-	if (typeof news == 'string') {
-		news = window[news];
+function changestate(NS, intent) {
+	if (typeof NS == 'string') {
+		NS = window[NS];
 	}
-	newstate = news;
+	newstate = NS;
 	passIntent = intent;
 	dochangestate = true;
 	havemousedown = false;

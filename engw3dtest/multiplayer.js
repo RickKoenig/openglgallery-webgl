@@ -12,14 +12,16 @@ multiplayer.load = function() {
 };
 
 multiplayer.init = function() {
-	multiplayer.infocnt = 0;
+	multiplayer.clientNewsCount = 0;
 	multiplayer.socker = null;
 	multiplayer.myId = undefined;
+	multiplayer.serverDisconneted = true; // only restart state when server disconnects, not the client
 	multiplayer.playerTrees = []; // active players
 	mainvp = defaultviewport();
 	logger("entering webgl multiplayer with location host of " + location.host + "\n");
 	multiplayer.roottree = new Tree2("root");
-	multiplayer.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "tex");
+	multiplayer.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
+	multiplayer.treeMaster.mat.color = [.75, .75, .75, 1];
 	mainvp.incamattach = false;
 	// ui
 	setbutsname('many');
@@ -53,30 +55,53 @@ multiplayer.init = function() {
 			multiplayer.updateinfo();
 			// display myself
 			const myTree = multiplayer.treeMaster.newdup();
-			myTree.trans = [multiplayer.myId * 2, 0, 5];
-			myTree.scale = [1.5, 1.5, 1.5]; // bigger for self
+			myTree.trans = [multiplayer.myId * 2 - 3, 0, 5];
+			myTree.mat.color = [1.5, 1, 0, 1]; // brighter color for self
 			multiplayer.playerTrees[multiplayer.myId] = myTree;
 			multiplayer.roottree.linkchild(myTree);
 		});
 		// draw other players
-		multiplayer.socker.on('broadcast', function(data) {
-			console.log("got a broadcast from server = " + JSON.stringify(data));
-			// get other tree or create a new one
-			if (data.id !== undefined) {
-				let otherTree;
-				if (!multiplayer.playerTrees[data.id]) {
-					otherTree = multiplayer.treeMaster.newdup();
-					multiplayer.roottree.linkchild(otherTree);
-					multiplayer.playerTrees[data.id] = otherTree;
-				} else {
-					otherTree = multiplayer.playerTrees[data.id];
+		multiplayer.socker.on('news', function (strData) {
+			console.log("NEWS from server: " + strData + " client newsCount " + multiplayer.clientNewsCount);
+			const words = strData.split(' ');
+			if (words[0] == 'disconnected') {
+				// player left, remove that player tree
+				const pid = words[1];
+				console.log("player " + pid + " disconnected");
+				const tre = multiplayer.playerTrees[pid];
+				if (tre) {
+					tre.unlinkchild();
+					tre.glfree();
+					multiplayer.playerTrees[pid] = null;		
 				}
-				otherTree.trans = vec3.clone(data.data.pos);
-			} else if (data.disconnect !== undefined) {
-				console.log("id disconnected = " + data.disconnect);
-				multiplayer.playerTrees[data.disconnect].unlinkchild();
-				multiplayer.playerTrees[data.disconnect].glfree();
-				multiplayer.playerTrees[data.disconnect] = null;		
+			}
+			++multiplayer.clientNewsCount;
+			multiplayer.updateinfo();
+		});
+		multiplayer.socker.on('broadcast', function(broadData) {
+			//console.log("got a broadcast from server = " + JSON.stringify(broadData));
+			let otherTree;
+			const pid = broadData.id;
+			// create a new tree if one doesn't exist
+			if (!multiplayer.playerTrees[pid]) {
+				otherTree = multiplayer.treeMaster.newdup();
+				multiplayer.roottree.linkchild(otherTree);
+				multiplayer.playerTrees[pid] = otherTree;
+				console.log("player " + pid + " connected");
+			} else {
+				otherTree = multiplayer.playerTrees[pid];
+			}
+			// update position of other player
+			otherTree.trans = vec3.clone(broadData.data.pos);
+		});
+		// myself got disconnect, reset most everything by restarting the state
+		// most likely a ping timeout from an inactive tab in the browser
+		multiplayer.socker.on('disconnect', function (reason) {
+			if (multiplayer.serverDisconneted) {
+				console.log("disconnect from server, restart state, Socker: " + reason);
+				changestate(multiplayer); // just restart the whole state 'multiplayer' after cleaning up
+			} else {
+				console.log("disconnect while in state exit: " + reason);
 			}
 		});
 	}
@@ -88,28 +113,23 @@ multiplayer.proc = function() {
 	// process input
 	const myTree = multiplayer.myId === undefined ? null 
 		: multiplayer.playerTrees[multiplayer.myId];
-	if (input.keystate[keycodes.LEFT]) {
-		myTree.trans[0] -= step;
-	}
-	if (input.keystate[keycodes.RIGHT]) {
-		myTree.trans[0] += step;
-	}
-	if (input.keystate[keycodes.DOWN]) {
-		myTree.trans[1] -= step;
-	}
-	if (input.keystate[keycodes.UP]) {
-		myTree.trans[1] += step;
+	if (myTree) {
+		if (input.keystate[keycodes.LEFT]) {
+			myTree.trans[0] -= step;
+		}
+		if (input.keystate[keycodes.RIGHT]) {
+			myTree.trans[0] += step;
+		}
+		if (input.keystate[keycodes.DOWN]) {
+			myTree.trans[1] -= step;
+		}
+		if (input.keystate[keycodes.UP]) {
+			myTree.trans[1] += step;
+		}
 	}
 	multiplayer.roottree.proc();
 	// send some data back to the server
-	++multiplayer.infocnt;
 	if (multiplayer.socker) {
-		if (multiplayer.infocnt % (multiplayer.myId + 100) == 0) {
-			const browserInfo = {count : multiplayer.infocnt};
-			console.log("BROWSERINFO: <id " + multiplayer.myId + "> " + JSON.stringify(browserInfo));
-			multiplayer.socker.emit('browserInfo', browserInfo);
-			multiplayer.updateinfo();
-		}
 		if (myTree) {
 			multiplayer.socker.emit('broadcast', {pos: myTree.trans});
 		}
@@ -129,6 +149,7 @@ multiplayer.updateinfo = function() {
 	
 multiplayer.exit = function() {
 	if (multiplayer.socker) {
+		multiplayer.serverDisconneted = false; // disconnect callbacks won't change state
 		multiplayer.socker.disconnect();
 		multiplayer.socker = null;
 	}

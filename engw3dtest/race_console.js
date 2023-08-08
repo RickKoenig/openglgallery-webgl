@@ -19,6 +19,7 @@ race_console.gotoFill = function() {
 
 race_console.init = function(intentData) {
 	race_console.count = 0;
+	race_console.clientNewsCount = 0;
 	logger("entering webgl race_console 3D\n");
 
 	// ui
@@ -89,7 +90,7 @@ race_console.doCommand = function(cmdStr) {
 			this.print(sum);
 			break;
 		case "mul":
-			// local, make remote for testing
+			// local, TODO make remote for testing
 			let prod = 1;
 			for (let ele of words) {
 				prod *= parseFloat(ele);
@@ -127,16 +128,24 @@ race_console.doCommand = function(cmdStr) {
 						console.log("disconnect from server: " + data);	
 						race_console.terminal.print("disconnect = " + data);
 						if (race_console.socker) {
-							//race_console.socker.disconnect();
+							race_console.socker.disconnect();
 							race_console.socker = null;
 							race_console.myId = null;
 							race_console.terminal.setPrompt(">");
 						}
 					});
-					race_console.socker.on('broadcast', function (data) {
-						const strData = JSON.stringify(data);
-						console.log("broadcast from server: " + strData);
-						race_console.terminal.print(data.name + data.id + ": '" + data.data + "'");
+					race_console.socker.on('broadcast', function (broadPack) {
+						if (typeof broadPack.data === 'string') {
+							console.log("broadcast from server: " + JSON.stringify(broadPack));
+							race_console.terminal.print(broadPack.name + broadPack.id + ": '" + broadPack.data + "'");
+						}
+					});
+					// display news from server
+					race_console.socker.on('news', function (strData) {
+						console.log("NEWS from server: " + strData + " client newsCount " 
+							+ race_console.clientNewsCount);
+							race_console.terminal.print(strData);
+							++race_console.clientNewsCount;
 					});
 				}
 			} else {

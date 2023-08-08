@@ -5,12 +5,13 @@ state8.roottree = null;
 state8.text = "WebGL: This state stress tests the matrix functions by displaying 2000 independent model objects using the engine.";
 state8.title = "Many objects";
 state8.socker = null;
-
+state8.serverNews = "server news";
 state8.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
+state8.newsCount = 0;
 state8.init = function() {
 	logger("entering webgl state8 with location host of " + location.host + "\n");
 	state8.roottree = new Tree2("root");
@@ -56,7 +57,6 @@ state8.init = function() {
 	// WEBSOCKET
 	// info from websocket
 	state8.infoarea = makeaprintarea('websocket info: ');
-	state8.infocnt = 0;
 	state8.updateinfo();
 	if (typeof io !== 'undefined') {
 		// upgrade to websocket
@@ -85,51 +85,34 @@ state8.init = function() {
 		// read tilt info from android for 'model'
 		state8.socker.on('tilt', function (data) {
 			if (data != null && typeof data === 'object') {
-				if (data.controller) {
-					// control some webgl stuff from android controller
-					mainvp.rot[2] = data.controller.tilt / 1000; // tilt the scene
-					console.log("TILT from server: " + JSON.stringify(data));
-					if (data.controller.but0) {
-						var v = state8.tree0.mat.color[1];
-						v = range(0,v-.015625,1);
-						state8.tree0.mat.color[1] = v;
-						state8.tree0.mat.color[2] = v;
-					}
-					if (data.controller.but1) {
-						var v = state8.tree0.mat.color[1];
-						v = range(0,v+.015625,1);
-						state8.tree0.mat.color[1] = v;
-						state8.tree0.mat.color[2] = v;
-					}
-				} else {
-					console.log(data);
+				// control some webgl stuff from android controller
+				mainvp.rot[2] = data.tilt / 1000; // tilt the scene
+				console.log("TILT from server: " + JSON.stringify(data));
+				if (data.but0) {
+					var v = state8.tree0.mat.color[1];
+					v = range(0,v-.015625,1);
+					state8.tree0.mat.color[1] = v;
+					state8.tree0.mat.color[2] = v;
+				}
+				if (data.but1) {
+					var v = state8.tree0.mat.color[1];
+					v = range(0,v+.015625,1);
+					state8.tree0.mat.color[1] = v;
+					state8.tree0.mat.color[2] = v;
 				}
 			}
 		});
-		state8.socker.on('news', function (data) {
-			if (data != null && typeof data === 'object') {
-				state8.serverNews = JSON.stringify(data);
-				console.log("NEWS from server: " + state8.serverNews);
-				state8.updateinfo();
-			}
+		state8.socker.on('news', function (strData) {
+			console.log("NEWS from server: " + strData + " newsCount " + state8.newsCount);
+			state8.serverNews = strData  + " newsCount " + state8.newsCount;
+			++state8.newsCount;
+			state8.updateinfo();
 		});
 	}
 };
 
 state8.proc = function() {
-	//state8.updateinfo();
 	state8.roottree.proc();
-	// send some data back to the server
-	++state8.infocnt;
-	if (state8.socker) {
-		if (state8.infocnt % (state8.myId + 100) == 0) {
-			const browserInfo = {count : state8.infocnt};
-			console.log("BROWSERINFO: <id " + state8.myId + "> " + JSON.stringify(browserInfo));
-			state8.socker.emit('browserInfo', browserInfo);
-			state8.updateinfo();
-		}
-	}
-
 	// draw everything
 	doflycam(mainvp); // modify the trs of vp
 	beginscene(mainvp);
@@ -138,7 +121,6 @@ state8.proc = function() {
 
 state8.updateinfo = function() {
 	printareadraw(state8.infoarea, "myId = " + state8.myId
-		+ "\nmy count = " + state8.infocnt
 		+ "\nhostname = " + state8.hostname
 		+ "\nprotocol = " + state8.protocol
 		+ "\nserverNews = " + state8.serverNews);
