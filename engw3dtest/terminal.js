@@ -9,6 +9,7 @@ class Terminal {
         this.prompt = ">";
         this.blinkDelay = 60; // 1 second
         this.blink = 0;
+        this.updateTime = 0;
         this.cursor = "_";
         this.mainStr = '\n'.repeat(this.maxY - 2);
         this.mainStr += "Welcome"; // results, etc.
@@ -47,16 +48,19 @@ class Terminal {
         var pStr = this.mainStr + '\n' + this.prompt + this.cmdStr;
         if (this.blink * 2 >= this.blinkDelay) pStr += this.cursor;
         this.modelFont.print(pStr);
+        this.modelFont.mat.color = [this.updateTime, this.updateTime * .125 + .875, this.updateTime * .125 + .875, 1];
     }
 
     setPrompt(p) {
         this.prompt = p;
+        this.updateTime = 1;
         this.#update();
     }
 
     print(str) {
         this.mainStr += '\n' + str + '\n';
         this.mainStr = this.#pruneStr(this.mainStr);
+        this.updateTime = 1;
         this.#update();
     }
 
@@ -85,6 +89,11 @@ class Terminal {
             this.blink = 0;
         }
         // rebuild model if necessary
+        // hilit changes with updateTime
+        this.updateTime -= .01;
+        if (this.updateTime < 0) {
+            this.updateTime = 0;
+        }
         this.#update(); // redraw
     }
 };

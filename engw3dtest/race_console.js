@@ -17,6 +17,15 @@ race_console.gotoFill = function() {
     changestate("race_fill");
 }
 
+race_console.broadcastModes = {
+	lobby: 0,
+	room: 1,
+	go: 2,
+	game: 3,
+	results: 4
+};
+race_console.modeStrs = ['L', 'R', 'G', 'S', 'R'];
+
 race_console.init = function(intentData) {
 	race_console.count = 0;
 	race_console.clientNewsCount = 0;
@@ -52,17 +61,47 @@ race_console.init = function(intentData) {
 	backgnd.trans = [offx, offy, depth];
 	race_console.roottree.linkchild(backgnd);
 
-	const amodf1big = new ModelFont("amodf1big", "font0.png", "tex", glyphx, glyphy, cols, rows, false);
+	const amodf1big = new ModelFont("amodf1big", "font0.png", "texc", glyphx, glyphy, cols, rows, false);
 	amodf1big.flags |= modelflagenums.NOZBUFFER;
 	const treef1 = new Tree2("amodf1big");
 	treef1.setmodel(amodf1big);
 	treef1.trans = [offx, offy, depth];
+	//amodf1big.mat.color = [1,0,0,1];
 	race_console.roottree.linkchild(treef1);
 
 	race_console.terminal = new Terminal(amodf1big, race_console.doCommand);
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
+};
+
+// get my profile from server after setting name game etc. 
+// also has my id and room id if needed
+race_console.makePromptFromInfo = function(info) {
+/*
+	//like this
+	H [slayer0] {slayer0} >
+	or 
+	L {slayer0} >
+
+	//info members
+	id
+	name
+	mode
+	roomName
+	roomIdx
+*/
+	let modeStr = race_console.modeStrs[info.mode];
+	if (info.roomIdx == 0) {
+		modeStr = 'H'; // room host
+	}
+	let prompt = modeStr;
+	if (info.mode == race_console.broadcastModes.room) {
+		prompt += " [" + info.roomName + "]";
+	}
+	prompt += " {" + info.name + "}";
+	prompt += " >";
+	return prompt;
 };
 
 race_console.doCommand = function(cmdStr) {
@@ -73,7 +112,8 @@ race_console.doCommand = function(cmdStr) {
 	switch(first) {
 		case "help":
 			// local
-			this.print("commands are:\nhelp echo add mul enter exit status kickme chat");
+			this.print("commands are:\nhelp echo add mul enter exit status kickme chat"
+				+ "\nmakeroom joinroom exitroom");
 			break;
 		case "echo":
 			// local with delay
@@ -87,15 +127,15 @@ race_console.doCommand = function(cmdStr) {
 			for (let ele of words) {
 				sum += parseFloat(ele);
 			}
-			this.print(sum);
+			this.print("sum = " + sum);
 			break;
 		case "mul":
-			// local, TODO make remote for testing
-			let prod = 1;
-			for (let ele of words) {
-				prod *= parseFloat(ele);
+			// remote
+			if (race_console.socker) {
+				race_console.socker.emit('mul', words);
+			} else {
+				this.print("please connect first with 'enter (name)'!");
 			}
-			this.print(prod);
 			break;
 		case "enter":
 			// connect
@@ -103,25 +143,38 @@ race_console.doCommand = function(cmdStr) {
 				if (race_console.socker) {
 					race_console.terminal.print("already connected!");
 				} else {
-					const name = words[0] ? words[0] : "player";
+					//const name = words[0] ? words[0] : "player";
+					const name = words[0];
 					// upgrade to websocket
 					race_console.socker = io.connect("http://" + location.host);
 					// handle all events from SERVER
-					// get id
-					race_console.socker.on('id', function (id) {
-						console.log("your ID from server: " + id);	
-						race_console.myId = id;
-						race_console.terminal.setPrompt("{" + name + id + "} >");
-						race_console.terminal.print("myid = " + race_console.myId);
+					race_console.socker.on('connect', function() {
 						if (race_console.socker) {
-							race_console.socker.emit('name', name);
+							if (name) {
+								race_console.socker.emit('name', name);
+							}
 						} else {
 							console.log('on id with null socker!!');
+							alert('on id with null socker!!');
+						}
+					});
+					race_console.socker.on('prompt', function (info) {
+						console.log("INFO from server: " + JSON.stringify(info));
+						if (race_console.socker) {
+							const newPrompt = race_console.makePromptFromInfo(info);
+							race_console.terminal.setPrompt(newPrompt);
+						} else {
+							console.log('on prompt with null socker!!');
+							alert('on prompt with null socker!!');
 						}
 					});
 					race_console.socker.on('status', function (data) {
 						console.log("status from server: " + data);	
-						race_console.terminal.print("status = " + data);
+						race_console.terminal.print(data);
+					});
+					// server sends message to terminal
+					race_console.socker.on('message', function( message) {
+						race_console.terminal.print(message);
 					});
 					// response from server after a 'kickme'
 					race_console.socker.on('disconnect', function (reason) {
@@ -134,6 +187,7 @@ race_console.doCommand = function(cmdStr) {
 							race_console.terminal.setPrompt(">");
 						}
 					});
+					// broadPack has members: name, id, data
 					race_console.socker.on('broadcast', function (broadPack) {
 						if (typeof broadPack.data === 'string') {
 							console.log("broadcast from server: " + JSON.stringify(broadPack));
@@ -189,6 +243,36 @@ race_console.doCommand = function(cmdStr) {
 				race_console.terminal.print("not connected!");
 			}
 			break;
+
+
+		case "makeroom":
+			if (race_console.socker) {
+				race_console.socker.emit('makeroom', null);
+			} else {
+				race_console.terminal.print("not connected!");
+			}
+			break;
+		case "joinroom":
+			if (race_console.socker) {
+				const roomName = words[0];
+				if (roomName) {
+					race_console.socker.emit('joinroom', roomName);
+				} else {
+					race_console.terminal.print("usage: joinroom roomname");
+				}
+			} else {
+				race_console.terminal.print("not connected!");
+			}
+			break;
+		case "exitroom":
+			if (race_console.socker) {
+				race_console.socker.emit('exitroom', null);
+			} else {
+				race_console.terminal.print("not connected!");
+			}
+			break;
+
+
 		default:
 			// local, not a valid command
 			this.print("unrecognized command '" + cmdStr + "'");
