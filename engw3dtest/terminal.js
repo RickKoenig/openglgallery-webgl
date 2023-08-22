@@ -5,6 +5,7 @@ class Terminal {
         this.modelFont = modelFont;
         this.maxX = this.modelFont.maxcols;
         this.maxY = this.modelFont.maxrows;
+        this.modelFont.mat.color = [1, 1, 1, 1]; // white
         this.cmdCallback = cmdCallback;
         this.prompt = ">";
         this.blinkDelay = 60; // 1 second
@@ -44,11 +45,15 @@ class Terminal {
         return cnt;
     }
 
-    #update(str) { // update model font
+    #update() { // update model font
         var pStr = this.mainStr + '\n' + this.prompt + this.cmdStr;
-        if (this.blink * 2 >= this.blinkDelay) pStr += this.cursor;
+        if (this.blink * 2 >= this.blinkDelay) {
+            pStr += this.cursor;
+        }
         this.modelFont.print(pStr);
-        this.modelFont.mat.color = [this.updateTime, this.updateTime * .125 + .875, this.updateTime * .125 + .875, 1];
+        const normColor = Bitmap32p.colorStrToArray("white");
+        const hilitColor = Bitmap32p.colorStrToArray("lightgreen");
+        vec4.lerp(this.modelFont.mat.color, normColor, hilitColor, this.updateTime);     
     }
 
     setPrompt(p) {

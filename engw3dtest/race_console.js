@@ -168,10 +168,6 @@ race_console.doCommand = function(cmdStr) {
 							alert('on prompt with null socker!!');
 						}
 					});
-/*					race_console.socker.on('status', function (data) {
-						console.log("status from server: " + data);	
-						race_console.terminal.print(data);
-					}); */
 					// server sends message to terminal
 					race_console.socker.on('message', function( message) {
 						race_console.terminal.print(message);
