@@ -22,9 +22,8 @@ multiplayer.init = function() {
 	multiplayer.roottree = new Tree2("root");
 	multiplayer.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
 	multiplayer.treeMaster.mat.color = [.75, .75, .75, 1];
-	mainvp.incamattach = false;
 	// ui
-	setbutsname('many');
+	setbutsname('multiplayer test');
 
 	// WEBSOCKET
 	// info from websocket
@@ -63,18 +62,6 @@ multiplayer.init = function() {
 		// draw other players
 		multiplayer.socker.on('news', function (strData) {
 			console.log("NEWS from server: " + strData + " client newsCount " + multiplayer.clientNewsCount);
-			const words = strData.split(' ');
-			if (words[0] == 'disconnected') {
-				// player left, remove that player tree
-				const pid = words[1];
-				console.log("player " + pid + " disconnected");
-				const tre = multiplayer.playerTrees[pid];
-				if (tre) {
-					tre.unlinkchild();
-					tre.glfree();
-					multiplayer.playerTrees[pid] = null;		
-				}
-			}
 			++multiplayer.clientNewsCount;
 			multiplayer.updateinfo();
 		});
@@ -92,7 +79,17 @@ multiplayer.init = function() {
 				otherTree = multiplayer.playerTrees[pid];
 			}
 			// update position of other player
-			otherTree.trans = vec3.clone(broadData.data.pos);
+			if (!broadData.data) {
+				console.log("no broaddata!");
+				const tre = multiplayer.playerTrees[pid];
+				if (tre) {
+					tre.unlinkchild();
+					tre.glfree();
+					multiplayer.playerTrees[pid] = null;		
+				}
+			} else {
+				otherTree.trans = vec3.clone(broadData.data.pos);
+			}
 		});
 		// myself got disconnect, reset most everything by restarting the state
 		// most likely a ping timeout from an inactive tab in the browser
@@ -165,5 +162,5 @@ multiplayer.exit = function() {
 	mainvp.incamattach = false;
 	mainvp.lookat = null;
 	mainvp.inlookat = false;
-	clearbuts('many');
+	clearbuts('multiplayer test');
 };

@@ -21,7 +21,7 @@ race_console.broadcastModes = {
 	lobby: 0,
 	room: 1,
 	go: 2,
-	game: 3,
+	sim: 3,
 	results: 4
 };
 race_console.modeStrs = ['L', 'R', 'G', 'S', 'R'];
@@ -113,7 +113,7 @@ race_console.doCommand = function(cmdStr) {
 		case "help":
 			// local
 			this.print("commands are:\nhelp echo add mul enter exit status kickme chat"
-				+ "\nmakeroom joinroom exitroom");
+				+ "\nmakeroom joinroom exitroom go(NYI)");
 			break;
 		case "echo":
 			// local with delay
@@ -158,7 +158,7 @@ race_console.doCommand = function(cmdStr) {
 							alert('on id with null socker!!');
 						}
 					});
-					race_console.socker.on('prompt', function (info) {
+					race_console.socker.on('prompt', function(info) {
 						console.log("INFO from server: " + JSON.stringify(info));
 						if (race_console.socker) {
 							const newPrompt = race_console.makePromptFromInfo(info);
@@ -169,7 +169,7 @@ race_console.doCommand = function(cmdStr) {
 						}
 					});
 					// server sends message to terminal
-					race_console.socker.on('message', function( message) {
+					race_console.socker.on('message', function(message) {
 						race_console.terminal.print(message);
 					});
 					// response from server after a 'kickme'
@@ -184,14 +184,17 @@ race_console.doCommand = function(cmdStr) {
 						}
 					});
 					// broadPack has members: name, id, data
-					race_console.socker.on('broadcast', function (broadPack) {
-						if (typeof broadPack.data === 'string') {
+					race_console.socker.on('broadcast', function(broadPack) {
+						if (!broadPack.data) {
+							// TODO: handle this
+							console.log("no broadPack data, is disconnect from other socket: id = " + broadPack.id + ", roomIdx = " + broadPack.roomIdx);
+						} else if (typeof broadPack.data === 'string') {
 							console.log("broadcast from server: " + JSON.stringify(broadPack));
 							race_console.terminal.print("{" + broadPack.name + "} '" + broadPack.data + "'");
 						}
 					});
 					// display news from server
-					race_console.socker.on('news', function (strData) {
+					race_console.socker.on('news', function(strData) {
 						console.log("NEWS from server: " + strData + " client newsCount " 
 							+ race_console.clientNewsCount);
 							race_console.terminal.print(strData);
@@ -243,7 +246,7 @@ race_console.doCommand = function(cmdStr) {
 
 		case "makeroom":
 			if (race_console.socker) {
-				race_console.socker.emit('makeroom', null);
+				race_console.socker.emit('makeroom', words[0]);
 			} else {
 				race_console.terminal.print("not connected!");
 			}
