@@ -40,6 +40,9 @@ race_console.init = function(intentData) {
 	// build parent
 	race_console.roottree = new Tree2("race_console root tree");
 
+	race_console.socker = null; // the client socket
+	race_console.sockerInfo = null; // info about the socket
+
 	// build a planexy (a square)
 	const plane = buildplanexy("aplane",2,2,"maptestnck.png","texDoubleSided");
 	plane.mod.flags |= modelflagenums.DOUBLESIDED;
@@ -80,19 +83,24 @@ race_console.init = function(intentData) {
 race_console.makePromptFromInfo = function(info) {
 /*
 	//like this
-	H [slayer0] {slayer0} >
-	or 
-	L {slayer0} >
+	L {slayer0} > // lobby
+	H [slayer0] {slayer0} > // host in room
+	R [slayer0] {slayer0} > // guest in room
+	S {[slayer0] {slayer0} // sim
 
 	//info members
 	id
 	name
-	mode
+	mode // lobby or room
+	roomLocked // if in room or game/sim
 	roomName
 	roomIdx
 */
-	let modeStr = race_console.modeStrs[info.mode];
-	if (info.roomIdx == 0) {
+	let modeStr = race_console.modeStrs[info.mode]; // L or R
+	if (info.roomLocked) {
+		modeStr = 'S';
+
+	} else if (info.roomIdx == 0) {
 		modeStr = 'H'; // room host
 	}
 	let prompt = modeStr;
@@ -113,7 +121,7 @@ race_console.doCommand = function(cmdStr) {
 		case "help":
 			// local
 			this.print("commands are:\nhelp echo add mul enter exit status kickme chat"
-				+ "\nmakeroom joinroom exitroom go(NYI)");
+				+ "\nmakeroom joinroom exitroom go");
 			break;
 		case "echo":
 			// local with delay
@@ -159,6 +167,7 @@ race_console.doCommand = function(cmdStr) {
 						}
 					});
 					race_console.socker.on('prompt', function(info) {
+						race_console.sockerInfo = info;
 						console.log("INFO from server: " + JSON.stringify(info));
 						if (race_console.socker) {
 							const newPrompt = race_console.makePromptFromInfo(info);
@@ -270,6 +279,14 @@ race_console.doCommand = function(cmdStr) {
 				race_console.terminal.print("not connected!");
 			}
 			break;
+		case "go": // go from room to sim/game, a room that is locked
+					// no new members, host can leave without destroying the room
+			if (race_console.socker) {
+				race_console.socker.emit('go', null);
+			} else {
+				race_console.terminal.print("not connected!");
+			}
+		break;
 
 
 		default:
