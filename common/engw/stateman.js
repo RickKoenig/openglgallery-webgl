@@ -1,9 +1,9 @@
 // big TODO: make less global !!
-var state = null;
-var newstate = null;
-var dochangestate = false;
-var stateinited = false;
-var passIntent = null; // data to be passed from one state to another
+let state = null;
+let newstate = null;
+let dochangestate = false;
+let stateinited = false;
+let passIntent = null; // data to be passed from one state to another
 
 function changestate(NS, intent) {
 	if (typeof NS == 'string') {
@@ -17,7 +17,7 @@ function changestate(NS, intent) {
 
 // call a method in a 'state' object
 function showandgo(title, method, data) {
-	var callBack = state[method];
+	let callBack = state[method];
 	logger("^^^^^^^^^^^ " + method + "." + title + " ^^^^^^^^^^^\n");
 	if (callBack) {
 		callBack(data);
@@ -27,16 +27,16 @@ function showandgo(title, method, data) {
 }
 
 function loadstate() {
-//	var instele = document.getElementById('instructions');
+//	let instele = document.getElementById('instructions');
 //	instele.innerHTML = escapehtml("Hiho hiho\noff to work\nwe go.");
-	//var s = "text" + state;
-	//var noesc = "noesc" + state;
-	var inst = state.text;
-	var noesc = state.noesc;
+	//let s = "text" + state;
+	//let noesc = "noesc" + state;
+	let inst = state.text;
+	let noesc = state.noesc;
 	//noesc = true;
 	if (!inst)
 		inst = "Default description";
-	var instele = document.getElementById('instructions');
+	let instele = document.getElementById('instructions');
 	if (instele) {
 		if (noesc)
 			instele.innerHTML = inst;
@@ -107,7 +107,7 @@ function onresizestate() {
 }
 
 function exitstate() {
-	//var durl = edrawarea.toDataURL();
+	//let durl = edrawarea.toDataURL();
 	if (stateinited) {
 		//showandgo("exit" + state);
 		showandgo(state.title,"exit");
@@ -116,36 +116,53 @@ function exitstate() {
 }
 
 function nextstate() {
-	var stateidx = statelist.indexOf(state);
-	if (stateidx<0)
-		alert("can't next state");
-	++stateidx;
-	if (stateidx >= statelist.length)
-		stateidx -= statelist.length;
+	let stateidx = statelist.indexOf(state);
+	do {
+		if (stateidx < 0) {
+			alert("can't next state");
+		}
+		++stateidx;
+		if (stateidx >= statelist.length) {
+			stateidx -= statelist.length;
+		}
+	} while(statelist[stateidx].hidden);
 	if (mainproc) {
 		curfps = 0;
-		setframerate(mainproc,fpswanted);
+		setframerate(mainproc, fpswanted);
 	}
 	changestate(statelist[stateidx]);
 }
 
 function prevstate() {
-	var stateidx = statelist.indexOf(state);
-	if (stateidx<0)
-		alert("can't prev state");
-	--stateidx;
-	if (stateidx < 0)
-		stateidx += statelist.length;
+	let stateidx = statelist.indexOf(state);
+	do {
+		if (stateidx < 0) {
+			alert("can't prev state");
+		}
+		--stateidx;
+		if (stateidx < 0) {
+			stateidx += statelist.length;
+		}
+	} while(statelist[stateidx].hidden);
 	if (mainproc) {
 		curfps = 0;
-		setframerate(mainproc,fpswanted);
+		setframerate(mainproc, fpswanted);
 	}
 	changestate(statelist[stateidx]);
 }
 
-function selstate(sel) {
-	var stateidx = sel.selectedIndex; // OR statesel.selectedIndex
-	changestate(statelist[stateidx]);
+// select HTML UI selected a new state
+function selstate(sel) { // the selector element
+	let oldStateidx = statelist.indexOf(state);
+	let newStateidx = sel.selectedIndex; // OR statesel.selectedIndex
+	const newstate = statelist[newStateidx];
+	if (newstate.hidden) {
+		console.log(`Can't select state '${newstate.title}', it's hidden!`);
+		const newIdx = statelist.indexOf(newstate);
+		selectsetidx(sel, oldStateidx);//statelist.indexOf(state));
+		return;
+	}
+	changestate(statelist[newStateidx]);
 	// sometimes the screen locks up, roll the mouse wheel to unfreeze (chrome)
 	if (mainproc) {
 		curfps = 0;
@@ -162,10 +179,15 @@ function reloadstate() {
 }
 
 function getstatetitles() {
-	var i;
-	var ret = [];
+	let i;
+	let ret = [];
 	for (i=0;i<statelist.length;++i) {
-		ret.push(statelist[i].title);
+		const state = statelist[i];
+		let title = state.title;
+		if (state.hidden) {
+			title = '* ' + title;
+		}
+		ret.push(title);
 	}
 	return ret;
 }

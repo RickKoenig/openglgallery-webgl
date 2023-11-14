@@ -14,7 +14,7 @@ race_console.gotoLobby = function() {
 }
 
 race_console.gotoFill = function() {
-    changestate("race_fill");
+    changestate("race_sentgo");
 }
 
 race_console.broadcastModes = {
@@ -27,14 +27,16 @@ race_console.broadcastModes = {
 race_console.modeStrs = ['L', 'R', 'G', 'S', 'R'];
 
 race_console.init = function(intentData) {
+	race_console.keepSockInfo = false;
 	race_console.count = 0;
 	race_console.clientNewsCount = 0;
 	logger("entering webgl race_console 3D\n");
 
 	// ui
 	setbutsname('console');
+	// test state changes
 	race_console.lobbyButton = makeabut("lobby", race_console.gotoLobby);
-	race_console.fillButton = makeabut("fill", race_console.gotoFill);
+	race_console.fillButton = makeabut("sent go", race_console.gotoFill);
 	race_console.showIntent = makeaprintarea("intent = '" + intentData + "'");
 	
 	// build parent
@@ -50,9 +52,9 @@ race_console.init = function(intentData) {
 	plane.trans = [0,0,2];
 	race_console.roottree.linkchild(plane);
 
-	const cols = 80;
+	const cols = 120;
 	const rows = 45;
-	const depth = glc.clientHeight / 2; //
+	const depth = glc.clientHeight / 2;
 	const offx = -glc.clientWidth / 2 + 16;
 	const offy = glc.clientHeight / 2 - 16;
 	const glyphx = 8;
@@ -86,7 +88,7 @@ race_console.makePromptFromInfo = function(info) {
 	L {slayer0} > // lobby
 	H [slayer0] {slayer0} > // host in room
 	R [slayer0] {slayer0} > // guest in room
-	S {[slayer0] {slayer0} // sim
+	S {[slayer0] {slayer0} // game/sim
 
 	//info members
 	id
@@ -96,16 +98,16 @@ race_console.makePromptFromInfo = function(info) {
 	roomName
 	roomIdx
 */
+	race_console.terminal.print("info = " + JSON.stringify(info, null, '   '));
 	let modeStr = race_console.modeStrs[info.mode]; // L or R
-	if (info.roomLocked) {
+	if (info.room?.locked) {
 		modeStr = 'S';
-
 	} else if (info.roomIdx == 0) {
 		modeStr = 'H'; // room host
 	}
 	let prompt = modeStr;
 	if (info.mode == race_console.broadcastModes.room) {
-		prompt += " [" + info.roomName + "]";
+		prompt += " [" + info.room.name + "]";
 	}
 	prompt += " {" + info.name + "}";
 	prompt += " >";
@@ -166,6 +168,7 @@ race_console.doCommand = function(cmdStr) {
 							alert('on id with null socker!!');
 						}
 					});
+
 					race_console.socker.on('prompt', function(info) {
 						race_console.sockerInfo = info;
 						console.log("INFO from server: " + JSON.stringify(info));
@@ -177,10 +180,12 @@ race_console.doCommand = function(cmdStr) {
 							alert('on prompt with null socker!!');
 						}
 					});
+
 					// server sends message to terminal
 					race_console.socker.on('message', function(message) {
 						race_console.terminal.print(message);
 					});
+
 					// response from server after a 'kickme'
 					race_console.socker.on('disconnect', function (reason) {
 						console.log("disconnect reason '" + reason + "'");	
@@ -188,10 +193,11 @@ race_console.doCommand = function(cmdStr) {
 						if (race_console.socker) {
 							race_console.socker.disconnect();
 							race_console.socker = null;
-							race_console.myId = null;
+							//race_console.myId = null;
 							race_console.terminal.setPrompt(">");
 						}
 					});
+
 					// broadPack has members: name, id, data
 					race_console.socker.on('broadcast', function(broadPack) {
 						if (!broadPack.data) {
@@ -202,12 +208,23 @@ race_console.doCommand = function(cmdStr) {
 							race_console.terminal.print("{" + broadPack.name + "} '" + broadPack.data + "'");
 						}
 					});
+
 					// display news from server
 					race_console.socker.on('news', function(strData) {
 						console.log("NEWS from server: " + strData + " client newsCount " 
 							+ race_console.clientNewsCount);
 							race_console.terminal.print(strData);
 							++race_console.clientNewsCount;
+					});
+
+					race_console.socker.on('go', function(goData) {
+						const jGoData = JSON.stringify(goData);
+						console.log("GO!: " + jGoData + " client newsCount " 
+							+ race_console.clientNewsCount);
+							race_console.terminal.print(jGoData);
+							++race_console.clientNewsCount;
+							race_console.keepSockInfo = true;
+							changestate("race_sentgo", {sock: race_console.socker, info: race_console.sockerInfo});
 					});
 				}
 			} else {
@@ -219,7 +236,7 @@ race_console.doCommand = function(cmdStr) {
 			if (race_console.socker) {
 				race_console.socker.disconnect();
 				race_console.socker = null;
-				race_console.myId = null;
+				//race_console.myId = null;
 				race_console.terminal.setPrompt(">");
 			} else {
 				race_console.terminal.print("already disconnected!");
@@ -286,7 +303,7 @@ race_console.doCommand = function(cmdStr) {
 			} else {
 				race_console.terminal.print("not connected!");
 			}
-		break;
+			break;
 
 
 		default:
@@ -317,7 +334,7 @@ race_console.proc = function() {
 };
 
 race_console.exit = function() {
-	if (race_console.socker) {
+	if (race_console.socker && !race_console.keepSockInfo) {
 		race_console.socker.disconnect();
 		race_console.socker = null;
 	}

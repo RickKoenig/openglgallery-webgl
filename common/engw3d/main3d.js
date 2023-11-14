@@ -198,22 +198,22 @@ function maindebugsetbefore() {
 		// eoutstateman = document.getElementById('stateman');
 		setbutsname('stateman');
 		if (topShow) {
-			topBut = makeabut('Engw Options +',topToggle);
+			topBut = makeabut('Engw Options +', topToggle);
 		} else {
-			topBut = makeabut('Engw Options -',topToggle);
+			topBut = makeabut('Engw Options -', topToggle);
 		}
 		topBut.setAttribute("title", "Show Engw Options");
 		myform = myformT;
 		eoutstateman = makeaprintarea();
 		var statetitles = getstatetitles();
-		statesel = makeaselect(statetitles,selstate);
-		selectsetidx(statesel,statelist.indexOf(state));
-		makeabut('Prev State',prevstate);
-		makeabut('Reload State',reloadstate);
-		makeabut('Next State',nextstate);
-		makeabut(logstrs[logmode],clearlog,null,null,true); // wide margins
-		makeabut("FULLSCREEN!",gofullscreen);
-		makeabut("Change Res",changeres);
+		statesel = makeaselect(statetitles, selstate);
+		selectsetidx(statesel, statelist.indexOf(state));
+		makeabut('Prev State', prevstate);
+		makeabut('Reload State', reloadstate);
+		makeabut('Next State', nextstate);
+		makeabut(logstrs[logmode], clearlog, null, null, true); // wide margins
+		makeabut("FULLSCREEN!", gofullscreen);
+		makeabut("Change Res", changeres);
 		myform = myformT0;
 		makeahr();
 		//userStyle = true;

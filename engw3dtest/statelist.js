@@ -16,7 +16,7 @@ var statelist = [
 	race_console,
 	race_login,
 	race_lobby,
-	race_fill,
+	race_sentgo,
 	race_ingame,
 	race_results,
 	
@@ -61,4 +61,4 @@ var statelist = [
 	neural6, // use deep learning to recognize hand written digits
 ];
 
-var startstate = race_console;
+var startstate = race_sentgo;

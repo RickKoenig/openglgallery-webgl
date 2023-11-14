@@ -14,7 +14,7 @@ race_login.gotoLobby = function() {
 }
 
 race_login.gotoFill = function() {
-    changestate("race_fill");
+    changestate("race_sentgo");
 }
 
 race_login.init = function(intentData) {
