@@ -19,8 +19,30 @@ function incWrap(val,num) {
 	return val;
 }
 
-// returns a unique name
+doWordWrap = function(strIn, cols) {
+	// do it one char at a time, (maybe not so fast)
+	let numChars = 0; 
+	let strOut = "";
+	for (let i = 0; i < strIn.length; ++i) {
+		const chr = strIn.charAt(i);
+		if (chr == "\n") {
+			strOut += chr;
+			numChars = 0;
+		} else {
+			if (numChars < cols) {
+				strOut += chr;
+				++numChars;
+			} else { // not enough room
+				strOut += "\n";
+				strOut += chr;
+				numChars = 1;
+			}
+		}
+	}
+	return strOut;
+}
 
+// returns a unique name
 var uniqueid = 0;
 function uniquestr(orig) {
 	if (!orig)

@@ -77,9 +77,10 @@ ModelFont.prototype.setfudge = function(dofudge) {
 
 // copy model to gl, commit
 ModelFont.prototype.print = function(text) { // commit
-	if (this.text == text)
+	if (this.text == text) {
 		return; // nothing to change
-	this.text = text.slice();
+	}
+	this.text = text.slice(); // make a copy of the text
 	var i;
 	if (!this.shader)
 		alert("missing shader '" + this.shadername + "' on model '" + this.name + "'");
@@ -196,7 +197,7 @@ ModelFont.prototype.print = function(text) { // commit
 		this.ngcap = this.ng;
 	}
 	
-	// build sampler and texture
+	// check sampler and texture
 	if (this.shader.uSampler0 !== undefined && !this.reftextures[0]) {
 		alert("missing texture on font '" + this.name + "'  shader '" + this.shader.name + "'");
 	}	

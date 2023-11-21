@@ -7,7 +7,7 @@ class Terminal {
         this.maxY = this.modelFont.maxrows;
         this.modelFont.mat.color = [1, 1, 1, 1]; // white
         this.cmdCallback = cmdCallback;
-        this.prompt = ">";
+        this.prompt = cmdCallback ? ">" : "================";
         this.blinkDelay = 60; // 1 second
         this.blink = 0;
         this.updateTime = 0;
@@ -63,6 +63,8 @@ class Terminal {
     }
 
     print(str) {
+        //str = doWordWrap(str, 5);
+        str = doWordWrap(str, this.maxX);
         this.mainStr += '\n' + str + '\n';
         this.mainStr = this.#pruneStr(this.mainStr);
         this.updateTime = 1;
