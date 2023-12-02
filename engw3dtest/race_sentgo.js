@@ -1,4 +1,4 @@
-// very minimalist 3D state
+// preparing to go to the simulation/game
 var race_sentgo = {}; // the 'race_sentgo' state
 //race_sentgo.hidden = true; // can't be selected in the engine UI
 
@@ -12,67 +12,48 @@ race_sentgo.gotoConsole = function() {
 race_sentgo.gotoLogin = function() {
     changestate("race_login", "from SENTGO");
 }
-/*
-race_sentgo.addSlot = function(slotIdx, info) {
-	console.log("add slot, slotIdx =  " + slotIdx + " info, " + JSON.stringify(info));
-	race_sentgo.slots[slotIdx].name = info.name;
-	++race_sentgo.fill;
-	console.log("add slot = " + JSON.stringify(race_sentgo.slots, null, "   "));
-	if (race_sentgo.fill == race_sentgo.slots.length) { // if full
-		return true;
-	} else {
-		return false;
-	}
-}
 
-race_sentgo.setupSlots = function(sockInfo) {
-	race_sentgo.slots = Array(sockInfo.room.slots.length);
-	race_sentgo.fill = 0;
-	for (let i = 0; i < sockInfo.room.slots.length; ++i) {
-		const slot = {
-			name: null,
-			wid: sockInfo.room.slots[i]
-		}
-		race_sentgo.slots[i] = slot;		
-	}
-	console.log("setup slots = " + JSON.stringify(race_sentgo.slots, null, "   "));
-}
-*/
 race_sentgo.setupCallbacks = function(socker) {
 	// handle all events from SERVER
-	//const name = words[0] ? words[0] : "player";
-	//const name = words[0];
-
 	socker.on('disconnect', function (reason) {
-		console.log("disconnect reason '" + reason + "'");	
+		race_sentgo.terminal?.print("sentgo disconnect reason '" + reason + "'");	
 		if (socker) {
 			socker.disconnect();
 			race_sentgo.socker = socker = null; // one side effect
-			//race_sentgo.myId = null;
 			changestate("race_console");
 		}
 	});
-/*
+
 	// broadPack has members: name, id, data
+	/*
+	const broadObj = {
+		id: id,
+		roomIdx: wsocket.roomIdx,
+		slotIdx: wsocket.slotIdx,
+		name: wsocket.name,
+		data: data
+	}
+	*/
 	socker.on('broadcast', function(broadPack) {
 		if (!broadPack.data) {
-			// TODO: handle this
-			console.log("no broadPack data, is disconnect from other socket: id = " + broadPack.id + ", roomIdx = " + broadPack.roomIdx);
+			race_sentgo.terminal?.print("no broadPack data in sentgo, is disconnect from other socket: id = " + broadPack.id + ", slotIdx = " + broadPack.slotIdx);
 		} else {
-			console.log("broadcast from server: " + JSON.stringify(broadPack));
-			race_sentgo.addSlot(broadPack.slotIdx, broadPack.data);
+			race_sentgo.terminal?.print("broadcast from server in sentgo: " + JSON.stringify(broadPack.data));
 		}
 	});
-*/
+
 	// message from server
 	socker.on('message', function(str) {
-		console.log("MESSAGE FROM SERVER " + str);
+		race_sentgo.terminal?.print("MESSAGE FROM SERVER " + str);
 	});
 	// (most) everyone is in this race_sentgo state, or some timed out
 	socker.on('allReady', function(allReadyPack) {
 		const str = "got ALL READY event:  " + JSON.stringify(allReadyPack, null, '   ');
-		console.log(str);
-		race_sentgo.terminal.print(str);
+		race_sentgo.terminal?.print(str);
+		// now that everyone is ready, test broadcast something
+		race_sentgo.socker.emit('broadcast', "broad all ready 1 from slot " + race_sentgo.sockerInfo.slotIdx);
+		race_sentgo.socker.emit('broadcast', "broad all ready 2 from slot " + race_sentgo.sockerInfo.slotIdx);
+		//socker.broadcast("slotidx = " + race_sentgo.sockerInfo.slotIdx);
 	});
 }
 
@@ -89,53 +70,22 @@ sockerinfo........
 	roomIdx: wsocket.roomIdx,
 	slotIdx: wsocket.slotIdx,
 	room: null
-	//roomName: null,
-	//roomLocked: false
 */
 
-race_sentgo.init = function(sockInfo) {
-	if (sockInfo) {
-		race_sentgo.socker = sockInfo.sock;
-		race_sentgo.sockerInfo = sockInfo.info;
-		race_sentgo.setupCallbacks(race_sentgo.socker);
-
-
-		const waitABit = false;
-		if (waitABit) {
-			// wait a bit before saying I'm ready
-			const waitSec = 1 + race_sentgo.sockerInfo.id * 4;
-			setTimeout(() => {
-				console.log("ready timeout!!!");
-				race_sentgo.socker.emit('ready');
-			}, 1000 * waitSec);
-		} else {
-			race_sentgo.socker.emit('ready');
-		}
-
-		//race_sentgo.setupSlots(race_sentgo.sockerInfo);
-		//race_sentgo.addSlot(sockInfo.info.slotIdx, sockInfo.info);
-		/*race_sentgo.socker.emit('broadcast', {
-			name: sockInfo.info.name
-		});*/
-	}
-	race_sentgo.count = 0;
+race_sentgo.init = function(sockInfo) { // network state tranfered from race_console
 	logger("entering webgl race_sentgo\n");
+	race_sentgo.count = 0; // counter for this state
+
 
 	// ui
 	setbutsname('sentgo');
 	race_lobby.fillButton = makeabut("console", race_sentgo.gotoConsole);
 	race_lobby.fillButton = makeabut("login", race_sentgo.gotoLogin);
 
-    // build parent
+    // build 3D scene
 	race_sentgo.roottree = new Tree2("race_sentgo root tree");
 
-	// build a planexy (a square)
-	// make double sided and test gl_FrontFace (TODO: check spelling)
-	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","diffusespecp");
-	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","tex");
-	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","texDoubleSided");
-	//plane.mod.flags |= modelflagenums.DOUBLESIDED;
-
+	// modelfont settings
 	const cols = 120;
 	const rows = 45;
 	const depth = glc.clientHeight / 2;
@@ -144,15 +94,15 @@ race_sentgo.init = function(sockInfo) {
 	const glyphx = 8;
 	const glyphy = 16;
 
+	// background for terminal
 	race_sentgo.backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
 	race_sentgo.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
-	race_sentgo.backgnd.mod.mat.color = [.1, 0, 0, 1];
+	race_sentgo.backgnd.mod.mat.color = [.2, .1, .1, 1];
 	race_sentgo.backgnd.trans = [offx, offy, depth];
 	//race_sentgo.backgnd.flags |= treeflagenums.DONTDRAW
 	race_sentgo.roottree.linkchild(race_sentgo.backgnd);
 
-	//plane.trans = [0,0,1];
-	//race_sentgo.roottree.linkchild(plane);
+	// text for terminal
 	race_sentgo.term = new ModelFont("term", "font0.png", "texc", glyphx, glyphy, cols, rows, false); // might mess up the prompt
 	race_sentgo.term.flags |= modelflagenums.NOZBUFFER;
 	race_sentgo.treef1 = new Tree2("term");
@@ -160,17 +110,62 @@ race_sentgo.init = function(sockInfo) {
 	race_sentgo.treef1.trans = [offx, offy, depth];
 	race_sentgo.treef1.mat.color = [1, 1, 1, 1];
 	race_sentgo.roottree.linkchild(race_sentgo.treef1);
-	race_sentgo.terminal = new Terminal(race_sentgo.term, null);//race_sentgo.doCommand);
 
+	// make terminal, no callbacks or prompt
+	race_sentgo.terminal = new Terminal(race_sentgo.term, null);//race_sentgo.doCommand);
+	// show myself and other info from 'intent'
 	race_sentgo.terminal.print("SENTGO\n\n"
 		+ "sockerinfo = " + JSON.stringify(race_sentgo.sockerInfo) 
 		+ "\ncount = " + race_sentgo.count);
-		mainvp = defaultviewport();	
-	mainvp.clearcolor = [.5,.5,1,1];
+	// in connect, print my id and slot index
+	
+	// do network stuff
 	if (sockInfo) {
-		race_sentgo.terminal.print("SENTGO init, id = " 
+		race_sentgo.socker = sockInfo.sock; // actual socket.io
+		race_sentgo.sockerInfo = sockInfo.info;
+		race_sentgo.setupCallbacks(race_sentgo.socker);
+
+		// TEST
+		const killaSock = false;
+		if (killaSock) {
+			const sockIDtoSave = 2; // don't disconnect this sockereInfo.id
+			if (race_sentgo.sockerInfo.id != sockIDtoSave) { // test disconnect some sockets
+				const waitABit = false;
+				if (waitABit) {
+					// wait a bit before disconnect
+					const waitSec = 3 + (3 - race_sentgo.sockerInfo.id) * 1;
+					setTimeout(() => {
+						race_sentgo.terminal?.print("disconnect after " + waitSec + " seconds");
+						race_sentgo.socker.disconnect();
+					}, 1000 * waitSec);
+				} else { // disconnect right away
+					race_sentgo.terminal.print("disconnect right away");
+					race_sentgo.socker.disconnect();
+				}
+			}
+		}
+
+		// TEST
+		const waitABit = false;
+		if (waitABit) {
+			// wait a bit before saying I'm ready
+			const waitSec = 3 + race_sentgo.sockerInfo.id * 1;
+			setTimeout(() => {
+				race_sentgo.terminal?.print("say ready after " + waitSec + " seconds");
+				race_sentgo.socker.emit('ready');
+			}, 1000 * waitSec);
+		} else { // no test, send ready right away
+			race_sentgo.terminal.print("say ready right away");
+			race_sentgo.socker.emit('ready');
+		}
+
+		race_sentgo.terminal.print("done SENTGO init with sockInfo, id = " 
 		+ race_sentgo.sockerInfo.id + " slot = " + race_sentgo.sockerInfo.slotIdx);
 	}
+
+	// the 3D viewport
+	mainvp = defaultviewport();
+	mainvp.clearcolor = [.5,.5,1,1];
 };
 
 race_sentgo.onresize = function() {
@@ -191,9 +186,7 @@ race_sentgo.proc = function() {
 		//window.location.href = "http://janko.at";
 	}
 	race_sentgo.roottree.proc(); // probably does nothing
-	
 	//doflycam(mainvp); // modify the trs of mainvp using flycam
-	
 	// draw
 	beginscene(mainvp);
 	race_sentgo.roottree.draw();
@@ -209,6 +202,7 @@ race_sentgo.exit = function() {
 	logrc();
 	logger("after roottree glfree\n");
 	race_sentgo.roottree.glfree();
+	race_sentgo.terminal = null;
 	
 	// show usage after cleanup
 	logrc();

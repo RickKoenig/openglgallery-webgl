@@ -18,12 +18,12 @@ function changestate(NS, intent) {
 // call a method in a 'state' object
 function showandgo(title, method, data) {
 	let callBack = state[method];
-	logger("^^^^^^^^^^^ " + method + "." + title + " ^^^^^^^^^^^\n");
+	logger("showandgo ^^^^^^^^^^^ " + method + "." + title + " ^^^^^^^^^^^\n");
 	if (callBack) {
 		callBack(data);
 	}
 	data = null;
-	logger("vvvvvvvvvvvvv " + method + "." + title + " vvvvvvvvvvvv\n");
+	logger("showandgo vvvvvvvvvvvvv " + method + "." + title + " vvvvvvvvvvvv\n");
 }
 
 function loadstate() {
@@ -75,11 +75,11 @@ function procstate() {
 			prevstate();
 	}
 	if (dochangestate) {
+		dochangestate = false; // do this early for nested state changes
 		exitstate();
 		state = newstate;
 		loadstate();
 		//initstate();
-		dochangestate = false;
 	}
 	if (window.sprites_reset)
 		sprites_reset();

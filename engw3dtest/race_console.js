@@ -136,6 +136,21 @@ race_console.setupCallbacks = function(socker, name) {
 		);
 	});
 }
+/*
+add
+chat c
+echo
+enter e
+exit
+exitroom
+go
+help
+joinroom j
+kickme
+makeroom m
+mul
+status s
+*/
 
 race_console.doCommand = function(cmdStr) {
 	console.log("got a command from terminal '" + cmdStr + "'");
@@ -145,8 +160,8 @@ race_console.doCommand = function(cmdStr) {
 	switch(first) {
 		case "help":
 			// local
-			this.print("commands are:\nhelp echo add mul enter exit status kickme chat"
-				+ "\nmakeroom joinroom exitroom go");
+			this.print("commands are:\nhelp echo add mul (e)nter exit (s)tatus kickme (c)hat"
+				+ "\n(m)akeroom (j)oinroom exitroom go");
 			break;
 		case "echo":
 			// local with delay
@@ -171,6 +186,7 @@ race_console.doCommand = function(cmdStr) {
 			}
 			break;
 		case "enter":
+		case "e":
 			// connect
 			if (typeof io !== 'undefined') {
 				if (race_console.socker) {
@@ -197,6 +213,7 @@ race_console.doCommand = function(cmdStr) {
 			}
 			break;
 		case "status":
+		case "s":
 			// remote, status
 			if (race_console.socker) {
 				race_console.socker.emit('status', null);
@@ -214,6 +231,7 @@ race_console.doCommand = function(cmdStr) {
 			break;
 		// send a message to everyone
 		case "chat":
+		case "c":
 			if (race_console.socker) {
 				const message = words.join(' ');
 				race_console.socker.emit('broadcast', message);
@@ -223,8 +241,9 @@ race_console.doCommand = function(cmdStr) {
 			}
 			break;
 
-
+		// roomsf
 		case "makeroom":
+		case "m":
 			if (race_console.socker) {
 				race_console.socker.emit('makeroom', words[0]);
 			} else {
@@ -232,6 +251,7 @@ race_console.doCommand = function(cmdStr) {
 			}
 			break;
 		case "joinroom":
+		case "j":
 			if (race_console.socker) {
 				const roomName = words[0];
 				if (roomName) {
@@ -250,6 +270,8 @@ race_console.doCommand = function(cmdStr) {
 				race_console.terminal.print("not connected!");
 			}
 			break;
+
+		// start a game
 		case "go": // go from room to sim/game, a room that is locked
 					// no new members, host can leave without destroying the room
 			if (race_console.socker) {
@@ -258,7 +280,6 @@ race_console.doCommand = function(cmdStr) {
 				race_console.terminal.print("not connected!");
 			}
 			break;
-
 
 		default:
 			// local, not a valid command
@@ -302,12 +323,28 @@ race_console.testWordWrap = function() {
 	}
 }
 
+race_console.testMemberFunc = function(input) {
+	console.log("called testMemberFunc with " + input);
+	return 7 * input;
+}
+
+race_console.testMembers = {
+	memberValue: 47,
+	memberFunc: race_console.testMemberFunc
+};
+
+race_console.doTestMember = function() {
+	console.log("start testMember");
+	console.log("test member value = " + race_console?.testMembers?.memberValue);
+	console.log("test member function = " + race_console?.testMembers?.memberFunc?.(33));
+	console.log("end testMember");
+}
+
 race_console.init = function(intentData) {
 	race_console.keepSockInfo = false;
 	race_console.count = 0;
 	race_console.clientNewsCount = 0;
 	logger("entering webgl race_console\n");
-	race_console.testWordWrap();
 	// ui
 	setbutsname('console');
 	// test state changes
@@ -361,6 +398,8 @@ race_console.init = function(intentData) {
 		"race_console.backgnd",
 		"race_console.treef1",
 	]);
+	race_console.doTestMember();
+	//race_console.testWordWrap();
 };
 
 race_console.onresize = function() {
