@@ -59,7 +59,6 @@ multiplayer.init = function() {
 			multiplayer.playerTrees[multiplayer.myId] = myTree;
 			multiplayer.roottree.linkchild(myTree);
 		});
-		// draw other players
 		multiplayer.socker.on('news', function (strData) {
 			console.log("NEWS from server: " + strData + " client newsCount " + multiplayer.clientNewsCount);
 			++multiplayer.clientNewsCount;

@@ -63,6 +63,7 @@ class Terminal {
     }
 
     print(str) {
+        if (!str) return;
         console.log("terminal print '" + str + "'");
         //str = doWordWrap(str, 5);
         str = doWordWrap(str, this.maxX);

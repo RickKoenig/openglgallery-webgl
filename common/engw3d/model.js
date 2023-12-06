@@ -20,7 +20,7 @@ var totalfaces = 0;
 function logrc() {
 	modelrc();
 	texturerc();
-	logger("num gl face,vert,uv etc. handles left (6) >= " + nglbuffers + ", num gl tex handles left (1) >= " + ngltextures + "\n");
+	logger("logrc, num gl face,vert,uv etc. handles left (6) >= " + nglbuffers + ", num gl tex handles left (1) >= " + ngltextures + "\n");
 }
 
 function modelrc() {

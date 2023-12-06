@@ -126,14 +126,13 @@ race_console.setupCallbacks = function(socker, name) {
 		const jGoData = JSON.stringify(goData);
 		console.log("GO!: " + jGoData + " client newsCount " 
 			+ race_console.clientNewsCount);
-			race_console.terminal.print(jGoData);
-			++race_console.clientNewsCount;
-			race_console.keepSockInfo = true;
-			changestate("race_sentgo", {
-				sock: socker, 
-				info: race_console.sockerInfo
-			}
-		);
+		race_console.terminal.print(jGoData);
+		++race_console.clientNewsCount;
+		race_console.keepSockInfo = true;
+		changestate("race_sentgo", {
+			sock: socker, 
+			info: race_console.sockerInfo
+		});
 	});
 }
 /*
@@ -253,7 +252,8 @@ race_console.doCommand = function(cmdStr) {
 		case "joinroom":
 		case "j":
 			if (race_console.socker) {
-				const roomName = words[0];
+				let roomName = words[0];
+				if (!roomName && first == "j") roomName = "p0";
 				if (roomName) {
 					race_console.socker.emit('joinroom', roomName);
 				} else {

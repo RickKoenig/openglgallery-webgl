@@ -21,6 +21,8 @@ race_sentgo.setupCallbacks = function(socker) {
 			socker.disconnect();
 			race_sentgo.socker = socker = null; // one side effect
 			changestate("race_console");
+			clearTimeout(race_sentgo.timeout);
+			race_sentgo.timeout = null;
 		}
 	});
 
@@ -51,9 +53,17 @@ race_sentgo.setupCallbacks = function(socker) {
 		const str = "got ALL READY event:  " + JSON.stringify(allReadyPack, null, '   ');
 		race_sentgo.terminal?.print(str);
 		// now that everyone is ready, test broadcast something
-		race_sentgo.socker.emit('broadcast', "broad all ready 1 from slot " + race_sentgo.sockerInfo.slotIdx);
-		race_sentgo.socker.emit('broadcast', "broad all ready 2 from slot " + race_sentgo.sockerInfo.slotIdx);
+		//race_sentgo.socker.emit('broadcast', "broad all ready 1 from slot " + race_sentgo.sockerInfo.slotIdx);
+		//race_sentgo.socker.emit('broadcast', "broad all ready 2 from slot " + race_sentgo.sockerInfo.slotIdx);
 		//socker.broadcast("slotidx = " + race_sentgo.sockerInfo.slotIdx);
+		const waitSec = 2;
+		race_sentgo.timeout = setTimeout(() => {
+			race_sentgo.keepSockInfo = true;
+			changestate("race_ingame", {
+				sock: socker,
+				info: race_sentgo.sockerInfo
+			});
+		},waitSec * 1000);
 	});
 }
 
@@ -73,6 +83,7 @@ sockerinfo........
 */
 
 race_sentgo.init = function(sockInfo) { // network state tranfered from race_console
+	race_sentgo.keepSockInfo = false;
 	logger("entering webgl race_sentgo\n");
 	race_sentgo.count = 0; // counter for this state
 
@@ -113,17 +124,16 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_con
 
 	// make terminal, no callbacks or prompt
 	race_sentgo.terminal = new Terminal(race_sentgo.term, null);//race_sentgo.doCommand);
-	// show myself and other info from 'intent'
-	race_sentgo.terminal.print("SENTGO\n\n"
-		+ "sockerinfo = " + JSON.stringify(race_sentgo.sockerInfo) 
-		+ "\ncount = " + race_sentgo.count);
-	// in connect, print my id and slot index
 	
 	// do network stuff
 	if (sockInfo) {
 		race_sentgo.socker = sockInfo.sock; // actual socket.io
 		race_sentgo.sockerInfo = sockInfo.info;
 		race_sentgo.setupCallbacks(race_sentgo.socker);
+		// show myself and other info from 'intent'
+		race_sentgo.terminal.print("SENTGO\n\n"
+			+ "sockerinfo = " + JSON.stringify(race_sentgo.sockerInfo) 
+			+ "\ncount = " + race_sentgo.count);
 
 		// TEST
 		const killaSock = false;
@@ -193,8 +203,19 @@ race_sentgo.proc = function() {
 };
 
 race_sentgo.exit = function() {
-	if (race_sentgo.socker) {
+	if (race_sentgo.keepSockInfo) {
+		race_sentgo.socker.off(); // kill all callbacks
+	} else if (race_sentgo.socker) {
 		race_sentgo.socker.disconnect();
+	}
+	race_sentgo.socker = null;
+
+	if (race_sentgo.socker) {
+		if (race_sentgo.keepSockInfo) {
+		} else {
+			race_sentgo.socker.disconnect();
+		}
+		race_sentgo.socker.off(); // kill all callbacks
 		race_sentgo.socker = null;
 	}
 	// show current usage before cleanup
