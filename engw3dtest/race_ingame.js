@@ -26,7 +26,7 @@ race_ingame.setupCallbacks = function(socker) {
 
 	// broadPack has members: name, id, data
 	/*
-	const broadObj = {
+	const broadPack = {
 		id: id,
 		roomIdx: wsocket.roomIdx,
 		slotIdx: wsocket.slotIdx,
@@ -35,10 +35,20 @@ race_ingame.setupCallbacks = function(socker) {
 	}
 	*/
 	socker.on('broadcast', function(broadPack) {
-		if (!broadPack.data) {
-			race_ingame.terminal?.print("no broadPack data in ingame, is disconnect from other socket: id = " + broadPack.id + ", slotIdx = " + broadPack.slotIdx);
+		//console.log("got a broadcast from server = " + JSON.stringify(broadPack));
+		const slot = broadPack.slotIdx;
+		if (slot >= 0) {
+			const otherTree = race_ingame.playerTrees[slot];
+			if (broadPack.data) {
+				// update position of other player
+				otherTree.trans = vec3.clone(broadPack.data.pos);
+			} else {
+				race_ingame.terminal?.print(
+					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + broadPack.slotIdx);
+				otherTree.mat.color = [.75, 0, 0, 1]; // disconnected color
+			}
 		} else {
-			race_ingame.terminal?.print("broadcast from server in ingame: " + JSON.stringify(broadPack.data));
+			alert("slot index = " + broadPack.slotIdx + " !!!");
 		}
 	});
 
@@ -96,7 +106,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	const glyphy = 16;
 
 	race_ingame.backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
-	race_ingame.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
+	//race_ingame.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
 	race_ingame.backgnd.mod.mat.color = [.2, .2, .1, 1];
 	race_ingame.backgnd.trans = [offx, offy, depth];
 	//race_ingame.backgnd.flags |= treeflagenums.DONTDRAW;
@@ -104,7 +114,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 
 	// text for terminal
 	race_ingame.term = new ModelFont("term", "font0.png", "texc", glyphx, glyphy, cols, rows, false); // might mess up the prompt
-	race_ingame.term.flags |= modelflagenums.NOZBUFFER;
+	//race_ingame.term.flags |= modelflagenums.NOZBUFFER;
 	race_ingame.treef1 = new Tree2("term");
 	race_ingame.treef1.setmodel(race_ingame.term);
 	race_ingame.treef1.trans = [offx, offy, depth];
@@ -120,6 +130,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	if (sockInfo && sockInfo.sock) {
 		race_ingame.socker = sockInfo.sock; // actual socket.io
 		race_ingame.sockerInfo = sockInfo.info;
+		race_ingame.mySlot = race_ingame.sockerInfo.slotIdx;
 		race_ingame.setupCallbacks(race_ingame.socker);
 		// show myself and other info from 'intent'
 		race_ingame.terminal.print("INGAME\n\n"
@@ -166,15 +177,16 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 
     // build 3D scene
 	//race_ingame.roottree = new Tree2("race_ingame root tree");
-	race_ingame.treeMaster = buildprism("aprism", [5.5, 5.5, 5.5], "panel.jpg", "texc");
+	race_ingame.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
 	race_ingame.treeMaster.mat.color = [.75, .75, .75, 1];
-
-	const myTree = race_ingame.treeMaster.newdup();
-	myTree.trans = [/*race_ingame.myId*/ 0 * 2 - 3, 0, 5]; // TODO: fix
-	myTree.mat.color = [1.5, 1, 0, 1]; // brighter color for self
-	race_ingame.playerTrees[/*race_ingame.myId*/ 0] = myTree; // TODO: fix
-	race_ingame.roottree.linkchild(myTree);
-
+	const room = race_ingame.sockerInfo.room;
+	for (let s = 0; s < room.slots.length; ++s) {
+		const playerTree = race_ingame.treeMaster.newdup();
+		playerTree.trans = [s * 2 - 3, -2, 5]; // for now, center with 4 players, and a little lower
+		if (race_ingame.mySlot == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+		race_ingame.playerTrees[s] = playerTree;
+		race_ingame.roottree.linkchild(playerTree);
+	}
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
@@ -189,6 +201,7 @@ race_ingame.onresize = function() {
 
 race_ingame.proc = function() {
 	// proc
+	race_ingame.allready = true;
 	if (race_ingame.allready) {
 		++race_ingame.count;
 		// do something after 4 seconds
@@ -202,9 +215,7 @@ race_ingame.proc = function() {
 		const step = .025;
 		// get some input
 		// process input
-		//const myTree = race_ingame.myId === undefined ? null 
-		//	: race_ingame.playerTrees[race_ingame.myId];
-		const myTree = race_ingame.playerTrees[0]; // TODO: fix
+		const myTree = race_ingame.playerTrees[race_ingame.mySlot];
 		if (myTree) {
 			if (input.keystate[keycodes.LEFT]) {
 				myTree.trans[0] -= step;
@@ -219,12 +230,12 @@ race_ingame.proc = function() {
 				myTree.trans[1] += step;
 			}
 			if (input.keystate[keycodes.PAGEDOWN]) {
-				myTree.trans[2] -= step * 100;
+				myTree.trans[2] -= step;
 			}
 			if (input.keystate[keycodes.PAGEUP]) {
-				myTree.trans[2] += step * 100;
+				myTree.trans[2] += step;
 			}
-			race_ingame.socker.emit('broadcast', {pos: myTree.trans});
+			race_ingame.socker?.emit('broadcast', {pos: myTree.trans});
 		}
 	}
 	race_ingame.roottree.proc(); // probably does nothing
