@@ -133,17 +133,15 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_con
 		// show myself and other info from 'intent'
 		race_sentgo.terminal.print("SENTGO\n\n"
 			+ "sockerinfo = " + JSON.stringify(race_sentgo.sockerInfo) 
-			+ "\ncount = " + race_sentgo.count);
+			+ "\nrace_sentgo count = " + race_sentgo.count);
 
 		// TEST
-		const killaSock = false;
-		if (killaSock) {
-			const sockIDtoSave = 2; // don't disconnect this sockereInfo.id
-			if (race_sentgo.sockerInfo.id != sockIDtoSave) { // test disconnect some sockets
+		if (testDisconnect == 3) {
+			if (race_sentgo.sockerInfo.id == testId) { // test disconnect some sockets
 				const waitABit = false;
 				if (waitABit) {
 					// wait a bit before disconnect
-					const waitSec = 3 + (3 - race_sentgo.sockerInfo.id) * 1;
+					const waitSec = 1;
 					setTimeout(() => {
 						race_sentgo.terminal?.print("disconnect after " + waitSec + " seconds");
 						race_sentgo.socker.disconnect();
@@ -207,17 +205,26 @@ race_sentgo.exit = function() {
 		race_sentgo.socker.off(); // kill all callbacks
 	} else if (race_sentgo.socker) {
 		race_sentgo.socker.disconnect();
+		race_sentgo.socker = socker = null; // one side effect
+		//changestate("race_console");
 	}
+	if (race_sentgo.sockerInfo.id == testId && testDisconnect == 4) {
+		race_sentgo.socker.disconnect();
+		race_sentgo.socker = socker = null; // one side effect
+		changestate("race_console");
+	}
+		
 	race_sentgo.socker = null;
-
+/*
 	if (race_sentgo.socker) {
 		if (race_sentgo.keepSockInfo) {
 		} else {
 			race_sentgo.socker.disconnect();
 		}
+		if (true) race_sentgo.socker.disconnect();
 		race_sentgo.socker.off(); // kill all callbacks
 		race_sentgo.socker = null;
-	}
+	} */
 	// show current usage before cleanup
 	race_sentgo.roottree.log();
 	logrc();

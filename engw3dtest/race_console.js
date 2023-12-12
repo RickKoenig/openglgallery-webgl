@@ -1,6 +1,27 @@
 // terminal
 var race_console = {}; // the 'race_console' state
 
+// BEGIN test internet breakage
+testDisconnect = 0;
+// when to disconnect
+// 0 no test
+// 1 race_console got go
+// 2 race_sentgo init
+// 3 race_sentgo proc soon after
+// 4 race_sentgo exit
+// 5 race_ingame init
+// 6 race_ingame proc soon after
+testNotReady = 0;
+// when to say ready
+// 0 no test, send ready in all inits
+// 1 race_sentgo don't send ready
+// 2 race_sentgo proc send ready soon after
+// 3 race_ingame don't send
+// 4 race_ingame proc send ready soon after
+// END test internet breakage
+// socket id to try to break
+testId = 1;
+
 race_console.text = "WebGL: race_console 3D drawing";
 race_console.title = "race_console";
 

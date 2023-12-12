@@ -41,6 +41,7 @@ race_ingame.setupCallbacks = function(socker) {
 			const otherTree = race_ingame.playerTrees[slot];
 			if (broadPack.data) {
 				// update position of other player
+				console.log('broadback data = ' + JSON.stringify(broadPack.data));
 				otherTree.trans = vec3.clone(broadPack.data.pos);
 			} else {
 				race_ingame.terminal?.print(
@@ -65,6 +66,10 @@ race_ingame.setupCallbacks = function(socker) {
 		race_ingame.socker.emit('broadcast', "broad all ready 1 from slot " + race_ingame.sockerInfo.slotIdx);
 		race_ingame.socker.emit('broadcast', "broad all ready 2 from slot " + race_ingame.sockerInfo.slotIdx);
 		//socker.broadcast("slotidx = " + race_ingame.sockerInfo.slotIdx);
+		for (let slot of allReadyPack.absentSlots) {
+			const otherTree = race_ingame.playerTrees[slot];
+			otherTree.mat.color = [.25, 1, 0, 1]; // not ready color
+		}
 	});
 }
 
@@ -132,16 +137,20 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 		race_ingame.sockerInfo = sockInfo.info;
 		race_ingame.mySlot = race_ingame.sockerInfo.slotIdx;
 		race_ingame.setupCallbacks(race_ingame.socker);
-		// show myself and other info from 'intent'
+		if (testDisconnect == 5) {
+			if (race_ingame.sockerInfo.id == testId) {
+				race_ingame.socker.disconnect();
+			}
+		}
+			// show myself and other info from 'intent'
 		race_ingame.terminal.print("INGAME\n\n"
 			+ "sockerinfo = " + JSON.stringify(race_ingame.sockerInfo) 
-			+ "\ncount = " + race_ingame.count);
+			+ "\nrace_ingame count = " + race_ingame.count);
 
 		// TEST
 		const killaSock = false;
 		if (killaSock) {
-			const sockIDtoSave = 2; // don't disconnect this sockereInfo.id
-			if (race_ingame.sockerInfo.id != sockIDtoSave) { // test disconnect some sockets
+			if (race_ingame.sockerInfo.id == testId) { // test disconnect a socket
 				const waitABit = false;
 				if (waitABit) {
 					// wait a bit before disconnect
@@ -182,7 +191,8 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	const room = race_ingame.sockerInfo.room;
 	for (let s = 0; s < room.slots.length; ++s) {
 		const playerTree = race_ingame.treeMaster.newdup();
-		playerTree.trans = [s * 2 - 3, -2, 5]; // for now, center with 4 players, and a little lower
+		playerTree.trans = [s * .75 - 3, -3, 5]; // for now, center with 4 players, and a little lower
+		playerTree.scale = [.3, .3, .3];
 		if (race_ingame.mySlot == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
 		race_ingame.playerTrees[s] = playerTree;
 		race_ingame.roottree.linkchild(playerTree);
@@ -201,11 +211,17 @@ race_ingame.onresize = function() {
 
 race_ingame.proc = function() {
 	// proc
-	race_ingame.allready = true;
+	//race_ingame.allready = true; // what is this?
 	if (race_ingame.allready) {
 		++race_ingame.count;
-		// do something after 4 seconds
-		if (race_ingame.count == 4*fpswanted) {
+		// do something after N seconds
+		const numSeconds = 4;
+		if (race_ingame.count == numSeconds * fpswanted) {
+			if (testDisconnect == 6) {
+				if (race_ingame.sockerInfo.id == testId) {
+					race_ingame.socker.disconnect();
+				}
+			}
 			//changestate("solarTest");
 			//window.history.back();
 			//window.location.href = "../../index.html";
