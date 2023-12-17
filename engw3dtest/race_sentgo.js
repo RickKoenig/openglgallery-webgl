@@ -136,34 +136,36 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_con
 			+ "\nrace_sentgo count = " + race_sentgo.count);
 
 		// TEST
-		if (testDisconnect == 3) {
-			if (race_sentgo.sockerInfo.id == testId) { // test disconnect some sockets
-				const waitABit = false;
-				if (waitABit) {
-					// wait a bit before disconnect
-					const waitSec = 1;
-					setTimeout(() => {
-						race_sentgo.terminal?.print("disconnect after " + waitSec + " seconds");
-						race_sentgo.socker.disconnect();
-					}, 1000 * waitSec);
-				} else { // disconnect right away
-					race_sentgo.terminal.print("disconnect right away");
-					race_sentgo.socker.disconnect();
-				}
+		if (race_sentgo.sockerInfo.id == testId) { // test disconnect some sockets
+			if (testDisconnect == 2) {
+				race_sentgo.socker.disconnect();
+				race_sentgo.socker = null;
+			}
+			if (testDisconnect == 3) {
+				// wait a bit before disconnect
+				const waitSec = 3;
+				setTimeout(() => {
+					race_sentgo.terminal?.print("disconnect after " + waitSec + " seconds");
+					race_sentgo.socker?.disconnect();
+				}, 1000 * waitSec);
 			}
 		}
 
 		// TEST
-		const waitABit = false;
-		if (waitABit) {
-			// wait a bit before saying I'm ready
-			const waitSec = 3 + race_sentgo.sockerInfo.id * 1;
-			setTimeout(() => {
-				race_sentgo.terminal?.print("say ready after " + waitSec + " seconds");
+		// otherwise don't send ready when testNotReady == 1 and testID == race_ingame.sockerInfo.id
+		if (testId == race_sentgo.sockerInfo.id) {
+			if (testNotReady == 2) { // wait a bit before saying I'm ready
+				const waitSec = 7;
+				setTimeout(() => {
+					race_sentgo.terminal?.print("say ready after " + waitSec + " seconds");
+					race_sentgo.socker.emit('ready');
+				}, 1000 * waitSec);
+			} else if (testNotReady != 1) { // if a 1, then don't emit ready
+				race_sentgo.terminal.print("say ready right away NOT testNotReady != 1");
 				race_sentgo.socker.emit('ready');
-			}, 1000 * waitSec);
-		} else { // no test, send ready right away
-			race_sentgo.terminal.print("say ready right away");
+			}
+		} else {
+			race_sentgo.terminal.print("say ready right away NOT testId");
 			race_sentgo.socker.emit('ready');
 		}
 

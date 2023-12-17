@@ -20,7 +20,7 @@ testNotReady = 0;
 // 4 race_ingame proc send ready soon after
 // END test internet breakage
 // socket id to try to break
-testId = 1;
+testId = 0;
 
 race_console.text = "WebGL: race_console 3D drawing";
 race_console.title = "race_console";
@@ -144,6 +144,11 @@ race_console.setupCallbacks = function(socker, name) {
 	});
 
 	socker.on('go', function(goData) {
+		if (race_console.sockerInfo.id == testId) { // test disconnect some sockets
+			if (testDisconnect == 1) {
+				race_console.socker?.disconnect(true);
+			}
+		}
 		const jGoData = JSON.stringify(goData);
 		console.log("GO!: " + jGoData + " client newsCount " 
 			+ race_console.clientNewsCount);

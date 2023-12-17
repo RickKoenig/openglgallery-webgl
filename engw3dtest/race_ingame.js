@@ -41,7 +41,7 @@ race_ingame.setupCallbacks = function(socker) {
 			const otherTree = race_ingame.playerTrees[slot];
 			if (broadPack.data) {
 				// update position of other player
-				console.log('broadback data = ' + JSON.stringify(broadPack.data));
+				//console.log('broadback data = ' + JSON.stringify(broadPack.data));
 				otherTree.trans = vec3.clone(broadPack.data.pos);
 			} else {
 				race_ingame.terminal?.print(
@@ -167,16 +167,20 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 		}
 
 		// TEST
-		const waitABit = false;
-		if (waitABit) {
-			// wait a bit before saying I'm ready
-			const waitSec = 3 + race_ingame.sockerInfo.id * 1;
-			setTimeout(() => {
-				race_ingame.terminal?.print("say ready after " + waitSec + " seconds");
+		// otherwise don't send ready when testNotReady == 3 and testID == race_ingame.sockerInfo.id
+		if (testId == race_ingame.sockerInfo.id) {
+			if (testNotReady == 4) { // wait a bit before saying I'm ready
+				const waitSec = 13;
+				setTimeout(() => {
+					race_ingame.terminal?.print("say ready after " + waitSec + " seconds");
+					race_ingame.socker.emit('ready');
+				}, 1000 * waitSec);
+			} else if (testNotReady != 3) {
+				race_ingame.terminal.print("say ready right away NOT testNotReady == 3");
 				race_ingame.socker.emit('ready');
-			}, 1000 * waitSec);
-		} else { // no test, send ready right away
-			race_ingame.terminal.print("say ready right away");
+			}
+		} else {
+			race_ingame.terminal.print("say ready right away NOT testId");
 			race_ingame.socker.emit('ready');
 		}
 
