@@ -156,7 +156,7 @@ race_console.setupCallbacks = function(socker, name) {
 		++race_console.clientNewsCount;
 		race_console.keepSockInfo = true;
 		changestate("race_sentgo", {
-			sock: socker, 
+			sock: socker,
 			info: race_console.sockerInfo
 		});
 	});

@@ -132,7 +132,7 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_con
 		race_sentgo.setupCallbacks(race_sentgo.socker);
 		// show myself and other info from 'intent'
 		race_sentgo.terminal.print("SENTGO\n\n"
-			+ "sockerinfo = " + JSON.stringify(race_sentgo.sockerInfo) 
+			+ "sockerinfo = " + JSON.stringify(race_sentgo.sockerInfo)
 			+ "\nrace_sentgo count = " + race_sentgo.count);
 
 		// TEST

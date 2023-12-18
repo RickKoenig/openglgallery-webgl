@@ -1,4 +1,4 @@
-// preparing to go to the simulation/game
+// running the simulation/game
 var race_ingame = {}; // the 'race_ingame' state
 //race_ingame.hidden = true; // can't be selected in the engine UI
 
@@ -16,7 +16,7 @@ race_ingame.gotoLogin = function() {
 race_ingame.setupCallbacks = function(socker) {
 	// handle all events from SERVER
 	socker.on('disconnect', function (reason) {
-		race_ingame.terminal?.print("ingame disconnect reason '" + reason + "'");	
+		race_ingame.terminal?.print("ingame disconnect reason '" + reason + "'");
 		if (socker) {
 			socker.disconnect();
 			race_ingame.socker = socker = null; // one side effect
@@ -129,7 +129,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 
 	// make terminal, no callbacks or prompt
 	race_ingame.terminal = new Terminal(race_ingame.term, null);//race_ingame.doCommand);
-	
+
 	// do network stuff
 	race_ingame.playerTrees = [];
 	if (sockInfo && sockInfo.sock) {
@@ -144,7 +144,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 		}
 			// show myself and other info from 'intent'
 		race_ingame.terminal.print("INGAME\n\n"
-			+ "sockerinfo = " + JSON.stringify(race_ingame.sockerInfo) 
+			+ "sockerinfo = " + JSON.stringify(race_ingame.sockerInfo)
 			+ "\nrace_ingame count = " + race_ingame.count);
 
 		// TEST
@@ -184,7 +184,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 			race_ingame.socker.emit('ready');
 		}
 
-		race_ingame.terminal.print("done INGAME init with sockInfo, id = " 
+		race_ingame.terminal.print("done INGAME init with sockInfo, id = "
 		+ race_ingame.sockerInfo.id + " slot = " + race_ingame.sockerInfo.slotIdx);
 	}
 
