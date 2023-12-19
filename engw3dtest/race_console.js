@@ -1,8 +1,10 @@
+'use strict';
+
 // terminal
 var race_console = {}; // the 'race_console' state
 
 // BEGIN test internet breakage
-testDisconnect = 0;
+const testDisconnect = 0;
 // when to disconnect
 // 0 no test
 // 1 race_console got go
@@ -11,16 +13,16 @@ testDisconnect = 0;
 // 4 race_sentgo exit
 // 5 race_ingame init
 // 6 race_ingame proc soon after
-testNotReady = 0;
+const testNotReady = 0;
 // when to say ready
 // 0 no test, send ready in all inits
 // 1 race_sentgo don't send ready
 // 2 race_sentgo proc send ready soon after
 // 3 race_ingame don't send
 // 4 race_ingame proc send ready soon after
-// END test internet breakage
 // socket id to try to break
-testId = 0;
+const testId = 1;
+// END test internet breakage
 
 race_console.text = "WebGL: race_console 3D drawing";
 race_console.title = "race_console";
@@ -41,11 +43,8 @@ race_console.gotoFill = function() {
 race_console.broadcastModes = {
 	lobby: 0,
 	room: 1,
-	go: 2,
-	game: 3,
-	results: 4
 };
-race_console.modeStrs = ['L', 'R', 'G', 'S', 'R'];
+race_console.modeStrs = ['L', 'R'];
 
 // get my profile from server after setting name game etc. 
 // also has my id and room id if needed
@@ -83,8 +82,6 @@ race_console.makePromptFromInfo = function(info) {
 
 race_console.setupCallbacks = function(socker, name) {
 	// handle all events from SERVER
-	//const name = words[0] ? words[0] : "player";
-	//const name = words[0];
 	socker.on('connect', function() {
 		if (socker) {
 			if (name) {
@@ -119,7 +116,6 @@ race_console.setupCallbacks = function(socker, name) {
 		if (socker) {
 			socker.disconnect();
 			race_console.socker = socker = null; // one side effect
-			//race_console.myId = null;
 			race_console.terminal.setPrompt(">");
 		}
 	});
@@ -127,7 +123,6 @@ race_console.setupCallbacks = function(socker, name) {
 	// broadPack has members: name, id, data
 	socker.on('broadcast', function(broadPack) {
 		if (!broadPack.data) {
-			// TODO: handle this
 			console.log("no broadPack data, is disconnect from other socket: id = " + broadPack.id + ", roomIdx = " + broadPack.roomIdx);
 		} else if (typeof broadPack.data === 'string') {
 			console.log("broadcast from server: " + JSON.stringify(broadPack));
@@ -161,7 +156,10 @@ race_console.setupCallbacks = function(socker, name) {
 		});
 	});
 }
+
 /*
+COMMANDS
+
 add
 chat c
 echo
@@ -231,8 +229,6 @@ race_console.doCommand = function(cmdStr) {
 			if (race_console.socker) {
 				race_console.socker.disconnect();
 				race_console.socker = null;
-				//race_console.myId = null;
-				//race_console.terminal.setPrompt("#");
 			} else {
 				race_console.terminal.print("already disconnected!");
 			}
@@ -266,7 +262,7 @@ race_console.doCommand = function(cmdStr) {
 			}
 			break;
 
-		// roomsf
+		// rooms
 		case "makeroom":
 		case "m":
 			if (race_console.socker) {
@@ -314,61 +310,8 @@ race_console.doCommand = function(cmdStr) {
 	}
 }
 
-race_console.makeAlphabet = function(cnt = 26) {
-	let aCode = "a".charCodeAt();
-	let ret = "";
-	for (i = 0; i < 26; ++i) {
-		if (cnt-- == 0) return ret;
-		ret += String.fromCharCode(aCode + i);
-	}
-	aCode = "A".charCodeAt();
-	for (i = 0; i < 26; ++i) {
-		if (cnt-- == 0) return ret;
-		ret += String.fromCharCode(aCode + i);
-	}
-	return ret;
-}
-
-race_console.testWordWrap = function() {
-	const strs = [
-		"hel\nlo",
-		"hi",
-		"what",
-		race_console.makeAlphabet(),
-		race_console.makeAlphabet(0),
-		race_console.makeAlphabet(10),
-		race_console.makeAlphabet(11),
-		race_console.makeAlphabet(20),
-		race_console.makeAlphabet(51)
-	];
-	console.log("TEST WORD WRAP");
-	const cols = 5;
-	for (const inStr of strs) {
-		outStr = doWordWrap(inStr, cols);
-		console.log("instr = '" + inStr + "' outstr = '" + outStr + "'");
-	}
-}
-
-race_console.testMemberFunc = function(input) {
-	console.log("called testMemberFunc with " + input);
-	return 7 * input;
-}
-
-race_console.testMembers = {
-	memberValue: 47,
-	memberFunc: race_console.testMemberFunc
-};
-
-race_console.doTestMember = function() {
-	console.log("start testMember");
-	console.log("test member value = " + race_console?.testMembers?.memberValue);
-	console.log("test member function = " + race_console?.testMembers?.memberFunc?.(33));
-	console.log("end testMember");
-}
-
 race_console.init = function(intentData) {
 	race_console.keepSockInfo = false;
-	race_console.count = 0;
 	race_console.clientNewsCount = 0;
 	logger("entering webgl race_console\n");
 	// ui
@@ -384,69 +327,20 @@ race_console.init = function(intentData) {
 	race_console.socker = null; // the client socket
 	race_console.sockerInfo = null; // info about the socket
 
-	/*
-	// build a planexy (a square)
-	const plane = buildplanexy("aplane",2,2,"maptestnck.png","texDoubleSided");
-	plane.mod.flags |= modelflagenums.DOUBLESIDED;
-	//plane.flags = treeflagenums.DONTDRAWC;
-	plane.trans = [0,0,2];
-	race_console.roottree.linkchild(plane);
-	*/
-	const cols = 120;
-	const rows = 45;
-	const depth = glc.clientHeight / 2;
-	const offx = -glc.clientWidth / 2 + 16;
-	const offy = glc.clientHeight / 2 - 16;
-	const glyphx = 8;
-	const glyphy = 16;
-
-	race_console.backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
-	race_console.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
-	race_console.backgnd.mod.mat.color = [.1, 0, 0, 1];
-	race_console.backgnd.trans = [offx, offy, depth];
-	race_console.roottree.linkchild(race_console.backgnd);
-
-	race_console.amodf1big = new ModelFont("amodf1big", "font0.png", "texc", glyphx, glyphy, cols, rows, false);
-	race_console.amodf1big.flags |= modelflagenums.NOZBUFFER;
-	race_console.treef1 = new Tree2("amodf1big");
-	race_console.treef1.setmodel(race_console.amodf1big);
-	race_console.treef1.trans = [offx, offy, depth];
-	//amodf1big.mat.color = [1,0,0,1];
-	race_console.roottree.linkchild(race_console.treef1);
-
-	race_console.terminal = new Terminal(race_console.amodf1big, race_console.doCommand);
+	race_console.terminal = new Terminal(race_console.roottree, [.1, 0, 0, 1], race_console.doCommand);
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
-
-	// UI debprint menu
-	debprint.addlist("console graphic adjust",[
-		"race_console.backgnd",
-		"race_console.treef1",
-	]);
-	race_console.doTestMember();
-	//race_console.testWordWrap();
 };
 
 race_console.onresize = function() {
 	console.log("onresize");
-	const depth = glc.clientHeight / 2;
-	race_console.backgnd.trans[2] = depth;
-	race_console.treef1.trans[2] = depth;
+	race_console.terminal.onresize();
 }
 
 race_console.proc = function() {
 	// proc
 	race_console.terminal.proc(input.key);
-	++race_console.count;
-	// do something after 4 seconds
-	if (race_console.count == 4*fpswanted) {
-		//changestate("solarTest");
-		//window.history.back();
-		//window.location.href = "../../index.html";
-		//window.location.href = "http://janko.at";
-		//return;
-	}
 	race_console.roottree.proc(); // probably does nothing
 	//doflycam(mainvp); // modify the trs of mainvp using flycam
 
@@ -474,5 +368,4 @@ race_console.exit = function() {
 	race_console.roottree = null;
 	clearbuts('console');
 	logger("exiting webgl race_console\n");
-	debprint.removelist("console graphic adjust")
 };

@@ -1,3 +1,5 @@
+'use strict';
+
 // running the simulation/game
 var race_ingame = {}; // the 'race_ingame' state
 //race_ingame.hidden = true; // can't be selected in the engine UI
@@ -41,8 +43,11 @@ race_ingame.setupCallbacks = function(socker) {
 			const otherTree = race_ingame.playerTrees[slot];
 			if (broadPack.data) {
 				// update position of other player
-				//console.log('broadback data = ' + JSON.stringify(broadPack.data));
-				otherTree.trans = vec3.clone(broadPack.data.pos);
+				if (broadPack.data.pos) {
+					otherTree.trans = vec3.clone(broadPack.data.pos);
+				} else {
+					console.log('broadback data = ' + JSON.stringify(broadPack.data));
+				}
 			} else {
 				race_ingame.terminal?.print(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + broadPack.slotIdx);
@@ -62,10 +67,6 @@ race_ingame.setupCallbacks = function(socker) {
 		const str = "got ALL READY event:  " + JSON.stringify(allReadyPack, null, '   ');
 		race_ingame.allready = true;
 		race_ingame.terminal?.print(str);
-		// now that everyone is ready, test broadcast something
-		race_ingame.socker.emit('broadcast', "broad all ready 1 from slot " + race_ingame.sockerInfo.slotIdx);
-		race_ingame.socker.emit('broadcast', "broad all ready 2 from slot " + race_ingame.sockerInfo.slotIdx);
-		//socker.broadcast("slotidx = " + race_ingame.sockerInfo.slotIdx);
 		for (let slot of allReadyPack.absentSlots) {
 			const otherTree = race_ingame.playerTrees[slot];
 			otherTree.mat.color = [.25, 1, 0, 1]; // not ready color
@@ -100,35 +101,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	race_lobby.fillButton = makeabut("login", race_ingame.gotoLogin);
 
 	race_ingame.roottree = new Tree2("race_ingame root tree");
-	// background for terminal
-	// modelfont settings
-	const cols = 120;
-	const rows = 45;
-	const depth = glc.clientHeight / 2;
-	const offx = -glc.clientWidth / 2 + 16;
-	const offy = glc.clientHeight / 2 - 16;
-	const glyphx = 8;
-	const glyphy = 16;
-
-	race_ingame.backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
-	//race_ingame.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
-	race_ingame.backgnd.mod.mat.color = [.2, .2, .1, 1];
-	race_ingame.backgnd.trans = [offx, offy, depth];
-	//race_ingame.backgnd.flags |= treeflagenums.DONTDRAW;
-	race_ingame.roottree.linkchild(race_ingame.backgnd);
-
-	// text for terminal
-	race_ingame.term = new ModelFont("term", "font0.png", "texc", glyphx, glyphy, cols, rows, false); // might mess up the prompt
-	//race_ingame.term.flags |= modelflagenums.NOZBUFFER;
-	race_ingame.treef1 = new Tree2("term");
-	race_ingame.treef1.setmodel(race_ingame.term);
-	race_ingame.treef1.trans = [offx, offy, depth];
-	race_ingame.treef1.mat.color = [1, 1, 1, 1];
-	//race_ingame.treef1.flags |= treeflagenums.DONTDRAW;
-	race_ingame.roottree.linkchild(race_ingame.treef1);
-
-	// make terminal, no callbacks or prompt
-	race_ingame.terminal = new Terminal(race_ingame.term, null);//race_ingame.doCommand);
+	race_ingame.terminal = new Terminal(race_ingame.roottree, [.2, .2, .1, 1]);
 
 	// do network stuff
 	race_ingame.playerTrees = [];
@@ -189,7 +162,6 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	}
 
     // build 3D scene
-	//race_ingame.roottree = new Tree2("race_ingame root tree");
 	race_ingame.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
 	race_ingame.treeMaster.mat.color = [.75, .75, .75, 1];
 	const room = race_ingame.sockerInfo.room;
@@ -215,7 +187,6 @@ race_ingame.onresize = function() {
 
 race_ingame.proc = function() {
 	// proc
-	//race_ingame.allready = true; // what is this?
 	if (race_ingame.allready) {
 		++race_ingame.count;
 		// do something after N seconds
@@ -226,10 +197,6 @@ race_ingame.proc = function() {
 					race_ingame.socker.disconnect();
 				}
 			}
-			//changestate("solarTest");
-			//window.history.back();
-			//window.location.href = "../../index.html";
-			//window.location.href = "http://janko.at";
 		}
 
 		const step = .025;
@@ -265,9 +232,14 @@ race_ingame.proc = function() {
 	race_ingame.roottree.draw();
 };
 
+race_ingame.onresize = function() {
+	console.log("onresize");
+	race_ingame.terminal.onresize();
+
+}
+
 race_ingame.exit = function() {
 	if (race_ingame.socker) {
-		//race_ingame.socker.off();
 		race_ingame.socker.disconnect();
 		race_ingame.socker = null;
 	}

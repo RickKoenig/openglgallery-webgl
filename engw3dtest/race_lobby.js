@@ -1,3 +1,5 @@
+'use strict';
+
 // very minimalist 3D state
 var race_lobby = {}; // the 'race_lobby' state
 

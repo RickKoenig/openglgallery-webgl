@@ -1,8 +1,29 @@
 'use strict';
 
 class Terminal {
-    constructor(modelFont, cmdCallback) {
-        this.modelFont = modelFont;
+    constructor(rootTree, backColor, cmdCallback) {
+        // TODO: add more parameters
+        const cols = 120;
+        const rows = 45;
+        const depth = glc.clientHeight / 2;
+        const offx = -glc.clientWidth / 2 + 16;
+        const offy = glc.clientHeight / 2 - 16;
+        const glyphx = 8;
+        const glyphy = 16;
+
+        this.backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
+        this.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
+        this.backgnd.mod.mat.color = backColor;
+        this.backgnd.trans = [offx, offy, depth];
+        rootTree.linkchild(this.backgnd);
+        
+        this.modelFont = new ModelFont("terminalModelFont", "font0.png", "texc", glyphx, glyphy, cols, rows, false);
+        this.modelFont.flags |= modelflagenums.NOZBUFFER;
+        this.treeFont = new Tree2("terminalTreeFont");
+        this.treeFont.setmodel(this.modelFont);
+        this.treeFont.trans = [offx, offy, depth];
+        rootTree.linkchild(this.treeFont);
+    
         this.maxX = this.modelFont.maxcols;
         this.maxY = this.modelFont.maxrows;
         this.modelFont.mat.color = [1, 1, 1, 1]; // white
@@ -53,7 +74,8 @@ class Terminal {
         this.modelFont.print(pStr);
         const normColor = Bitmap32p.colorStrToArray("white");
         const hilitColor = Bitmap32p.colorStrToArray("lightgreen");
-        vec4.lerp(this.modelFont.mat.color, normColor, hilitColor, this.updateTime);     
+        vec4.lerp(this.modelFont.mat.color, normColor, hilitColor, this.updateTime);  
+    
     }
 
     setPrompt(p) {
@@ -65,7 +87,6 @@ class Terminal {
     print(str) {
         if (!str) return;
         console.log("terminal print '" + str + "'");
-        //str = doWordWrap(str, 5);
         str = doWordWrap(str, this.maxX);
         this.mainStr += '\n' + str + '\n';
         this.mainStr = this.#pruneStr(this.mainStr);
@@ -104,5 +125,11 @@ class Terminal {
             this.updateTime = 0;
         }
         this.#update(); // redraw
+    }
+
+    onresize() {
+        const depth = glc.clientHeight / 2;
+        this.backgnd.trans[2] = depth;
+        this.treeFont.trans[2] = depth;
     }
 };
