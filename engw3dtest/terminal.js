@@ -1,23 +1,34 @@
 'use strict';
 
 class Terminal {
-    constructor(rootTree, backColor, cmdCallback) {
-        // TODO: add more parameters
-        const cols = 120;
-        const rows = 45;
-        const depth = glc.clientHeight / 2;
-        const offx = -glc.clientWidth / 2 + 16;
-        const offy = glc.clientHeight / 2 - 16;
-        const glyphx = 8;
-        const glyphy = 16;
+    constructor(rootTree, backColor, cmdCallback, params) {
+        let cols = 120;
+        let rows = 45;
+        let glyphx = 8;
+        let glyphy = 16;
+        let offx = 8;
+        let offy = 8;
 
-        this.backgnd = buildplanexy01("aplane2", glyphx * cols, glyphy * rows, null, "flat", 1, 1);
+        if (params) {
+            if (params.cols) cols = params.cols;
+            if (params.rows) rows = params.rows;
+            if (params.offx) offx = params.offx;
+            if (params.offy) offy = params.offy;
+        }
+
+        const depth = glc.clientHeight / 2;
+        const W2 = glc.clientWidth / 2
+        offx += -W2;
+        offy = -offy;
+        offy += depth;
+
+        this.backgnd = buildplanexy01(makeuniq("aplane2"), glyphx * cols, glyphy * rows, null, "flat", 1, 1);
         this.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
         this.backgnd.mod.mat.color = backColor;
         this.backgnd.trans = [offx, offy, depth];
         rootTree.linkchild(this.backgnd);
         
-        this.modelFont = new ModelFont("terminalModelFont", "font0.png", "texc", glyphx, glyphy, cols, rows, false);
+        this.modelFont = new ModelFont(makeuniq("terminalModelFont"), "font0.png", "texc", glyphx, glyphy, cols, rows, false);
         this.modelFont.flags |= modelflagenums.NOZBUFFER;
         this.treeFont = new Tree2("terminalTreeFont");
         this.treeFont.setmodel(this.modelFont);
@@ -28,13 +39,13 @@ class Terminal {
         this.maxY = this.modelFont.maxrows;
         this.modelFont.mat.color = [1, 1, 1, 1]; // white
         this.cmdCallback = cmdCallback;
-        this.prompt = cmdCallback ? ">" : "================";
+        this.prompt = cmdCallback ? ">" : "";
         this.blinkDelay = 60; // 1 second
         this.blink = 0;
         this.updateTime = 0;
         this.cursor = "_";
         this.mainStr = '\n'.repeat(this.maxY - 2);
-        this.mainStr += "Welcome"; // results, etc.
+        //this.mainStr += "Welcome"; // results, etc.
         this.maxRowCount = this.maxY - 1; // how many rows to keep in mainStr, reserve one row for cmdStr
         this.cmdStr = ""; // type in a command here, below mainStr
         this.#update(); // redraw
@@ -44,7 +55,10 @@ class Terminal {
     #pruneStr(str) {
         const nlc = this.#getNewLineCount(str);
         if (nlc >= this.maxRowCount) {
-            let removeNL = nlc - this.maxRowCount + 1;
+            let removeNL = nlc - this.maxRowCount;
+            if (this.cmdCallback) {
+                ++removeNL; // make room for prompt
+            }
             while(removeNL--) {
                 const idx = str.indexOf('\n');
                 if (idx == -1) {
@@ -67,16 +81,20 @@ class Terminal {
     }
 
     #update() { // update model font
-        var pStr = this.mainStr + '\n' + this.prompt + this.cmdStr;
+        if (!this.cmdCallback) {
+            // output only, no prompt, no cursor etc.
+            this.modelFont.print(this.mainStr);
+            return;
+        }
+        let pStr = this.mainStr + '\n' + this.prompt + this.cmdStr;
         if (this.blink * 2 >= this.blinkDelay) {
             pStr += this.cursor;
         }
         this.modelFont.print(pStr);
         const normColor = Bitmap32p.colorStrToArray("white");
-        const hilitColor = Bitmap32p.colorStrToArray("lightgreen");
-        vec4.lerp(this.modelFont.mat.color, normColor, hilitColor, this.updateTime);  
-    
-    }
+        const hilitColor = Bitmap32p.colorStrToArray("green");
+        vec4.lerp(this.modelFont.mat.color, normColor, hilitColor, this.updateTime);
+   }
 
     setPrompt(p) {
         this.prompt = p;
@@ -88,10 +106,19 @@ class Terminal {
         if (!str) return;
         console.log("terminal print '" + str + "'");
         str = doWordWrap(str, this.maxX);
-        this.mainStr += '\n' + str + '\n';
+        if (this.cmdCallback) {
+            this.mainStr += '\n' + str + '\n';
+        } else {
+            this.mainStr += '\n' + str;
+        }
         this.mainStr = this.#pruneStr(this.mainStr);
         this.updateTime = 1;
         this.#update();
+    }
+
+    clear() {
+        console.log(" ############### call clear");
+        this.mainStr = "";
     }
 
     proc(key) {
@@ -103,7 +130,7 @@ class Terminal {
                 case keycodes.RETURN:
                     this.mainStr += '\n' + this.prompt + this.cmdStr;
                     this.mainStr = this.#pruneStr(this.mainStr);
-                    this.cmdCallback(this.cmdStr);
+                    this.cmdCallback?.(this.cmdStr);
                     this.cmdStr = "";
                     break;
                 default:
@@ -119,8 +146,8 @@ class Terminal {
             this.blink = 0;
         }
         // rebuild model if necessary
-        // hilit changes with updateTime
-        this.updateTime -= .01;
+        // hilit color changes with updateTime
+        this.updateTime -= .03;
         if (this.updateTime < 0) {
             this.updateTime = 0;
         }

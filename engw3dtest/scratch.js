@@ -1086,3 +1086,5 @@ scratch.exit = function() {
 	logger("exiting webgl scratch\n");
 	clearbuts('scratch');
 };
+
+

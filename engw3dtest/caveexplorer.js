@@ -147,7 +147,6 @@ function buildanodece(n) {
 	var fhit = 12;
     var fnode = new ModelFont("fnode","font3_new.png","tex",fwid,fhit,100,100,true);
     fnode.setfudge(true); // fudge because we might me scaling this and want it to look right, no perfection
-	//var tnode = new Tree2(uniquestr());
 	var tnode = new Tree2(n.id);
 	tnode.setmodel(fnode);
 	if (!n.strinfo)

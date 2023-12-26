@@ -42,14 +42,6 @@ doWordWrap = function(strIn, cols) {
 	return strOut;
 }
 
-// returns a unique name
-var uniqueid = 0;
-function uniquestr(orig) {
-	if (!orig)
-		return "unique" + uniqueid++;
-}
-
-
 var uniqueval = 0;
 function makeuniq(str) {
 	var last = str.lastIndexOf("__U");

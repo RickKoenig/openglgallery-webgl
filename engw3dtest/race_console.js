@@ -188,9 +188,12 @@ race_console.doCommand = function(cmdStr) {
 			break;
 		case "echo":
 			// local with delay
-			setTimeout(function() {
+			/* setTimeout(function() {
 				this.print(words.join(' '));
-			}.bind(race_console.terminal), 3000);
+			}.bind(race_console.terminal), 2000); */
+			setTimeout(function() {
+				race_console.terminal.print(words.join(' '));
+			}, 2000);
 			break;
 		case "add":
 			// local
@@ -327,7 +330,14 @@ race_console.init = function(intentData) {
 	race_console.socker = null; // the client socket
 	race_console.sockerInfo = null; // info about the socket
 
-	race_console.terminal = new Terminal(race_console.roottree, [.1, 0, 0, 1], race_console.doCommand);
+	const termParams1 = {
+		cols: 120,
+		rows: 45,
+		offx: 8,
+		offy: 8
+	};
+	race_console.terminal = new Terminal(race_console.roottree, [.1, 0, 0, 1], race_console.doCommand, termParams1);
+	race_console.terminal.print("Welcome");
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];

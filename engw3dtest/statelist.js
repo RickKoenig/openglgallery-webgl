@@ -61,4 +61,4 @@ var statelist = [
 	neural6, // use deep learning to recognize hand written digits
 ];
 
-var startstate = race_sentgo;
+var startstate = solarTest;
