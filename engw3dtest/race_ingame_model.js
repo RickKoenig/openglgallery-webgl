@@ -6,29 +6,23 @@ class RaceModel {
         DOWN: 2,
         RIGHT: 4,
         LEFT: 8,
-        GO: 16, // later
-        DISCONNECT: 128 //later
+        GO: 16,
+        DISCONNECT: 128
     };
 
     constructor(numPlayers, view) {
         this.resetModel = this.modelReset(numPlayers); // the start model
-        this.curModel = clone(this.resetModel); // the current model
+        this.curModel = clone(this.resetModel); // the current model is the init model
         this.discon = Array(numPlayers); // array of disconnects
         this.curView = view; // tree list for M to V
     }
-/*
-    // clone a model, but don't copy 'connected'
-    modelClone(inMod) {
-        const outMod = clone(inMod);
-        return outMod;
-    }
-*/
+
     modelReset(numPlayers) {
         const ret = Array(numPlayers);
         for (let i = 0; i < numPlayers; ++i) {
             const player = {
                 pos: [
-                    i * .75 -3, -3, 5
+                    i * .75 - 3, -3, 5
                 ]
             }
             ret[i] = player;
@@ -36,9 +30,9 @@ class RaceModel {
         return ret;
     }
 
-    static modelMakeKeyCode(discon) {
+    static modelMakeKeyCode(doDiscon) {
         let keyCode = 0;
-        if (discon) {
+        if (doDiscon) {
             keyCode += RaceModel.keyCodes.DISCONNECT;
             return keyCode;
         }
@@ -54,7 +48,7 @@ class RaceModel {
     }
 
     // C to M
-    modelProc(frame, slot, keyCode) { // update model to this frame, TODO: implement frame
+    controlToModel(frame, slot, keyCode) { // update model with this frame, TODO: implement frame
         if (keyCode & RaceModel.keyCodes.DISCONNECT) {
 				this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
                 this.discon[slot] = true;
@@ -62,7 +56,7 @@ class RaceModel {
         }
         // reset game
         if (keyCode & RaceModel.keyCodes.GO) {
-            this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
+            this.curModel = clone(this.resetModel); // the current model is the init model
             return;
         }
         const step = .025;
@@ -81,7 +75,7 @@ class RaceModel {
     }
 
     // M to V
-    modelToView() {
+    modelToView(frame) {
         for (i = 0; i < this.curModel.length; ++i) {
             this.curView[i].trans = vec3.clone(this.curModel[i].pos);
         }

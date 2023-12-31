@@ -2,6 +2,9 @@
 
 // terminal
 var race_console = {}; // the 'race_console' state
+race_console.text = "WebGL: race_console 3D drawing";
+race_console.title = "race_console";
+
 
 // BEGIN test internet breakage
 const testDisconnect = 0;
@@ -24,8 +27,13 @@ const testNotReady = 0;
 const testId = 1;
 // END test internet breakage
 
-race_console.text = "WebGL: race_console 3D drawing";
-race_console.title = "race_console";
+const autoCommands = false; // get to a game quickly
+
+race_console.broadcastModes = {
+	lobby: 0,
+	room: 1,
+};
+race_console.modeStrs = ['L', 'R'];
 
 // load these before init
 race_console.load = function() {
@@ -39,12 +47,6 @@ race_console.gotoLobby = function() {
 race_console.gotoFill = function() {
     changestate("race_sentgo");
 }
-
-race_console.broadcastModes = {
-	lobby: 0,
-	room: 1,
-};
-race_console.modeStrs = ['L', 'R'];
 
 // get my profile from server after setting name game etc. 
 // also has my id and room id if needed
@@ -313,6 +315,18 @@ race_console.doCommand = function(cmdStr) {
 	}
 }
 
+race_console.frameToTime = function(f) {
+	let s = Math.floor(f / 60);
+	f %= 60;
+	let m = Math.floor(s / 60);
+	s %= 60
+
+	const padF = f.toString().padStart(2, "0");
+	const padS = s.toString().padStart(2, "0");
+	const padM = m.toString().padStart(2, "0");
+	return padM + " : " + padS + " : " + padF;
+}
+
 race_console.init = function(intentData) {
 	race_console.keepSockInfo = false;
 	race_console.clientNewsCount = 0;
@@ -341,6 +355,15 @@ race_console.init = function(intentData) {
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
+	const waitSec = 1;
+	if (autoCommands) {
+		race_console.timeout = setTimeout(() => {
+			race_console.doCommand('e');
+			race_console.doCommand('m');
+			race_console.doCommand('go');
+		}, 1000 * waitSec);
+
+	}
 };
 
 race_console.onresize = function() {
@@ -360,6 +383,8 @@ race_console.proc = function() {
 };
 
 race_console.exit = function() {
+	race_console.terminal = null;
+	clearTimeout(race_console.timeout);
 	if (race_console.keepSockInfo) {
 		race_console.socker.off(); // kill all callbacks
 	} else if (race_console.socker) {

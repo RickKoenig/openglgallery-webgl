@@ -19,7 +19,7 @@ debprint.debugkey = "`".charCodeAt(0);
 debprint.enable = true;
 
 debprint.lastmwheel;
-debprint.step = .125;
+debprint.step = 1;//.125;
 debprint.stepchange = 2; // 4; // how much to change step for each press of + or -
 debprint.recurseLevel = 0;
 

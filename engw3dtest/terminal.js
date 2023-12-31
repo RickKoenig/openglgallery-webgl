@@ -8,12 +8,14 @@ class Terminal {
         let glyphy = 16;
         let offx = 8;
         let offy = 8;
+        let scale = 1;
 
         if (params) {
             if (params.cols) cols = params.cols;
             if (params.rows) rows = params.rows;
             if (params.offx) offx = params.offx;
             if (params.offy) offy = params.offy;
+            if (params.scale) scale = params.scale;
         }
 
         const depth = glc.clientHeight / 2;
@@ -26,6 +28,7 @@ class Terminal {
         this.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
         this.backgnd.mod.mat.color = backColor;
         this.backgnd.trans = [offx, offy, depth];
+        this.backgnd.scale = [scale, scale, scale];
         rootTree.linkchild(this.backgnd);
         
         this.modelFont = new ModelFont(makeuniq("terminalModelFont"), "font0.png", "texc", glyphx, glyphy, cols, rows, false);
@@ -33,6 +36,7 @@ class Terminal {
         this.treeFont = new Tree2("terminalTreeFont");
         this.treeFont.setmodel(this.modelFont);
         this.treeFont.trans = [offx, offy, depth];
+        this.treeFont.scale = [scale, scale, scale];
         rootTree.linkchild(this.treeFont);
     
         this.maxX = this.modelFont.maxcols;
@@ -44,7 +48,7 @@ class Terminal {
         this.blink = 0;
         this.updateTime = 0;
         this.cursor = "_";
-        this.mainStr = '\n'.repeat(this.maxY - 2);
+        this.mainStr = '\n'.repeat(Math.max(0, this.maxY - 2));
         //this.mainStr += "Welcome"; // results, etc.
         this.maxRowCount = this.maxY - 1; // how many rows to keep in mainStr, reserve one row for cmdStr
         this.cmdStr = ""; // type in a command here, below mainStr
@@ -104,7 +108,7 @@ class Terminal {
 
     print(str) {
         if (!str) return;
-        console.log("terminal print '" + str + "'");
+        //console.log("terminal print '" + str + "'");
         str = doWordWrap(str, this.maxX);
         if (this.cmdCallback) {
             this.mainStr += '\n' + str + '\n';
@@ -117,7 +121,7 @@ class Terminal {
     }
 
     clear() {
-        console.log(" ############### call clear");
+        //console.log(" ############### call clear");
         this.mainStr = "";
     }
 

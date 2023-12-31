@@ -7,12 +7,10 @@ var race_ingame = {}; // the 'race_ingame' state
 race_ingame.text = "WebGL: race_ingame 3D drawing";
 race_ingame.title = "race_ingame";
 
+race_ingame.broadcastLag = 0; // milliseconds 0, 10, 100, 1000, 2000
+
 race_ingame.gotoConsole = function() {
     changestate("race_console", "from INGAME");
-}
-
-race_ingame.gotoLogin = function() {
-    changestate("race_login", "from INGAME");
 }
 
 race_ingame.setupCallbacks = function(socker) {
@@ -40,22 +38,16 @@ race_ingame.setupCallbacks = function(socker) {
 		//console.log("got a broadcast from server = " + JSON.stringify(broadPack));
 		const slot = broadPack.slotIdx;
 		if (slot >= 0) {
-			//const otherTree = race_ingame.playerTrees[slot];
 			if (broadPack.data) {
-				/*
-				// update position of other player
-				if (broadPack.data.pos) {
-					otherTree.trans = vec3.clone(broadPack.data.pos);
-				} else {
-					console.log('broadback data = ' + JSON.stringify(broadPack.data));
-				}*/
-				race_ingame.mvc.modelProc("frame", slot, broadPack.data.keyCode);
+				race_ingame.mvc.controlToModel(race_ingame.count, slot, broadPack.data.keyCode);
+				const frame = broadPack.data.frame;
+				console.log("frame = " + frame);
+				race_ingame.pingTimes[slot] = race_ingame.count - frame; // my time
 			} else {
 				race_ingame.terminal?.print(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + broadPack.slotIdx);
-				//otherTree.mat.color = [.75, 0, 0, 1]; // disconnected color
-				race_ingame.mvc.modelProc("frame", slot, RaceModel.modelMakeKeyCode(true));
-			}
+				race_ingame.mvc.controlToModel(race_ingame.count, slot, RaceModel.modelMakeKeyCode(true));
+				race_ingame.pingTimes[slot] = undefined;			}
 		} else {
 			alert("BAD slot index = " + broadPack.slotIdx + " !!!");
 		}
@@ -71,9 +63,8 @@ race_ingame.setupCallbacks = function(socker) {
 		race_ingame.allready = true;
 		race_ingame.terminal?.print(str);
 		for (let slot of allReadyPack.absentSlots) {
-			const otherTree = race_ingame.playerTrees[slot];
-			//otherTree.mat.color = [.25, 1, 0, 1]; // not ready color
-			race_ingame.mvc.modelProc("frame", slot, RaceModel.modelMakeKeyCode(true));
+			//const otherTree = race_ingame.playerTrees[slot];
+			race_ingame.mvc.controlToModel(race_ingame.count, slot, RaceModel.modelMakeKeyCode(true)); // disconnected
 		}
 	});
 }
@@ -83,6 +74,134 @@ race_ingame.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 	//preloadtime(3000); // show loading screen for minimum time
+}
+
+// show ping times with a graph
+class Indicator {
+	// array of values to display left to right
+	constructor(roottree, num, mySlot) {
+		// assume 60 FPS
+		this.seconds = 1;
+		this.lastSeconds = -1;
+		this.index = 0; // index into scaling ranges
+		this.sep = 420;
+		const depth = glc.clientHeight / 2;
+        let offy = -120;
+		const stepy = 20;
+        offy += depth;
+		this.num = num;
+		// alignment lines
+		const lin = buildplanexy("alin",1,1,null,"flat");
+		lin.mod.mat.color = [0, 1, 0, 1];
+        lin.mod.flags |= modelflagenums.NOZBUFFER;
+		lin.trans = [0, offy - this.num * stepy * .5 + stepy * .5, depth];
+		lin.scale = [.5, this.num * stepy * .5, 1];
+		for (let i = -1; i <= 1; ++i) { // min, 0, max indicator lines
+			const alin = lin.newdup();
+			alin.trans[0] = i * this.sep;
+			roottree.linkchild(alin);
+		}
+		lin.glfree();
+
+		// dots
+		const dot = buildplanexy("adot",1,1,null,"flat");
+        dot.mod.flags |= modelflagenums.NOZBUFFER;
+		dot.scale = [4, 4, 1];
+		this.trees = Array(this.num);
+		for (let i = 0; i < this.num; ++i) {
+			const tre = dot.newdup();
+			if (i == mySlot) {
+				tre.scale = [8, 8, 1];
+			}
+			tre.trans = [0, offy, depth];
+			offy -= stepy;
+			roottree.linkchild(tre);
+			this.trees[i] = tre;
+		}
+		dot.glfree();
+
+		// labels
+		const termParams = {
+			cols: 20,
+			rows: 1,
+			offx: 40,
+			offy: 8,
+			scale: 2
+		};
+		this.termLeft = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		termParams.offx += this.sep - 20 - 80;
+		termParams.scale = 6;
+		this.termMiddle = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		termParams.offx += this.sep - 20 + 80;
+		termParams.scale = 2;
+		this.termRight = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		this.termMiddle.print("0 sec at 60 HZ");
+	}
+
+	#setSeconds(maxVal) {
+		// hysteresis
+		const ranges = [1, 2, 5, 10, 20, 50]; // seconds for ranges
+		if (this.index < ranges.length - 1 && maxVal > ranges[this.index]) {
+			++this.index;
+			this.seconds = ranges[this.index];
+		}
+		if (this.index > 0) {
+			let downVal;
+			if (this.index == 1) {
+				downVal = .5 * ranges[0];
+			} else {
+				downVal = .5 * (ranges[this.index - 2] + ranges[this.index - 1])
+			}
+			if (maxVal <= downVal) {
+				--this.index;
+				this.seconds = ranges[this.index];
+			}
+		}
+		if (this.lastSeconds == this.seconds) return;
+		this.lastSeconds = this.seconds;
+		this.termLeft.clear();
+		this.termLeft.print("-" + this.seconds + " sec");
+		this.termRight.clear();
+		this.termRight.print("+" + this.seconds + " sec");
+	}
+
+	// Frames ( 60 HZ ) to MM : SS : FF
+	#frameToTime = function(f) {
+		let s = Math.floor(f / 60);
+		f %= 60;
+		let m = Math.floor(s / 60);
+		s %= 60
+		const padF = f.toString().padStart(2, "0");
+		const padS = s.toString().padStart(2, "0");
+		const padM = m.toString().padStart(2, "0");
+		return padM + ":" + padS + ":" + padF;
+	}
+
+	// same size arr
+	update(arr, tim) {
+		this.termMiddle.clear();
+		this.termMiddle.print(this.#frameToTime(tim));
+		let maxVal = 0;
+		for (let i = 0; i < this.num; ++i) {
+			let val = arr[i];
+			if (typeof val === 'number') {
+				const absVal = Math.abs(val);
+				if (absVal > maxVal) maxVal = absVal;
+			}
+		}
+		this.#setSeconds(maxVal / 60);
+		for (let i = 0; i < this.num; ++i) {
+			const tre = this.trees[i];
+			let val = arr[i];
+			if (typeof val === 'number') {
+				tre.mat.color = [1, 1, 1, 1];
+			} else {
+				val = 0;
+				tre.mat.color = [1, 0, 0, 1];
+			}
+			tre.trans[0] = val * this.sep / (60 * this.seconds);
+		}
+	}
 }
 
 /*
@@ -103,7 +222,6 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	// ui
 	setbutsname('ingame');
 	race_lobby.fillButton = makeabut("console", race_ingame.gotoConsole);
-	race_lobby.fillButton = makeabut("login", race_ingame.gotoLogin);
 
 	race_ingame.roottree = new Tree2("race_ingame root tree");
 	race_ingame.terminal = new Terminal(race_ingame.roottree, [.2, .2, .1, 1]);
@@ -166,26 +284,39 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 			race_ingame.socker.emit('ready');
 		}
 
-	    // build 3D scene
 		const room = race_ingame.sockerInfo.room;
+		race_ingame.pingTimes = Array(room.slots.length);
+		race_ingame.showPings = new Indicator(race_ingame.roottree, room.slots.length, race_ingame.mySlot);
+
+		race_ingame.negPingTree = buildplanexy("anegping",.5,.5,null,"flat");
+		race_ingame.negPingTree.trans = [-5, 9.15, 10];
+        race_ingame.negPingTree.mod.flags |= modelflagenums.NOZBUFFER;
+		race_ingame.negPingTree.mod.mat.color = [0,0,0,1];
+		race_ingame.roottree.linkchild(race_ingame.negPingTree);
+
+	    // build 3D scene
 		for (let s = 0; s < room.slots.length; ++s) {
 			const playerTree = race_ingame.treeMaster.newdup();
-			//playerTree.trans = [s * .75 - 3, -3, 5]; // for now, center with 4 players, and a little lower
 			playerTree.scale = [.3, .3, .3];
 			if (race_ingame.mySlot == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
 			race_ingame.playerTrees[s] = playerTree;
 			race_ingame.roottree.linkchild(playerTree);
 		}
-	
 		race_ingame.mvc = new RaceModel(room.slots.length, race_ingame.playerTrees);
 		race_ingame.mvc.modelToView();
-			race_ingame.terminal.print("done INGAME init with sockInfo, id = "
-		+ race_ingame.sockerInfo.id + " slot = " + race_ingame.sockerInfo.slotIdx);
+		race_ingame.terminal.print("done INGAME init with sockInfo, id = "
+			+ race_ingame.sockerInfo.id + " slot = " + race_ingame.sockerInfo.slotIdx);
 	}
 
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
+
+	// UI debprint menu
+	debprint.addlist("ingame test variables",[
+		"fpswanted",
+	]);
+
 };
 
 race_ingame.onresize = function() {
@@ -205,48 +336,52 @@ race_ingame.proc = function() {
 				}
 			}
 		}
+		race_ingame.pingTimes[race_ingame.mySlot] = 0; // my time
+		race_ingame.showPings.update(race_ingame.pingTimes, race_ingame.count);
+		// if any neg pings, speed up to catch up
+		let catchUp = false;
+		for (let i = 0; i < race_ingame.pingTimes.length; ++i) {
+			if (race_ingame.pingTimes[i] < 0) {
+				catchUp = true;
+				break;
+			}
+		}
+		race_ingame.negPingTree.mod.mat.color;
+		if (catchUp) {
+			race_ingame.negPingTree.mod.mat.color = [1,0,0,1];
+		}
+		// drift catchup color
+		race_ingame.negPingTree.mod.mat.color[0] *=  .95;
 
-		const step = .025;
-		const keyCode = RaceModel.modelMakeKeyCode();
-		race_ingame.mvc.modelProc("frame number", race_ingame.mySlot, keyCode);
 		// get some input
+		const keyCode = RaceModel.modelMakeKeyCode();
 		// process input
-		/*const myTree = race_ingame.playerTrees[race_ingame.mySlot];
-		if (myTree) {
-			if (input.keystate[keycodes.LEFT]) {
-				myTree.trans[0] -= step;
+		//let loopCount = 1;
+		let loopCount = catchUp ? 2 : 1;
+		for (let loop = 0; loop < loopCount; ++loop) {
+			race_ingame.mvc.controlToModel(race_ingame.count, race_ingame.mySlot, keyCode);
+			if (race_ingame.broadcastLag) {
+				const count = race_ingame.count;
+				setTimeout(function() {
+					race_ingame.socker?.emit('broadcast', {frame: count, keyCode: keyCode});
+				}, race_ingame.broadcastLag);
+			} else {
+				race_ingame.socker?.emit('broadcast', {frame: race_ingame.count, keyCode: keyCode});
 			}
-			if (input.keystate[keycodes.RIGHT]) {
-				myTree.trans[0] += step;
-			}
-			if (input.keystate[keycodes.DOWN]) {
-				myTree.trans[1] -= step;
-			}
-			if (input.keystate[keycodes.UP]) {
-				myTree.trans[1] += step;
-			}
-			if (input.keystate[keycodes.PAGEDOWN]) {
-				myTree.trans[2] -= step;
-			}
-			if (input.keystate[keycodes.PAGEUP]) {
-				myTree.trans[2] += step;
-			}*/
-		race_ingame.socker?.emit('broadcast', {keyCode: keyCode});
-		//}
-		++race_ingame.count;
+			++race_ingame.count;
+		}
 	}
 	race_ingame.roottree.proc(); // probably does nothing
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	beginscene(mainvp);
-	race_ingame.mvc.modelToView();
+	race_ingame.mvc.modelToView(race_ingame.count);
 	race_ingame.roottree.draw();
 };
 
 race_ingame.onresize = function() {
 	console.log("onresize");
 	race_ingame.terminal.onresize();
-
 }
 
 race_ingame.exit = function() {
@@ -272,4 +407,5 @@ race_ingame.exit = function() {
 	mainvp.incamattach = false;
 	mainvp.lookat = null;
 	mainvp.inlookat = false;
+	debprint.removelist("ingame test variables");
 };

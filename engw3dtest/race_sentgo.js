@@ -54,7 +54,7 @@ race_sentgo.setupCallbacks = function(socker) {
 	socker.on('allReady', function(allReadyPack) {
 		const str = "got ALL READY event:  " + JSON.stringify(allReadyPack, null, '   ');
 		race_sentgo.terminal?.print(str);
-		const waitSec = 2;
+		const waitSec = 1;
 		race_sentgo.timeout = setTimeout(() => {
 			race_sentgo.keepSockInfo = true;
 			changestate("race_ingame", {
