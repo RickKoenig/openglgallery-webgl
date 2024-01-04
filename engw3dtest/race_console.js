@@ -315,18 +315,6 @@ race_console.doCommand = function(cmdStr) {
 	}
 }
 
-race_console.frameToTime = function(f) {
-	let s = Math.floor(f / 60);
-	f %= 60;
-	let m = Math.floor(s / 60);
-	s %= 60
-
-	const padF = f.toString().padStart(2, "0");
-	const padS = s.toString().padStart(2, "0");
-	const padM = m.toString().padStart(2, "0");
-	return padM + " : " + padS + " : " + padF;
-}
-
 race_console.init = function(intentData) {
 	race_console.keepSockInfo = false;
 	race_console.clientNewsCount = 0;

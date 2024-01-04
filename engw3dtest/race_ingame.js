@@ -7,7 +7,7 @@ var race_ingame = {}; // the 'race_ingame' state
 race_ingame.text = "WebGL: race_ingame 3D drawing";
 race_ingame.title = "race_ingame";
 
-race_ingame.broadcastLag = 0; // milliseconds 0, 10, 100, 1000, 2000
+race_ingame.broadcastLag = 2000; // milliseconds 0, 10, 100, 1000, 2000, 3000
 
 race_ingame.gotoConsole = function() {
     changestate("race_console", "from INGAME");
@@ -39,15 +39,16 @@ race_ingame.setupCallbacks = function(socker) {
 		const slot = broadPack.slotIdx;
 		if (slot >= 0) {
 			if (broadPack.data) {
-				race_ingame.mvc.controlToModel(race_ingame.count, slot, broadPack.data.keyCode);
+				race_ingame.mvc.controlToModel(broadPack.data.frame, slot, broadPack.data.keyCode);
 				const frame = broadPack.data.frame;
-				console.log("frame = " + frame);
+				//console.log("frame = " + frame);
 				race_ingame.pingTimes[slot] = race_ingame.count - frame; // my time
 			} else {
 				race_ingame.terminal?.print(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + broadPack.slotIdx);
-				race_ingame.mvc.controlToModel(race_ingame.count, slot, RaceModel.modelMakeKeyCode(true));
-				race_ingame.pingTimes[slot] = undefined;			}
+				race_ingame.mvc.controlToModel(null, slot, RaceModel.modelMakeKeyCode(true));
+				race_ingame.pingTimes[slot] = undefined;
+			}
 		} else {
 			alert("BAD slot index = " + broadPack.slotIdx + " !!!");
 		}
@@ -64,7 +65,7 @@ race_ingame.setupCallbacks = function(socker) {
 		race_ingame.terminal?.print(str);
 		for (let slot of allReadyPack.absentSlots) {
 			//const otherTree = race_ingame.playerTrees[slot];
-			race_ingame.mvc.controlToModel(race_ingame.count, slot, RaceModel.modelMakeKeyCode(true)); // disconnected
+			race_ingame.mvc.controlToModel(null, slot, RaceModel.modelMakeKeyCode(true)); // disconnected
 		}
 	});
 }
@@ -303,7 +304,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 			race_ingame.roottree.linkchild(playerTree);
 		}
 		race_ingame.mvc = new RaceModel(room.slots.length, race_ingame.playerTrees);
-		race_ingame.mvc.modelToView();
+		race_ingame.mvc.modelToView(race_ingame.count);
 		race_ingame.terminal.print("done INGAME init with sockInfo, id = "
 			+ race_ingame.sockerInfo.id + " slot = " + race_ingame.sockerInfo.slotIdx);
 	}
@@ -311,10 +312,12 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
+	fpswanted = 10;
 
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[
 		"fpswanted",
+		"fpsavg",
 	]);
 
 };
@@ -339,25 +342,52 @@ race_ingame.proc = function() {
 		race_ingame.pingTimes[race_ingame.mySlot] = 0; // my time
 		race_ingame.showPings.update(race_ingame.pingTimes, race_ingame.count);
 		// if any neg pings, speed up to catch up
-		let catchUp = false;
-		for (let i = 0; i < race_ingame.pingTimes.length; ++i) {
-			if (race_ingame.pingTimes[i] < 0) {
-				catchUp = true;
-				break;
+		const testCatchup = true;
+		let catchup = false;
+		if (testCatchup) {
+			// test neg ping times
+			const negId = 1;
+			const negTime = 30;
+			const slack = 0;
+			const negPings = Array(race_ingame.pingTimes.length).fill(-negTime);
+			negPings[negId] = negTime - slack;
+			for (let i = 0; i < race_ingame.pingTimes.length; ++i) {
+				if (i != race_ingame.mySlot && race_ingame.pingTimes[i] < negPings[i]) {
+					catchup = true;
+					break;
+				}
+			}
+		} else {
+			// normal catchup
+			for (let i = 0; i < race_ingame.pingTimes.length; ++i) {
+				if (race_ingame.pingTimes[i] < 0) {
+					catchup = true;
+					break;
+				}
 			}
 		}
+		// disable catchup
+		//catchup = false;
+		// catchup = false; // no catchup
 		race_ingame.negPingTree.mod.mat.color;
-		if (catchUp) {
+		if (catchup) {
 			race_ingame.negPingTree.mod.mat.color = [1,0,0,1];
 		}
 		// drift catchup color
-		race_ingame.negPingTree.mod.mat.color[0] *=  .95;
+		race_ingame.negPingTree.mod.mat.color[0] *=  .75;
 
 		// get some input
-		const keyCode = RaceModel.modelMakeKeyCode();
+		let keyCode = RaceModel.modelMakeKeyCode();
+		const testKeyCodeAuto = false; // auto move some players
+		const testKeyCodeAutoSlot = 0;
+		if (testKeyCodeAuto) {
+			if (race_ingame.mySlot == testKeyCodeAutoSlot) {
+				keyCode |= RaceModel.keyCodes.RIGHT;
+			}
+		}
 		// process input
 		//let loopCount = 1;
-		let loopCount = catchUp ? 2 : 1;
+		let loopCount = catchup ? 2 : 1;
 		for (let loop = 0; loop < loopCount; ++loop) {
 			race_ingame.mvc.controlToModel(race_ingame.count, race_ingame.mySlot, keyCode);
 			if (race_ingame.broadcastLag) {
