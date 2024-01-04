@@ -5,7 +5,6 @@ var race_console = {}; // the 'race_console' state
 race_console.text = "WebGL: race_console 3D drawing";
 race_console.title = "race_console";
 
-
 // BEGIN test internet breakage
 const testDisconnect = 0;
 // when to disconnect
@@ -190,9 +189,6 @@ race_console.doCommand = function(cmdStr) {
 			break;
 		case "echo":
 			// local with delay
-			/* setTimeout(function() {
-				this.print(words.join(' '));
-			}.bind(race_console.terminal), 2000); */
 			setTimeout(function() {
 				race_console.terminal.print(words.join(' '));
 			}, 2000);
@@ -300,7 +296,7 @@ race_console.doCommand = function(cmdStr) {
 
 		// start a game
 		case "go": // go from room to sim/game, a room that is locked
-					// no new members, host can leave without destroying the room
+				   // no new members, host can leave without destroying the room
 			if (race_console.socker) {
 				race_console.socker.emit('go', null);
 			} else {

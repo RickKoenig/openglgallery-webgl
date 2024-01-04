@@ -26,7 +26,7 @@ class RaceModel {
     static #toHex(kc) {
         return kc.toString(16).toUpperCase().padStart(2,'0');
     }
-    
+
     static #modelReset(numPlayers) {
         const ret = Array(numPlayers);
         for (let slot = 0; slot < numPlayers; ++slot) {
@@ -94,7 +94,6 @@ class RaceModel {
         //console.log("C2M: frame " + frame + ", slot " + slot + ", keycode " + RaceModel.#toHex(keyCode));
         if (discon) {
 				this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
-                //this.discon[slot] = true;
                 return;
         }
         // restart game
@@ -102,26 +101,12 @@ class RaceModel {
             this.curModel = clone(this.resetModel); // the current model is the init model
             return;
         }
-/*        const step = .25;
-        if (keyCode & RaceModel.keyCodes.RIGHT) {
-            this.curModel[slot].pos[0] += step;
-        }
-        if (keyCode & RaceModel.keyCodes.LEFT) {
-            this.curModel[slot].pos[0] -= step;
-        }
-        if (keyCode & RaceModel.keyCodes.UP) {
-            this.curModel[slot].pos[1] += step;
-        }
-        if (keyCode & RaceModel.keyCodes.DOWN) {
-            this.curModel[slot].pos[1] -= step;
-        } */
     }
 
     // M to V
     // get Model to this frame, then move it into View
     modelToView(frame) {
         //console.log("M2V: frame " + frame);
-
 
         // TIME WARP, step to current frame, even when all packets haven't arrived
         // start at valid frame and step to current frame
@@ -150,13 +135,13 @@ class RaceModel {
             this.#stepModel(playerKeyCodes);
 
             if (good) {
-                // erase the past that is no longer needed
-                // first rewind time
+                // erase the past that is no longer needed, Langoliers
+                // first rewind time to validFrame
                 this.validModel = clone(this.curModel);
-                    // move forward with everybody
+                // move forward with everybody
                 for (let slot = 0; slot < this.inputs.length; ++slot) {
                     const input = this.inputs[slot];
-                    input.shift();
+                    input.shift(); // Langoliers
                 }
                 ++this.validFrame;
             }

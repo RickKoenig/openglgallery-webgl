@@ -7,8 +7,8 @@ var race_ingame = {}; // the 'race_ingame' state
 race_ingame.text = "WebGL: race_ingame 3D drawing";
 race_ingame.title = "race_ingame";
 
-race_ingame.broadcastLag = 2000; // milliseconds 0, 10, 100, 1000, 2000, 3000
-
+race_ingame.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_ingame.fpswanted = 10;
 race_ingame.gotoConsole = function() {
     changestate("race_console", "from INGAME");
 }
@@ -64,7 +64,6 @@ race_ingame.setupCallbacks = function(socker) {
 		race_ingame.allready = true;
 		race_ingame.terminal?.print(str);
 		for (let slot of allReadyPack.absentSlots) {
-			//const otherTree = race_ingame.playerTrees[slot];
 			race_ingame.mvc.controlToModel(null, slot, RaceModel.modelMakeKeyCode(true)); // disconnected
 		}
 	});
@@ -312,7 +311,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
-	fpswanted = 10;
+	fpswanted = race_ingame.fpswanted
 
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[
@@ -342,13 +341,13 @@ race_ingame.proc = function() {
 		race_ingame.pingTimes[race_ingame.mySlot] = 0; // my time
 		race_ingame.showPings.update(race_ingame.pingTimes, race_ingame.count);
 		// if any neg pings, speed up to catch up
-		const testCatchup = true;
+		const testCatchup = false;
 		let catchup = false;
+		const slack = 0;
 		if (testCatchup) {
 			// test neg ping times
 			const negId = 1;
 			const negTime = 30;
-			const slack = 0;
 			const negPings = Array(race_ingame.pingTimes.length).fill(-negTime);
 			negPings[negId] = negTime - slack;
 			for (let i = 0; i < race_ingame.pingTimes.length; ++i) {
@@ -360,7 +359,7 @@ race_ingame.proc = function() {
 		} else {
 			// normal catchup
 			for (let i = 0; i < race_ingame.pingTimes.length; ++i) {
-				if (race_ingame.pingTimes[i] < 0) {
+				if (race_ingame.pingTimes[i] < -slack) {
 					catchup = true;
 					break;
 				}
@@ -386,7 +385,6 @@ race_ingame.proc = function() {
 			}
 		}
 		// process input
-		//let loopCount = 1;
 		let loopCount = catchup ? 2 : 1;
 		for (let loop = 0; loop < loopCount; ++loop) {
 			race_ingame.mvc.controlToModel(race_ingame.count, race_ingame.mySlot, keyCode);
