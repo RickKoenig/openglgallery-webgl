@@ -365,9 +365,9 @@ race_ingame.proc = function() {
 				}
 			}
 		}
-		// disable catchup
-		//catchup = false;
+		// TEST disable catchup if uncommented
 		// catchup = false; // no catchup
+		
 		race_ingame.negPingTree.mod.mat.color;
 		if (catchup) {
 			race_ingame.negPingTree.mod.mat.color = [1,0,0,1];
