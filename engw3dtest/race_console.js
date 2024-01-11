@@ -311,23 +311,9 @@ race_console.doCommand = function(cmdStr) {
 	}
 }
 
-race_console.testFloat = function() {
-	console.log("in test float");
-	const num = 5 / 7;
-	const obj = {
-		theNum : num,
-		cc: {boo: "ho", abra : "111"},
-		aund: "hi",
-		arr: [3, 7, 2, 5, 9, 4]
-	};
-	const str1 = JSON.stringify(obj, null, '   ');
-	const str2 = JSON.sortify(obj, null, '   ');
-	console.log("str1 = '" + str1 + "'");
-	console.log("str2 = '" + str2 + "'");
-}
-
 race_console.init = function(intentData) {
-	race_console.testFloat();
+	//race_console.testEqualsObj();
+	//race_console.testFloat();
 	race_console.keepSockInfo = false;
 	race_console.clientNewsCount = 0;
 	logger("entering webgl race_console\n");

@@ -90,6 +90,7 @@ function procstate() {
 //		if (isloaded()) { // assets loaded, proc state
 			//load_mode(false); // for webgl
 			//window["proc" + state]();
+			//console.log("state proc " + state.title);
 			if (state.proc)
 				state.proc();
 			drawelements();

@@ -1,5 +1,7 @@
 var scratch = {};
 
+// any test code goes here
+
 // test webgl
 scratch.roottree;
 scratch.atree;
@@ -7,7 +9,11 @@ scratch.btree;
 scratch.ctree;
 scratch.dir = [];
 scratch.datatexd; // data texture
-scratch.jobtest = true;
+
+scratch.jobtest = false;
+scratch.testArrayBuffers = false;
+scratch.testStuff = false;
+scratch.test2 = false;
 
 scratch.text = "WebGL: This state is where the developer trys new things.  Like JSONP";
 
@@ -97,6 +103,70 @@ scratch.load = function() {
 	preloadbwo("prehistoric/water.bwo");
 };
 
+scratch.testEqualsObj = function() {
+	console.log("\nin test equals obj\n");
+	const objs = [
+		{hi: "ho", a: 0xa},
+		{a: +10.00, hi: "h" + "o", },
+		4,
+		+4.0,
+		["hi", 3.500001],
+		"hey",
+	];
+	console.log("strings");
+	for (let i = 0; i < objs.length; ++i) {
+		const obj = objs[i];
+		console.log(i + ", " + JSON.sortify(obj));
+	}
+
+	console.log("\ncompares");
+	for (let j = 0; j < objs.length; ++j) {
+		for (let i = j + 1; i < objs.length; ++i) {
+			console.log(i + " " + j + " " + equalsObj(objs[i], objs[j]));
+		}
+	}
+}
+
+scratch.testFloat = function() {
+	console.log("\nin test float\n");
+
+	// interpret a given bit pattern as float and int 
+	const f = 1;
+	console.log("f = " + f);
+	const bi = fromFloat(f);
+	console.log("f to bi = " + bi.toString(16) + "\n");
+
+	// tweek the mantissa
+	const bi2 = bi;
+	console.log("bi2 = " + bi2.toString(16));
+	const f2 = toFloat(bi2);
+	console.log("bi2 to f2 = "  + f2);
+	for (let b = bi - 16n; b <= bi + 16n; ++b) {
+		const f = toFloat(b);
+		const fs = f.toString();
+		const f2 = parseFloat(fs);
+		const bi2 = fromFloat(f2);
+		console.log("bi = " + b.toString(16) + ", f = " + fs.toString().padEnd(20) + ", bi2 = " + bi2.toString(16));
+		if (bi2 !== b) {
+			console.log("###### doesn't match");
+			//alert('doent match');
+		}
+	}
+	// tweek the exponent
+	console.log("");
+	let bi3 =  0x3ff0000000000000n;
+	for (let i = 0; i < 160; ++i) {
+		const f3 = toFloat(bi3);
+		const f3str = f3.toString();
+		console.log("f3 = " + f3str);
+		bi3 -= 0x0010000000000000n;
+		const bi4 = fromFloat(parseFloat(f3str));
+		console.log("   " + bi4.toString(16));
+
+	}
+	
+}
+
 scratch.runTestStuff = function() {
 	
 	// closure tests
@@ -169,6 +239,10 @@ scratch.runTestStuff = function() {
 		var f = vec3.dot(a,b);
 		logger("dot = " + f + "\n");
 	}
+
+	// floats and ints, bit representation
+	scratch.testEqualsObj();
+	scratch.testFloat();
 };
 
 scratch.drawCurve = function(ctx, startx, starty, endx, endy) {
@@ -498,9 +572,69 @@ scratch.testCopyCyclicGraph = function() {
 	scratch.printCyclicGraph(copyd_1);
 	scratch.printCyclicGraph(copye_1);
 };
-	
-scratch.testArrayBuffers = false;
-scratch.testStuff = false;
+
+scratch.testEqualsObj = function() {
+	console.log("\nin test equals obj\n");
+	const objs = [
+		{hi: "ho", a: 0xa},
+		{a: +10.00, hi: "h" + "o", },
+		4,
+		+4.0,
+		["hi", 3.500001],
+		"hey",
+	];
+	console.log("strings");
+	for (let i = 0; i < objs.length; ++i) {
+		const obj = objs[i];
+		console.log(i + ", " + JSON.sortify(obj));
+	}
+
+	console.log("\ncompares");
+	for (let j = 0; j < objs.length; ++j) {
+		for (let i = j + 1; i < objs.length; ++i) {
+			console.log(i + " " + j + " " + equalsObj(objs[i], objs[j]));
+		}
+	}
+}
+
+scratch.testFloat = function() {
+	console.log("\nin test float\n");
+
+	// interpret a given bit pattern as float and int 
+	const f = 1;
+	console.log("f = " + f);
+	const bi = fromFloat(f);
+	console.log("f to bi = " + bi.toString(16) + "\n");
+
+	// tweek the mantissa
+	const bi2 = bi;
+	console.log("bi2 = " + bi2.toString(16));
+	const f2 = toFloat(bi2);
+	console.log("bi2 to f2 = "  + f2);
+	for (let b = bi - 16n; b <= bi + 16n; ++b) {
+		const f = toFloat(b);
+		const fs = f.toString();
+		const f2 = parseFloat(fs);
+		const bi2 = fromFloat(f2);
+		console.log("bi = " + b.toString(16) + ", f = " + fs.toString().padEnd(20) + ", bi2 = " + bi2.toString(16));
+		if (bi2 !== b) {
+			console.log("###### doesn't match");
+			//alert('doent match');
+		}
+	}
+	// tweek the exponent
+	console.log("");
+	let bi3 =  0x3ff0000000000000n;
+	for (let i = 0; i < 160; ++i) {
+		const f3 = toFloat(bi3);
+		const f3str = f3.toString();
+		console.log("f3 = " + f3str);
+		bi3 -= 0x0010000000000000n;
+		const bi4 = fromFloat(parseFloat(f3str));
+		console.log("   " + bi4.toString(16));
+
+	}
+}
 
 scratch.init = function() {
 	
@@ -947,7 +1081,6 @@ scratch.init = function() {
 		scratch.roottree.linkchild(ctree2);
 	
 	}
-	scratch.test2 = false;
 	if (scratch.test2) {
 		// build parent prism/plane
 		//scratch.atree = buildprism("aprism",[.5,.5,.5],"maptestnck.png","texc"); // helper, builds 1 prism returns a Tree2

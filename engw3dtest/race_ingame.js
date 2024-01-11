@@ -8,7 +8,9 @@ race_ingame.text = "WebGL: race_ingame 3D drawing";
 race_ingame.title = "race_ingame";
 
 race_ingame.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_ingame.doChecksum = true; // check all valid frames (race state)
 race_ingame.fpswanted = 10;
+race_ingame.maxCount = 15;//0;//30; // stop running when count >= maxCount, 0 run forever
 race_ingame.gotoConsole = function() {
     changestate("race_console", "from INGAME");
 }
@@ -39,10 +41,29 @@ race_ingame.setupCallbacks = function(socker) {
 		const slot = broadPack.slotIdx;
 		if (slot >= 0) {
 			if (broadPack.data) {
-				race_ingame.mvc.controlToModel(broadPack.data.frame, slot, broadPack.data.keyCode);
-				const frame = broadPack.data.frame;
+				race_ingame.mvc.controlToModel(broadPack.data.frameNum, slot, broadPack.data.keyCode);
+				const frameNum = broadPack.data.frameNum;
 				//console.log("frame = " + frame);
-				race_ingame.pingTimes[slot] = race_ingame.count - frame; // my time
+				race_ingame.pingTimes[slot] = race_ingame.count - frameNum; // my time
+				if (race_ingame.doChecksum) {
+					if (broadPack.data.checksum) {
+						const checksum = broadPack.data.checksum;
+						console.log("num checksum frames = " + checksum.length);
+						for (let i = 0; i < checksum.length; ++i) {
+							console.log("checksum from other player is S " + slot + ", frame " + JSON.stringify(checksum[i], null, '    '));
+						}
+						const oldLen = race_ingame.validFramesSlots[slot].length;
+						race_ingame.validFramesSlots[slot] = race_ingame.validFramesSlots[slot].concat(checksum);
+						const newLen = race_ingame.validFramesSlots[slot].length;
+						// check frame numbers
+						for (let i = oldLen; i < newLen; ++i) {
+							if (i != race_ingame.validFramesSlots[slot][i].frameNum) {
+								alert("on broadcast race_ingame.checksum[i].frameNum("
+								    + race_ingame.validFramesSlots[slot][i].frameNum + ") != i " + i);
+							}
+						}
+					}
+				}
 			} else {
 				race_ingame.terminal?.print(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + broadPack.slotIdx);
@@ -69,11 +90,16 @@ race_ingame.setupCallbacks = function(socker) {
 	});
 }
 
-// load these before init
-race_ingame.load = function() {
-	preloadimg("../common/sptpics/maptestnck.png");
-	preloadimg("../common/sptpics/panel.jpg");
-	//preloadtime(3000); // show loading screen for minimum time
+race_ingame.showValidFramesSlots = function() {
+	if (!race_ingame.validFramesSlots) return;
+	console.log("VALID FRAME SLOTS");
+	for (let i = 0; i < race_ingame.validFramesSlots.length; ++i) {
+		const validFrames = race_ingame.validFramesSlots[i];
+		console.log("SLOT " + i);
+		for (let j = 0; j < validFrames.length; ++j) {
+			console.log("index = " + j + ", frameNum = " + validFrames[j].frameNum);
+		}
+	}
 }
 
 // show ping times with a graph
@@ -214,10 +240,18 @@ sockerinfo........
 	room: null
 */
 
+// load these before init
+race_ingame.load = function() {
+	preloadimg("../common/sptpics/maptestnck.png");
+	preloadimg("../common/sptpics/panel.jpg");
+	//preloadtime(3000); // show loading screen for minimum time
+}
+
 race_ingame.init = function(sockInfo) { // network state tranfered from race_sentgo
 	logger("entering webgl race_ingame\n");
 	race_ingame.count = 0; // counter for this state
 	race_ingame.allready = false;
+	race_ingame.doDump = true;
 
 	// ui
 	setbutsname('ingame');
@@ -229,6 +263,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
     // build 3D scene
 	race_ingame.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
 	race_ingame.treeMaster.mat.color = [.75, .75, .75, 1];
+	race_ingame.checksum = [];
 
 	// do network stuff
 	race_ingame.playerTrees = [];
@@ -302,16 +337,29 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 			race_ingame.playerTrees[s] = playerTree;
 			race_ingame.roottree.linkchild(playerTree);
 		}
-		race_ingame.mvc = new RaceModel(room.slots.length, race_ingame.playerTrees);
-		race_ingame.mvc.modelToView(race_ingame.count);
-		race_ingame.terminal.print("done INGAME init with sockInfo, id = "
-			+ race_ingame.sockerInfo.id + " slot = " + race_ingame.sockerInfo.slotIdx);
+		race_ingame.mvc = new RaceModel(room.slots.length, race_ingame.playerTrees, race_ingame.doChecksum);
+		race_ingame.checksum = race_ingame.mvc.modelToView(race_ingame.count);
+		if (race_ingame.doChecksum) {
+			race_ingame.validFramesSlots = Array(room.slots.length);
+			for (let i = 0; i < race_ingame.validFramesSlots.length; ++i) {
+				//race_ingame.validFramesSlots[i] = [];
+				race_ingame.validFramesSlots[i] = clone(race_ingame.checksum);
+			}
+				//race_ingame.validFrames = clone(race_ingame.validFramesSlots[race_ingame.mySlot]);
+			//race_ingame.validFramesSlots[race_ingame.mySlot] = clone(race_ingame.checksum);
+			//console.log(race_ingame.validFrames);
+			race_ingame.terminal.print("done INGAME init with sockInfo, id = "
+				+ race_ingame.sockerInfo.id + " slot = " + race_ingame.sockerInfo.slotIdx);
+		}
 	}
 
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
-	fpswanted = race_ingame.fpswanted
+	fpswanted = race_ingame.fpswanted;
+	if (race_ingame.sockerInfo) {
+		fpswanted += race_ingame.sockerInfo?.id * 10;
+	}
 
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[
@@ -367,7 +415,7 @@ race_ingame.proc = function() {
 		}
 		// TEST disable catchup if uncommented
 		// catchup = false; // no catchup
-		
+
 		race_ingame.negPingTree.mod.mat.color;
 		if (catchup) {
 			race_ingame.negPingTree.mod.mat.color = [1,0,0,1];
@@ -387,15 +435,49 @@ race_ingame.proc = function() {
 		// process input
 		let loopCount = catchup ? 2 : 1;
 		for (let loop = 0; loop < loopCount; ++loop) {
+			if (race_ingame.maxCount && race_ingame.count >= race_ingame.maxCount) {
+				if (race_ingame.doDump) {
+					race_ingame.doDump = false;
+					race_ingame.showValidFramesSlots();
+				}
+				continue;
+			}
 			race_ingame.mvc.controlToModel(race_ingame.count, race_ingame.mySlot, keyCode);
+			const count = race_ingame.count;
 			if (race_ingame.broadcastLag) {
-				const count = race_ingame.count;
 				setTimeout(function() {
-					race_ingame.socker?.emit('broadcast', {frame: count, keyCode: keyCode});
+					if (race_ingame.doChecksum && loop == 0) {
+						race_ingame.socker?.emit('broadcast', {
+							frameNum: count, 
+							keyCode: keyCode, 
+							//validFrameNum: count, 
+							checksum: race_ingame.checksum
+						});
+					} else {
+						race_ingame.socker?.emit('broadcast', {
+							frameNum: count,
+							keyCode: keyCode
+						});
+					}
 				}, race_ingame.broadcastLag);
 			} else {
-				race_ingame.socker?.emit('broadcast', {frame: race_ingame.count, keyCode: keyCode});
+				if (race_ingame.doChecksum && loop == 0) {
+					console.log("broadcast valid frame = " + count);
+					console.log("   WITH checksum = " + JSON.stringify(race_ingame.checksum));
+					race_ingame.socker?.emit('broadcast', {
+						frameNum: count,
+						keyCode: keyCode,
+						//validFrameNum: count,
+						checksum: race_ingame.checksum
+					});
+				} else {
+					race_ingame.socker?.emit('broadcast', {
+						frameNum: count,
+						keyCode: keyCode
+					});
+				}
 			}
+			race_ingame.checksum = [];
 			++race_ingame.count;
 		}
 	}
@@ -403,7 +485,22 @@ race_ingame.proc = function() {
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	beginscene(mainvp);
-	race_ingame.mvc.modelToView(race_ingame.count);
+	if (race_ingame.mvc) {
+		race_ingame.checksum = race_ingame.mvc.modelToView(race_ingame.count);
+		if (race_ingame.doChecksum) {
+			const oldLen = race_ingame.validFramesSlots[race_ingame.mySlot].length;
+			race_ingame.validFramesSlots[race_ingame.mySlot] = race_ingame.validFramesSlots[race_ingame.mySlot].concat(race_ingame.checksum);
+			const newLen = race_ingame.validFramesSlots[race_ingame.mySlot].length;
+			// check frame numbers
+			for (let i = oldLen; i < newLen; ++i) {
+				if (i != race_ingame.validFramesSlots[race_ingame.mySlot][i].frameNum) {
+					alert("race_ingame.checksum[i].frameNum != i");
+				}
+			}
+		}
+		//console.log(validFrames);
+	}
+	//}.
 	race_ingame.roottree.draw();
 };
 

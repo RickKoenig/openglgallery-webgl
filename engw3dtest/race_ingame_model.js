@@ -10,17 +10,26 @@ class RaceModel {
         DISCONNECT: 128
     };
 
-    constructor(numPlayers, view) {
+    constructor(numPlayers, view, doChecksum) {
+        this.doChecksum = doChecksum;
         this.resetModel = RaceModel.#modelReset(numPlayers); // the start model
         this.curModel = clone(this.resetModel); // the current model is the init model
         this.validModel = clone(this.resetModel); // last valid model with all inputs
+        this.validFrameNum = 0;
         this.inputs = [];
-        this.validFrame = 0;
         for (let slot = 0; slot < numPlayers; ++slot) {
             const input = [0]; // one extra for prediction
             this.inputs.push(input);
         }
         this.curView = view; // tree list for M to V
+        if (this.doChecksum) {
+            this.validModels = [
+                {
+                    frameNum: this.validFrameNum,
+                    model: this.validModel
+                }
+            ];
+        }
     }
 
     static #toHex(kc) {
@@ -83,15 +92,15 @@ class RaceModel {
     }
 
     // C to M
-    controlToModel(frame, slot, keyCode) { // update input buffers with this data: TODO: remove frame
+    controlToModel(frameNum, slot, keyCode) { // update input buffers with this data: TODO: remove frameNum
         const discon = keyCode & RaceModel.keyCodes.DISCONNECT;
         const input = this.inputs[slot];
-        if (!discon && input.length - 1 + this.validFrame != frame) {
-            alert("frame " + frame + " != " + input.length + " - 1 " + " validFrame " + this.validFrame + " !!!");
+        if (!discon && input.length - 1 + this.validFrameNum != frameNum) {
+            alert("frameNum " + frameNum + " != " + input.length + " - 1 " + " validFrameNum " + this.validFrameNum + " !!!");
         }
-        if (discon) console.log("controlToModel: DISCONNECT slot " + slot + " at frame " + input.length);
+        if (discon) console.log("controlToModel: DISCONNECT slot " + slot + " at frameNum " + input.length - 1);
         input.push(keyCode);
-        //console.log("C2M: frame " + frame + ", slot " + slot + ", keycode " + RaceModel.#toHex(keyCode));
+        //console.log("C2M: frameNum " + frameNum + ", slot " + slot + ", keycode " + RaceModel.#toHex(keyCode));
         if (discon) {
 				this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
                 return;
@@ -104,14 +113,15 @@ class RaceModel {
     }
 
     // M to V
-    // get Model to this frame, then move it into View
-    modelToView(frame) {
-        //console.log("M2V: frame " + frame);
+    // get Model to this frameNum, then move it into View
+    modelToView(frameNum) {
+        //console.log("M2V: frameNum " + frameNum);
 
-        // TIME WARP, step to current frame, even when all packets haven't arrived
-        // start at valid frame and step to current frame
+        // TIME WARP, step to current frameNum, even when all packets haven't arrived
+        // start at valid frameNum and step to current frameNum
+        // first rewind time to validFrameNum
         this.curModel = clone(this.validModel);
-        for (let frm = this.validFrame; frm < frame; ++frm) {
+        for (let validFrmNum = this.validFrameNum; validFrmNum < frameNum; ++validFrmNum) {
             const playerKeyCodes = [];
             let good = true; // not predicted, valid
             for (let slot = 0; slot < this.inputs.length; ++slot) {
@@ -119,36 +129,45 @@ class RaceModel {
                 let keyCode = 0; // default
                 const inputLength = input.length - 1; // one extra
                 // have at least 1 input
-                if (frm < this.validFrame) {
-                    alert("frm " + frm + " < validFrame " + this.validFrame);
+                if (validFrmNum < this.validFrameNum) {
+                    alert("validFrmNum " + validFrmNum + " < validFrameNum " + this.validFrameNum);
                     good = false; // should never happen
-                } else if (frm - this.validFrame >= inputLength) { // predict if possible
+                } else if (validFrmNum - this.validFrameNum >= inputLength) { // predict if possible
                     keyCode = input[inputLength]; // using last known keycode
                     if (!(keyCode & RaceModel.keyCodes.DISCONNECT)) {
                         good = false; // disconnected is good input
                     }
                 } else { // normal, in range, one extra
-                    keyCode = input[1 + frm - this.validFrame]; // still good
+                    keyCode = input[1 + validFrmNum - this.validFrameNum]; // still good
                 }
                 playerKeyCodes.push(keyCode);
             }
             this.#stepModel(playerKeyCodes);
 
             if (good) {
-                // erase the past that is no longer needed, Langoliers
-                // first rewind time to validFrame
+                // save a good validModel
                 this.validModel = clone(this.curModel);
-                // move forward with everybody
+                ++this.validFrameNum;
+                console.log("good frame = " + this.validFrameNum);
+                if (this.doChecksum) {
+                    this.validModels.push ({
+                        frameNum: this.validFrameNum,
+                        model: this.validModel
+                    });
+                }
+                // erase the past inputs that is no longer needed, Langoliers
                 for (let slot = 0; slot < this.inputs.length; ++slot) {
                     const input = this.inputs[slot];
                     input.shift(); // Langoliers
                 }
-                ++this.validFrame;
             }
         }
-
+        // update the view from the model
         for (let slot = 0; slot < this.curModel.length; ++slot) {
             this.curView[slot].trans = vec3.clone(this.curModel[slot].pos);
         }
+        const ret = clone(this.validModels);
+        this.validModels = [];
+        return ret;
     }
 }

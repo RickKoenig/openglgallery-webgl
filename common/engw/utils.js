@@ -199,6 +199,33 @@ function makeEnum(strArr) {
 	return ret;
 }
 
+equalsObj = function(objA, objB, pretty) {
+	const pad = pretty ? '   ' : undefined;
+	const strA = JSON.sortify(objA, null, pad);
+	const strB = JSON.sortify(objB, null, pad);
+	return strA === strB;
+}
+
+// pass in a BigInt, return a Number
+toFloat = function (bi) {
+	const bia = new BigUint64Array(1);
+	// make generic buffer for type conversion
+	const ab = bia.buffer;
+	bia[0] = bi;
+	const fa = new Float64Array(ab);
+	return fa[0];
+}
+
+// pass in a Number, return a BigInt
+fromFloat = function (f) {
+	const fa = new Float64Array(1);
+	// make generic buffer for type conversion
+	const ab = fa.buffer;
+	fa[0] = f;
+	const bia = new BigUint64Array(ab);
+	return bia[0];
+}
+
 // convert colors from 0-255 to 0.0 to 1.0
 function F32(intColors) {
 	var ret = [];
