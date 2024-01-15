@@ -39,6 +39,12 @@ var globalmat = {
 	specpow:500,
 };
 
+const verbose = false;
+
+function loggerV(str) {
+	if (verbose) logger(str);
+}
+
 function gl_resize() {
 //	alert("gl_resize to " + x + " " + y);
 	 // set gl wid,hit
@@ -252,6 +258,7 @@ function preloadShaders() {
 
 function initShaders() {
 	var i,j,n = shaderlist.length;
+	logger("init shaders");
 	for (j=0;j<n;++j) {
 		var shadName = shaderlist[j];
 		//if (shadName.startsWith("//")) {
@@ -290,16 +297,16 @@ function initShaders() {
 		
 		shaderProgram.nattrib = gl.getProgramParameter(shaderProgram,gl.ACTIVE_ATTRIBUTES);
 		//shaderProgram.attribs = [];
-		logger("======== shader name = " + shaderProgram.name);
+		loggerV("======== shader name = " + shaderProgram.name);
 		var decAtt = 0;
 		for (i=0;i<shaderProgram.nattrib;++i) {
 			var aa = gl.getActiveAttrib(shaderProgram,i);
-			logger("shader attribute = " + aa.name);
+			loggerV("shader attribute = " + aa.name);
 			if (aa.name == "gl_InstanceID") { // built in attribute should not be included in the list of attributes
-				logger("########## skipping built in attribute " + aa.name);
+				loggerV("########## skipping built in attribute " + aa.name);
 				++decAtt;
 			} else if (aa.name == "gl_VertexID") { // built in attribute should not be included in the list of attributes
-				logger("########## skipping built in attribute " + aa.name);
+				loggerV("########## skipping built in attribute " + aa.name);
 				++decAtt;
 			} else {
 				shaderProgram[aa.name] = gl.getAttribLocation(shaderProgram,aa.name);

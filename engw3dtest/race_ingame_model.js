@@ -36,6 +36,7 @@ class RaceModel {
         return kc.toString(16).toUpperCase().padStart(2,'0');
     }
 
+    // return initial model of the game
     static #modelReset(numPlayers) {
         const ret = Array(numPlayers);
         for (let slot = 0; slot < numPlayers; ++slot) {
@@ -75,7 +76,11 @@ class RaceModel {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 return;
             }
-            const step = .125;
+            let step = .125;
+            // TEST, invalid checksum
+            //if (this.validFrameNum == 60 && slot == 1) {
+            //    step = .25;
+            //}
             if (keyCode & RaceModel.keyCodes.RIGHT) {
                 this.curModel[slot].pos[0] += step;
             }
@@ -107,7 +112,7 @@ class RaceModel {
         }
         // restart game
         if (keyCode & RaceModel.keyCodes.GO) {
-            this.curModel = clone(this.resetModel); // the current model is the init model
+            this.curModel = clone(this.resetModel); // the init model is set to the current model
             return;
         }
     }
@@ -133,6 +138,7 @@ class RaceModel {
                     alert("validFrmNum " + validFrmNum + " < validFrameNum " + this.validFrameNum);
                     good = false; // should never happen
                 } else if (validFrmNum - this.validFrameNum >= inputLength) { // predict if possible
+                    //keyCode = inputLength > 0 ? input[inputLength] : RaceModel.keyCodes.DISCONNECT; // using last known keycode
                     keyCode = input[inputLength]; // using last known keycode
                     if (!(keyCode & RaceModel.keyCodes.DISCONNECT)) {
                         good = false; // disconnected is good input
@@ -148,7 +154,7 @@ class RaceModel {
                 // save a good validModel
                 this.validModel = clone(this.curModel);
                 ++this.validFrameNum;
-                console.log("good frame = " + this.validFrameNum);
+                //console.log("good frame = " + this.validFrameNum);
                 if (this.doChecksum) {
                     this.validModels.push ({
                         frameNum: this.validFrameNum,
@@ -158,7 +164,10 @@ class RaceModel {
                 // erase the past inputs that is no longer needed, Langoliers
                 for (let slot = 0; slot < this.inputs.length; ++slot) {
                     const input = this.inputs[slot];
-                    input.shift(); // Langoliers
+                    // keep at least 1 for discon
+                    if (input.length > 1) {
+                        input.shift(); // Langoliers
+                    }
                 }
             }
         }
