@@ -7,10 +7,10 @@ var race_ingame = {}; // the 'race_ingame' state
 race_ingame.text = "WebGL: race_ingame 3D drawing";
 race_ingame.title = "race_ingame";
 
-race_ingame.broadcastLag = 100; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_ingame.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_ingame.doChecksum = true; // check all valid frames (race state)
 race_ingame.fpswanted = 10;
-race_ingame.maxCount = 25 * 60;//0;//30; // stop running when count >= maxCount, 0 run forever
+race_ingame.maxCount = 0;// 5 * 60; // stop running when count >= maxCount, 0 run forever
 race_ingame.gotoConsole = function() {
     changestate("race_console", "from INGAME");
 }
@@ -56,8 +56,9 @@ race_ingame.setupCallbacks = function(socker) {
 						const newLen = race_ingame.validFramesSlots[slot].length;
 						// check frame numbers
 						for (let i = oldLen; i < newLen; ++i) {
-							if (i != race_ingame.validFramesSlots[slot][i].frameNum) {
-								alert("on broadcast race_ingame.checksum[i].frameNum("
+							const oi = i + race_ingame.validOffset;
+							if (oi != race_ingame.validFramesSlots[slot][i].frameNum) {
+								alertS("on broadcast race_ingame.checksum[i].frameNum("
 								    + race_ingame.validFramesSlots[slot][i].frameNum + ") != i " + i);
 							}
 						}
@@ -65,14 +66,14 @@ race_ingame.setupCallbacks = function(socker) {
 					}
 				}
 			} else {
-				race_ingame.terminal?.print(
+				race_ingame.terminal.print?.(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + slot);
 				race_ingame.mvc.controlToModel(null, slot, RaceModel.modelMakeKeyCode(true));
 				race_ingame.pingTimes[slot] = undefined;
 				race_ingame.discon[slot] = true;
 			}
 		} else {
-			alert("BAD slot index = " + broadPack.slotIdx + " !!!");
+			alertS("BAD slot index = " + broadPack.slotIdx + " !!!");
 		}
 	});
 
@@ -100,78 +101,75 @@ race_ingame.showValidFramesSlots = function() {
 		const validFrames = race_ingame.validFramesSlots[i];
 		console.log("SLOT " + i);
 		for (let j = 0; j < validFrames.length; ++j) {
-			console.log("index = " + j + ", frameNum = " + validFrames[j].frameNum);
+			console.log("index = " + (j + race_ingame.validOffset) + ", frameNum = " + validFrames[j].frameNum);
 		}
 	}
 }
 
+// check all new validFrames from all players
 race_ingame.validateFrames = function() {
-	//race_ingame.validFrames = -1;
-	//race_ingame.validFramesSlots
 	const room = race_ingame.sockerInfo.room;
 	const numSlots = room.slots.length;
 	let watchDog = 600;
-	if (numSlots == 1) {
-		while(true) {
-			if (race_ingame.validFrames >= race_ingame.validFramesSlots[0].length) {
+	while(true) {
+		let doBreak = false;
+		const vf = race_ingame.validFrames - race_ingame.validOffset;
+		for (let i = 0; i < numSlots; ++i) {
+			if (!race_ingame.discon[i] && vf >= race_ingame.validFramesSlots[i].length) {
+				doBreak = true; // nothing new yet
 				break;
 			}
-			// check something
-			if (race_ingame.validFrames != race_ingame.validFramesSlots[0][race_ingame.validFrames].frameNum) {
-				console.error("VF error " + race_ingame.validFrames);
+		}
+		if (doBreak) {
+			break; // not all players have a new validFrame yet, maybe later
+		}
+		// check everything
+		// first, frameNum matches index
+		for (let i = 0; i < numSlots; ++i) {
+			if (race_ingame.discon[i]) {
+				continue;
+			}
+			if (race_ingame.validFrames != race_ingame.validFramesSlots[i][vf].frameNum) {
+				console.error("VF[" + i + "] error " + race_ingame.validFrames);
 			} else {
-				console.log("VF good " + race_ingame.validFrames);
+				console.log("VF[" + i + "] good " + race_ingame.validFrames);
+			}
+		}
+		// second, checksum all players
+		for (let i = 0; i < numSlots; ++i) {
+			if (race_ingame.discon[i]) {
+				continue;
+			}
+			for (let j = i + 1; j < numSlots; ++j) {
+				if (race_ingame.discon[j]) {
+					continue;
+				}
+				const isEq = equalsObj(race_ingame.validFramesSlots[i][vf].model
+						, race_ingame.validFramesSlots[j][vf].model);
+					if (isEq) {
+						console.log("VF[" + i + "] VF[" + j + "] good " + race_ingame.validFrames);
+					} else {
+						console.error("VF[" + i + "] VF[" + j + "] error " + race_ingame.validFrames);
+					}
+				}
 			}
 			++race_ingame.validFrames;
+			let trimValid = true; // if false, keep a paper trail of all gamestates
+			if (trimValid) {
+				// shift out old data, save memory
+				for (let i = 0; i < numSlots; ++i) {
+					race_ingame.validFramesSlots[i].shift();
+				}
+				++race_ingame.validOffset;
+			}
 			--watchDog;
 			if (watchDog <= 0) {
 				console.error("watchdog hit");
 				break;
 			}
 		}
-	} else if (numSlots == 2) {
-		while(true) {
-			if (!race_ingame.discon[0] && race_ingame.validFrames >= race_ingame.validFramesSlots[0].length) {
-				break;
-			}
-			if (!race_ingame.discon[1] && race_ingame.validFrames >= race_ingame.validFramesSlots[1].length) {
-				break;
-			}
-			// check something
-			if (!race_ingame.discon[0]) {
-				if (race_ingame.validFrames != race_ingame.validFramesSlots[0][race_ingame.validFrames].frameNum) {
-					console.error("VF[0] error " + race_ingame.validFrames);
-				} else {
-					console.log("VF[0] good " + race_ingame.validFrames);
-				}
-			}
-			if (!race_ingame.discon[1]) {
-				if (race_ingame.validFrames != race_ingame.validFramesSlots[1][race_ingame.validFrames].frameNum) {
-					console.error("VF[1] error " + race_ingame.validFrames);
-				} else {
-					console.log("VF[1] good " + race_ingame.validFrames);
-				}
-			}
-			if (!race_ingame.discon[0] && !race_ingame.discon[1]) {
-				const isEq = equalsObj(race_ingame.validFramesSlots[0][race_ingame.validFrames].model
-					, race_ingame.validFramesSlots[1][race_ingame.validFrames].model);
-				if (isEq) {
-					console.log("VF[0] VF[1] good " + race_ingame.validFrames);
-				} else {
-					console.error("VF[0] VF[1] error " + race_ingame.validFrames);
-				}
-			}
-			++race_ingame.validFrames;
-			--watchDog;
-			if (watchDog <= 0) {
-				console.error("watchdog hit");
-				break;
-			}
-		}
-	}
 	const str = "Valid Frm = " + race_ingame.validFrames;
-	//console.log(str);
-	race_ingame.termValid.print(str);
+	race_ingame.termValid.print?.(str);
 }
 
 // show ping times with a graph
@@ -431,19 +429,24 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 			offy: 60,
 			scale: 2
 		};
-		race_ingame.termValid = new Terminal(race_ingame.roottree, [.1, 0, 0, 1], null, termParams);
-		race_ingame.termValid.print("VALID FRAMES");
+		if (race_ingame.doChecksum) {
+			race_ingame.termValid = new Terminal(race_ingame.roottree, [.1, 0, 0, 1], null, termParams);
+			race_ingame.termValid.print("VALID FRAMES");
+		}
 		race_ingame.validFrames = 0;
+		race_ingame.validOffset = 0; // shift race_ingame.discon, to save memory
 	}
 
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
 	fpswanted = race_ingame.fpswanted;
-	const staggerFPSWanted = true;
-	const staggerDiff = 4;
+	// run players at different framerates, test catchup logic
+	const staggerFPSWanted = false;
+	const staggerDiff = 2;
 	if (race_ingame.sockerInfo && staggerFPSWanted) {
 		fpswanted += race_ingame.sockerInfo?.id * staggerDiff;
+		//if (race_ingame.sockerInfo?.id == 1) fpswanted = 1;
 	}
 
 	// UI debprint menu
@@ -499,7 +502,6 @@ race_ingame.proc = function() {
 		}
 		// TEST disable catchup if uncommented
 		// catchup = false; // no catchup
-
 		race_ingame.negPingTree.mod.mat.color;
 		if (catchup) {
 			race_ingame.negPingTree.mod.mat.color = [1,0,0,1];
@@ -526,15 +528,16 @@ race_ingame.proc = function() {
 				}
 				continue;
 			}
-			race_ingame.mvc.controlToModel(race_ingame.count, race_ingame.mySlot, keyCode);
-			const count = race_ingame.count;
-			// TEST checksum breakage
+			let myKeyCode = keyCode;
 			const breakChecksum = false;
+			const count = race_ingame.count;
 			if (breakChecksum) {
+				// TEST checksum breakage
 				if (count == 60 && race_ingame.mySlot == 1) {
-					keyCode = RaceModel.keyCodes.LEFT;
+					myKeyCode = RaceModel.keyCodes.LEFT;
 				}
 			}
+			race_ingame.mvc.controlToModel(race_ingame.count, race_ingame.mySlot, myKeyCode);
 			const checksum = race_ingame.checksum;
 			if (race_ingame.broadcastLag) {
 				setTimeout(function() {
@@ -585,8 +588,9 @@ race_ingame.proc = function() {
 			const newLen = race_ingame.validFramesSlots[race_ingame.mySlot].length;
 			// check frame numbers
 			for (let i = oldLen; i < newLen; ++i) {
-				if (i != race_ingame.validFramesSlots[race_ingame.mySlot][i].frameNum) {
-					alert("race_ingame.checksum[i].frameNum != i");
+				const oi = i + race_ingame.validOffset;
+				if (oi != race_ingame.validFramesSlots[race_ingame.mySlot][i].frameNum) {
+					alertS("race_ingame.checksum[i].frameNum != i");
 				}
 			}
 			race_ingame.validateFrames();

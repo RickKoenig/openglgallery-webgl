@@ -155,6 +155,17 @@ function logger(str) {
 	console.log(str);
 }
 
+// only alert a certain number of times
+let alertSCount = 3;
+function alertS(str) {
+	str = "alertS[" + alertSCount + "]: " + str;
+	console.error(str);
+	if (alertSCount > 0) {
+		alert(str);
+		--alertSCount;
+	}
+}
+
 function spliturl(url) {
 	var s = {};
 	s.path = "";

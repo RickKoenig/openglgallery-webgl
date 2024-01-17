@@ -76,11 +76,7 @@ class RaceModel {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 return;
             }
-            let step = .125;
-            // TEST, invalid checksum
-            //if (this.validFrameNum == 60 && slot == 1) {
-            //    step = .25;
-            //}
+            const step = .125;
             if (keyCode & RaceModel.keyCodes.RIGHT) {
                 this.curModel[slot].pos[0] += step;
             }
@@ -101,9 +97,11 @@ class RaceModel {
         const discon = keyCode & RaceModel.keyCodes.DISCONNECT;
         const input = this.inputs[slot];
         if (!discon && input.length - 1 + this.validFrameNum != frameNum) {
-            alert("frameNum " + frameNum + " != " + input.length + " - 1 " + " validFrameNum " + this.validFrameNum + " !!!");
+            alertS("frameNum " + frameNum + " != " + input.length + " - 1 " + " validFrameNum " + this.validFrameNum + " !!!");
         }
-        if (discon) console.log("controlToModel: DISCONNECT slot " + slot + " at frameNum " + input.length - 1);
+        if (discon) {
+            console.log("controlToModel: DISCONNECT slot " + slot);
+        }
         input.push(keyCode);
         //console.log("C2M: frameNum " + frameNum + ", slot " + slot + ", keycode " + RaceModel.#toHex(keyCode));
         if (discon) {
@@ -121,7 +119,6 @@ class RaceModel {
     // get Model to this frameNum, then move it into View
     modelToView(frameNum) {
         //console.log("M2V: frameNum " + frameNum);
-
         // TIME WARP, step to current frameNum, even when all packets haven't arrived
         // start at valid frameNum and step to current frameNum
         // first rewind time to validFrameNum
@@ -138,7 +135,6 @@ class RaceModel {
                     alert("validFrmNum " + validFrmNum + " < validFrameNum " + this.validFrameNum);
                     good = false; // should never happen
                 } else if (validFrmNum - this.validFrameNum >= inputLength) { // predict if possible
-                    //keyCode = inputLength > 0 ? input[inputLength] : RaceModel.keyCodes.DISCONNECT; // using last known keycode
                     keyCode = input[inputLength]; // using last known keycode
                     if (!(keyCode & RaceModel.keyCodes.DISCONNECT)) {
                         good = false; // disconnected is good input
