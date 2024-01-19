@@ -9,8 +9,8 @@ race_ingame.title = "race_ingame";
 
 race_ingame.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_ingame.doChecksum = true; // check all valid frames (race state)
+race_ingame.verbose = false;
 race_ingame.fpswanted = 10;
-race_ingame.maxCount = 0;// 5 * 60; // stop running when count >= maxCount, 0 run forever
 race_ingame.gotoConsole = function() {
     changestate("race_console", "from INGAME");
 }
@@ -47,9 +47,11 @@ race_ingame.setupCallbacks = function(socker) {
 				if (race_ingame.doChecksum) {
 					if (broadPack.data.checksum) {
 						const checksum = broadPack.data.checksum;
-						console.log("num checksum frames = " + checksum.length);
-						for (let i = 0; i < checksum.length; ++i) {
-							console.log("checksum from other player is S " + slot + ", checksum " + JSON.sortify(checksum[i]));
+						if (race_ingame.verbose) {
+							console.log("num checksum frames = " + checksum.length);
+							for (let i = 0; i < checksum.length; ++i) {
+								console.log("checksum from other player is S " + slot + ", checksum " + JSON.sortify(checksum[i]));
+							}
 						}
 						const oldLen = race_ingame.validFramesSlots[slot].length;
 						race_ingame.validFramesSlots[slot] = race_ingame.validFramesSlots[slot].concat(checksum);
@@ -93,19 +95,6 @@ race_ingame.setupCallbacks = function(socker) {
 	});
 }
 
-race_ingame.showValidFramesSlots = function() {
-	//return;
-	if (!race_ingame.validFramesSlots) return;
-	console.log("VALID FRAME SLOTS");
-	for (let i = 0; i < race_ingame.validFramesSlots.length; ++i) {
-		const validFrames = race_ingame.validFramesSlots[i];
-		console.log("SLOT " + i);
-		for (let j = 0; j < validFrames.length; ++j) {
-			console.log("index = " + (j + race_ingame.validOffset) + ", frameNum = " + validFrames[j].frameNum);
-		}
-	}
-}
-
 // check all new validFrames from all players
 race_ingame.validateFrames = function() {
 	const room = race_ingame.sockerInfo.room;
@@ -130,9 +119,9 @@ race_ingame.validateFrames = function() {
 				continue;
 			}
 			if (race_ingame.validFrames != race_ingame.validFramesSlots[i][vf].frameNum) {
-				console.error("VF[" + i + "] error " + race_ingame.validFrames);
+				alertS("VF[" + i + "] error " + race_ingame.validFrames);
 			} else {
-				console.log("VF[" + i + "] good " + race_ingame.validFrames);
+				if (race_ingame.verbose) console.log("VF[" + i + "] good " + race_ingame.validFrames);
 			}
 		}
 		// second, checksum all players
@@ -147,9 +136,9 @@ race_ingame.validateFrames = function() {
 				const isEq = equalsObj(race_ingame.validFramesSlots[i][vf].model
 						, race_ingame.validFramesSlots[j][vf].model);
 					if (isEq) {
-						console.log("VF[" + i + "] VF[" + j + "] good " + race_ingame.validFrames);
+						if (race_ingame.verbose) console.log("VF[" + i + "] VF[" + j + "] good " + race_ingame.validFrames);
 					} else {
-						console.error("VF[" + i + "] VF[" + j + "] error " + race_ingame.validFrames);
+						alertS("VF[" + i + "] VF[" + j + "] error " + race_ingame.validFrames);
 					}
 				}
 			}
@@ -164,7 +153,7 @@ race_ingame.validateFrames = function() {
 			}
 			--watchDog;
 			if (watchDog <= 0) {
-				console.error("watchdog hit");
+				alertS("watchdog hit");
 				break;
 			}
 		}
@@ -323,7 +312,6 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	logger("entering webgl race_ingame\n");
 	race_ingame.count = 0; // counter for this state
 	race_ingame.allready = false;
-	race_ingame.doDump = true;
 
 	// ui
 	setbutsname('ingame');
@@ -521,13 +509,6 @@ race_ingame.proc = function() {
 		// process input
 		let loopCount = catchup ? 2 : 1;
 		for (let loop = 0; loop < loopCount; ++loop) {
-			if (race_ingame.maxCount && race_ingame.count >= race_ingame.maxCount) {
-				if (race_ingame.doDump) {
-					race_ingame.doDump = false;
-					race_ingame.showValidFramesSlots();
-				}
-				continue;
-			}
 			let myKeyCode = keyCode;
 			const breakChecksum = false;
 			const count = race_ingame.count;
@@ -542,9 +523,11 @@ race_ingame.proc = function() {
 			if (race_ingame.broadcastLag) {
 				setTimeout(function() {
 					if (race_ingame.doChecksum && loop == 0) {
-						console.log(" -- LAG -- " + race_ingame.broadcastLag + "ms ---,   broadcast valid frame = " + count);
-						console.log("   WITH checksum = " + JSON.sortify(checksum));
-							race_ingame.socker?.emit('broadcast', {
+						if (race_ingame.verbose) {
+							console.log(" -- LAG -- " + race_ingame.broadcastLag + "ms ---,   broadcast valid frame = " + count);
+							console.log("   WITH checksum = " + JSON.sortify(checksum));
+						}
+						race_ingame.socker?.emit('broadcast', {
 							frameNum: count, 
 							keyCode: keyCode, 
 							checksum: checksum
@@ -558,8 +541,10 @@ race_ingame.proc = function() {
 				}, race_ingame.broadcastLag);
 			} else {
 				if (race_ingame.doChecksum && loop == 0) {
-					console.log("broadcast valid frame = " + count);
-					console.log("   WITH checksum = " + JSON.sortify(race_ingame.checksum));
+					if (race_ingame.verbose) {
+						console.log("broadcast valid frame = " + count);
+						console.log("   WITH checksum = " + JSON.sortify(race_ingame.checksum));
+					}
 					race_ingame.socker?.emit('broadcast', {
 						frameNum: count,
 						keyCode: keyCode,
