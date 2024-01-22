@@ -59,7 +59,8 @@ race_sentgo.setupCallbacks = function(socker) {
 			race_sentgo.keepSockInfo = true;
 			changestate("race_ingame", {
 				sock: socker,
-				info: race_sentgo.sockerInfo
+				info: race_sentgo.sockerInfo,
+				game: race_sentgo.gameType
 			});
 		},waitSec * 1000);
 	});
@@ -82,7 +83,7 @@ sockerinfo........
 
 race_sentgo.init = function(sockInfo) { // network state tranfered from race_console
 	race_sentgo.keepSockInfo = false;
-	logger("entering webgl race_sentgo\n");
+	logger("entering webgl race_sentgo, gameType = '" + sockInfo?.gameType + "'\n");
 	race_sentgo.count = 0; // counter for this state
 
 
@@ -99,6 +100,7 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_con
 	if (sockInfo) {
 		race_sentgo.socker = sockInfo.sock; // actual socket.io
 		race_sentgo.sockerInfo = sockInfo.info;
+		race_sentgo.gameType = sockInfo.gameType;
 		race_sentgo.setupCallbacks(race_sentgo.socker);
 		// show myself and other info from 'intent'
 		race_sentgo.terminal.print("SENTGO\n\n"

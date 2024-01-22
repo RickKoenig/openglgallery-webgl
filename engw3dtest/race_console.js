@@ -139,21 +139,22 @@ race_console.setupCallbacks = function(socker, name) {
 			++race_console.clientNewsCount;
 	});
 
-	socker.on('go', function(goData) {
+	socker.on('go', function(gameType) {
 		if (race_console.sockerInfo.id == testId) { // test disconnect some sockets
 			if (testDisconnect == 1) {
 				race_console.socker?.disconnect(true);
 			}
 		}
-		const jGoData = JSON.stringify(goData);
-		console.log("GO!: " + jGoData + " client newsCount " 
+		//const jGoData = JSON.stringify(goData);
+		console.log("GO!: '" + gameType + "' client newsCount " 
 			+ race_console.clientNewsCount);
-		race_console.terminal.print(jGoData);
+		race_console.terminal.print(gameType);
 		++race_console.clientNewsCount;
 		race_console.keepSockInfo = true;
 		changestate("race_sentgo", {
 			sock: socker,
-			info: race_console.sockerInfo
+			info: race_console.sockerInfo,
+			gameType: gameType
 		});
 	});
 }
@@ -276,7 +277,7 @@ race_console.doCommand = function(cmdStr) {
 		case "j":
 			if (race_console.socker) {
 				let roomName = words[0];
-				if (!roomName && first == "j") roomName = "p0";
+				if (!roomName) roomName = "p0";
 				if (roomName) {
 					race_console.socker.emit('joinroom', roomName);
 				} else {
@@ -298,7 +299,13 @@ race_console.doCommand = function(cmdStr) {
 		case "go": // go from room to sim/game, a room that is locked
 				   // no new members, host can leave without destroying the room
 			if (race_console.socker) {
-				race_console.socker.emit('go', null);
+				let gameType = words[0];
+				if (!gameType) gameType = "a";
+				if (gameType != 'a' && gameType != 'b') {
+					race_console.terminal.print("not a valid gameType '" + gameType + "'");
+					break;
+				}
+				race_console.socker.emit('go', gameType);
 			} else {
 				race_console.terminal.print("not connected!");
 			}

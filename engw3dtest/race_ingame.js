@@ -309,9 +309,10 @@ race_ingame.load = function() {
 }
 
 race_ingame.init = function(sockInfo) { // network state tranfered from race_sentgo
-	logger("entering webgl race_ingame\n");
+	logger("entering webgl race_ingame with game '" + sockInfo?.game + "'\n");
 	race_ingame.count = 0; // counter for this state
 	race_ingame.allready = false;
+	race_ingame.gameType = sockInfo?.game;
 
 	// ui
 	setbutsname('ingame');
@@ -340,6 +341,7 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 		// show myself and other info from 'intent'
 		race_ingame.terminal.print("INGAME\n\n"
 			+ "sockerinfo = " + JSON.stringify(race_ingame.sockerInfo)
+			+ "\ngame = " + sockInfo.game
 			+ "\nrace_ingame count = " + race_ingame.count);
 
 		// TEST
@@ -428,6 +430,9 @@ race_ingame.init = function(sockInfo) { // network state tranfered from race_sen
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
+	if (race_ingame.gameType == 'b') {
+		mainvp.clearcolor = [.5,1,.5,1];
+	}
 	fpswanted = race_ingame.fpswanted;
 	// run players at different framerates, test catchup logic
 	const staggerFPSWanted = false;
