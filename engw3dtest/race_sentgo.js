@@ -57,11 +57,18 @@ race_sentgo.setupCallbacks = function(socker) {
 		const waitSec = 1;
 		race_sentgo.timeout = setTimeout(() => {
 			race_sentgo.keepSockInfo = true;
-			changestate("race_ingame", {
-				sock: socker,
-				info: race_sentgo.sockerInfo,
-				game: race_sentgo.gameType
-			});
+			if (race_sentgo.gameType) {
+				changestate("race_gameState", {
+					sock: socker,
+					info: race_sentgo.sockerInfo,
+					game: race_sentgo.gameType
+				});
+			} else {
+				changestate("race_ingame", {
+					sock: socker,
+					info: race_sentgo.sockerInfo,
+				});
+			}
 		},waitSec * 1000);
 	});
 }

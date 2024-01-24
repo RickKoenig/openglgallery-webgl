@@ -18,14 +18,6 @@ qcomp.QState = function(rhs) {
 		}
 		return;
 	}
-/*	if (typeof rhs == 'object') { // this copy constructor will double as operator=
-		this.numqubits = rhs.numqubits;
-		this.numstates = rhs.numstates;
-		var i;
-		for (i=0;i<this.numqubits;++i) {
-			this.states.push(compf.clone(rhs.states[i]));
-		}
-	} */
 	throw "can't construct QState with an object!!";
 };
 

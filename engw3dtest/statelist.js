@@ -19,6 +19,7 @@ var statelist = [
 	race_sentgo,
 	race_ingame,
 	race_results,
+	race_gameState,
 	
 	state9, // scratch, test render targets
 	state10, // multi texture, tree level, font test
