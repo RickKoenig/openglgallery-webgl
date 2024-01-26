@@ -20,7 +20,7 @@ const testNotReady = 0;
 // 0 no test, send ready in all inits
 // 1 race_sentgo don't send ready
 // 2 race_sentgo proc send ready soon after
-// 3 race_ingame don't send
+// 3 race_ingame don't send ready
 // 4 race_ingame proc send ready soon after
 // socket id to try to break
 const testId = 1;
@@ -318,7 +318,21 @@ race_console.doCommand = function(cmdStr) {
 	}
 }
 
+race_console.testGameClass = function(gameType) {
+	console.log("start test game class");
+	const game = GameA;
+	const typeofgame = typeof game;
+	console.log("typeof game = " + typeofgame);
+	const gameClassStr = "Game" + gameType.toUpperCase();
+	console.log("game class string = " + gameClassStr);
+	const game2 = window[gameClassStr];
+	const typeofgame2 = typeof game2;
+	console.log("typeof game = " + typeofgame2);
+	console.log("finish test game class");
+}
+
 race_console.init = function(intentData) {
+	race_console.testGameClass('a');
 	//race_console.testEqualsObj();
 	//race_console.testFloat();
 	race_console.keepSockInfo = false;

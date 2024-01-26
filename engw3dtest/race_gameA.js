@@ -1,6 +1,6 @@
 'use strict';
 
-class GameA {
+window.GameA = class GameA {
     static keyCodes = {
         UP: 1,
         DOWN: 2,
@@ -10,23 +10,30 @@ class GameA {
         DISCONNECT: 128
     };
 
-    constructor(numPlayers, root) {
+    constructor(numPlayers, curPlayer, root) {
         this.numPlayers = numPlayers;
         this.resetModel = GameA.#modelReset(numPlayers); // the start model
         this.curModel = clone(this.resetModel); // the current model is the init model
         this.curView = [];
-
         // build 3D scene
         const treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
         treeMaster.mat.color = [.75, .75, .75, 1];
         for (let s = 0; s < numPlayers; ++s) {
             const playerTree = treeMaster.newdup();
             playerTree.scale = [.3, .3, .3];
-            if (race_ingame.mySlot == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+            if (curPlayer == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
             this.curView[s] = playerTree;
             root.linkchild(playerTree);
         }
         treeMaster.glfree();
+    }
+
+    getCurModel() {
+        return clone(this.curModel);
+    }
+
+    setCurModel(model) {
+        this.curModel = clone(model);
     }
 
     // return initial model of the game
@@ -56,6 +63,7 @@ class GameA {
         }
         if (input.keystate[keycodes.LEFT]) keyCode += GameA.keyCodes.LEFT;
         if (input.keystate[keycodes.RIGHT]) keyCode += GameA.keyCodes.RIGHT;
+        //keyCode += GameA.keyCodes.RIGHT;
         if (input.keystate[keycodes.UP]) keyCode += GameA.keyCodes.UP;
         if (input.keystate[keycodes.DOWN]) keyCode += GameA.keyCodes.DOWN;
         return keyCode;
@@ -68,6 +76,10 @@ class GameA {
             if (keyCode & GameA.keyCodes.GO) {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 return;
+            }
+            if (keyCode & GameA.keyCodes.DISCONNECT) {
+                this.curView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
+                continue;
             }
             const step = .125;
             if (keyCode & GameA.keyCodes.RIGHT) {
@@ -82,28 +94,6 @@ class GameA {
             if (keyCode & GameA.keyCodes.DOWN) {
                 this.curModel[slot].pos[1] -= step;
             }
-        }
-    }
-
-    // C to M
-    controlToModel(frameNum, slot, keyCode) { // update input buffers with this data: TODO: remove frameNum
-        const discon = keyCode & GameA.keyCodes.DISCONNECT;
-        const input = this.inputs[slot];
-        if (!discon && input.length - 1 + this.validFrameNum != frameNum) {
-            alertS("frameNum " + frameNum + " != " + input.length + " - 1 " + " validFrameNum " + this.validFrameNum + " !!!");
-        }
-        if (discon) {
-            console.log("controlToModel: DISCONNECT slot " + slot);
-        }
-        input.push(keyCode);
-        if (discon) {
-			this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
-            return;
-        }
-        // restart game
-        if (keyCode & GameA.keyCodes.GO) {
-            this.curModel = clone(this.resetModel); // the init model is set to the current model
-            return;
         }
     }
 

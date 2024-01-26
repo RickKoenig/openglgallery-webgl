@@ -7,7 +7,7 @@ var race_gameState = {}; // the 'race_gameState' state
 race_gameState.text = "WebGL: race_gameState 3D drawing";
 race_gameState.title = "race_gameState";
 
-race_gameState.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_gameState.broadcastLag = 1000; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_gameState.doChecksum = true; // check all valid frames (race state)
 race_gameState.verbose = false;
 race_gameState.fpswanted = 10;
@@ -70,7 +70,7 @@ race_gameState.setupCallbacks = function(socker) {
 			} else {
 				race_gameState.terminal.print?.(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + slot);
-				race_gameState.mvc.controlToModel(null, slot, GameWarp.modelMakeKeyCode(true));
+				race_gameState.mvc.controlToModel(null, slot, race_gameState.gameClass.modelMakeKeyCode(true));
 				race_gameState.pingTimes[slot] = undefined;
 				race_gameState.discon[slot] = true;
 			}
@@ -89,7 +89,7 @@ race_gameState.setupCallbacks = function(socker) {
 		race_gameState.allready = true;
 		race_gameState.terminal?.print(str);
 		for (let slot of allReadyPack.absentSlots) {
-			race_gameState.mvc.controlToModel(null, slot, GameWarp.modelMakeKeyCode(true)); // disconnected
+			race_gameState.mvc.controlToModel(null, slot, race_gameState.gameClass.modelMakeKeyCode(true)); // disconnected
 			race_gameState.discon[slot] = true;
 		}
 	});
@@ -99,7 +99,7 @@ race_gameState.setupCallbacks = function(socker) {
 race_gameState.validateFrames = function() {
 	const room = race_gameState.sockerInfo.room;
 	const numSlots = room.slots.length;
-	let watchDog = 600;
+	let watchDog = 6000;
 	while(true) {
 		let doBreak = false;
 		const vf = race_gameState.validFrames - race_gameState.validOffset;
@@ -199,6 +199,11 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	// do network stuff
 	race_gameState.playerTrees = [];
 	if (sockInfo && sockInfo.sock) {
+
+		const gameClassStr = "Game" + race_gameState.gameType.toUpperCase();
+		console.log("game class string = " + gameClassStr);
+		race_gameState.gameClass = window[gameClassStr];
+
 		race_gameState.socker = sockInfo.sock; // actual socket.io
 		race_gameState.sockerInfo = sockInfo.info;
 		race_gameState.mySlot = race_gameState.sockerInfo.slotIdx;
@@ -270,7 +275,11 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 			race_gameState.playerTrees[s] = playerTree;
 			race_gameState.roottree.linkchild(playerTree);
 		}
-		race_gameState.mvc = new GameWarp(room.slots.length, GameA, race_gameState.roottree, race_gameState.doChecksum);
+	
+		race_gameState.mvc = new GameWarp(room.slots.length
+			, race_gameState.mySlot, race_gameState.gameClass
+			, race_gameState.roottree
+			, race_gameState.doChecksum);
 		// frame 0 will be valid
 		race_gameState.checksum = race_gameState.mvc.modelToView(race_gameState.count);
 		if (race_gameState.doChecksum) {
@@ -376,12 +385,12 @@ race_gameState.proc = function() {
 		race_gameState.negPingTree.mod.mat.color[0] *=  .75;
 
 		// get some input
-		let keyCode = GameA.modelMakeKeyCode();
+		let keyCode = race_gameState.gameClass.modelMakeKeyCode();
 		const testKeyCodeAuto = false; // auto move some players
 		const testKeyCodeAutoSlot = 0;
 		if (testKeyCodeAuto) {
 			if (race_gameState.mySlot == testKeyCodeAutoSlot) {
-				keyCode |= GameWarp.keyCodes.RIGHT;
+				keyCode |= race_gameState.gameClass.keyCodes.RIGHT;
 			}
 		}
 		// process input
@@ -393,7 +402,7 @@ race_gameState.proc = function() {
 			if (breakChecksum) {
 				// TEST checksum breakage
 				if (count == 60 && race_gameState.mySlot == 1) {
-					myKeyCode = GameWarp.keyCodes.LEFT;
+					myKeyCode = race_gameState.gameClass.keyCodes.LEFT;
 				}
 			}
 			race_gameState.mvc.controlToModel(race_gameState.count, race_gameState.mySlot, myKeyCode);

@@ -99,7 +99,7 @@ race_ingame.setupCallbacks = function(socker) {
 race_ingame.validateFrames = function() {
 	const room = race_ingame.sockerInfo.room;
 	const numSlots = room.slots.length;
-	let watchDog = 600;
+	let watchDog = 6000;
 	while(true) {
 		let doBreak = false;
 		const vf = race_ingame.validFrames - race_ingame.validOffset;
@@ -119,9 +119,9 @@ race_ingame.validateFrames = function() {
 				continue;
 			}
 			if (race_ingame.validFrames != race_ingame.validFramesSlots[i][vf].frameNum) {
-				alertS("VF[" + i + "] error " + race_ingame.validFrames);
+				alertS("bad checksum frame: VF[" + i + "] error " + race_ingame.validFrames);
 			} else {
-				if (race_ingame.verbose) console.log("VF[" + i + "] good " + race_ingame.validFrames);
+				if (race_ingame.verbose) console.log("good checksum frame VF[" + i + "] good " + race_ingame.validFrames);
 			}
 		}
 		// second, checksum all players
@@ -138,7 +138,7 @@ race_ingame.validateFrames = function() {
 					if (isEq) {
 						if (race_ingame.verbose) console.log("VF[" + i + "] VF[" + j + "] good " + race_ingame.validFrames);
 					} else {
-						alertS("VF[" + i + "] VF[" + j + "] error " + race_ingame.validFrames);
+						alertS("bad checksum: VF[" + i + "] VF[" + j + "] error " + race_ingame.validFrames);
 					}
 				}
 			}
@@ -153,7 +153,7 @@ race_ingame.validateFrames = function() {
 			}
 			--watchDog;
 			if (watchDog <= 0) {
-				alertS("watchdog hit");
+				alertS("validFrames watchdog hit");
 				break;
 			}
 		}

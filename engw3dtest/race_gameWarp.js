@@ -10,12 +10,11 @@ class GameWarp {
         DISCONNECT: 128
     };
 
-    constructor(numPlayers, gameStatic, root, doChecksum) {
+    constructor(numPlayers, curPlayer, gameStatic, root, doChecksum) {
         this.doChecksum = doChecksum;
         this.gameStatic = gameStatic;
-        this.game = new gameStatic(numPlayers, root); // instance
-        this.curModel = clone(this.resetModel); // the current model is the init model
-        this.validModel = clone(this.resetModel); // last valid model with all inputs
+        this.game = new gameStatic(numPlayers, curPlayer, root); // instance
+        this.validModel = this.game.getCurModel(); // the current model is the init model
         this.validFrameNum = 0;
         this.inputs = [];
         for (let slot = 0; slot < numPlayers; ++slot) {
@@ -44,15 +43,16 @@ class GameWarp {
         }
         input.push(keyCode);
         //console.log("C2M: frameNum " + frameNum + ", slot " + slot + ", keycode " + GameWarp.#toHex(keyCode));
-        if (discon) {
+        /*if (discon) {
 				this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
                 return;
-        }
+        }*/
+        /*
         // restart game
         if (keyCode & GameWarp.keyCodes.GO) {
             this.curModel = clone(this.resetModel); // the init model is set to the current model
             return;
-        }
+        } */
     }
 
     // M to V
@@ -62,22 +62,25 @@ class GameWarp {
         // TIME WARP, step to current frameNum, even when all packets haven't arrived
         // start at valid frameNum and step to current frameNum
         // first rewind time to validFrameNum
-        this.curModel = clone(this.validModel);
+        this.game.setCurModel(this.validModel);
         for (let validFrmNum = this.validFrameNum; validFrmNum < frameNum; ++validFrmNum) {
             const playerKeyCodes = [];
             let good = true; // not predicted, valid
             for (let slot = 0; slot < this.inputs.length; ++slot) {
                 const input = this.inputs[slot];
                 let keyCode = 0; // default
-                const inputLength = input.length - 1; // one extra
+                const inputLength = input.length - 1; // one extra, defaulted to 0's
                 // have at least 1 input
                 if (validFrmNum < this.validFrameNum) {
                     alert("validFrmNum " + validFrmNum + " < validFrameNum " + this.validFrameNum);
                     good = false; // should never happen
                 } else if (validFrmNum - this.validFrameNum >= inputLength) { // predict if possible
                     keyCode = input[inputLength]; // using last known keycode
-                    if (!(keyCode & GameWarp.keyCodes.DISCONNECT)) {
-                        good = false; // disconnected is good input
+                    if (keyCode & GameWarp.keyCodes.DISCONNECT) {
+                        console.log("discon");
+                        good = true; // disconnected is good input
+                    } else {
+                        good = false;
                     }
                 } else { // normal, in range, one extra
                     keyCode = input[1 + validFrmNum - this.validFrameNum]; // still good
@@ -87,8 +90,8 @@ class GameWarp {
             this.game.stepModel(playerKeyCodes);
 
             if (good) {
-                // save a good validModel
-                this.validModel = clone(this.curModel);
+                // nothing predicted, save a good validModel
+                this.validModel = this.game.getCurModel();
                 ++this.validFrameNum;
                 //console.log("good frame = " + this.validFrameNum);
                 if (this.doChecksum) {
@@ -109,6 +112,7 @@ class GameWarp {
         }
         // update the view from the model
         this.game.modelToView();
+        // return all the new validModels
         const ret = clone(this.validModels);
         this.validModels = [];
         return ret;
