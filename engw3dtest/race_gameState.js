@@ -9,8 +9,11 @@ race_gameState.title = "race_gameState";
 
 race_gameState.broadcastLag = 1000; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_gameState.doChecksum = true; // check all valid frames (race state)
-race_gameState.verbose = false;
+race_gameState.verbose = true;
 race_gameState.fpswanted = 10;
+
+race_gameState.maxFrames = 0;
+
 race_gameState.gotoConsole = function() {
     changestate("race_console", "from INGAME");
 }
@@ -60,7 +63,7 @@ race_gameState.setupCallbacks = function(socker) {
 						for (let i = oldLen; i < newLen; ++i) {
 							const oi = i + race_gameState.validOffset;
 							if (oi != race_gameState.validFramesSlots[slot][i].frameNum) {
-								alertS("on broadcast race_gameState.checksum[i].frameNum("
+								alertS("EEE, on broadcast race_gameState.checksum[i].frameNum("
 								    + race_gameState.validFramesSlots[slot][i].frameNum + ") != i " + i);
 							}
 						}
@@ -119,7 +122,7 @@ race_gameState.validateFrames = function() {
 				continue;
 			}
 			if (race_gameState.validFrames != race_gameState.validFramesSlots[i][vf].frameNum) {
-				alertS("VF[" + i + "] error " + race_gameState.validFrames);
+				alertS("CCC, bad checksum frame: VF[" + i + "] error " + race_gameState.validFrames);
 			} else {
 				if (race_gameState.verbose) console.log("VF[" + i + "] good " + race_gameState.validFrames);
 			}
@@ -138,7 +141,7 @@ race_gameState.validateFrames = function() {
 					if (isEq) {
 						if (race_gameState.verbose) console.log("VF[" + i + "] VF[" + j + "] good " + race_gameState.validFrames);
 					} else {
-						alertS("VF[" + i + "] VF[" + j + "] error " + race_gameState.validFrames);
+						alertS("DDD, bad checksum: VF[" + i + "] VF[" + j + "] error " + race_gameState.validFrames);
 					}
 				}
 			}
@@ -192,12 +195,12 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	race_gameState.terminal = new Terminal(race_gameState.roottree, [.2, .2, .1, 1]);
 
     // build 3D scene
-	race_gameState.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
-	race_gameState.treeMaster.mat.color = [.75, .75, .75, 1];
+	//race_gameState.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
+	//race_gameState.treeMaster.mat.color = [.75, .75, .75, 1];
 	race_gameState.checksum = [];
 
 	// do network stuff
-	race_gameState.playerTrees = [];
+	//race_gameState.playerTrees = [];
 	if (sockInfo && sockInfo.sock) {
 
 		const gameClassStr = "Game" + race_gameState.gameType.toUpperCase();
@@ -267,6 +270,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		race_gameState.negPingTree.mod.mat.color = [0,0,0,1];
 		race_gameState.roottree.linkchild(race_gameState.negPingTree);
 
+		/*
 	    // build 3D scene
 		for (let s = 0; s < room.slots.length; ++s) {
 			const playerTree = race_gameState.treeMaster.newdup();
@@ -274,7 +278,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 			if (race_gameState.mySlot == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
 			race_gameState.playerTrees[s] = playerTree;
 			race_gameState.roottree.linkchild(playerTree);
-		}
+		}*/
 	
 		race_gameState.mvc = new GameWarp(room.slots.length
 			, race_gameState.mySlot, race_gameState.gameClass
@@ -338,6 +342,10 @@ race_gameState.onresize = function() {
 
 race_gameState.proc = function() {
 	// proc
+	// proc
+	if (race_gameState.maxFrames && race_gameState.maxFrames <= race_gameState.count) {
+		return;
+	}
 	if (race_gameState.allready) {
 		// do something after N seconds
 		const numSeconds = 4;
@@ -462,7 +470,7 @@ race_gameState.proc = function() {
 			for (let i = oldLen; i < newLen; ++i) {
 				const oi = i + race_gameState.validOffset;
 				if (oi != race_gameState.validFramesSlots[race_gameState.mySlot][i].frameNum) {
-					alertS("race_gameState.checksum[i].frameNum != i");
+					alertS("BBB, race_gameState.checksum[i].frameNum != i");
 				}
 			}
 			race_gameState.validateFrames();
@@ -487,7 +495,7 @@ race_gameState.exit = function() {
 	logrc();
 	logger("after roottree glfree\n");
 	race_gameState.roottree.glfree();
-	race_gameState.treeMaster.glfree();
+	//race_gameState.treeMaster.glfree();
 	race_gameState.terminal = null;
 	
 	// show usage after cleanup

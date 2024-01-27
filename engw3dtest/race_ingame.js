@@ -7,10 +7,13 @@ var race_ingame = {}; // the 'race_ingame' state
 race_ingame.text = "WebGL: race_ingame 3D drawing";
 race_ingame.title = "race_ingame";
 
-race_ingame.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_ingame.broadcastLag = 1000; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_ingame.doChecksum = true; // check all valid frames (race state)
-race_ingame.verbose = false;
+race_ingame.verbose = true;
 race_ingame.fpswanted = 10;
+
+race_ingame.maxFrames = 0;
+
 race_ingame.gotoConsole = function() {
     changestate("race_console", "from INGAME");
 }
@@ -321,6 +324,9 @@ race_ingame.onresize = function() {
 
 race_ingame.proc = function() {
 	// proc
+	if (race_ingame.maxFrames && race_ingame.maxFrames <= race_ingame.count) {
+		return;
+	}
 	if (race_ingame.allready) {
 		// do something after N seconds
 		const numSeconds = 4;

@@ -97,7 +97,9 @@ class RaceModel {
         const discon = keyCode & RaceModel.keyCodes.DISCONNECT;
         const input = this.inputs[slot];
         if (!discon && input.length - 1 + this.validFrameNum != frameNum) {
-            alertS("frameNum " + frameNum + " != " + input.length + " - 1 " + " validFrameNum " + this.validFrameNum + " !!!");
+            alertS("frameNum " + frameNum + " != " 
+                + input.length + " - 1 " + " + validFrameNum " 
+                + this.validFrameNum + " !!!");
         }
         if (discon) {
             console.log("controlToModel: DISCONNECT slot " + slot);

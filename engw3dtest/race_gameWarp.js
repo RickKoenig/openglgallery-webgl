@@ -36,7 +36,9 @@ class GameWarp {
         const discon = keyCode & GameWarp.keyCodes.DISCONNECT;
         const input = this.inputs[slot];
         if (!discon && input.length - 1 + this.validFrameNum != frameNum) {
-            alertS("frameNum " + frameNum + " != " + input.length + " - 1 " + " validFrameNum " + this.validFrameNum + " !!!");
+            alertS("AAA, frameNum " + frameNum + " != " 
+                + input.length + " - 1 " + " + validFrameNum " 
+                + this.validFrameNum + " !!!");
         }
         if (discon) {
             console.log("controlToModel: DISCONNECT slot " + slot);
@@ -78,7 +80,7 @@ class GameWarp {
                     keyCode = input[inputLength]; // using last known keycode
                     if (keyCode & GameWarp.keyCodes.DISCONNECT) {
                         console.log("discon");
-                        good = true; // disconnected is good input
+                        //good = true; // disconnected is good input, BAD !!
                     } else {
                         good = false;
                     }
