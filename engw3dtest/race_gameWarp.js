@@ -65,7 +65,7 @@ class GameWarp {
         // start at valid frameNum and step to current frameNum
         // first rewind time to validFrameNum
         this.game.setCurModel(this.validModel);
-        for (let validFrmNum = this.validFrameNum; validFrmNum < frameNum; ++validFrmNum) {
+        for (let frm = this.validFrameNum; frm < frameNum; ++frm) {
             const playerKeyCodes = [];
             let good = true; // not predicted, valid
             for (let slot = 0; slot < this.inputs.length; ++slot) {
@@ -73,10 +73,10 @@ class GameWarp {
                 let keyCode = 0; // default
                 const inputLength = input.length - 1; // one extra, defaulted to 0's
                 // have at least 1 input
-                if (validFrmNum < this.validFrameNum) {
-                    alert("validFrmNum " + validFrmNum + " < validFrameNum " + this.validFrameNum);
+                if (frm < this.validFrameNum) {
+                    alert("frm " + frm + " < validFrameNum " + this.validFrameNum);
                     good = false; // should never happen
-                } else if (validFrmNum - this.validFrameNum >= inputLength) { // predict if possible
+                } else if (frm - this.validFrameNum >= inputLength) { // predict if possible
                     keyCode = input[inputLength]; // using last known keycode
                     if (keyCode & GameWarp.keyCodes.DISCONNECT) {
                         console.log("discon");
@@ -85,11 +85,11 @@ class GameWarp {
                         good = false;
                     }
                 } else { // normal, in range, one extra
-                    keyCode = input[1 + validFrmNum - this.validFrameNum]; // still good
+                    keyCode = input[1 + frm - this.validFrameNum]; // still good
                 }
                 playerKeyCodes.push(keyCode);
             }
-            this.game.stepModel(playerKeyCodes);
+            this.game.stepModel(playerKeyCodes, frm);
 
             if (good) {
                 // nothing predicted, save a good validModel

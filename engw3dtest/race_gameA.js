@@ -69,7 +69,7 @@ window.GameA = class GameA {
         return keyCode;
     }
 
-    stepModel(playerKeyCodes) {
+    stepModel(playerKeyCodes, frameNum) {
         for (let slot = 0; slot < playerKeyCodes.length; ++slot) {
             const keyCode = playerKeyCodes[slot];
             // reset game

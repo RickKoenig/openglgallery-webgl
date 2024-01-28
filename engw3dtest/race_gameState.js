@@ -7,9 +7,9 @@ var race_gameState = {}; // the 'race_gameState' state
 race_gameState.text = "WebGL: race_gameState 3D drawing";
 race_gameState.title = "race_gameState";
 
-race_gameState.broadcastLag = 1000; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_gameState.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_gameState.doChecksum = true; // check all valid frames (race state)
-race_gameState.verbose = true;
+race_gameState.verbose = false;
 race_gameState.fpswanted = 10;
 
 race_gameState.maxFrames = 0;
@@ -136,12 +136,15 @@ race_gameState.validateFrames = function() {
 				if (race_gameState.discon[j]) {
 					continue;
 				}
+				let mess = "VF[" + i + "] VF[" + j + "] frame = " + race_gameState.validFrames;
 				const isEq = equalsObj(race_gameState.validFramesSlots[i][vf].model
 						, race_gameState.validFramesSlots[j][vf].model);
 					if (isEq) {
-						if (race_gameState.verbose) console.log("VF[" + i + "] VF[" + j + "] good " + race_gameState.validFrames);
+						if (race_gameState.verbose) console.log("DDD, good checksum frame: " + mess);
 					} else {
-						alertS("DDD, bad checksum: VF[" + i + "] VF[" + j + "] error " + race_gameState.validFrames);
+						mess += "\n" + JSON.sortify(race_gameState.validFramesSlots[i][vf].model) + "\n"
+							+ JSON.sortify(race_gameState.validFramesSlots[j][vf].model);
+						alertS("DDD, bad checksum frame: " + mess);
 					}
 				}
 			}
