@@ -7,7 +7,7 @@ window.GameA = class GameA {
         RIGHT: 4,
         LEFT: 8,
         GO: 16,
-        DISCONNECT: 128
+        //DISCONNECT: 128
     };
 
     constructor(numPlayers, curPlayer, root) {
@@ -54,7 +54,7 @@ window.GameA = class GameA {
     static modelMakeKeyCode(doDiscon) {
         let keyCode = 0;
         if (doDiscon) {
-            keyCode += GameA.keyCodes.DISCONNECT;
+            keyCode += GameWarp.keyCodes.DISCONNECT;
             return keyCode;
         }
         if (input.key == 'g'.charCodeAt(0)) { // restart game
@@ -63,10 +63,17 @@ window.GameA = class GameA {
         }
         if (input.keystate[keycodes.LEFT]) keyCode += GameA.keyCodes.LEFT;
         if (input.keystate[keycodes.RIGHT]) keyCode += GameA.keyCodes.RIGHT;
-        //keyCode += GameA.keyCodes.RIGHT;
         if (input.keystate[keycodes.UP]) keyCode += GameA.keyCodes.UP;
         if (input.keystate[keycodes.DOWN]) keyCode += GameA.keyCodes.DOWN;
         return keyCode;
+    }
+
+    // let game decide what to do with predictions
+    predictLogic(predKeyCode, frameNum) {
+        return predKeyCode;
+        //return 0;
+        //return GameA.keyCodes.RIGHT;
+        //return GameA.keyCodes.UP | predKeyCode;
     }
 
     stepModel(playerKeyCodes, frameNum) {
@@ -77,7 +84,7 @@ window.GameA = class GameA {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 return;
             }
-            if (keyCode & GameA.keyCodes.DISCONNECT) {
+            if (keyCode & GameWarp.keyCodes.DISCONNECT) {
                 this.curView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
                 continue;
             }

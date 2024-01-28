@@ -7,7 +7,7 @@ var race_gameState = {}; // the 'race_gameState' state
 race_gameState.text = "WebGL: race_gameState 3D drawing";
 race_gameState.title = "race_gameState";
 
-race_gameState.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_gameState.broadcastLag = 1000; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_gameState.doChecksum = true; // check all valid frames (race state)
 race_gameState.verbose = false;
 race_gameState.fpswanted = 10;
@@ -197,13 +197,9 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	race_gameState.roottree = new Tree2("race_gameState root tree");
 	race_gameState.terminal = new Terminal(race_gameState.roottree, [.2, .2, .1, 1]);
 
-    // build 3D scene
-	//race_gameState.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
-	//race_gameState.treeMaster.mat.color = [.75, .75, .75, 1];
 	race_gameState.checksum = [];
 
 	// do network stuff
-	//race_gameState.playerTrees = [];
 	if (sockInfo && sockInfo.sock) {
 
 		const gameClassStr = "Game" + race_gameState.gameType.toUpperCase();
@@ -273,16 +269,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		race_gameState.negPingTree.mod.mat.color = [0,0,0,1];
 		race_gameState.roottree.linkchild(race_gameState.negPingTree);
 
-		/*
-	    // build 3D scene
-		for (let s = 0; s < room.slots.length; ++s) {
-			const playerTree = race_gameState.treeMaster.newdup();
-			playerTree.scale = [.3, .3, .3];
-			if (race_gameState.mySlot == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
-			race_gameState.playerTrees[s] = playerTree;
-			race_gameState.roottree.linkchild(playerTree);
-		}*/
-	
+		// setup the gamewarp system with the game 'gameClass'
 		race_gameState.mvc = new GameWarp(room.slots.length
 			, race_gameState.mySlot, race_gameState.gameClass
 			, race_gameState.roottree
@@ -498,7 +485,6 @@ race_gameState.exit = function() {
 	logrc();
 	logger("after roottree glfree\n");
 	race_gameState.roottree.glfree();
-	//race_gameState.treeMaster.glfree();
 	race_gameState.terminal = null;
 	
 	// show usage after cleanup

@@ -110,12 +110,6 @@ class RaceModel {
 				this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
                 return;
         }
-        // restart game
-        /*
-        if (keyCode & RaceModel.keyCodes.GO) {
-            this.curModel = clone(this.resetModel); // the init model is set to the current model
-            return;
-        }*/
     }
 
     // M to V

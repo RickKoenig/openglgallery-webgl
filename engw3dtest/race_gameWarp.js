@@ -31,6 +31,10 @@ class GameWarp {
         }
     }
 
+    static #toHex(kc) {
+        return kc.toString(16).toUpperCase().padStart(2,'0');
+    }
+
     // C to M
     controlToModel(frameNum, slot, keyCode) { // update input buffers with this data: TODO: remove frameNum
         const discon = keyCode & GameWarp.keyCodes.DISCONNECT;
@@ -45,16 +49,6 @@ class GameWarp {
         }
         input.push(keyCode);
         //console.log("C2M: frameNum " + frameNum + ", slot " + slot + ", keycode " + GameWarp.#toHex(keyCode));
-        /*if (discon) {
-				this.curView[slot].mat.color = [.75, 0, 0, 1]; // disconnected color
-                return;
-        }*/
-        /*
-        // restart game
-        if (keyCode & GameWarp.keyCodes.GO) {
-            this.curModel = clone(this.resetModel); // the init model is set to the current model
-            return;
-        } */
     }
 
     // M to V
@@ -79,9 +73,9 @@ class GameWarp {
                 } else if (frm - this.validFrameNum >= inputLength) { // predict if possible
                     keyCode = input[inputLength]; // using last known keycode
                     if (keyCode & GameWarp.keyCodes.DISCONNECT) {
-                        console.log("discon");
-                        //good = true; // disconnected is good input, BAD !!
+                        //console.log("discon");
                     } else {
+                        keyCode = this.game.predictLogic(keyCode, frm); // let game decide predict
                         good = false;
                     }
                 } else { // normal, in range, one extra
@@ -89,6 +83,7 @@ class GameWarp {
                 }
                 playerKeyCodes.push(keyCode);
             }
+            //console.log("step model on frame " + frm + " good = " + good);
             this.game.stepModel(playerKeyCodes, frm);
 
             if (good) {
@@ -114,7 +109,7 @@ class GameWarp {
         }
         // update the view from the model
         this.game.modelToView();
-        // return all the new validModels
+        // return all the new validModels for checksum
         const ret = clone(this.validModels);
         this.validModels = [];
         return ret;
