@@ -27,7 +27,7 @@ race_lobby.init = function() {
 	race_lobby.roottree = new Tree2("race_lobby root tree");
 
 	// build a planexy (a square)
-	// make double sided and test gl_FrontFace (TODO: check spelling)
+	// make double sided and test gl_FrontFace
 	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","diffusespecp");
 	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","tex");
 	var plane = buildplanexy("aplane",1,1,"maptestnck.png","texDoubleSided");

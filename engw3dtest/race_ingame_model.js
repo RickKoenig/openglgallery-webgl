@@ -93,7 +93,7 @@ class RaceModel {
     }
 
     // C to M
-    controlToModel(frameNum, slot, keyCode) { // update input buffers with this data: TODO: remove frameNum
+    controlToModel(frameNum, slot, keyCode) { // update input buffers with this data
         const discon = keyCode & RaceModel.keyCodes.DISCONNECT;
         const input = this.inputs[slot];
         if (!discon && input.length - 1 + this.validFrameNum != frameNum) {

@@ -9,7 +9,7 @@ race_ingame.title = "race_ingame";
 
 race_ingame.broadcastLag = 1000; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_ingame.doChecksum = true; // check all valid frames (race state)
-race_ingame.verbose = true;
+race_ingame.verbose = false;
 race_ingame.fpswanted = 10;
 
 race_ingame.maxFrames = 0;
@@ -25,7 +25,7 @@ race_ingame.setupCallbacks = function(socker) {
 		if (socker) {
 			socker.disconnect();
 			race_ingame.socker = socker = null; // one side effect
-			changestate("race_console");
+			changestate("race_console", "from INGAME, disconnect");
 		}
 	});
 

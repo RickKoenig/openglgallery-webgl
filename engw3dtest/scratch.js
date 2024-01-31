@@ -103,30 +103,6 @@ scratch.load = function() {
 	preloadbwo("prehistoric/water.bwo");
 };
 
-scratch.testEqualsObj = function() {
-	console.log("\nin test equals obj\n");
-	const objs = [
-		{hi: "ho", a: 0xa},
-		{a: +10.00, hi: "h" + "o", },
-		4,
-		+4.0,
-		["hi", 3.500001],
-		"hey",
-	];
-	console.log("strings");
-	for (let i = 0; i < objs.length; ++i) {
-		const obj = objs[i];
-		console.log(i + ", " + JSON.sortify(obj));
-	}
-
-	console.log("\ncompares");
-	for (let j = 0; j < objs.length; ++j) {
-		for (let i = j + 1; i < objs.length; ++i) {
-			console.log(i + " " + j + " " + equalsObj(objs[i], objs[j]));
-		}
-	}
-}
-
 scratch.testFloat = function() {
 	console.log("\nin test float\n");
 

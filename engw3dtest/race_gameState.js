@@ -15,7 +15,7 @@ race_gameState.fpswanted = 10;
 race_gameState.maxFrames = 0;
 
 race_gameState.gotoConsole = function() {
-    changestate("race_console", "from INGAME");
+    changestate("race_console", "from gameState");
 }
 
 race_gameState.setupCallbacks = function(socker) {
@@ -25,7 +25,7 @@ race_gameState.setupCallbacks = function(socker) {
 		if (socker) {
 			socker.disconnect();
 			race_gameState.socker = socker = null; // one side effect
-			changestate("race_console");
+			changestate("race_console", "from gameState, disconnect");
 		}
 	});
 
@@ -388,7 +388,7 @@ race_gameState.proc = function() {
 		const testKeyCodeAutoSlot = 0;
 		if (testKeyCodeAuto) {
 			if (race_gameState.mySlot == testKeyCodeAutoSlot) {
-				keyCode |= race_gameState.gameClass.keyCodes.RIGHT;
+				keyCode.kc |= race_gameState.gameClass.keyCodes.RIGHT;
 			}
 		}
 		// process input
@@ -400,7 +400,7 @@ race_gameState.proc = function() {
 			if (breakChecksum) {
 				// TEST checksum breakage
 				if (count == 60 && race_gameState.mySlot == 1) {
-					myKeyCode = race_gameState.gameClass.keyCodes.LEFT;
+					myKeyCode.kc = race_gameState.gameClass.keyCodes.LEFT;
 				}
 			}
 			race_gameState.mvc.controlToModel(race_gameState.count, race_gameState.mySlot, myKeyCode);
@@ -446,7 +446,7 @@ race_gameState.proc = function() {
 			++race_gameState.count;
 		}
 	}
-	race_gameState.roottree.proc(); // probably does nothing
+	race_gameState.roottree.proc(); // do animations that don't effect players
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	beginscene(mainvp);

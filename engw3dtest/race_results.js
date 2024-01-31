@@ -17,7 +17,7 @@ race_results.init = function() {
 	race_results.roottree = new Tree2("race_results root tree");
 
 	// build a planexy (a square)
-	// make double sided and test gl_FrontFace (TODO: check spelling)
+	// make double sided and test gl_FrontFace
 	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","diffusespecp");
 	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","tex");
 	var plane = buildplanexy("aplane",1,1,"maptestnck.png","texDoubleSided");

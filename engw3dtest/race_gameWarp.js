@@ -1,14 +1,6 @@
 'use strict';
 
 class GameWarp {
-    static keyCodes = {
-/*        UP: 1,
-        DOWN: 2,
-        RIGHT: 4,
-        LEFT: 8,
-        GO: 16, */
-        DISCONNECT: 128
-    };
 
     constructor(numPlayers, curPlayer, gameStatic, root, doChecksum) {
         this.doChecksum = doChecksum;
@@ -18,7 +10,12 @@ class GameWarp {
         this.validFrameNum = 0;
         this.inputs = [];
         for (let slot = 0; slot < numPlayers; ++slot) {
-            const input = [0]; // one extra for prediction
+            const input = [
+                {
+                    kc: 0,
+                    discon: false
+                }
+            ]; // one extra for prediction
             this.inputs.push(input);
         }
         if (this.doChecksum) {
@@ -36,8 +33,8 @@ class GameWarp {
     }
 
     // C to M
-    controlToModel(frameNum, slot, keyCode) { // update input buffers with this data: TODO: remove frameNum
-        const discon = keyCode & GameWarp.keyCodes.DISCONNECT;
+    controlToModel(frameNum, slot, pInput) { // update input buffers with this data: TODO: remove frameNum
+        const discon = pInput.discon;
         const input = this.inputs[slot];
         if (!discon && input.length - 1 + this.validFrameNum != frameNum) {
             alertS("AAA, frameNum " + frameNum + " != " 
@@ -47,8 +44,8 @@ class GameWarp {
         if (discon) {
             console.log("controlToModel: DISCONNECT slot " + slot);
         }
-        input.push(keyCode);
-        //console.log("C2M: frameNum " + frameNum + ", slot " + slot + ", keycode " + GameWarp.#toHex(keyCode));
+        input.push(pInput);
+        //console.log("C2M: frameNum " + frameNum + ", slot " + slot + ", pInput.keycode " + GameWarp.#toHex(pInput.kc));
     }
 
     // M to V
@@ -58,33 +55,35 @@ class GameWarp {
         // TIME WARP, step to current frameNum, even when all packets haven't arrived
         // start at valid frameNum and step to current frameNum
         // first rewind time to validFrameNum
+        //console.log("step ghost model on frame " + frameNum);
+        this.game.stepGhostModel(frameNum);
         this.game.setCurModel(this.validModel);
         for (let frm = this.validFrameNum; frm < frameNum; ++frm) {
-            const playerKeyCodes = [];
+            const pInputs = [];
             let good = true; // not predicted, valid
             for (let slot = 0; slot < this.inputs.length; ++slot) {
                 const input = this.inputs[slot];
-                let keyCode = 0; // default
+                let pInput = {}; // default
                 const inputLength = input.length - 1; // one extra, defaulted to 0's
                 // have at least 1 input
                 if (frm < this.validFrameNum) {
                     alert("frm " + frm + " < validFrameNum " + this.validFrameNum);
                     good = false; // should never happen
                 } else if (frm - this.validFrameNum >= inputLength) { // predict if possible
-                    keyCode = input[inputLength]; // using last known keycode
-                    if (keyCode & GameWarp.keyCodes.DISCONNECT) {
+                    pInput = input[inputLength]; // using last known keycode
+                    if (pInput.discon) {
                         //console.log("discon");
                     } else {
-                        keyCode = this.game.predictLogic(keyCode, frm); // let game decide predict
+                        pInput = this.game.predictLogic(pInput, frm); // let game decide predict
                         good = false;
                     }
                 } else { // normal, in range, one extra
-                    keyCode = input[1 + frm - this.validFrameNum]; // still good
+                    pInput = input[1 + frm - this.validFrameNum]; // still good
                 }
-                playerKeyCodes.push(keyCode);
+                pInputs.push(pInput);
             }
             //console.log("step model on frame " + frm + " good = " + good);
-            this.game.stepModel(playerKeyCodes, frm);
+            this.game.stepModel(pInputs, frm);
 
             if (good) {
                 // nothing predicted, save a good validModel
