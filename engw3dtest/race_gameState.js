@@ -181,6 +181,7 @@ sockerinfo........
 race_gameState.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
+	preloadimg("../common/sptpics/Bark.png");
 	//preloadtime(3000); // show loading screen for minimum time
 }
 
@@ -443,6 +444,7 @@ race_gameState.proc = function() {
 				}
 			}
 			race_gameState.checksum = [];
+			race_gameState.mvc.game.stepGhostModel(race_gameState.count);
 			++race_gameState.count;
 		}
 	}

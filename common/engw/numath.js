@@ -1,5 +1,4 @@
-// yes returns [-PI to PI)
-// no  returns 0<=ang<2*PI eventually
+// returns [-PI to PI)
 function normalangrad(rad) {
 	if ((rad > 1000000) || (rad < -1000000))
 		alert("normalangrad getting too big! " + rad);

@@ -14,7 +14,7 @@ window.GameA = class GameA {
         this.numPlayers = numPlayers;
         this.resetModel = GameA.#modelReset(numPlayers); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
-        this.ghostModel = null; // NO time warp model, this model is for animation, doesn't interact with game
+        this.ghostModel = {angle: 0 }; // NO time warp model, this model is for animation, doesn't interact with game
         this.curView = [];
         // build 3D scene
         const treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
@@ -27,6 +27,21 @@ window.GameA = class GameA {
             root.linkchild(playerTree);
         }
         treeMaster.glfree();
+        // add some ghosts
+        // standard anim
+        this.depth = 10;
+        const square = buildplanexy("spinner", .1, 1, "Bark.png", "tex", 1, 1);
+        square.trans = [0,1,0];
+        const squareParent = new Tree2("spinnerParent");
+        squareParent.trans = [-this.depth * 1.2, this.depth * .5 , this.depth];
+        squareParent.rotvel = [0, 0, -Math.PI * 2 / 10];
+        squareParent.linkchild(square);
+        root.linkchild(squareParent);
+        
+        // custom anim
+        this.squareG = buildplanexy("spinnerG", .25, .25, "maptestnck.png", "tex", 1, 1);
+        this.squareG.trans = [0, 1, this.depth];
+        root.linkchild(this.squareG);
     }
 
     getCurModel() {
@@ -101,27 +116,33 @@ window.GameA = class GameA {
             const pInput = pInputs[slot];
             const keyCode = pInput.kc;
             // reset game
+            const curPlayer = this.curModel[slot];
             if (keyCode & GameA.keyCodes.GO) {
                 this.curModel = clone(this.resetModel); // the current model is the init model
+                curPlayer.desiredPos = null;
                 return;
             }
             if (pInput.discon) {
                 this.curView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
+                curPlayer.desiredPos = null;
                 continue;
             }
             const step = .125;
-            const curPlayer = this.curModel[slot];
             if (keyCode & GameA.keyCodes.RIGHT) {
                 curPlayer.pos[0] += step;
+                curPlayer.desiredPos = null;
             }
             if (keyCode & GameA.keyCodes.LEFT) {
                 curPlayer.pos[0] -= step;
+                curPlayer.desiredPos = null;
             }
             if (keyCode & GameA.keyCodes.UP) {
                 curPlayer.pos[1] += step;
+                curPlayer.desiredPos = null;
             }
             if (keyCode & GameA.keyCodes.DOWN) {
                 curPlayer.pos[1] -= step;
+                curPlayer.desiredPos = null;
             }
             if (pInput.mouse) {
                 if (pInput.mouse.click) {
@@ -150,6 +171,10 @@ window.GameA = class GameA {
 
     // no timeWarp, mainly for animation
     stepGhostModel(frameNum) {
+        const ang = this.ghostModel.angle;
+        this.ghostModel.angle += 2 * Math.PI / 10 / fpswanted;
+        this.ghostModel.angle = normalangrad(this.ghostModel.angle);
+        this.squareG.trans = [Math.sin(ang) -this.depth * .8, Math.cos(ang) + this.depth * .5,this.depth];
     }
 
     // M to V

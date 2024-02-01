@@ -56,7 +56,7 @@ class GameWarp {
         // start at valid frameNum and step to current frameNum
         // first rewind time to validFrameNum
         //console.log("step ghost model on frame " + frameNum);
-        this.game.stepGhostModel(frameNum);
+        //this.game.stepGhostModel(frameNum);
         this.game.setCurModel(this.validModel);
         for (let frm = this.validFrameNum; frm < frameNum; ++frm) {
             const pInputs = [];
