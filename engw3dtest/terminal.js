@@ -120,6 +120,16 @@ class Terminal {
         this.#update();
     }
 
+    doShow(show) {
+        if (show) {
+            this.backgnd.flags &= !treeflagenums.DONTDRAWC;
+            this.treeFont.flags &= !treeflagenums.DONTDRAWC;       
+         } else {
+            this.backgnd.flags |= treeflagenums.DONTDRAWC;
+            this.treeFont.flags |= treeflagenums.DONTDRAWC;       
+        }
+    }
+
     clear() {
         //console.log(" ############### call clear");
         this.mainStr = "";

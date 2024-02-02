@@ -2,7 +2,7 @@
 
 // running the simulation/game
 var race_ingame = {}; // the 'race_ingame' state
-//race_ingame.hidden = true; // can't be selected in the engine UI
+race_ingame.hidden = true; // can't be selected in the engine UI
 
 race_ingame.text = "WebGL: race_ingame 3D drawing";
 race_ingame.title = "race_ingame";

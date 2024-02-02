@@ -2,6 +2,7 @@
 
 // very minimalist 3D state
 var race_lobby = {}; // the 'race_lobby' state
+race_lobby.hidden = true; // can't be selected in the engine UI
 
 race_lobby.text = "WebGL: race_lobby 3D drawing";
 race_lobby.title = "race_lobby";

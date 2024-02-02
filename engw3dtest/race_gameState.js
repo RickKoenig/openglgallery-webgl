@@ -2,7 +2,7 @@
 
 // running the simulation/game
 var race_gameState = {}; // the 'race_gameState' state
-//race_gameState.hidden = true; // can't be selected in the engine UI
+race_gameState.hidden = true; // can't be selected in the engine UI
 
 race_gameState.text = "WebGL: race_gameState 3D drawing";
 race_gameState.title = "race_gameState";
@@ -197,6 +197,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 	race_gameState.roottree = new Tree2("race_gameState root tree");
 	race_gameState.terminal = new Terminal(race_gameState.roottree, [.2, .2, .1, 1]);
+	race_gameState.terminal.doShow(false);
 
 	race_gameState.checksum = [];
 
@@ -267,7 +268,8 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		race_gameState.negPingTree = buildplanexy("anegping",.5,.5,null,"flat");
 		race_gameState.negPingTree.trans = [-7, 9.15, 10];
         race_gameState.negPingTree.mod.flags |= modelflagenums.NOZBUFFER;
-		race_gameState.negPingTree.mod.mat.color = [0,0,0,1];
+		race_gameState.negPingTree.mod.mat.color = [0,0,0,0];
+		race_gameState.negPingTree.mod.flags |= modelflagenums.HASALPHA;
 		race_gameState.roottree.linkchild(race_gameState.negPingTree);
 
 		// setup the gamewarp system with the game 'gameClass'
@@ -295,7 +297,9 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		};
 		if (race_gameState.doChecksum) {
 			race_gameState.termValid = new Terminal(race_gameState.roottree, [.1, 0, 0, 1], null, termParams);
+			const showValidFrames = true;
 			race_gameState.termValid.print("VALID FRAMES");
+			race_gameState.termValid.doShow(showValidFrames);
 		}
 		race_gameState.validFrames = 0;
 		race_gameState.validOffset = 0; // shift race_gameState.discon, to save memory
@@ -305,7 +309,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.125, .125, .125, 1];
 	if (race_gameState.gameType == 'a') {
-		mainvp.clearcolor = [.85 ,.15, .1, 1];
+		mainvp.clearcolor = [.25 ,.55, 1, 1];
 	}
 	if (race_gameState.gameType == 'b') {
 		mainvp.clearcolor = [.15, .85, .1, 1];
@@ -376,12 +380,12 @@ race_gameState.proc = function() {
 		}
 		// TEST disable catchup if uncommented
 		// catchup = false; // no catchup
-		race_gameState.negPingTree.mod.mat.color;
 		if (catchup) {
 			race_gameState.negPingTree.mod.mat.color = [1,0,0,1];
 		}
 		// drift catchup color
 		race_gameState.negPingTree.mod.mat.color[0] *=  .75;
+		race_gameState.negPingTree.mod.mat.color[3] *=  .75;
 
 		// get some input
 		let keyCode = race_gameState.gameClass.modelMakeKeyCode();

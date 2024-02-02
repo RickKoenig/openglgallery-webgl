@@ -1,5 +1,6 @@
 // very minimalist 3D state
 var race_login = {}; // the 'race_login' state
+race_login.hidden = true; // can't be selected in the engine UI
 
 race_login.text = "WebGL: race_login 3D drawing";
 race_login.title = "race_login";

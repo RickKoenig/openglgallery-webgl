@@ -2,7 +2,7 @@
 
 // preparing to go to the simulation/game
 var race_sentgo = {}; // the 'race_sentgo' state
-//race_sentgo.hidden = true; // can't be selected in the engine UI
+race_sentgo.hidden = true; // can't be selected in the engine UI
 
 race_sentgo.text = "WebGL: race_sentgo 3D drawing";
 race_sentgo.title = "race_sentgo";

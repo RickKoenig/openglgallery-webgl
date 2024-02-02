@@ -7,41 +7,45 @@ window.GameA = class GameA {
         RIGHT: 4,
         LEFT: 8,
         GO: 16,
-        //DISCONNECT: 128
     };
 
+    // assume 1024 by 768 resolution
     constructor(numPlayers, curPlayer, root) {
+        this.res = [1024, 768];
+        this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
-        this.resetModel = GameA.#modelReset(numPlayers); // the start model
+        this.resetModel = this.#modelReset(numPlayers); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
         this.ghostModel = {angle: 0 }; // NO time warp model, this model is for animation, doesn't interact with game
         this.curView = [];
+
         // build 3D scene
-        const treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");
+        const treeMaster = buildprism("aprism", [20, 20, 20], "panel.jpg", "texc");
         treeMaster.mat.color = [.75, .75, .75, 1];
+        const viewParent = new Tree2("viewParent");
+        viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
         for (let s = 0; s < numPlayers; ++s) {
             const playerTree = treeMaster.newdup();
-            playerTree.scale = [.3, .3, .3];
-            if (curPlayer == s) playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+            if (curPlayer == s) playerTree.mat.color = [1.5, 1.5, 1.5, 1]; // brighter color for self
             this.curView[s] = playerTree;
-            root.linkchild(playerTree);
+            viewParent.linkchild(playerTree);
         }
+        root.linkchild(viewParent);
         treeMaster.glfree();
+
         // add some ghosts
         // standard anim
-        this.depth = 10;
-        const square = buildplanexy("spinner", .1, 1, "Bark.png", "tex", 1, 1);
-        square.trans = [0,1,0];
+        const square = buildplanexy("spinner", 3, 30, "Bark.png", "tex", 1, 1);
+        square.trans = [0,30,0];
         const squareParent = new Tree2("spinnerParent");
-        squareParent.trans = [-this.depth * 1.2, this.depth * .5 , this.depth];
+        squareParent.trans = [100, 550 , 0];
         squareParent.rotvel = [0, 0, -Math.PI * 2 / 10];
         squareParent.linkchild(square);
-        root.linkchild(squareParent);
+        viewParent.linkchild(squareParent);
         
         // custom anim
-        this.squareG = buildplanexy("spinnerG", .25, .25, "maptestnck.png", "tex", 1, 1);
-        this.squareG.trans = [0, 1, this.depth];
-        root.linkchild(this.squareG);
+        this.squareG = buildplanexy("spinnerG", 10, 10, "maptestnck.png", "tex", 1, 1);
+        viewParent.linkchild(this.squareG);
     }
 
     getCurModel() {
@@ -53,12 +57,13 @@ window.GameA = class GameA {
     }
 
     // return initial model of the game
-    static #modelReset(numPlayers) {
+    #modelReset(numPlayers) {
         const retModel = Array(this.numPlayers);
         for (let slot = 0; slot < numPlayers; ++slot) {
             const player = {
                 pos: [
-                    -3, 2 - .75 * slot, 5
+                    200, 500- slot * 75, 0,
+                    //glc.clientWidth, glc.clientHeight, 0
                 ],
                 desiredPos: null // if mouse click
             }
@@ -74,6 +79,7 @@ window.GameA = class GameA {
         discon: true, false
         // USER
         kc: bitfield of up, down, left, right
+        mouse: pos and click
     */
     static modelMakeKeyCode(doDiscon) {
         const ret = {
@@ -94,7 +100,7 @@ window.GameA = class GameA {
         if (input.keystate[keycodes.DOWN]) keyCode += GameA.keyCodes.DOWN;
         ret.kc = keyCode;
         ret.mouse = {
-            pos: [input.fmx, input.fmy],
+            pos: [input.mx, input.my],
             click: input.mclick[0]
         }
         return ret;
@@ -103,11 +109,11 @@ window.GameA = class GameA {
     // let game decide what to do with predictions
     predictLogic(prevInput, frameNum) {
         return prevInput; // full prediction
-        //const kc = 0; // wait
+        //const kc = 0; // wait, no prediction
         //const kc = GameA.keyCodes.RIGHT; // test
-        //const kc = GameA.keyCodes.UP | prevInput.kc; // racing
+        //const kc = GameA.keyCodes.UP | prevInput.kc; // racing, always press GAS
         //const ret = {kc: kc}
-        return kc;
+        //return kc;
     }
 
     // timeWarp
@@ -127,7 +133,7 @@ window.GameA = class GameA {
                 curPlayer.desiredPos = null;
                 continue;
             }
-            const step = .125;
+            const step = 25;
             if (keyCode & GameA.keyCodes.RIGHT) {
                 curPlayer.pos[0] += step;
                 curPlayer.desiredPos = null;
@@ -146,14 +152,16 @@ window.GameA = class GameA {
             }
             if (pInput.mouse) {
                 if (pInput.mouse.click) {
-                    curPlayer.desiredPos = Array(2);
-                    vec2.scale(curPlayer.desiredPos, pInput.mouse.pos, 5);
+                    curPlayer.desiredPos = [
+                        pInput.mouse.pos[0],
+                        glc.clientHeight - pInput.mouse.pos[1]
+                    ];
                 }
             }
             // move to desiredPos
             if (curPlayer.desiredPos) {
-                const stepClose = .125;
-                const close2 = stepClose * stepClose * .5;
+                //const stepClose = .125;
+                const close2 = step * step * 2;
                 const dist2 = vec2.sqrDist(curPlayer.desiredPos, curPlayer.pos);
                 if (dist2 < close2) {
                     vec2.copy(curPlayer.pos, curPlayer.desiredPos);
@@ -162,7 +170,7 @@ window.GameA = class GameA {
                     const delta = vec2.create();
                     vec2.sub(delta, curPlayer.desiredPos, curPlayer.pos);
                     vec2.normalize(delta, delta);
-                    vec2.scale(delta, delta, stepClose);
+                    vec2.scale(delta, delta, step);
                     vec2.add(curPlayer.pos, curPlayer.pos, delta);
                 }
             }
@@ -172,9 +180,10 @@ window.GameA = class GameA {
     // no timeWarp, mainly for animation
     stepGhostModel(frameNum) {
         const ang = this.ghostModel.angle;
-        this.ghostModel.angle += 2 * Math.PI / 10 / fpswanted;
+        const fpsw = fpswanted <= 0 ? 1 : fpswanted;
+        this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
         this.ghostModel.angle = normalangrad(this.ghostModel.angle);
-        this.squareG.trans = [Math.sin(ang) -this.depth * .8, Math.cos(ang) + this.depth * .5,this.depth];
+        this.squareG.trans = [60 * Math.sin(ang) + 100, 60 * Math.cos(ang) + 550 , 0];
     }
 
     // M to V

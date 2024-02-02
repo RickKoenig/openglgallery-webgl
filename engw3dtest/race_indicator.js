@@ -5,6 +5,7 @@ console.log("INDICATOR");
 class Indicator {
 	// array of values to display left to right
 	constructor(roottree, num, mySlot) {
+		const show = true;
 		// assume 60 FPS
 		this.seconds = 1;
 		this.lastSeconds = -1;
@@ -17,7 +18,10 @@ class Indicator {
 		this.num = num;
 		// alignment lines
 		const lin = buildplanexy("alin",1,1,null,"flat");
-		lin.mod.mat.color = [0, 1, 0, 1];
+		if (!show) {
+			lin.flags |= treeflagenums.DONTDRAWC;
+		}
+	lin.mod.mat.color = [0, 1, 0, 1];
         lin.mod.flags |= modelflagenums.NOZBUFFER;
 		lin.trans = [0, offy - this.num * stepy * .5 + stepy * .5, depth];
 		lin.scale = [.5, this.num * stepy * .5, 1];
@@ -31,6 +35,9 @@ class Indicator {
 		// dots
 		const dot = buildplanexy("adot",1,1,null,"flat");
         dot.mod.flags |= modelflagenums.NOZBUFFER;
+		if (!show) {
+			dot.flags |= treeflagenums.DONTDRAWC;
+		}
 		dot.scale = [4, 4, 1];
 		this.trees = Array(this.num);
 		for (let i = 0; i < this.num; ++i) {
@@ -54,14 +61,17 @@ class Indicator {
 			scale: 2
 		};
 		this.termLeft = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		this.termLeft.doShow(show);
 		termParams.offx += this.sep - 80 - 20;
 		termParams.scale = 6;
 		termParams.cols = 9;
 		this.termMiddle = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		this.termMiddle.doShow(show);
 		termParams.offx += this.sep - 60 + 80;
 		termParams.scale = 2;
 		termParams.cols = 10;
 		this.termRight = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		this.termRight.doShow(show);
 		this.termMiddle.print("0 sec at 60 HZ");
 	}
 

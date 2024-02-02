@@ -26,8 +26,6 @@ const testNotReady = 0;
 const testId = 1;
 // END test internet breakage
 
-const autoCommands = false; // get to a game quickly
-
 race_console.broadcastModes = {
 	lobby: 0,
 	room: 1,
@@ -45,6 +43,19 @@ race_console.gotoLobby = function() {
 
 race_console.gotoFill = function() {
     changestate("race_sentgo");
+}
+
+race_console.autoCommandJoin = function() {
+	// log in and connect to room p0
+	race_console.doCommand('e');
+	race_console.doCommand('j');
+}
+
+race_console.autoCommand1P = function() {
+	// log in and connect to room p0
+	race_console.doCommand('e');
+	race_console.doCommand('m');
+	race_console.doCommand('go a');
 }
 
 // get my profile from server after setting name game etc. 
@@ -341,8 +352,11 @@ race_console.init = function(intentData) {
 	// ui
 	setbutsname('console');
 	// test state changes
-	race_console.lobbyButton = makeabut("lobby", race_console.gotoLobby);
-	race_console.fillButton = makeabut("sent go", race_console.gotoFill);
+	//race_console.lobbyButton = makeabut("lobby", race_console.gotoLobby);
+	//race_console.fillButton = makeabut("sent go", race_console.gotoFill);
+	makeabut("auto 1P game", race_console.autoCommand1P);
+	makeabut("auto join room", race_console.autoCommandJoin);
+	
 	race_console.showIntent = makeaprintarea("intent = '" + intentData + "'");
 	
 	// build parent
@@ -363,14 +377,6 @@ race_console.init = function(intentData) {
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	const waitSec = 1;
-	if (autoCommands) {
-		race_console.timeout = setTimeout(() => {
-			race_console.doCommand('e');
-			race_console.doCommand('m');
-			race_console.doCommand('go');
-		}, 1000 * waitSec);
-
-	}
 };
 
 race_console.onresize = function() {
