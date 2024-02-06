@@ -7,10 +7,10 @@ race_gameState.hidden = true; // can't be selected in the engine UI
 race_gameState.text = "WebGL: race_gameState 3D drawing";
 race_gameState.title = "race_gameState";
 
-race_gameState.broadcastLag = 1000; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
+race_gameState.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_gameState.doChecksum = true; // check all valid frames (race state)
 race_gameState.verbose = false;
-race_gameState.fpswanted = 10;
+race_gameState.fpswanted = 60;
 
 race_gameState.maxFrames = 0;
 
@@ -73,7 +73,8 @@ race_gameState.setupCallbacks = function(socker) {
 			} else {
 				race_gameState.terminal.print?.(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + slot);
-				race_gameState.mvc.controlToModel(null, slot, race_gameState.gameClass.modelMakeKeyCode(true));
+				const kc = {discon: true};
+				race_gameState.mvc.controlToModel(null, slot, kc);
 				race_gameState.pingTimes[slot] = undefined;
 				race_gameState.discon[slot] = true;
 			}
@@ -92,7 +93,8 @@ race_gameState.setupCallbacks = function(socker) {
 		race_gameState.allready = true;
 		race_gameState.terminal?.print(str);
 		for (let slot of allReadyPack.absentSlots) {
-			race_gameState.mvc.controlToModel(null, slot, race_gameState.gameClass.modelMakeKeyCode(true)); // disconnected
+			const kc = {discon: true};
+			race_gameState.mvc.controlToModel(null, slot, kc); // disconnected
 			race_gameState.discon[slot] = true;
 		}
 	});
@@ -289,7 +291,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 				+ race_gameState.sockerInfo.id + " slot = " + race_gameState.sockerInfo.slotIdx);
 		}
 		const termParams = {
-			cols: 16,
+			cols: 19,
 			rows: 1,
 			offx: 40,
 			offy: 60,
@@ -307,6 +309,8 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 	// the 3D viewport
 	mainvp = defaultviewport();
+	mainvp.near = 7;
+	mainvp.far = 10000;
 	mainvp.clearcolor = [.125, .125, .125, 1];
 	if (race_gameState.gameType == 'a') {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];

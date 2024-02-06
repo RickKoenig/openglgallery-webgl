@@ -45,6 +45,12 @@ race_console.gotoFill = function() {
     changestate("race_sentgo");
 }
 
+race_console.autoCommandMake = function() {
+	// log in and make room p0
+	race_console.doCommand('e');
+	race_console.doCommand('m');
+}
+
 race_console.autoCommandJoin = function() {
 	// log in and connect to room p0
 	race_console.doCommand('e');
@@ -342,10 +348,64 @@ race_console.testGameClass = function(gameType) {
 	console.log("finish test game class");
 }
 
+race_console.distColl = function(a, b, dist) {
+	const dist2 = vec2.sqrDist(a, b);
+	let delta;
+	if (dist2 > 0) {
+		delta = vec2.create();
+		vec2.sub(delta, b, a);
+		vec2.normalize(delta, delta);
+	} else {
+		delta = vec2.fromValues(0, 1);
+	}
+	const mid = vec2.create();
+	vec2.add(mid, a, b);
+	vec2.scale(mid, mid, .5);
+	vec2.sub(a, mid, delta);
+	vec2.add(b, mid, delta);
+}
+
+race_console.showPoint = function(p) {
+	return"(" + p[0].toFixed(4) + ", " + p[1].toFixed(4) + ")";
+}
+
+race_console.showPointPairs = function(pps) {
+	console.log("POINT PAIRS");
+	for (const pp of pps) {
+		console.log("p0 = [" + race_console.showPoint(pp[0]) + ", p1 " + race_console.showPoint(pp[1]));
+	}
+}
+
+race_console.testDistColl = function() {
+	const pointPairs = [
+		[[3, 4], [4, 5]],
+		[[3, 6], [4, 7]],
+		[[5, 0], [10, 0]],
+		[[10, 0], [5, 0]],
+		[[-5, 5], [4, 3]],
+		[[4, 5], [4, 5]],
+		[[4, 0], [-2, 0]],
+		[[-4, 0], [2, 0]],
+		[[2, 5], [2, 9]],
+		[[2, 9], [2, 5]],
+	];
+	const dist = 2;
+
+	console.log("TEST DIST COLL");
+	console.log("BEFORE separation");
+	race_console.showPointPairs(pointPairs);
+	for (const pp of pointPairs) {
+		race_console.distColl(pp[0], pp[1], dist);
+	}
+	console.log("AFTER separation");
+	race_console.showPointPairs(pointPairs);
+}
+
 race_console.init = function(intentData) {
 	race_console.testGameClass('a');
 	//race_console.testEqualsObj();
 	//race_console.testFloat();
+	race_console.testDistColl();
 	race_console.keepSockInfo = false;
 	race_console.clientNewsCount = 0;
 	logger("entering webgl race_console\n");
@@ -354,8 +414,9 @@ race_console.init = function(intentData) {
 	// test state changes
 	//race_console.lobbyButton = makeabut("lobby", race_console.gotoLobby);
 	//race_console.fillButton = makeabut("sent go", race_console.gotoFill);
-	makeabut("auto 1P game", race_console.autoCommand1P);
-	makeabut("auto join room", race_console.autoCommandJoin);
+	makeabut("start game", race_console.autoCommand1P);
+	makeabut("make room", race_console.autoCommandMake);
+	makeabut("join room", race_console.autoCommandJoin);
 	
 	race_console.showIntent = makeaprintarea("intent = '" + intentData + "'");
 	
