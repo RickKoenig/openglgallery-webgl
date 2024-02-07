@@ -16,66 +16,83 @@ window.GameA = class GameA {
         this.size = 30; // radius
         this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
-        this.numNpcsX = 4;
-        this.numNpcsY = 6;
-        this.numNpcs = this.numNpcsX * this.numNpcsY;
+        // push these npcs around
+        this.numDummyNpcsX = 4;
+        this.numDummyNpcsY = 6;
+        this.numDummyNpcs = this.numDummyNpcsX * this.numDummyNpcsY;
+        // these npcs move and push everything else
+        this.numMoveNpcsX = 3;
+        this.numMoveNpcsY = 6;
+        this.numMoveNpcs = this.numMoveNpcsX * this.numMoveNpcsY;
+
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
-        this.step = 25 / 6;
+        this.step = 4; // how fast players move
         this.ghostModel = {angle: 0 }; // NO time warp model, this model is for animation, doesn't interact with game
         this.curPlayerView = [];
-        this.curNpcView = [];
+        this.curDummyNpcView = [];
+        this.curMoveNpcView = [];
 
         // build 3D scene
         const viewParent = new Tree2("viewParent");
         root.linkchild(viewParent);
-        // players
-        const treeMasterPlyaer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
-        treeMasterPlyaer.scale = [1, 1, .01];
-        treeMasterPlyaer.mat.color = [.75, .75, .75, 1];
+        // view players
+        const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
+        treeMasterPlayer.scale = [1, 1, .01];
+        treeMasterPlayer.mat.color = [.75, .75, .75, 1];
         viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
         for (let s = 0; s < numPlayers; ++s) {
-            const playerTree = treeMasterPlyaer.newdup();
+            const playerTree = treeMasterPlayer.newdup();
             if (curPlayer == s) playerTree.mat.color = [1.5, 1.5, 1.5, 1]; // brighter color for self
             this.curPlayerView[s] = playerTree;
             viewParent.linkchild(playerTree);
         }
-        treeMasterPlyaer.glfree();
-        // npcs
-        const treeMasterNpc = buildsphere("anpc", this.size, "panel.jpg", "texc");
-        treeMasterNpc.scale = [1, 1, .01];
-        treeMasterNpc.mat.color = [.25, .75, .25, 1];
-        viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
-        for (let n = 0; n < this.numNpcs; ++n) {
-            const npcTree = treeMasterNpc.newdup();
-            this.curNpcView[n] = npcTree;
-            viewParent.linkchild(npcTree);
+        treeMasterPlayer.glfree();
+        // view npcsDummy
+        const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
+        treeMasterDummyNpc.scale = [1, 1, .01];
+        treeMasterDummyNpc.mat.color = [.25, .75, .25, 1];
+        for (let n = 0; n < this.numDummyNpcs; ++n) {
+            const npcDummyTree = treeMasterDummyNpc.newdup();
+            this.curDummyNpcView[n] = npcDummyTree;
+            viewParent.linkchild(npcDummyTree);
         }
-        treeMasterNpc.glfree();
+        treeMasterDummyNpc.glfree();
+        
+        // view npcsMove
+        const treeMasterMoveNpc = buildsphere("aMovenpc", this.size, "panel.jpg", "texc");
+        treeMasterMoveNpc.scale = [1, 1, .01];
+        treeMasterMoveNpc.mat.color = [1.25, .25, 1.25, 1];
+        for (let n = 0; n < this.numMoveNpcs; ++n) {
+            const npcMoveTree = treeMasterMoveNpc.newdup();
+            this.curMoveNpcView[n] = npcMoveTree;
+            viewParent.linkchild(npcMoveTree);
+        }
+        treeMasterMoveNpc.glfree();
 
         // add some ghosts
         // standard anim
-        const square = buildplanexy("spinner", 20, 20, "maptestnck.png", "tex", 1, 1);
-        square.trans = [80, 80, 0];
+        const square = buildplanexy("spinner", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);
+        square.trans = [50, 50, 0];
         square.rotvel = [0, 0, -Math.PI * 2 / 10];
         viewParent.linkchild(square);
         
         // custom anim
-        this.squareG = buildplanexy("spinnerG", 20, 20, "maptestnck.png", "tex", 1, 1);
+        this.squareG = buildplanexy("spinnerG", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);
         viewParent.linkchild(this.squareG);
 
         // test sizes
-        const block = buildprism("block",[this.size,this.size,this.size],"maptestnck.png","tex");
-        block.trans = [100, 200, 0];
+        const block = buildprism("block",[this.size / 2,this.size / 2,this.size / 2],"maptestnck.png","tex");
+        block.trans = [150, 50, 0];
         block.scale = [1, 1, .01];
         viewParent.linkchild(block);
 
-        const plane = buildplanexy("plane", this.size, this.size, "maptestnck.png", "tex", 1, 1);;
-        plane.trans = [250, 200, 0];
+        const plane = buildplanexy("plane", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);;
+        plane.trans = [200, 50, 0];
         viewParent.linkchild(plane);
 
-        const sphere = buildsphere("sphere",this.size,"maptestnck.png","tex");
-        sphere.trans = [400, 200, 0];
+        const sphere = buildsphere("sphere",this.size / 2,"maptestnck.png","tex");
+        sphere.trans = [250, 50, 0];
         sphere.scale = [1, 1, .01];
         viewParent.linkchild(sphere);
         
@@ -89,41 +106,74 @@ window.GameA = class GameA {
         this.curModel = clone(model);
     }
 
+    #setNpcsMoving(retModel) {
+        const angOffset = retModel.npcsMovingAngle;
+        let n = 0;
+        const center = [400, 384];
+        const startX = 100;
+        const stepX = 60;
+        for (let j = 0; j < this.numMoveNpcsY; ++j) {
+            const ang = j * 2 * Math.PI / this.numMoveNpcsY + angOffset;
+            const cosAng = Math.cos(ang);
+            const sinAng = Math.sin(ang);
+            for (let i = 0; i < this.numMoveNpcsX; ++i) {
+                const rad = startX + stepX * i;
+                const npc = {
+                    pos: [
+                        center[0] + cosAng * rad,
+                        center[1] + sinAng * rad,
+                        0
+                    ]
+                }
+                retModel.npcsMoving[n++] = npc;
+            }
+        }
+    }
     // return initial model of the game
     #modelReset() {
         const retModel = {
             players: Array(this.numPlayers),
-            npcs: Array(this.numNpcs)
+            npcsDummy: Array(this.numDummyNpcs),
+            npcsMoving: Array(this.numMovingNpcs),
+            npcsMovingAngle: 0
         };
-        
+        // test separateA
+        const posA = [10, 20];
+        const posB = [30, 20];
+        GameA.separateA(posA, posB, 20, 1.01);
+        console.log("posA = " + posA + ", posB = " + posB);
+        // end test separateA
+
+        // players
         for (let slot = 0; slot < this.numPlayers; ++slot) {
             const player = {
                 pos: [
-                    200, 500 - slot * 75, 0,
+                    60, 550 - slot * 75, 0,
                 ],
                 desiredPos: null // if mouse click
             }
             retModel.players[slot] = player;
         }
+        // npc dummys
         let n = 0;
-        for (let y = 0; y < this.numNpcsY; ++y) {
-            for (let x = 0; x < this.numNpcsX; ++x) {
+        for (let y = 0; y < this.numDummyNpcsY; ++y) {
+            for (let x = 0; x < this.numDummyNpcsX; ++x) {
                 const npc = {
                     pos: [
-                        600 + x * 75, 500 - y * 75, 0,
+                        700 + x * 75, 550 - y * 75, 0,
                     ]
                 }
-                retModel.npcs[n++] = npc;
+                retModel.npcsDummy[n++] = npc;
             }
         }
+        // npc moves
+        this.#setNpcsMoving(retModel);
         return retModel;
     }
 
     // local input to keycode, helper
     // return object 
     /* 
-        // SYSTEM
-        discon: true, false
         // USER
         kc: bitfield of up, down, left, right
         mouse: pos and click
@@ -131,16 +181,19 @@ window.GameA = class GameA {
     static modelMakeKeyCode() {
         const ret = {};
         let keyCode = 0;
-        if (input.key == 'g'.charCodeAt(0)) { // restart game
+        // restart game
+        if (input.key == 'g'.charCodeAt(0)) {
             keyCode += GameA.keyCodes.GO;
             ret.kc = keyCode;
             return ret;
         }
+        // move with arrow keys
         if (input.keystate[keycodes.LEFT]) keyCode += GameA.keyCodes.LEFT;
         if (input.keystate[keycodes.RIGHT]) keyCode += GameA.keyCodes.RIGHT;
         if (input.keystate[keycodes.UP]) keyCode += GameA.keyCodes.UP;
         if (input.keystate[keycodes.DOWN]) keyCode += GameA.keyCodes.DOWN;
         ret.kc = keyCode;
+        // move with mouse
         ret.mouse = {
             pos: [input.mx, input.my],
             click: input.mclick[0]
@@ -152,32 +205,54 @@ window.GameA = class GameA {
     predictLogic(prevInput, frameNum) {
         return prevInput; // full prediction
         //const kc = 0; // wait, no prediction
-        //const kc = GameA.keyCodes.RIGHT; // test
-        //const kc = GameA.keyCodes.UP | prevInput.kc; // racing, always press GAS
+        //const kc = GameA.keyCodes.RIGHT; // test, predict right
+        //const kc = GameA.keyCodes.UP | prevInput.kc; // racing, always press GAS/up
         //const ret = {kc: kc}
         //return kc;
     }
 
-    static separate(pos0, pos1, distSep, extra) {
+    // move 2 circles apart
+    static separate(posA, posB, distSep, extra) {
         const distSep2 = distSep * distSep;
-        const dist2 = vec2.sqrDist(pos0, pos1);
+        const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
-            return;
+            return false;
         }
         let delta;
         if (dist2 > 0) {
             delta = vec2.create();
-            vec2.sub(delta, pos1, pos0);
+            vec2.sub(delta, posB, posA);
             vec2.normalize(delta, delta);
         } else { // same position, separate horizontally
             delta = vec2.fromValues(0, 1);
         }
         vec2.scale(delta, delta, distSep * .5 * extra);
         const mid = vec2.create();
-        vec2.add(mid, pos0, pos1);
+        vec2.add(mid, posA, posB);
         vec2.scale(mid, mid, .5); // midpoint is the average
-        vec2.sub(pos0, mid, delta); // move out in opposite directions
-        vec2.add(pos1, mid, delta);
+        vec2.sub(posA, mid, delta); // move out in opposite directions
+        vec2.add(posB, mid, delta);
+        return true;
+    }
+
+    // move circleA away from circleB (circleB doesn't move)
+    static separateA(posA, posB, distSep, extra) {
+        const distSep2 = distSep * distSep;
+        const dist2 = vec2.sqrDist(posA, posB);
+        if (dist2 > distSep2) {
+            return false;
+        }
+        let delta;
+        if (dist2 > 0) {
+            delta = vec2.create();
+            vec2.sub(delta, posB, posA);
+            vec2.normalize(delta, delta);
+        } else { // same position, separate horizontally
+            delta = vec2.fromValues(0, 1);
+        }
+        vec2.scale(delta, delta, distSep * extra);
+        vec2.sub(posA, posB, delta); // move circleA away from circleB
+        return true;
     }
 
     // timeWarp
@@ -186,19 +261,19 @@ window.GameA = class GameA {
         // players
         for (let slot = 0; slot < pInputs.length; ++slot) {
             const pInput = pInputs[slot];
+            const curPlayer = this.curModel.players[slot];
+            if (pInput.discon) {
+                this.curPlayerView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
+                curPlayer.desiredPos = null;
+                continue;
+            }
             // keyboard
             const keyCode = pInput.kc;
-            const curPlayer = this.curModel.players[slot];
             // reset game
             if (keyCode & GameA.keyCodes.GO) {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 curPlayer.desiredPos = null;
                 return;
-            }
-            if (pInput.discon) {
-                this.curPlayerView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
-                curPlayer.desiredPos = null;
-                continue;
             }
             const step = this.step
             if (keyCode & GameA.keyCodes.RIGHT) {
@@ -241,52 +316,77 @@ window.GameA = class GameA {
                 }
             }
         }
+        // npc moves
+        this.#setNpcsMoving(this.curModel);
+        const movingAngleStep = .005;
+        this.curModel.npcsMovingAngle += movingAngleStep;
+        this.curModel.npcsMovingAngle = normalangrad(this.curModel.npcsMovingAngle);
 
         // collisions
-        const extra = 1.01; // move apart a litte more
+        const extra = 1.001; // move apart a litte more
 
         // players to players
-        for (let i = 0; i < pInputs.length; ++i) {
-            const curPlayer0 = this.curModel.players[i];
-            for (let j = i + 1; j < pInputs.length; ++j) {
-                const curPlayer1 = this.curModel.players[j];
+        for (let p0 = 0; p0 < pInputs.length; ++p0) {
+            const curPlayer0 = this.curModel.players[p0];
+            for (let p1 = p0 + 1; p1 < pInputs.length; ++p1) {
+                const curPlayer1 = this.curModel.players[p1];
                 // move players apart
                 GameA.separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
             }
         }
 
-        // players to npcs
-        for (let i = 0; i < pInputs.length; ++i) {
-            const curPlayer = this.curModel.players[i];
-            for (let n = 0; n < this.curModel.npcs.length; ++n) {
-                const npc = this.curModel.npcs[n];
-                // move players and npcs apart
-                GameA.separate(curPlayer.pos, npc.pos, 2 * this.size, extra);
+        // players to npcsDummy
+        for (let p = 0; p < pInputs.length; ++p) {
+            const curPlayer = this.curModel.players[p];
+            for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
+                const npcd = this.curModel.npcsDummy[nd];
+                // move players and npcsDummy apart
+                GameA.separate(curPlayer.pos, npcd.pos, 2 * this.size, extra);
             }
         }
 
-        // npcs to npcs
-        for (let n0 = 0; n0 < this.curModel.npcs.length; ++n0) {
-            const npc0 = this.curModel.npcs[n0];
-            for (let n1 = n0 + 1; n1 < this.curModel.npcs.length; ++n1) {
-                const npc1 = this.curModel.npcs[n1];
-                // move npcs and npcs apart
-                GameA.separate(npc0.pos, npc1.pos, 2 * this.size, extra);
+        // npcsDummy to npcsDummy
+        for (let n0d = 0; n0d < this.curModel.npcsDummy.length; ++n0d) {
+            const npc0d = this.curModel.npcsDummy[n0d];
+            for (let n1d = n0d + 1; n1d < this.curModel.npcsDummy.length; ++n1d) {
+                const npc1d = this.curModel.npcsDummy[n1d];
+                // move npcsDummy and npcsDummy apart
+                GameA.separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
             }
         }
 
+        // npcsMove to npcsDummy
+        for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
+            const npcd = this.curModel.npcsDummy[nd];
+            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
+                const npcm = this.curModel.npcsMoving[nm];
+                // move players away from npcsMoving
+                GameA.separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
+            }
+        }
+
+        // npcsMove to players
+        for (let p = 0; p < pInputs.length; ++p) {
+            const curPlayer = this.curModel.players[p];
+            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
+                const npcm = this.curModel.npcsMoving[nm];
+                // move players away from npcsMoving
+                GameA.separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
+            }
+        }
+        
         // border to players
-        for (let slot = 0; slot < pInputs.length; ++slot) {
-            const curPlayer = this.curModel.players[slot];
+        for (let p = 0; p < pInputs.length; ++p) {
+            const curPlayer = this.curModel.players[p];
             curPlayer.pos[0] = range(this.margin, curPlayer.pos[0], this.res[0] - this.margin);
             curPlayer.pos[1] = range(this.margin, curPlayer.pos[1], this.res[1] - this.margin);
         }
 
-        // border to npcs
-        for (let n = 0; n < this.curModel.npcs.length; ++n) {
-            const npc = this.curModel.npcs[n];
-            npc.pos[0] = range(this.margin, npc.pos[0], this.res[0] - this.margin);
-            npc.pos[1] = range(this.margin, npc.pos[1], this.res[1] - this.margin);
+        // border to npcsDummy
+        for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
+            const npcd = this.curModel.npcsDummy[nd];
+            npcd.pos[0] = range(this.margin, npcd.pos[0], this.res[0] - this.margin);
+            npcd.pos[1] = range(this.margin, npcd.pos[1], this.res[1] - this.margin);
         }
 
     }
@@ -297,7 +397,7 @@ window.GameA = class GameA {
         const fpsw = fpswanted <= 0 ? 1 : fpswanted;
         this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
         this.ghostModel.angle = normalangrad(this.ghostModel.angle);
-        this.squareG.trans = [60 * Math.cos(ang) + 80, -60 * Math.sin(ang) + 80 , 0];
+        this.squareG.trans = [40 * Math.cos(ang) + 50, -40 * Math.sin(ang) + 50 , 0];
     }
 
     // M to V
@@ -308,9 +408,13 @@ window.GameA = class GameA {
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
             this.curPlayerView[slot].trans = vec3.clone(this.curModel.players[slot].pos);
         }
-        // npcs
-        for (let n = 0; n < this.curModel.npcs.length; ++n) {
-            this.curNpcView[n].trans = vec3.clone(this.curModel.npcs[n].pos);
+        // npcsDummy
+        for (let n = 0; n < this.curModel.npcsDummy.length; ++n) {
+            this.curDummyNpcView[n].trans = vec3.clone(this.curModel.npcsDummy[n].pos);
+        }
+        // npcsMove
+        for (let n = 0; n < this.curModel.npcsMoving.length; ++n) {
+            this.curMoveNpcView[n].trans = vec3.clone(this.curModel.npcsMoving[n].pos);
         }
     }
 }
