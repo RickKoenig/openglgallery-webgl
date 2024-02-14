@@ -98,18 +98,10 @@ window.GameA = class GameA {
         
     }
 
-    getCurModel() {
-        return clone(this.curModel);
-    }
-
-    setCurModel(model) {
-        this.curModel = clone(model);
-    }
-
     #setNpcsMoving(retModel) {
         const angOffset = retModel.npcsMovingAngle;
         let n = 0;
-        const center = [400, 384];
+        const center = [700, 384];
         const startX = 100;
         const stepX = 60;
         for (let j = 0; j < this.numMoveNpcsY; ++j) {
@@ -129,6 +121,7 @@ window.GameA = class GameA {
             }
         }
     }
+
     // return initial model of the game
     #modelReset() {
         const retModel = {
@@ -137,21 +130,15 @@ window.GameA = class GameA {
             npcsMoving: Array(this.numMovingNpcs),
             npcsMovingAngle: 0
         };
-        // test separateA
-        const posA = [10, 20];
-        const posB = [30, 20];
-        GameA.separateA(posA, posB, 20, 1.01);
-        console.log("posA = " + posA + ", posB = " + posB);
-        // end test separateA
-
         // players
         for (let slot = 0; slot < this.numPlayers; ++slot) {
             const player = {
                 pos: [
-                    60, 550 - slot * 75, 0,
+                    50, 550 - slot * 75, 0,
                 ],
                 desiredPos: null // if mouse click
             }
+            player.lastPos = vec3.clone(player.pos);
             retModel.players[slot] = player;
         }
         // npc dummys
@@ -160,7 +147,8 @@ window.GameA = class GameA {
             for (let x = 0; x < this.numDummyNpcsX; ++x) {
                 const npc = {
                     pos: [
-                        700 + x * 75, 550 - y * 75, 0,
+                        //700 + x * 75, 550 - y * 75, 0,
+                        150 + x * 75, 550 - y * 75, 0,
                     ]
                 }
                 retModel.npcsDummy[n++] = npc;
@@ -169,6 +157,14 @@ window.GameA = class GameA {
         // npc moves
         this.#setNpcsMoving(retModel);
         return retModel;
+    }
+
+    getCurModel() {
+        return clone(this.curModel);
+    }
+
+    setCurModel(model) {
+        this.curModel = clone(model);
     }
 
     // local input to keycode, helper
@@ -211,7 +207,7 @@ window.GameA = class GameA {
         //return kc;
     }
 
-    // move 2 circles apart
+    // move 2 circles apart, simple
     static separate(posA, posB, distSep, extra) {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
@@ -227,11 +223,47 @@ window.GameA = class GameA {
             delta = vec2.fromValues(0, 1);
         }
         vec2.scale(delta, delta, distSep * .5 * extra);
-        const mid = vec2.create();
-        vec2.add(mid, posA, posB);
-        vec2.scale(mid, mid, .5); // midpoint is the average
-        vec2.sub(posA, mid, delta); // move out in opposite directions
-        vec2.add(posB, mid, delta);
+        const midPoint = vec2.create();
+        vec2.add(midPoint, posA, posB);
+        vec2.scale(midPoint, midPoint, .5); // midpoint is the average
+        vec2.sub(posA, midPoint, delta); // move out in opposite directions
+        vec2.add(posB, midPoint, delta);
+        return true;
+    }
+
+    // move 2 circles apart, but with posB roughly following posA movement direction
+    static separateSticky(posA, lastPosA, posB, distSep, stickyLerp, extra) {
+        const distSep2 = distSep * distSep;
+        const dist2 = vec2.sqrDist(posA, posB);
+        if (dist2 > distSep2) {
+            return false;
+        }
+        let deltaPos;
+        if (dist2 > 0) {
+            deltaPos = vec2.create();
+            vec2.sub(deltaPos, posB, posA);
+            vec2.normalize(deltaPos, deltaPos);
+        } else { // same position, separate horizontally
+            deltaPos = vec2.fromValues(0, 1);
+        }
+        const deltaAVel = vec2.create();
+        vec2.sub(deltaAVel, posA, lastPosA);
+        const moveLen2 = vec2.sqrLen(deltaAVel);
+        if (moveLen2 > 0) {
+            vec2.normalize(deltaAVel, deltaAVel);
+        } else {
+            vec2.copy(deltaAVel, deltaPos); // no movement, just use deltaPos
+        }
+        const delta = vec2.create();
+        vec2.lerp(delta, deltaPos, deltaAVel, stickyLerp);
+
+        vec2.normalize(delta, delta);
+        vec2.scale(delta, delta, distSep * .5 * extra);
+        const midPoint = vec2.create();
+        vec2.add(midPoint, posA, posB);
+        vec2.scale(midPoint, midPoint, .5); // midpoint is the average
+        vec2.sub(posA, midPoint, delta); // move out in opposite directions
+        vec2.add(posB, midPoint, delta);
         return true;
     }
 
@@ -262,6 +294,7 @@ window.GameA = class GameA {
         for (let slot = 0; slot < pInputs.length; ++slot) {
             const pInput = pInputs[slot];
             const curPlayer = this.curModel.players[slot];
+            vec3.copy(curPlayer.lastPos, curPlayer.pos);
             if (pInput.discon) {
                 this.curPlayerView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
                 curPlayer.desiredPos = null;
@@ -336,12 +369,13 @@ window.GameA = class GameA {
         }
 
         // players to npcsDummy
+        const sticky = .05;
         for (let p = 0; p < pInputs.length; ++p) {
             const curPlayer = this.curModel.players[p];
             for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
                 const npcd = this.curModel.npcsDummy[nd];
                 // move players and npcsDummy apart
-                GameA.separate(curPlayer.pos, npcd.pos, 2 * this.size, extra);
+                GameA.separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
             }
         }
 
@@ -388,7 +422,6 @@ window.GameA = class GameA {
             npcd.pos[0] = range(this.margin, npcd.pos[0], this.res[0] - this.margin);
             npcd.pos[1] = range(this.margin, npcd.pos[1], this.res[1] - this.margin);
         }
-
     }
 
     // no timeWarp, mainly for animation

@@ -21,7 +21,7 @@ class Indicator {
 		if (!show) {
 			lin.flags |= treeflagenums.DONTDRAWC;
 		}
-	lin.mod.mat.color = [0, 1, 0, 1];
+		lin.mod.mat.color = [0, 1, 0, 1];
         lin.mod.flags |= modelflagenums.NOZBUFFER;
 		lin.trans = [0, offy - this.num * stepy * .5 + stepy * .5, depth];
 		lin.scale = [.5, this.num * stepy * .5, 1];
