@@ -220,6 +220,12 @@ vec2.distance = function(a, b) {
         y = b[1] - a[1];
     return Math.sqrt(x*x + y*y);
 };
+// consistency
+vec2.Cdistance = function(a, b) {
+    var x = b[0] - a[0],
+        y = b[1] - a[1];
+    return CMath.sqrt(x*x + y*y);
+};
 
 /**
  * Alias for {@link vec2.distance}
@@ -256,6 +262,12 @@ vec2.length = function (a) {
     var x = a[0],
         y = a[1];
     return Math.sqrt(x*x + y*y);
+};
+// consistency
+vec2.Clength = function (a) {
+    var x = a[0],
+        y = a[1];
+    return CMath.sqrt(x*x + y*y);
 };
 
 /**
@@ -309,6 +321,19 @@ vec2.normalize = function(out, a) {
     if (len > 0) {
         //TODO: evaluate use of glm_invsqrt here?
         len = 1 / Math.sqrt(len);
+        out[0] = a[0] * len;
+        out[1] = a[1] * len;
+    }
+    return out;
+};
+// consistency
+vec2.Cnormalize = function(out, a) {
+    var x = a[0],
+        y = a[1];
+    var len = x*x + y*y;
+    if (len > 0) {
+        //TODO: evaluate use of glm_invsqrt here?
+        len = 1 / CMath.sqrt(len);
         out[0] = a[0] * len;
         out[1] = a[1] * len;
     }

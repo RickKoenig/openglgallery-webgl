@@ -404,7 +404,7 @@ race_console.testDistColl = function() {
 race_console.testFloat = function() {
 	let ang = 4 * 2 * Math.PI / 6;
 	ang = normalangrad(ang);
-	const sinAng = Math.sin(ang);
+	const sinAng = CMath.sin(ang);
 	console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
 	let bi = fromFloat(ang);
 	console.log("ang to bi = " + bi.toString(16) + "\n");
