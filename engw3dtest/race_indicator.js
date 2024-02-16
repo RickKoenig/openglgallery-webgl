@@ -1,6 +1,5 @@
 'use strict';
 
-console.log("INDICATOR");
 // show ping times with a graph
 class Indicator {
 	// array of values to display left to right

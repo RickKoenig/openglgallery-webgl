@@ -401,11 +401,22 @@ race_console.testDistColl = function() {
 	race_console.showPointPairs(pointPairs);
 }
 
+race_console.testFloat = function() {
+	let ang = 4 * 2 * Math.PI / 6;
+	ang = normalangrad(ang);
+	const sinAng = Math.sin(ang);
+	console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
+	let bi = fromFloat(ang);
+	console.log("ang to bi = " + bi.toString(16) + "\n");
+	bi = fromFloat(sinAng);
+	console.log("sinAng to bi = " + bi.toString(16) + "\n");
+}
+
 race_console.init = function(intentData) {
-	race_console.testGameClass('a');
+	//race_console.testGameClass('a');
 	//race_console.testEqualsObj();
-	//race_console.testFloat();
-	race_console.testDistColl();
+	race_console.testFloat();
+	//race_console.testDistColl();
 	race_console.keepSockInfo = false;
 	race_console.clientNewsCount = 0;
 	logger("entering webgl race_console\n");
@@ -418,7 +429,7 @@ race_console.init = function(intentData) {
 	makeabut("make room", race_console.autoCommandMake);
 	makeabut("join room", race_console.autoCommandJoin);
 	
-	race_console.showIntent = makeaprintarea("intent = '" + intentData + "'");
+	//race_console.showIntent = makeaprintarea("intent = '" + intentData + "'");
 	
 	// build parent
 	race_console.roottree = new Tree2("race_console root tree");

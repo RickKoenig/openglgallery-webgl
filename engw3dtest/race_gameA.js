@@ -108,6 +108,7 @@ window.GameA = class GameA {
             const ang = j * 2 * Math.PI / this.numMoveNpcsY + angOffset;
             const cosAng = Math.cos(ang);
             const sinAng = Math.sin(ang);
+            //console.log("NOTICE: j = " + j + ", " + sinAng + " =  sin ( " + ang + " ) ");
             for (let i = 0; i < this.numMoveNpcsX; ++i) {
                 const rad = startX + stepX * i;
                 const npc = {
@@ -117,6 +118,7 @@ window.GameA = class GameA {
                         0
                     ]
                 }
+                //console.log("NOTICE2: npc.pos[1] = " + npc.pos[1] + ", from rad = " + rad);
                 retModel.npcsMoving[n++] = npc;
             }
         }
@@ -127,7 +129,7 @@ window.GameA = class GameA {
         const retModel = {
             players: Array(this.numPlayers),
             npcsDummy: Array(this.numDummyNpcs),
-            npcsMoving: Array(this.numMovingNpcs),
+            npcsMoving: Array(this.numMoveNpcs),
             npcsMovingAngle: 0
         };
         // players

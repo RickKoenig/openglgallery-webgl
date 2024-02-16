@@ -9,10 +9,12 @@ race_gameState.title = "race_gameState";
 
 race_gameState.broadcastLag = 0; // milliseconds setTimeout, 0, 10, 100, 1000, 2000, 3000
 race_gameState.doChecksum = true; // check all valid frames (race state)
-race_gameState.verbose = false;
+race_gameState.validateVerbose = false;
+race_gameState.broadcastReceiveVerbose = false;
+race_gameState.broadcastSendVerbose = false;
 race_gameState.fpswanted = 60;
 
-race_gameState.maxFrames = 0;
+race_gameState.maxFrames = 0; // 0 is unlimited
 
 race_gameState.gotoConsole = function() {
     changestate("race_console", "from gameState");
@@ -39,6 +41,7 @@ race_gameState.setupCallbacks = function(socker) {
 		data: data
 	}
 	*/
+	// broadcast receive
 	socker.on('broadcast', function(broadPack) {
 		//console.log("got a broadcast from server = " + JSON.stringify(broadPack));
 		const slot = broadPack.slotIdx;
@@ -50,8 +53,8 @@ race_gameState.setupCallbacks = function(socker) {
 				if (race_gameState.doChecksum) {
 					if (broadPack.data.checksum) {
 						const checksum = broadPack.data.checksum;
-						if (race_gameState.verbose) {
-							console.log("num checksum frames = " + checksum.length);
+						if (race_gameState.broadcastReceiveVerbose) {
+							console.log("RECEIVE num checksum frames = " + checksum.length);
 							for (let i = 0; i < checksum.length; ++i) {
 								console.log("checksum from other player is S " + slot + ", checksum " + JSON.sortify(checksum[i]));
 							}
@@ -126,10 +129,10 @@ race_gameState.validateFrames = function() {
 			if (race_gameState.validFrames != race_gameState.validFramesSlots[i][vf].frameNum) {
 				alertS("CCC, bad checksum frame: VF[" + i + "] error " + race_gameState.validFrames);
 			} else {
-				if (race_gameState.verbose) console.log("VF[" + i + "] good " + race_gameState.validFrames);
+				if (race_gameState.validateVerbose) console.log("VF[" + i + "] good " + race_gameState.validFrames);
 			}
 		}
-		// second, checksum all players
+		// second, checksum all players game models
 		for (let i = 0; i < numSlots; ++i) {
 			if (race_gameState.discon[i]) {
 				continue;
@@ -140,31 +143,31 @@ race_gameState.validateFrames = function() {
 				}
 				let mess = "VF[" + i + "] VF[" + j + "] frame = " + race_gameState.validFrames;
 				const isEq = equalsObj(race_gameState.validFramesSlots[i][vf].model
-						, race_gameState.validFramesSlots[j][vf].model);
-					if (isEq) {
-						if (race_gameState.verbose) console.log("DDD, good checksum frame: " + mess);
-					} else {
-						mess += "\n" + JSON.sortify(race_gameState.validFramesSlots[i][vf].model) + "\n"
-							+ JSON.sortify(race_gameState.validFramesSlots[j][vf].model);
-						alertS("DDD, bad checksum frame: " + mess);
-					}
+					, race_gameState.validFramesSlots[j][vf].model);
+				mess += "\n" + JSON.sortify(race_gameState.validFramesSlots[i][vf].model) + "\n"
+					+ "WITH\n" + JSON.sortify(race_gameState.validFramesSlots[j][vf].model);
+				if (isEq) {
+					if (race_gameState.validateVerbose) console.log("DDD, good checksum frame: " + mess);
+				} else {
+					alertS("DDD, bad checksum frame: " + mess);
 				}
-			}
-			++race_gameState.validFrames;
-			let trimValid = true; // if false, keep a paper trail of all gamestates
-			if (trimValid) {
-				// shift out old data, save memory
-				for (let i = 0; i < numSlots; ++i) {
-					race_gameState.validFramesSlots[i].shift();
-				}
-				++race_gameState.validOffset;
-			}
-			--watchDog;
-			if (watchDog <= 0) {
-				alertS("watchdog hit");
-				break;
 			}
 		}
+		++race_gameState.validFrames;
+		let trimValid = true; // if false, keep a paper trail of all gamestates
+		if (trimValid) {
+			// shift out old data, save memory
+			for (let i = 0; i < numSlots; ++i) {
+				race_gameState.validFramesSlots[i].shift();
+			} 
+			++race_gameState.validOffset;
+		}
+		--watchDog;
+		if (watchDog <= 0) {
+			alertS("watchdog hit");
+			break;
+		}
+	}
 	const str = "Valid Frm = " + race_gameState.validFrames;
 	race_gameState.termValid.print?.(str);
 }
@@ -284,7 +287,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		if (race_gameState.doChecksum) {
 			race_gameState.validFramesSlots = Array(room.slots.length);
 			for (let i = 0; i < race_gameState.validFramesSlots.length; ++i) {
-				// clone frame 0 to all slots
+				// clone frame 0 to all slots, don't check frame 0 with other players
 				race_gameState.validFramesSlots[i] = clone(race_gameState.checksum);
 			}
 			race_gameState.terminal.print("done INGAME init with sockInfo, id = "
@@ -340,7 +343,6 @@ race_gameState.onresize = function() {
 }
 
 race_gameState.proc = function() {
-	// proc
 	// proc
 	if (race_gameState.maxFrames && race_gameState.maxFrames <= race_gameState.count) {
 		return;
@@ -413,12 +415,13 @@ race_gameState.proc = function() {
 				}
 			}
 			race_gameState.mvc.controlToModel(race_gameState.count, race_gameState.mySlot, myKeyCode);
+			// broadcast send
 			const checksum = race_gameState.checksum;
 			if (race_gameState.broadcastLag) {
 				setTimeout(function() {
 					if (race_gameState.doChecksum && loop == 0) {
-						if (race_gameState.verbose) {
-							console.log(" -- LAG -- " + race_gameState.broadcastLag + "ms ---,   broadcast valid frame = " + count);
+						if (race_gameState.broadcastSendVerbose) {
+							console.log(" -- LAG -- " + race_gameState.broadcastLag + "ms ---, SEND broadcast valid frame = " + count);
 							console.log("   WITH checksum = " + JSON.sortify(checksum));
 						}
 						race_gameState.socker?.emit('broadcast', {
@@ -435,8 +438,8 @@ race_gameState.proc = function() {
 				}, race_gameState.broadcastLag);
 			} else {
 				if (race_gameState.doChecksum && loop == 0) {
-					if (race_gameState.verbose) {
-						console.log("broadcast valid frame = " + count);
+					if (race_gameState.broadcastSendVerbose) {
+						console.log("SEND broadcast valid frame = " + count);
 						console.log("   WITH checksum = " + JSON.sortify(race_gameState.checksum));
 					}
 					race_gameState.socker?.emit('broadcast', {
