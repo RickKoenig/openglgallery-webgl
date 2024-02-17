@@ -646,14 +646,14 @@ window.addEventListener('load', function(event) {
 	mainload();
 });
 
-/* deprecated
+// deprecated
 // this one doesn't fire sometimes...
 window.addEventListener('unload', function(event) {
 	console.log('Unload event');
 	if (!unloaded)
 		mainexit();
 });
-*/
+
 
 // this one seems newer
 window.addEventListener('beforeunload', function(event) {

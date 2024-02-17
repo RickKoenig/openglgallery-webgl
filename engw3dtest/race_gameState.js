@@ -297,7 +297,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 			cols: 19,
 			rows: 1,
 			offx: 40,
-			offy: 60,
+			offy: 80,
 			scale: 2
 		};
 		if (race_gameState.doChecksum) {
@@ -306,6 +306,11 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 			race_gameState.termValid.print("VALID FRAMES");
 			race_gameState.termValid.doShow(showValidFrames);
 		}
+		//termParams.cols= 39;
+		termParams.offy = 120;
+		race_gameState.terminalFPS = new Terminal(race_gameState.roottree, [.2, .2, .1, 1], null, termParams);
+		race_gameState.terminalFPS.doShow(true);
+
 		race_gameState.validFrames = 0;
 		race_gameState.validOffset = 0; // shift race_gameState.discon, to save memory
 	}
@@ -361,7 +366,8 @@ race_gameState.proc = function() {
 		race_gameState.showPings.update(race_gameState.pingTimes, race_gameState.count);
 		// if any neg pings, speed up to catch up
 		const testCatchup = false;
-		let catchup = false;
+		let catchup = 0;
+		const delCatchup = .4;
 		const slack = 0;
 		if (testCatchup) {
 			// test neg ping times
@@ -371,21 +377,23 @@ race_gameState.proc = function() {
 			negPings[negId] = negTime - slack;
 			for (let i = 0; i < race_gameState.pingTimes.length; ++i) {
 				if (i != race_gameState.mySlot && race_gameState.pingTimes[i] < negPings[i]) {
-					catchup = true;
+					catchup = 1;
 					break;
 				}
 			}
 		} else {
 			// normal catchup
 			for (let i = 0; i < race_gameState.pingTimes.length; ++i) {
-				if (race_gameState.pingTimes[i] < -slack) {
-					catchup = true;
+				const comp = -slack - race_gameState.pingTimes[i];
+				if (comp > 0) {
+					catchup = Math.max(catchup, comp);
 					break;
 				}
 			}
+			catchup *= delCatchup;
 		}
 		// TEST disable catchup if uncommented
-		// catchup = false; // no catchup
+		// catchup = 0; // no catchup
 		if (catchup) {
 			race_gameState.negPingTree.mod.mat.color = [1,0,0,1];
 		}
@@ -403,7 +411,8 @@ race_gameState.proc = function() {
 			}
 		}
 		// process input
-		let loopCount = catchup ? 2 : 1;
+		let loopCount = Math.floor(catchup) + 1;// ? 5 : 1;
+		if (loopCount > 5) loopCount = 5;
 		for (let loop = 0; loop < loopCount; ++loop) {
 			let myKeyCode = keyCode;
 			const breakChecksum = false;
@@ -460,6 +469,7 @@ race_gameState.proc = function() {
 		}
 	}
 	race_gameState.roottree.proc(); // do animations that don't effect players
+	race_gameState.terminalFPS.print("FPS = " + fpsavg.toFixed(4));
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	beginscene(mainvp);

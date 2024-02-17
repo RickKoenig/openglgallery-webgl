@@ -105,7 +105,7 @@ window.GameA = class GameA {
         const startX = 100;
         const stepX = 60;
         for (let j = 0; j < this.numMoveNpcsY; ++j) {
-            const ang = j * 2 * Math.PI / this.numMoveNpcsY + angOffset;
+            const ang = j * 2 * CMath.PI / this.numMoveNpcsY + angOffset;
             const cosAng = CMath.cos(ang);
             const sinAng = CMath.sin(ang);
             //console.log("NOTICE: j = " + j + ", " + sinAng + " =  sin ( " + ang + " ) ");
