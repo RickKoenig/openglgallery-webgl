@@ -387,11 +387,12 @@ race_gameState.proc = function() {
 				const comp = -slack - race_gameState.pingTimes[i];
 				if (comp > 0) {
 					catchup = Math.max(catchup, comp);
-					break;
+					//break;
 				}
 			}
 			catchup *= delCatchup;
 		}
+		catchup = Math.floor(catchup);
 		// TEST disable catchup if uncommented
 		// catchup = 0; // no catchup
 		if (catchup) {
@@ -411,7 +412,7 @@ race_gameState.proc = function() {
 			}
 		}
 		// process input
-		let loopCount = Math.floor(catchup) + 1;// ? 5 : 1;
+		let loopCount = catchup + 1;// ? 5 : 1;
 		if (loopCount > 5) loopCount = 5;
 		for (let loop = 0; loop < loopCount; ++loop) {
 			let myKeyCode = keyCode;
