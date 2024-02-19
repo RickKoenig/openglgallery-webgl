@@ -97,8 +97,11 @@ function setframerate(fun,fps) {
 			window.clearInterval(intervalid);
 			intervalid = null;
 		}
-		if (fps && fun)
-			intervalid = window.setInterval(fun,Math.floor(1000*frametimewanted));
+		if (fps && fun) {
+			const interval = 16;//Math.floor(1000 * frametimewanted) * 2;
+			console.log("setInterval to " + interval);
+			intervalid = setInterval(fun, interval);
+		}
 		curfps = fps;
 	}
 }

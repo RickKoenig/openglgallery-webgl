@@ -367,7 +367,7 @@ race_gameState.proc = function() {
 		// if any neg pings, speed up to catch up
 		const testCatchup = false;
 		let catchup = 0;
-		const delCatchup = .4;
+		const delCatchup = 1;
 		const slack = 0;
 		if (testCatchup) {
 			// test neg ping times
@@ -413,7 +413,8 @@ race_gameState.proc = function() {
 		}
 		// process input
 		let loopCount = catchup + 1;// ? 5 : 1;
-		if (loopCount > 5) loopCount = 5;
+		const maxCatchup = 2;
+		if (loopCount > maxCatchup) loopCount = maxCatchup;
 		for (let loop = 0; loop < loopCount; ++loop) {
 			let myKeyCode = keyCode;
 			const breakChecksum = false;

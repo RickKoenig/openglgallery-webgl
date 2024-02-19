@@ -59,6 +59,7 @@ class CMath {
         const n6 = n4 * a * a;
         const n8 = n6 * a * a;
         const n10 = n8 * a * a;
+        const n12 = n10 * a * a;
         const d0 = 1;
         const d2 = d0 * 1 * 2;
         const d4 = d2 * 3 * 4;
@@ -131,7 +132,7 @@ class CMath {
             + n5 / d5
             - n7 / d7
             + n9 / d9
-            + n11 / d11
+            - n11 / d11
         ;
     }
 
