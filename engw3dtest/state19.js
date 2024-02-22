@@ -361,7 +361,7 @@ state19.proc = function() {
 		state19.procsim1(state19.lorenzsim);
 		state19.roottree.proc();
 	}
-	
+
 	// lookat the 0th arrow/vector
 	doflycam(state19.mvp); // modify the trs of the vp
 	

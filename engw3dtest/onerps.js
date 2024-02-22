@@ -5,6 +5,7 @@ onerps.frame = 0; // simple onerps.frame counter
 // instructions and info
 onerps.title = "One RevPS";
 onerps.text = "WebGL: This has a way of measuring time deltas.\n";
+onerps.procDelay = 10; // milli seconds
 
 onerps.load = function() {
 	preloadimg("../common/sptpics/font3_new.png");
@@ -20,7 +21,7 @@ onerps.repstr = function(str,i) {
 	}
 	return ret;
 };
-	
+
 // build a pretty node
 onerps.boxify = function(str) {
 	var oret = {};
@@ -124,6 +125,11 @@ onerps.init = function() {
 	mainvp.rot = [0,0,0];
 	onerps.oldclearcolor = mainvp.clearcolor;
 	mainvp.clearcolor = [.2,.2,.2];
+// UI debprint menu
+	debprint.addlist("onerps test variables",[
+		"onerps.procDelay",
+	]);
+
 };
 
 onerps.proc = function() {
@@ -146,6 +152,8 @@ onerps.proc = function() {
 // draw everything
 	beginscene(mainvp);
 	onerps.roottree.draw();
+	// test proc load with busyWait
+	busyWait(onerps.procDelay); // milli seconds
 };
 
 onerps.exit = function() {
@@ -160,4 +168,5 @@ onerps.exit = function() {
 	onerps.roottree = null;
 // restore previous viewport background color
 	mainvp.clearcolor = onerps.oldclearcolor;
+	debprint.removelist("onerps test variables");
 };

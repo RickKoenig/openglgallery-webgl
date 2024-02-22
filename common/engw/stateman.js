@@ -61,7 +61,7 @@ function initstate() {
 	showandgo(newstate.title, "init", passIntent);
 	maindebugsetafter(); // but debug after user
 	stateinited = true;
-	resetframestep();
+	Timers.resetframestep();
 	if (window.checkglerror) checkglerror("done init state");
 }
 
@@ -128,8 +128,7 @@ function nextstate() {
 		}
 	} while(statelist[stateidx].hidden);
 	if (mainproc) {
-		curfps = 0;
-		setframerate(mainproc, fpswanted);
+		Timers.setframerate(mainproc, fpswanted, true);
 	}
 	changestate(statelist[stateidx]);
 }
@@ -146,8 +145,7 @@ function prevstate() {
 		}
 	} while(statelist[stateidx].hidden);
 	if (mainproc) {
-		curfps = 0;
-		setframerate(mainproc, fpswanted);
+		Timers.setframerate(mainproc, fpswanted, true);
 	}
 	changestate(statelist[stateidx]);
 }
@@ -166,15 +164,13 @@ function selstate(sel) { // the selector element
 	changestate(statelist[newStateidx]);
 	// sometimes the screen locks up, roll the mouse wheel to unfreeze (chrome)
 	if (mainproc) {
-		curfps = 0;
-		setframerate(mainproc,fpswanted);
+		Timers.setframerate(mainproc, fpswanted, true);
 	}
 }
 
 function reloadstate() {
 	if (mainproc) {
-		curfps = 0;
-		setframerate(mainproc,fpswanted);
+		Timers.setframerate(mainproc, fpswanted, true);
 	}
 	changestate(state);
 }

@@ -17,7 +17,6 @@ var statelist = [
 	race_login,
 	race_lobby,
 	race_sentgo,
-	race_ingame,
 	race_results,
 	race_gameState,
 	

@@ -596,14 +596,14 @@ function maininit() {
 		} */
 		//mainproc(); // do 1 proc right away
 		//intervalid = window.setInterval(mainproc,intervaltime);
-		resetframestep();
-		setframerate(mainproc,fpswanted);
+		Timers.resetframestep();
+		Timers.setframerate(mainproc,fpswanted);
 		debprint.init();
 	}
 }
 
 function mainproc() {
-	setframerate(mainproc,fpswanted);
+	Timers.setframerate(mainproc,fpswanted);
 	inputproc();
 	//if (input.keystate[keycodes.DOWN]) {
 	//	clearlog();
@@ -617,7 +617,7 @@ function mainproc() {
 	procstate();
 	debprint.draw();
 // draw
-	measureproctime();
+	Timers.measureproctime();
 	++frame;
 }
 
@@ -625,7 +625,7 @@ function mainproc() {
 function mainexit() {
 	if (!dojavascript)
 		return;
-	setframerate(null,0);
+		Timers.setframerate(null,0);
 	//window.clearInterval(intervalid);
 	//intervalid = null;
 	//changestate(-1);

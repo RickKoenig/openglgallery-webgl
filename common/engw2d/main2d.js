@@ -190,11 +190,11 @@ function maininit() {
 	changestate(startstate);
 	//mainproc(); // do 1 proc right away
 	//window.setInterval(mainproc,intervaltime);
-	setframerate(mainproc,fpswanted);
+	Timers.setframerate(mainproc,fpswanted);
 }
 
 function mainproc() {
-	setframerate(mainproc,fpswanted);
+	Timers.setframerate(mainproc,fpswanted);
 	inputproc();
 	//if (input.keystate[keycodes.down]) {
 	//	clearlog();
@@ -211,7 +211,7 @@ function mainproc() {
 
 // leaving page
 function mainexit() {
-	setframerate(null,0);
+	Timers.setframerate(null,0);
 	//changestate(-1);
 	exitstate();
 }

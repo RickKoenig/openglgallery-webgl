@@ -338,7 +338,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[
 		"fpswanted",
-		"fpsavg",
+		"Timers.fpsavg",
 	]);
 };
 
@@ -471,7 +471,7 @@ race_gameState.proc = function() {
 		}
 	}
 	race_gameState.roottree.proc(); // do animations that don't effect players
-	race_gameState.terminalFPS.print("FPS = " + fpsavg.toFixed(4));
+	race_gameState.terminalFPS.print("FPS = " + Timers.fpsavg.toFixed(4));
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	beginscene(mainvp);

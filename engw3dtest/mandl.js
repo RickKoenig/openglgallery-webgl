@@ -158,7 +158,7 @@ mandl.init = function() {
 	mainvp.clearcolor = [0.05, .255, .505, 1.0];
 	
 	debprint.addlist("mandl variables, fps",[
-		"fpsavg"
+		"Timers.fpsavg"
 	]);
 };
 

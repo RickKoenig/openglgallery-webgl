@@ -32,15 +32,24 @@ debprint.list = {
 		"glc.clientHeight",
 		"debprint.vp",
 		//{name:"debprint.fontmodel",key:"fcolor",obj:debprint.fontmodel.mat},
-		"fpswanted",
-		"frametimewanted",
-		"frametimeactual",
-		"fpsavg",
-		"frametimeavg",
-		"curfps",
-		"proctimeactual",
-		"proctimeavg",
+
+		// Main3d, for Timers
 		"frame",
+		"fpswanted",
+
+		// Timers
+		// frames / second
+		"Timers.fpsactual",
+		"Timers.fpsavg",
+
+		// milli seconds / frame
+		"Timers.frametimewanted",
+		"Timers.frametimeactual",
+		"Timers.frametimeavg",
+
+		"Timers.proctimeactual",
+		"Timers.proctimeavg",
+		
 		"testvec",
 		"testobj",
 		"testobj2",
@@ -144,7 +153,7 @@ debprint.alter = function(parent,key,amount,clear) {
 // returns an array of {name:name = val,parent:parent,key:key}
 debprint.buildstr = function(name,parent,key) {
 	if (!name || !parent || key === null || key === undefined)
-		alert("bad buildstr !!"); // just checking
+		alertS("bad buildstr !!"); // just checking
 	var ret = [];
 	if (debprint.recurseLevel > 10)
 		return ret;

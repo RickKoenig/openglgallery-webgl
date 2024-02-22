@@ -253,7 +253,7 @@ function crn(name,r) {
 	var i;
 	for (i=0;i<3;++i)
 		if (!isFinite(r[i])) {
-			alert("not a number " + name + " " + i + " frametime " + frametime);
+			alert("not a number " + name + " " + i + " Timers.frametime " + Timers.frametime);
 			r[i] = 0;
 		}
 }
@@ -272,26 +272,26 @@ Tree2.prototype.proc = function() {
 			this.rot = vec3.create();
 		crn("proc1",this.rot);
 		crn("proc1vel",this.rotvel);
-		this.rot[0] = normalangrad(this.rot[0] + this.rotvel[0]*frametime);
-		this.rot[1] = normalangrad(this.rot[1] + this.rotvel[1]*frametime);
-		this.rot[2] = normalangrad(this.rot[2] + this.rotvel[2]*frametime);
+		this.rot[0] = normalangrad(this.rot[0] + this.rotvel[0]*Timers.frametime);
+		this.rot[1] = normalangrad(this.rot[1] + this.rotvel[1]*Timers.frametime);
+		this.rot[2] = normalangrad(this.rot[2] + this.rotvel[2]*Timers.frametime);
 		crn("proc2",this.rot);
 	}
 
 	if (this.transvel) {
 		if (!this.trans)
 			this.trans = vec3.create();
-		this.trans[0] += this.transvel[0]*frametime;
-		this.trans[1] += this.transvel[1]*frametime;
-		this.trans[2] += this.transvel[2]*frametime;
+		this.trans[0] += this.transvel[0]*Timers.frametime;
+		this.trans[1] += this.transvel[1]*Timers.frametime;
+		this.trans[2] += this.transvel[2]*Timers.frametime;
 	}
 	
 	if (this.scalevel) {
 		if (!this.scale)
 			this.scale = vec3.fromValues(1,1,1);
-		this.scale[0] *= Math.pow(this.scalevel[0],frametime);
-		this.scale[1] *= Math.pow(this.scalevel[1],frametime);
-		this.scale[2] *= Math.pow(this.scalevel[2],frametime);
+		this.scale[0] *= Math.pow(this.scalevel[0],Timers.frametime);
+		this.scale[1] *= Math.pow(this.scalevel[1],Timers.frametime);
+		this.scale[2] *= Math.pow(this.scalevel[2],Timers.frametime);
 	}
 	if (treeinfo.insamp) {
 		// advance to next frame
@@ -301,7 +301,7 @@ Tree2.prototype.proc = function() {
 		else if (this.qrotsamp)
 			nframes = this.qrotsamp.length-1;
 		if (nframes > 0) { // 0 doesn't count too
-			this.frm += treeglobals.frmstep*treeglobals.animframestep*frametime;
+			this.frm += treeglobals.frmstep*treeglobals.animframestep*Timers.frametime;
 			if (this.frm >= nframes) {
 				this.frm -= nframes;
 			} else if (this.frm < 0) {

@@ -398,3 +398,16 @@ function arrayEquals(a, b) {
 function getRandomInt(max) {
 	return Math.floor(Math.random() * max);
 }
+
+// test un-responsiveness 
+function busyWait(timeMS) {
+	timeMS = range(0, timeMS, 10000);
+	const startTime = window.performance.now();
+	while(true) {
+		const endTime = window.performance.now();
+		const diffTime = endTime - startTime;
+		if (diffTime >= timeMS) {
+			break;
+		}
+	}
+}

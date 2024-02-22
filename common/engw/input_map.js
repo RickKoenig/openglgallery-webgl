@@ -115,11 +115,6 @@ function bmousewheel(e) {
                  */
  		rawwheeldelta += -e.detail/3;
 	}
-/*	// sometimes the screen locks up, roll the mouse wheel to unfreeze (chrome)
-	if (mainproc) {
-		curfps = 0;
-		setframerate(mainproc,fpswanted);
-	} */
 	if (e.preventDefault)
         e.preventDefault();
 }
