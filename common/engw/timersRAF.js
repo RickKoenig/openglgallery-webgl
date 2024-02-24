@@ -1,11 +1,13 @@
 'use strict';
 
+// timer class using requestAnimationFrame
 window.Timers = class Timers
 {
 	// public
 	// frames per second
 	static fpsavg = 0;
 	static fpsactual = 0;
+	static fpsrefreshactual = 0;
 	// milli seconds
 	static frametimewanted = 0; // from fpswanted
 	static frametimeactual = 0; // from start of 1 frame to start of next frame
@@ -15,24 +17,53 @@ window.Timers = class Timers
 	static proctimeavg = 0;
 
 	// private
-	static #intervalId = null;
-	static #curfps = 0;
+	static #rafId = null;
 	static #measureProcStart = 0; // internal for proc deltas
-	static #rfs = false; // resetframestep
+	static #fun = null;
+	static #curfpswanted = 0;
 
-	static resetframestep = function() {
-		Timers.#rfs = true;
-	}
 	static #avgsize = 1000;
 	static #avgframeclass = new Runavg(Timers.#avgsize);
 	static #avgprocclass = new Runavg(Timers.#avgsize);
-	static #testrunavg = true;
+	static #avgrefreshclass = new Runavg(4);
+	static #testrunavg = false;
+	static #funcnt = 0;
+	static #lasttimestamp = null;
+	
+	static resetframestep = function() {
+	}
+	
 	static #dotestrunavg = function() {
 		var arunavg = new Runavg(5);
 		const avgData = [7, 4, 9, 6, 3, 2, 1, 1, 5, 5, 5, 5, 5];
 		for (const data of avgData) {
 			const res = arunavg.add(data);
 			console.log("run avg so far = " + res);
+		}
+	}
+	
+	static #RAFfun = function(timestamp) {
+		if (Timers.#fun) {
+			// measure screen refresh rate
+			Timers.#rafId = requestAnimationFrame(Timers.#RAFfun);
+			if (Timers.#lasttimestamp !== null) {
+				let diff = timestamp - Timers.#lasttimestamp;
+				if (diff <= 0) diff = 1;
+				//console.log("diff timestamp = " + diff);
+				Timers.fpsrefreshactual = Math.round(Timers.#avgrefreshclass.add(Math.round(1000 / diff)));
+			}
+			Timers.#lasttimestamp = timestamp;
+			// call fun depending on fpswanted
+			//console.log("funcnt = " + Timers.#funcnt);
+			Timers.#funcnt -= Timers.#curfpswanted;
+			while (Timers.#funcnt < 0) {
+				Timers.#fun();
+				Timers.#funcnt += Timers.fpsrefreshactual;
+				if (Timers.fpsrefreshactual == 0) break; // don't have refresh rate yet
+			}
+		} else {
+			cancelAnimationFrame(Timers.#rafId);
+			Timers.#rafId = null;
 		}
 	}
 
@@ -50,13 +81,9 @@ window.Timers = class Timers
 			Timers.frametimewanted = 1000/fps;
 		else
 			Timers.frametimewanted = 0;
+		Timers.#curfpswanted = fps;
 		if (window.performance && window.performance.now) {
 			var measureProcEnd = performance.now();
-			// resetframestep
-			if (Timers.#rfs) {
-				Timers.#measureProcStart = measureProcEnd;
-				Timers.#rfs = false;
-			}
 			Timers.frametimeactual = measureProcEnd-Timers.#measureProcStart;
 			Timers.#measureProcStart = measureProcEnd;
 		} else {
@@ -66,22 +93,15 @@ window.Timers = class Timers
 		Timers.fpsactual = 1000/Timers.frametimeactual
 		Timers.fpsavg = 1000/Timers.frametimeavg;
 		Timers.frametime = .001 * Timers.frametimeactual;
-		if (forceInterval) Timers.#curfps = 0; // clear and set new interval
-		if (fps != Timers.#curfps) {
-			if (Timers.#intervalId) {
-				window.clearInterval(Timers.#intervalId);
-				Timers.#intervalId = null;
-			}
-			if (fps && fun) {
-				const interval = Timers.frametimewanted;
-				console.log("setInterval to " + interval);
-				Timers.#intervalId = setInterval(fun, interval);
-			}
-			Timers.#curfps = fps;
+		// start RAF
+		if (!Timers.#fun && fun) {
+			Timers.#fun = fun;
+			Timers.#RAFfun(null);
 		}
+		Timers.#fun = fun;
 	}
 
-	// called at end of proc
+	// called at end of mainproc
 	static measureproctime = function() {
 		if (window.performance && window.performance.now) {
 			var msendproctime = performance.now();

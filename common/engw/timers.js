@@ -1,5 +1,6 @@
 'use strict';
 
+// timer class using setInterval
 window.Timers = class Timers
 {
 	// public
@@ -26,7 +27,7 @@ window.Timers = class Timers
 	static #avgsize = 1000;
 	static #avgframeclass = new Runavg(Timers.#avgsize);
 	static #avgprocclass = new Runavg(Timers.#avgsize);
-	static #testrunavg = true;
+	static #testrunavg = false;
 	static #dotestrunavg = function() {
 		var arunavg = new Runavg(5);
 		const avgData = [7, 4, 9, 6, 3, 2, 1, 1, 5, 5, 5, 5, 5];
@@ -74,14 +75,18 @@ window.Timers = class Timers
 			}
 			if (fps && fun) {
 				const interval = Timers.frametimewanted;
-				console.log("setInterval to " + interval);
+				//console.log("setInterval to " + interval);
 				Timers.#intervalId = setInterval(fun, interval);
 			}
 			Timers.#curfps = fps;
 		}
 	}
+	
+	// continue animation, setInterval doesn't need this since it's not a oneshot
+	static refire = function(fun) {
+	}
 
-	// called at end of proc
+	// called at end of mainproc
 	static measureproctime = function() {
 		if (window.performance && window.performance.now) {
 			var msendproctime = performance.now();

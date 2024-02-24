@@ -623,9 +623,11 @@ function mainproc() {
 
 // leaving page
 function mainexit() {
-	if (!dojavascript)
+	console.log("main exit");
+	if (!dojavascript) {
 		return;
-		Timers.setframerate(null,0);
+	}
+	Timers.setframerate(null,0);
 	//window.clearInterval(intervalid);
 	//intervalid = null;
 	//changestate(-1);

@@ -41,6 +41,7 @@ debprint.list = {
 		// frames / second
 		"Timers.fpsactual",
 		"Timers.fpsavg",
+		"Timers.fpsrefreshactual",
 
 		// milli seconds / frame
 		"Timers.frametimewanted",

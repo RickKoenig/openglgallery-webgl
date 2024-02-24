@@ -199,7 +199,7 @@ ModelFont.prototype.print = function(text) { // commit
 	
 	// check sampler and texture
 	if (this.shader.uSampler0 !== undefined && !this.reftextures[0]) {
-		alert("missing texture on font '" + this.name + "'  shader '" + this.shader.name + "'");
+		alertS("missing texture on font '" + this.name + "'  shader '" + this.shader.name + "'");
 	}	
 };
 
