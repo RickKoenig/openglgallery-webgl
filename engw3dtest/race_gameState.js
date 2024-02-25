@@ -266,9 +266,6 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		}
 
 		const room = race_gameState.sockerInfo.room;
-		race_gameState.pingTimes = Array(room.slots.length);
-		race_gameState.discon = Array(room.slots.length);
-		race_gameState.showPings = new Indicator(race_gameState.roottree, room.slots.length, race_gameState.mySlot);
 
 		race_gameState.negPingTree = buildplanexy("anegping",.5,.5,null,"flat");
 		race_gameState.negPingTree.trans = [-7, 9.15, 10];
@@ -313,6 +310,10 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 		race_gameState.validFrames = 0;
 		race_gameState.validOffset = 0; // shift race_gameState.discon, to save memory
+
+		race_gameState.pingTimes = Array(room.slots.length);
+		race_gameState.discon = Array(room.slots.length);
+		race_gameState.showPings = new Indicator(race_gameState.roottree, room.slots.length, race_gameState.mySlot);
 	}
 
 	// the 3D viewport
@@ -367,7 +368,7 @@ race_gameState.proc = function() {
 		// if any neg pings, speed up to catch up
 		const testCatchup = false;
 		let catchup = 0;
-		const delCatchup = 1;
+		const delCatchup  = 2.8;
 		const slack = 0;
 		if (testCatchup) {
 			// test neg ping times
@@ -413,7 +414,7 @@ race_gameState.proc = function() {
 		}
 		// process input
 		let loopCount = catchup + 1;// ? 5 : 1;
-		const maxCatchup = 2;
+		const maxCatchup = 8;
 		if (loopCount > maxCatchup) loopCount = maxCatchup;
 		for (let loop = 0; loop < loopCount; ++loop) {
 			let myKeyCode = keyCode;
