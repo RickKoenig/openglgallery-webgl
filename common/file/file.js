@@ -152,6 +152,10 @@ var logger_str = "";
 function logger(str) {
 	if (logmode)
 		logger_str += str;
+	// remove last carriage return if exists
+	if (str.slice(-1) === '\n') {
+		str = str.slice(0, -1);
+	}
 	console.log(str);
 }
 

@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "chrome",
             "request": "launch",
@@ -30,6 +31,13 @@
             "request": "launch",
             "name": "Run Race Net console",
             "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_console",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net console RAF",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_console",
             "webRoot": "${workspaceFolder}"
         },
     ]

@@ -1,5 +1,14 @@
 // javascript for main.html
 
+/* If browser back button was used, flush cache */
+(function () {
+	window.onpageshow = function(event) {
+		if (event.persisted) {
+			window.location.reload();
+		}
+	};
+})();
+
 if (typeof isMobile === 'undefined')
 	var isMobile = false;
 var infullscreen = false;
@@ -647,7 +656,7 @@ window.addEventListener('load', function(event) {
 	console.log('Load event');
 	mainload();
 });
-
+/*
 // deprecated
 // this one doesn't fire sometimes...
 window.addEventListener('unload', function(event) {
@@ -655,7 +664,7 @@ window.addEventListener('unload', function(event) {
 	if (!unloaded)
 		mainexit();
 });
-
+*/
 
 // this one seems newer
 window.addEventListener('beforeunload', function(event) {

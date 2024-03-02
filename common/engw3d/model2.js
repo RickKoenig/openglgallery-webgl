@@ -10,7 +10,6 @@ function Model2(aname) {
 	this.mats = []; // materials, all user defined, just for each group
 	this.grps = []; // verts, offsets, name, textures, info, etc.
 	this.flags = 0;
-	//this.texflags = globaltexflags;
 	refcountmodellist[aname] = this;
 }
 
@@ -26,18 +25,13 @@ Model2.createmodel = function(aname) {
 
 // set model2 verts (3 floats each)
 Model2.prototype.setverts = function(verts) {
-	//if (verts.length%3)
-	//	alert("verts array not a multiple of 3 on model2 '" + this.name + "' length " + verts.length);
 	this.verts = mesharray2vert(verts,3);
 	if (!this.verts)
 		alert("verts array not good on model2 '" + this.name + "' length " + verts.length);
-	//this.nvert = verts.length;
 };
 
 // set model norms (3 floats each)
 Model2.prototype.setnorms = function(norms) {
-	//if (norms.length%3)
-	//	alert("norms array not a multiple of 3 on model '" + this.name + "' length " + norms.length);
 	this.norms = mesharray2vert(norms,3);
 	if (!this.norms)
 		alert("norms array not good on model2 '" + this.name + "' length " + norms.length);
@@ -73,12 +67,9 @@ Model2.prototype.setcverts = function(cverts) {
 
 // set model2 faces (1 int each)
 Model2.prototype.setfaces = function(faces) {
-	//if (faces.length%3)
-	//	alert("faces array not a multiple of 3 on model2 '" + this.name + "' length " + faces.length);
 	this.faces = mesharray2face(faces,3);
 	if (!this.faces)
 		alert("faces array not good on model2 '" + this.name + "' length " + faces.length);
-	//this.nface = faces.length/3;
 };
 
 // set model2 mesh
@@ -110,7 +101,6 @@ Model2.prototype.addmat = function(matname,texname0,nface,nvert) {
 	}
 	grp.name = matname;
 	grp.shader = shaderPrograms[matname];
-//	grp.texture = preloadedimages[texname0];
 	grp.nvert = nvert;
 	grp.nface = nface;
 	if (len == 0) {
@@ -164,7 +154,6 @@ Model2.prototype.commit = function() {
 	if (this.faces)
 		arrfaces = new Uint16Array(meshface2array(this.faces,3));
 	var i,n = this.grps.length;
-	//this.hasalpha = false;
 	this.flags &= ~modelflagenums.HASALPHA;
 	for (i=0;i<n;++i) {
 		var grp = this.grps[i];
@@ -248,7 +237,6 @@ Model2.prototype.commit = function() {
 					grp.reftextures[j] = Texture.createtexture(grp.texturenames[j]); 
 					if (grp.reftextures[j] && grp.reftextures[j].hasalpha) {
 						grp.hasalpha = true;
-						//this.hasalpha = true;
 						if (i == 0 && j == 0)
 							this.flags |= modelflagenums.HASALPHA;
 					}
@@ -257,37 +245,6 @@ Model2.prototype.commit = function() {
 				}
 			}	
 		}
-/*
-		// build texture0
-		grp.hasalpha = false;
-		if (grp.shader.uSampler0 !== undefined) { '
-			if (grp.texturenames[0]) {
-				grp.reftextures[0] = Texture.createtexture(grp.texturenames[0]); 
-				if (grp.reftextures[0] && grp.reftextures[0].hasalpha) {
-					grp.hasalpha = true;
-					//this.hasalpha = true;
-					if (i == 0)
-						this.flags |= modelflagenums.HASALPHA;
-				}
-			} else {
-				alert("missing texture0 on model2 '" + this.name + "'  shader '" + grp.shader.name + "' grp " + i);
-			}
-		}	
-
-		// build texture1
-		if (grp.shader.uSampler1 !== undefined) {
-			if (grp.texturenames[1]) {
-				grp.reftextures[1] = Texture.createtexture(grp.texturenames[1]); 
-				if (grp.reftextures[1] && grp.reftextures[1].hasalpha) {
-					grp.hasalpha = true;
-					//this.hasalpha = true;
-					//this.flags |= modelflagenums.HASALPHA;
-				}
-			} else {
-				alert("missing texture1 on model2 '" + this.name + "'  shader '" + grp.shader.name + "' grp " + i);
-			}
-		}
-	*/
 	}
 	setbbox(this);
 };
@@ -304,14 +261,11 @@ Model2.prototype.draw = function() {
 	var i,n = this.mats.length;
 	if (this.flags & modelflagenums.NOZBUFFER)
 	    gl.disable(gl.DEPTH_TEST); // turn off zbuffer
-	//if (n > 1) // draw only the first group
-	//	n = 1;
 	for (i=0;i<n;++i) {
 		var grp = this.grps[i];
 		var mat = this.mats[i];
 		var shaderProgram;
 		if (shadowmap.inshadowmapbuild)
-			//if (this.reftexture)
 			if (grp.reftextures[0])
 				shaderProgram = shadershadowmapbuild;
 			else
@@ -331,25 +285,21 @@ Model2.prototype.draw = function() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, grp.glverts);
 	    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,3,gl.FLOAT, false, 0, 0);
 	    
-	    //if (grp.glnorms) {
 	    if (grp.glnorms && shaderProgram.normalAttribute !== undefined) {
 	    	gl.bindBuffer(gl.ARRAY_BUFFER, grp.glnorms);
 	    	gl.vertexAttribPointer(shaderProgram.normalAttribute,3,gl.FLOAT, false, 0, 0);
 		}
 		
-	    //if (grp.gluvs) {
 	    if (grp.gluvs && shaderProgram.textureCoordAttribute !== undefined) {
 	    	gl.bindBuffer(gl.ARRAY_BUFFER, grp.gluvs);
 	    	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute,2,gl.FLOAT, false, 0, 0);
 		}
 		
-	    //if (grp.gluvs2) {
 	    if (grp.gluvs2 && shaderProgram.textureCoordAttribute2 !== undefined) {
 	    	gl.bindBuffer(gl.ARRAY_BUFFER, grp.gluvs2);
 	    	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute2,2,gl.FLOAT, false, 0, 0);
 		}
 		
-	    //if (grp.glcverts) {
 	    if (grp.glcverts && shaderProgram.colorAttribute !== undefined) {
 	    	gl.bindBuffer(gl.ARRAY_BUFFER, grp.glcverts);
 	    	gl.vertexAttribPointer(shaderProgram.colorAttribute,4,gl.FLOAT, false, 0, 0);
@@ -364,20 +314,6 @@ Model2.prototype.draw = function() {
 					gl.bindTexture(gl.TEXTURE_2D, grp.reftextures[j].gltexture);
 			}
 		}
-		/*
-		if (grp.reftextures[0]) {
-			gl.activeTexture(gl.TEXTURE0);
-			if (grp.reftextures[0].iscubemap)
-				gl.bindTexture(gl.TEXTURE_CUBE_MAP, grp.reftextures[0].gltexture);
-			else
-				gl.bindTexture(gl.TEXTURE_2D, grp.reftextures[0].gltexture);
-		}
-		
-		if (grp.reftextures[1]) {
-			gl.activeTexture(gl.TEXTURE1);
-			gl.bindTexture(gl.TEXTURE_2D, grp.reftextures[1].gltexture);
-		}
-		*/
 		if (!grp.hasalpha) { // turn it off
 			gl.disable(gl.BLEND);
 			if (shadowmap.inshadowmapbuild)
@@ -399,7 +335,6 @@ Model2.prototype.draw = function() {
 		if (!grp.hasalpha) { // turn it back on
 			if (shadowmap.inshadowmapbuild)
 				gl.cullFace(gl.BACK);
-				//gl.frontFace(gl.CW);
 			gl.enable(gl.BLEND);
 		}
 	}
@@ -464,17 +399,6 @@ Model2.prototype.glfreenoref = function() {
 				grp.reftextures[j] = null;
 			}
 		}
-		/*
-		if (grp.reftextures[0]) {
-			grp.reftextures[0].glfree();
-			grp.reftextures[0] = null;
-		}
-		
-		if (grp.reftextures[1]) {
-			grp.reftextures[1].glfree();
-			grp.reftextures[1] = null;
-		}
-		*/
 	}
 };
 
@@ -507,22 +431,12 @@ Model2.prototype.log = function() {
 		var fs = grp.nface;
 		modellog += "      grp vo " + vo + " vs " + vs + " fo " + fo + " fs " + fs;
 		modellog += " shader '" + grp.name + "'";
-	//	modellog += " shadername '" + grp.name + "'";
 		for (var j=0;j<maxTextures;++j) {
 			if (grp.texturenames[j]) {
 				modellog += " texname" + j + " '" + grp.texturenames[j] + "'";
 			}
 		}
-		/*
-		if (grp.texturenames[0])
-			modellog += " texname0 '" + grp.texturenames[0] + "'";
-		if (grp.texturenames[1])
-			modellog += " texname1 '" + grp.texturenames[1] + "'"; */
-	//	modellog += " verts " + this.verts.length;
-	//	modellog += " faces " + this.faces.length;
-	//		var texnam = "---";
 		modellog += "\n";
 	}
 	logger(modellog + "      ngroups " + n + "\n\n");
 };
-

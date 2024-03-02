@@ -317,8 +317,7 @@ race_console.doCommand = function(cmdStr) {
 				   // no new members, host can leave without destroying the room
 			if (race_console.socker) {
 				let gameType = words[0];
-				if (!gameType) gameType = 'a';
-				//if (!gameType) gameType = "a";
+				if (!gameType) gameType = 'a'; // default
 				if (gameType != 'a' && /*gameType != 'b' && */gameType != undefined) {
 					race_console.terminal.print("not a valid gameType '" + gameType + "'");
 					break;
