@@ -5,14 +5,29 @@ var race_track = {};
 race_track.text = "WebGL: Track constructor and builder";
 race_track.title = "race_track";
 
+// trees
 race_track.roottree;
-race_track.multi;
-race_track.dtree;
+race_track.multiTree;
+race_track.datatexTree;
+race_track.turnTree;
+// data texture
 race_track.datatex; // data texture
 
 race_track.debvars = {
 	testarr:[3,4,[5,7],6],
 	testobj:{"hi":40,"ho":[50,99]},
+};
+
+race_track.mapUVs = function(mesh) {
+    mesh.uvs = [];
+    for (let i = 0; i < mesh.verts.length; i += 3) {
+        const x = mesh.verts[i];
+        const y = mesh.verts[i + 1];
+        const u = .5 * x + .5;
+        const v = -.5 * y + .5;
+        mesh.uvs.push(u);
+        mesh.uvs.push(v);
+    }
 };
 
 // load these before init
@@ -31,102 +46,23 @@ race_track.init = function() {
     race_track.roottree = new Tree2("root");
     race_track.roottree.trans = [0,0,3];
 
-	// start build a datatexture procedurally
-    var texX = 128;
-    var texY = 128;
-    var invTexX = 1/texX; // step
-    var invTexY = 1/texY;
-    var im = 2*invTexX;
-    var ib = invTexX - 1;
-    var jm = 2*invTexY;
-    var jb = invTexY - 1;
-    var texdataarr32 = new Uint32Array(texX*texY); // ABGR
-    var i,j,k4=0;
-    for (j=0;j<texY;++j) {
-        var jo = j&1;
-        var jf = j*jm + jb;
-        for (i=0;i<texX;++i,++k4) {
-            var io = i&1;
-            var ief = i*im + ib;
-            // plus some BLUE 96 or 0x60
-            if (io ^ jo) { // checkerboard ODD
-                if (ief*ief + jf*jf < 1) { // inside circle
-                    texdataarr32[k4] = 0xff60ffff; // GREEN + RED
-                } else { // outside circle
-                    texdataarr32[k4] = 0xff6000ff; // BLACK + RED
-                }
-            } else { // checkerboard EVEN
-                if (ief*ief + jf*jf < 1) { // inside circle
-                    texdataarr32[k4] = 0xff60ff00; // GREEN
-                } else { // outside circle
-                    texdataarr32[k4] = 0xff600000; // BLACK
-                }
-            }
-        }
-    }
-    race_track.datatex = DataTexture.createtexture("datatex",texX,texY,texdataarr32);
-	// end build a datatexture procedurally
-	
-    // draw the one with the data texture
-    race_track.dtree = buildplanexy("dataTexPlane",1,1,"datatex","tex");
-    race_track.roottree.linkchild(race_track.dtree);
+    // data texture tree
+    race_track.datatexTree = raceGetDataTex();
+    race_track.roottree.linkchild(race_track.datatexTree);
 
-    // test multi material 'Model2' with mesh data
-    var multimesh = {
-        "verts": [ // centered
-        // front (POSZ) switched
-            -1, 1,0,
-             1, 1,0,
-            -1,-1,0,
-             1,-1,0,
-
-            -1,-1,0,
-             1,-1,0,
-            -1,-3,0,
-             1,-3,0,
-        ],
-        "uvs": [
-        // front
-            0,0,
-            1,0,
-            0,1,
-            1,1,
-
-            .375,.375,
-            .625,.375,
-            .375,.625,
-            .625,.625,
-        ],
-        "faces": [	
-        // front
-            0, 1, 2,
-            3, 2, 1,
-            
-            4, 5, 6,
-            7, 6, 5,
-        ]
-    };
-    
-    var multimodel = Model2.createmodel("multimaterial");
-    race_track.frame = 0;
-    if (multimodel.refcount == 1) {
-        multimodel.setmesh(multimesh);
-        multimodel.addmat("tex","take0016.jpg",2,4);
-        multimodel.addmat("tex","maptestnck.png",2,4);
-        multimodel.commit();
-    }
-
-    race_track.multi = new Tree2("multimaterial");
-    race_track.multi.setmodel(multimodel);
-
-    race_track.multi.trans = [-1.6,1,0];
-    race_track.multi.scale = [.5,.5,1];
-    race_track.roottree.linkchild(race_track.multi);
-
-    var multi2 = race_track.multi.newdup();
-    multi2.trans = [-2.8,1,0];
+    // multi material
+    race_track.multiTree = raceGetMultiMat();    
+    race_track.roottree.linkchild(race_track.multiTree);
+    // make a copy of multi model
+    var multi2 = race_track.multiTree.newdup();
+    multi2.trans = [3.2,1,0];
     race_track.roottree.linkchild(multi2);
+
+    // make track 'multiTurn'
+    race_track.turnTree = raceGetTurn();
+    race_track.roottree.linkchild(race_track.turnTree);
 	
+    // camera viewport
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.125,.5,.75,1];
 
@@ -143,21 +79,16 @@ race_track.proc = function() {
 };
 
 race_track.exit = function() {
-	if (race_track.datatex) {
-		race_track.datatex.glfree();
-		race_track.datatex = null;
-	}
-	race_track.bm32 = null;
+    // ui
 	debprint.removelist("race_track_debug");
+	clearbuts('race_track_buts');
 	// show current usage
 	race_track.roottree.log();
 	logrc();
-	logger("after roottree glfree\n");
-	race_track.roottree.glfree();
-	
 	// show usage after cleanup
+	race_track.roottree.glfree();
+	logger("after roottree glfree\n");
 	logrc();
 	race_track.roottree = null;
 	logger("exiting webgl race_track\n");
-	clearbuts('race_track_buts');
 };

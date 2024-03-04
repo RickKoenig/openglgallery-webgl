@@ -288,31 +288,6 @@ Model.prototype.commit = function() {
 			}
 		}
 	}
-	/*
-	// build texture0
-	//this.hasalpha = false;
-	if (this.shader.uSampler0 !== undefined) {
-		if (this.texturenames[0]) {
-			this.reftextures[0] = Texture.createtexture(this.texturenames[0]); 
-			if (this.reftextures[0] && this.reftextures[0].hasalpha)
-				//this.hasalpha = true;
-				this.flags |= modelflagenums.HASALPHA;
-		} else {
-			alert("missing texture0 '" + this.texturenames[0] + "' on model '" + this.name + "'  shader '" + this.shader.name + "'");
-		}
-	}
-	
-	// build texture1
-	if (this.shader.uSampler1 !== undefined) {
-		if (this.texturenames[1]) {
-			this.reftextures[1] = Texture.createtexture(this.texturenames[1]); 
-			if (this.reftextures[1] && this.reftextures[1].hasalpha)
-				//this.hasalpha = true;
-				this.flags |= modelflagenums.HASALPHA;
-		} else {
-			alert("missing texture1 '" + this.texturenames[1] + "' on model '" + this.name + "'  shader '" + this.shader.name + "'");
-		}
-	}*/
 	setbbox(this);
 };
 
@@ -572,9 +547,9 @@ Model.prototype.draw = function() {
 				vertLength = this.verts.length;
 			if (this.flags & modelflagenums.STRIP) { // no faces, let's try GL_TRIANGLE_STRIP
 				gl.drawArraysInstanced(gl.TRIANGLE_STRIP,0,vertLength,this.numInstances); // *3 ?
-			} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_STRIP
+			} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_FAN
 				gl.drawArraysInstanced(gl.TRIANGLE_FAN,0,vertLength,this.numInstances); // *3 ?
-			} else { // no faces, let's try GL_TRIANGLE_STRIP
+			} else { // no faces, let's try GL_TRIANGLES
 				gl.drawArraysInstanced(gl.TRIANGLES,0,vertLength,this.numInstances); // *3 ?
 			}
 		}
@@ -590,9 +565,9 @@ Model.prototype.draw = function() {
 				vertLength = this.verts.length;
 			if (this.flags & modelflagenums.STRIP) { // no faces, let's try GL_TRIANGLE_STRIP
 				gl.drawArrays(gl.TRIANGLE_STRIP,0,vertLength); // *3 ?
-			} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_STRIP
+			} else if (this.flags & modelflagenums.FAN) { // no faces, let's try GL_TRIANGLE_FAN
 				gl.drawArrays(gl.TRIANGLE_FAN,0,vertLength); // *3 ?
-			} else { // no faces, let's try GL_TRIANGLE_STRIP
+			} else { // no faces, let's try GL_TRIANGLES
 				gl.drawArrays(gl.TRIANGLES,0,vertLength); // *3 ?
 			}
 		}
@@ -710,6 +685,13 @@ Model.prototype.log = function() {
 		}
 		modellog += " faces " + numfaces;
 		totalfaces += numfaces;
+	}
+	if (this.flags & modelflagenums.STRIP) {
+		modellog += " --STRIP--";
+	} else if (this.flags & modelflagenums.FAN) {
+		modellog += " --FAN--";
+	} else {
+		modellog += " --TRIANGLES--";
 	}
 	modellog += " shadername '" + this.shadername + "'";
 	for (var i=0;i<maxTextures;++i) {

@@ -88,7 +88,7 @@ Model2.prototype.setmesh = function(mesh) {
 		this.setfaces(mesh.faces);
 };
 
-Model2.prototype.addmat = function(matname,texname0,nface,nvert) {
+Model2.prototype.addmat = function(matname,texname0,nface,nvert, drawType) {
 	var len = this.grps.length;
 	var mat = {};
 	var grp = {};
@@ -111,20 +111,21 @@ Model2.prototype.addmat = function(matname,texname0,nface,nvert) {
 		grp.vertidx = this.grps[len].vertidx + this.grps[len].nvert;
 		grp.faceidx = this.grps[len].faceidx + this.grps[len].nface;
 	}
+	grp.drawType = drawType;
 	this.grps.push(grp);
 	this.mats.push(mat); // empty user defined uniforms
 	return grp;
 };
 
 // textures 0 and 1
-Model2.prototype.addmat2t = function(matname,texname0,texname1,nface,nvert) {
-	var grp = this.addmat(matname,texname0,nface,nvert);
+Model2.prototype.addmat2t = function(matname,texname0,texname1,nface,nvert, drawType) {
+	var grp = this.addmat(matname,texname0,nface,nvert, drawType);
 	grp.texturenames[1] = texname1;
 };
 
 // textures 0 to N-1
-Model2.prototype.addmatNtArray = function(matname,texNameArray,nface,nvert) {
-	var grp = this.addmat(matname,texNameArray[0],nface,nvert);
+Model2.prototype.addmatNtArray = function(matname,texNameArray,nface,nvert, drawType) {
+	var grp = this.addmat(matname,texNameArray[0],nface,nvert, drawType);
 	for (var i=1;i<texNameArray.length;++i)
 		grp.texturenames[i] = texNameArray[i];
 };
@@ -226,7 +227,9 @@ Model2.prototype.commit = function() {
 			
 			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,subarr,gl.STATIC_DRAW);
 		} else if (this.verts.length%3) {
-			alert("no faces and verts not a multiple of 3 on model2 '" + this.name + "' grp " + i);
+			if (!grp.drawType) { // no longer required since FAN and STRIP
+				;//alert("no faces and verts not a multiple of 3 on model2 '" + this.name + "' grp " + i);
+			}
 		}
 		
 		// build textureN
@@ -323,7 +326,11 @@ Model2.prototype.draw = function() {
 	    if (grp.glfaces) {
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,grp.glfaces);
 	     	gl.drawElements(gl.TRIANGLES,grp.nface*3,gl.UNSIGNED_SHORT,0);
-		} else {
+		} else if (grp.drawType == modelflagenums.STRIP) {
+	    	gl.drawArrays(gl.TRIANGLE_STRIP,0,grp.nvert); // *3 ?
+		} else if (grp.drawType == modelflagenums.FAN) {
+	    	gl.drawArrays(gl.TRIANGLE_FAN,0,grp.nvert); // *3 ?
+		} else { // TRIANGLES
 	    	gl.drawArrays(gl.TRIANGLES,0,grp.nvert); // *3 ?
 		}
 		/*
@@ -409,8 +416,6 @@ Model2.prototype.newdup = function() {
 };
 
 Model2.prototype.log = function() {
-
-
 	var modellog = "   Model2 '" + this.name + "'";
 	modellog += " refcount " + this.refcount;
 	if (this.verts) {
@@ -418,9 +423,10 @@ Model2.prototype.log = function() {
 		totalverts += this.verts.length;
 	}
 	if (this.faces) {
-		modellog += " faces " + this.faces.length + "\n";
+		modellog += " faces " + this.faces.length;
 		totalfaces += this.faces.length;
 	}
+	modellog += "\n";
 
 	var i,n = this.grps.length;
 	for (i=0;i<n;++i) {
@@ -430,6 +436,13 @@ Model2.prototype.log = function() {
 		var fo = grp.faceidx;
 		var fs = grp.nface;
 		modellog += "      grp vo " + vo + " vs " + vs + " fo " + fo + " fs " + fs;
+		if (grp.drawType == modelflagenums.STRIP) {
+			modellog += " --STRIP--";
+		} else if (grp.drawType == modelflagenums.FAN) {
+			modellog += " --FAN--";
+		} else {
+			modellog += " --TRIANGLES--";
+		}
 		modellog += " shader '" + grp.name + "'";
 		for (var j=0;j<maxTextures;++j) {
 			if (grp.texturenames[j]) {
@@ -438,5 +451,5 @@ Model2.prototype.log = function() {
 		}
 		modellog += "\n";
 	}
-	logger(modellog + "      ngroups " + n + "\n\n");
+	logger(modellog + "      ngroups " + n + "\n");
 };
