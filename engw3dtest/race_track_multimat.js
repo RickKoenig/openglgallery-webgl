@@ -47,7 +47,5 @@ function raceGetMultiMat() {
     }
     const multiTree = new Tree2("trackmultimaterial");
     multiTree.setmodel(multimodel);
-    multiTree.trans = [2,1,0];
-    multiTree.scale = [.5,.5,1];
     return multiTree;
 }
