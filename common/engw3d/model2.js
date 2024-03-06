@@ -114,6 +114,7 @@ Model2.prototype.addmat = function(matname,texname0,nface,nvert, drawType) {
 	grp.drawType = drawType;
 	this.grps.push(grp);
 	this.mats.push(mat); // empty user defined uniforms
+	this.lastMat = mat; // handy
 	return grp;
 };
 

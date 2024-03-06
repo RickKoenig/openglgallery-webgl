@@ -9,10 +9,9 @@ race_track.title = "race_track";
 race_track.roottree;
 race_track.multiTree;
 race_track.datatexTree;
-race_track.turnTree1;
-race_track.turnTree2;
-race_track.turnTree3;
-race_track.turnTree4;
+race_track.trackRoot;
+race_track.trackA;
+
 // data texture
 race_track.datatex; // data texture
 
@@ -36,7 +35,6 @@ race_track.mapUVs = function(mesh) {
 
 // 0 to 3 is the same as 0 to 270
 race_track.rotateVerts = function(verts, rot) {
-    console.log("rotverts = " + rot);
     if (!rot) return;
     switch(rot) {
         case 1:
@@ -73,6 +71,29 @@ race_track.rotateVerts = function(verts, rot) {
 }
 // end utils
 
+race_track.buildtrack = function(trackData) {
+    const trackRoot = new Tree2("trackRoot");
+    const width = trackData[0].length;
+    const height = trackData.length;
+    for (let j = 0; j < height; ++j) {
+        for (let i = 0; i < width; ++i) {
+            const piece = trackData[j][i];
+            const fun = race_track.funcs[piece.type];
+            if (fun) {
+                const pieceTree = fun(piece.rot);
+                const trans = [
+                    2 * i - width + 1,
+                    -2 * j + height - 1,
+                    0
+                ];
+                pieceTree.trans = trans;
+                trackRoot.linkchild(pieceTree);
+            }
+        }
+    }
+    return trackRoot;
+}
+
 // load these before init
 race_track.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -81,65 +102,74 @@ race_track.load = function() {
 	preloadimg("../common/sptpics/take0016.jpg");
 	preloadimg("track/4pl_tile01.jpg");
 	preloadimg("track/grass.jpg");
+	preloadimg("track/sanddbl.jpg");
 };
 
 race_track.init = function() {
+    race_track.types = makeEnum([
+        "blank",
+        "straight",
+        "turn",
+        "startFinish",
+    ]);
+    race_track.funcs = [
+        raceGetBlank,
+        raceGetStraight,
+        raceGetTurn,
+        raceGetStartFinish,
+    ];
+    const types = race_track.types;
+    race_track.trackAData = [
+        [
+            {type: types.blank, rot: 0},
+            {type: types.turn, rot: 3},
+            {type: types.straight, rot: 0},
+            {type: types.turn, rot: 0},
+        ],
+        [
+            {type: types.blank, rot: 0},
+            {type: types.straight, rot: 1},
+            {type: types.blank, rot: 0},
+            {type: types.straight, rot: 1},
+        ],
+        [
+            {type: types.turn, rot: 3},
+            {type: types.turn, rot: 1},
+            {type: types.blank, rot: 0},
+            {type: types.straight, rot: 1},
+        ],
+        [
+            {type: types.turn, rot: 2},
+            {type: types.startFinish, rot: 0},
+            {type: types.straight, rot: 0},
+            {type: types.turn, rot: 1},
+        ],
+    ];
 	logger("entering webgl race_track\n");
 	// ui
 	setbutsname('race_track_buts');
     // tree root
     race_track.roottree = new Tree2("root");
-    race_track.roottree.trans = [0,0,4];
+    race_track.roottree.trans = [0, 0, 5];
 
     // data texture tree
     race_track.datatexTree = raceGetDataTex();
-    race_track.datatexTree.trans = [3, 3.2, 0];
+    race_track.datatexTree.trans = [5, 1.2, 0];
     race_track.datatexTree.scale = [.5,.5,1];
     race_track.roottree.linkchild(race_track.datatexTree);
 
     // multi material
     race_track.multiTree = raceGetMultiMat();    
-    race_track.multiTree.trans = [4,3.4,0];
+    race_track.multiTree.trans = [4.5,3.4,0];
     race_track.multiTree.scale = [.25,.25,1];
     race_track.roottree.linkchild(race_track.multiTree);
     // make a copy of multi model
     const multi2 = race_track.multiTree.newdup();
-    multi2.trans = [5,3.4,0];
+    multi2.trans = [5.5,3.4,0];
     race_track.roottree.linkchild(multi2);
 
-    // make track 'multiTurn'
-    // 1 L B
-    race_track.turnTree1 = raceGetTurn(2);
-    race_track.turnTree1.trans = [-4,-2.5,0];
-    race_track.roottree.linkchild(race_track.turnTree1);
-    // 2 R B
-    race_track.turnTree2 = raceGetTurn(1);
-    race_track.turnTree2.trans = [-2,-2.5,0];
-    race_track.roottree.linkchild(race_track.turnTree2);
-    // 3 L T
-    race_track.turnTree3 = raceGetTurn(3);
-    race_track.turnTree3.trans = [-4,-.5,0];
-    race_track.roottree.linkchild(race_track.turnTree3);
-    // 4 R T
-    race_track.turnTree4 = raceGetTurn(0);
-    race_track.turnTree4.trans = [-2,-.5,0];
-    race_track.roottree.linkchild(race_track.turnTree4);
-    // 1 L B
-    race_track.turnTree1 = raceGetTurn(2);
-    race_track.turnTree1.trans = [0,-2.5,0];
-    race_track.roottree.linkchild(race_track.turnTree1);
-    // 2 R B
-    race_track.turnTree2 = raceGetTurn(1);
-    race_track.turnTree2.trans = [2,-2.5,0];
-    race_track.roottree.linkchild(race_track.turnTree2);
-    // 3 L T
-    race_track.turnTree3 = raceGetTurn(3);
-    race_track.turnTree3.trans = [0,-.5,0];
-    race_track.roottree.linkchild(race_track.turnTree3);
-    // 4 R T
-    race_track.turnTree4 = raceGetTurn(0);
-    race_track.turnTree4.trans = [2,-.5,0];
-    race_track.roottree.linkchild(race_track.turnTree4);
+    race_track.trackRoot = race_track.buildtrack(race_track.trackAData);
+    race_track.roottree.linkchild(race_track.trackRoot);
 	
     // camera viewport
 	mainvp = defaultviewport();	

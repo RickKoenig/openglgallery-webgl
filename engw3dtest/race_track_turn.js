@@ -1,8 +1,8 @@
 'use strict';
 
 function raceGetTurn(rot = 0) {
-    const turnmodelmulti = Model2.createmodel("track_multiTurn_rot" + rot);
-    if (turnmodelmulti.refcount == 1) {
+    const turnModel = Model2.createmodel("track_turn_rot" + rot);
+    if (turnModel.refcount == 1) {
         // returns size -1,-1,0 to 1,1,0
         const segments = 8;
         const border = .5; // between grass and pavement
@@ -44,20 +44,20 @@ function raceGetTurn(rot = 0) {
         verts.push(-1, 1, 0);
         race_track.rotateVerts(verts, rot);
         // make a mesh out of verts
-        const turnMeshMulti = {
+        const turnMesh = {
             "verts": verts
         };
-        race_track.mapUVs(turnMeshMulti);
+        race_track.mapUVs(turnMesh);
         const grassBright = .375;
-        turnmodelmulti.setmesh(turnMeshMulti);
-        turnmodelmulti.addmat("texc", "grass.jpg", 0, segments + 2, modelflagenums.FAN);
-        turnmodelmulti.mats[0].color = [grassBright, grassBright, grassBright, 1];
-        turnmodelmulti.addmat("tex", "4pl_tile01.jpg", 0, 2 * segments + 2, modelflagenums.STRIP);
-        turnmodelmulti.addmat("texc", "grass.jpg", 0, segments + 4, modelflagenums.FAN);
-        turnmodelmulti.mats[2].color = [grassBright, grassBright, grassBright, 1];
-        turnmodelmulti.commit();
+        turnModel.setmesh(turnMesh);
+        turnModel.addmat("texc", "grass.jpg", 0, segments + 2, modelflagenums.FAN);
+        turnModel.mats[0].color = [grassBright, grassBright, grassBright, 1];
+        turnModel.addmat("tex", "4pl_tile01.jpg", 0, 2 * segments + 2, modelflagenums.STRIP);
+        turnModel.addmat("texc", "grass.jpg", 0, segments + 4, modelflagenums.FAN);
+        turnModel.mats[2].color = [grassBright, grassBright, grassBright, 1];
+        turnModel.commit();
     }
-    const turnTree = new Tree2("track_multiTurn_rot" + rot);
-    turnTree.setmodel(turnmodelmulti);
+    const turnTree = new Tree2("track_turn_rot" + rot);
+    turnTree.setmodel(turnModel);
     return turnTree;
 }
