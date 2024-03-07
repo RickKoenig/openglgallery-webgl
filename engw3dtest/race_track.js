@@ -10,7 +10,9 @@ race_track.roottree;
 race_track.multiTree;
 race_track.datatexTree;
 race_track.trackRoot;
-race_track.trackA;
+race_track.trackInfo; // start pos, dimensions
+race_track.trackA; // data
+race_track.carTree;
 
 // data texture
 race_track.datatex; // data texture
@@ -19,6 +21,9 @@ race_track.debvars = {
 	testarr:[3,4,[5,7],6],
 	testobj:{"hi":40,"ho":[50,99]},
 };
+
+// test moving object (car)
+race_track.carModel;
 
 // utils
 race_track.mapUVs = function(mesh) {
@@ -91,7 +96,53 @@ race_track.buildtrack = function(trackData) {
             }
         }
     }
-    return trackRoot;
+    const minPos = [-width, -height, 0];
+    const maxPos = [width, height, 0];
+    const startPos = [0, 0, 0];
+    return {
+        tree: trackRoot,
+        info: {
+            minPos: minPos,
+            maxPos: maxPos,
+            startPos: startPos
+        }
+    };
+}
+
+race_track.buildCar = function() {
+    const carTree = buildsphere("car",.25,"maptestnck.png","diffusespecp");
+    const car = {
+        model: {
+            pos: [2, 1, 0]
+        },
+        tree: carTree
+    }
+    return car;
+}
+
+race_track.procCar = function() {
+    // move around
+    const step = .0625;
+    if (input.keystate[keycodes.RIGHT])
+        race_track.carModel.pos[0] += step;
+    if (input.keystate[keycodes.LEFT])
+    race_track.carModel.pos[0] -= step;
+    if (input.keystate[keycodes.UP])
+    race_track.carModel.pos[1] += step;
+    if (input.keystate[keycodes.DOWN]) {
+        race_track.carModel.pos[1] -= step;
+    }
+    // don't move out of track area
+    race_track.carModel.pos[0] = range(
+        race_track.trackInfo.minPos[0],
+        race_track.carModel.pos[0],
+        race_track.trackInfo.maxPos[0]);
+    race_track.carModel.pos[1] = range(
+        race_track.trackInfo.minPos[1],
+        race_track.carModel.pos[1],
+        race_track.trackInfo.maxPos[1]);
+    race_track.carTree.trans = race_track.carModel.pos;
+
 }
 
 // load these before init
@@ -125,24 +176,28 @@ race_track.init = function() {
             {type: types.turn, rot: 3},
             {type: types.straight, rot: 0},
             {type: types.turn, rot: 0},
+            {type: types.blank, rot: 0},
         ],
         [
             {type: types.blank, rot: 0},
             {type: types.straight, rot: 1},
             {type: types.blank, rot: 0},
             {type: types.straight, rot: 1},
+            {type: types.blank, rot: 0},
         ],
         [
             {type: types.turn, rot: 3},
             {type: types.turn, rot: 1},
             {type: types.blank, rot: 0},
             {type: types.straight, rot: 1},
+            {type: types.blank, rot: 0},
         ],
         [
             {type: types.turn, rot: 2},
             {type: types.startFinish, rot: 0},
             {type: types.straight, rot: 0},
             {type: types.turn, rot: 1},
+            {type: types.blank, rot: 0},
         ],
     ];
 	logger("entering webgl race_track\n");
@@ -150,7 +205,7 @@ race_track.init = function() {
 	setbutsname('race_track_buts');
     // tree root
     race_track.roottree = new Tree2("root");
-    race_track.roottree.trans = [0, 0, 5];
+    race_track.roottree.trans = [0, 0, 4.2];
 
     // data texture tree
     race_track.datatexTree = raceGetDataTex();
@@ -165,12 +220,21 @@ race_track.init = function() {
     race_track.roottree.linkchild(race_track.multiTree);
     // make a copy of multi model
     const multi2 = race_track.multiTree.newdup();
-    multi2.trans = [5.5,3.4,0];
+    multi2.trans = [5.5, 3.4, 0];
     race_track.roottree.linkchild(multi2);
 
-    race_track.trackRoot = race_track.buildtrack(race_track.trackAData);
+    // make the track
+    const track = race_track.buildtrack(race_track.trackAData);
+    race_track.trackRoot = track.tree;
     race_track.roottree.linkchild(race_track.trackRoot);
-	
+    race_track.trackInfo = track.info;
+    // make the car
+    const car = race_track.buildCar(race_track.roottree);
+    race_track.carModel = car.model;
+    race_track.carTree = car.tree;
+    race_track.carTree.trans = [0, 0, 0];
+    race_track.roottree.linkchild(car.tree);
+        
     // camera viewport
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.125,.5,.75,1];
@@ -181,6 +245,7 @@ race_track.init = function() {
 
 race_track.proc = function() {
 	// proc
+    race_track.procCar();
 	doflycam(mainvp); // modify the trs of vp using flycam
 	// draw
 	beginscene(mainvp);
