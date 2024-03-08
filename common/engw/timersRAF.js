@@ -68,19 +68,20 @@ window.Timers = class Timers
 	}
 
 	// called at start of mainproc
-	static setframerate = function(fun, fps, forceInterval) {
-		if (fps == 0)
-			fps = 1000;
+	static setframerate = function(fun, fps) {
 		if (Timers.#testrunavg) {
 			Timers.#dotestrunavg();
 			Timers.#testrunavg = false;
 		}
-		if (fps > 1000)
+		fps = range(1, fps, 1000);
+/*		if (fps == 0)
 			fps = 1000;
-		if (fps > 0)
+		if (fps > 1000)
+			fps = 1000; */
+		//if (fps > 0)
 			Timers.frametimewanted = 1000/fps;
-		else
-			Timers.frametimewanted = 0;
+		//else
+		//	Timers.frametimewanted = 0;
 		Timers.#curfpswanted = fps;
 		if (window.performance && window.performance.now) {
 			var measureProcEnd = performance.now();

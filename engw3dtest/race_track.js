@@ -13,6 +13,7 @@ race_track.trackRoot;
 race_track.trackInfo; // start pos, dimensions
 race_track.trackA; // data
 race_track.carTree;
+race_track.depth = 4.2;
 
 // data texture
 race_track.datatex; // data texture
@@ -41,6 +42,7 @@ race_track.mapUVs = function(mesh) {
 // 0 to 3 is the same as 0 to 270
 race_track.rotateVerts = function(verts, rot) {
     if (!rot) return;
+    rot &= 3;
     switch(rot) {
         case 1:
             for (let i = 0; i < verts.length; i+= 3) {
@@ -108,21 +110,58 @@ race_track.buildtrack = function(trackData) {
         }
     };
 }
+race_track.collideTrack = function(trackData, pos) {
+    const collInfo = {
+        boo: "hoo",
+        pos: pos,
+        collide: pos[0] >= 0
+    }
+    return collInfo;
+}
+
+race_track.buildInfo = function () {
+	var ftree = new Tree2("info");
+	var scratchfontmodel = new ModelFont("infoFont","font0.png","tex",
+		1,1,
+		60,20,
+		true);
+	scratchfontmodel.flags |= modelflagenums.NOZBUFFER;
+	var str = "Welcome";
+	scratchfontmodel.print(str);
+    // make pixel perfect
+    ftree.trans = [-race_track.depth * gl.asp, race_track.depth, 0];
+    ftree.scale = [
+        race_track.depth * 16 * 2 / glc.clientHeight * .5,
+        race_track.depth * 32 * 2 / glc.clientHeight * .5,
+        1
+    ];
+	ftree.setmodel(scratchfontmodel);
+	return ftree;
+};
+
+race_track.updateInfo = function(obj) {
+    //const carPos = race_track.carModel.pos;
+    //race_track.infoTree.mod.print("car pos = (" + carPos[0].toFixed(3) + ", " + carPos[1].toFixed(3) + ")");
+    race_track.infoTree.mod.print("info obj = " + JSON.stringify(obj, null, "   "));
+}
+
 
 race_track.buildCar = function() {
-    const carTree = buildsphere("car",.25,"maptestnck.png","diffusespecp");
+    const carTree = buildsphere("car", .1875, "maptestnck.png", "texc");
+    carTree.scale = [1, 1, .1];
     const car = {
         model: {
             pos: [2, 1, 0]
         },
         tree: carTree
     }
+    carTree.trans = car.model.pos;
     return car;
 }
 
 race_track.procCar = function() {
     // move around
-    const step = .0625;
+    const step = .03125; //.0625;
     if (input.keystate[keycodes.RIGHT])
         race_track.carModel.pos[0] += step;
     if (input.keystate[keycodes.LEFT])
@@ -141,8 +180,7 @@ race_track.procCar = function() {
         race_track.trackInfo.minPos[1],
         race_track.carModel.pos[1],
         race_track.trackInfo.maxPos[1]);
-    race_track.carTree.trans = race_track.carModel.pos;
-
+    //race_track.carTree.trans = race_track.carModel.pos;
 }
 
 // load these before init
@@ -205,7 +243,7 @@ race_track.init = function() {
 	setbutsname('race_track_buts');
     // tree root
     race_track.roottree = new Tree2("root");
-    race_track.roottree.trans = [0, 0, 4.2];
+    race_track.roottree.trans = [0, 0, race_track.depth];
 
     // data texture tree
     race_track.datatexTree = raceGetDataTex();
@@ -232,8 +270,10 @@ race_track.init = function() {
     const car = race_track.buildCar(race_track.roottree);
     race_track.carModel = car.model;
     race_track.carTree = car.tree;
-    race_track.carTree.trans = [0, 0, 0];
     race_track.roottree.linkchild(car.tree);
+    // make info text
+    race_track.infoTree = race_track.buildInfo();
+    race_track.roottree.linkchild(race_track.infoTree);
         
     // camera viewport
 	mainvp = defaultviewport();	
@@ -246,6 +286,11 @@ race_track.init = function() {
 race_track.proc = function() {
 	// proc
     race_track.procCar();
+    const collInfo = race_track.collideTrack(race_track.trackAData ,race_track.carModel.pos);
+    race_track.carTree.mat.color = collInfo.collide
+        ? [1, 0, 0, 1] 
+        : [1, 1, 1, 1];
+    race_track.updateInfo(collInfo);
 	doflycam(mainvp); // modify the trs of vp using flycam
 	// draw
 	beginscene(mainvp);
