@@ -39,41 +39,37 @@ race_track.mapUVs = function(mesh) {
     }
 };
 
+// in place, 0 to 3 is the same as 0 to 270, clockwise
+race_track.rotateVert = function(verts, i, rot) {
+    if (!rot) return;
+    rot &= 3;
+    const xi = verts[i];
+    const yi = verts[i + 1];
+    let xo, yo;
+    switch(rot) {
+        case 1:
+            xo = yi;
+            yo = -xi;
+            break;
+        case 2:
+            xo = -xi;
+            yo = -yi;
+            break;
+        case 3:
+            xo = -yi;
+            yo = xi;
+            break;
+    }
+    verts[i] = xo;
+    verts[i + 1] = yo;
+}
+
 // 0 to 3 is the same as 0 to 270
 race_track.rotateVerts = function(verts, rot) {
     if (!rot) return;
     rot &= 3;
-    switch(rot) {
-        case 1:
-            for (let i = 0; i < verts.length; i+= 3) {
-                const xi = verts[i];
-                const yi = verts[i + 1];
-                const xo = yi;
-                const yo = -xi;
-                verts[i] = xo;
-                verts[i + 1] = yo;
-            }
-            break;
-        case 2:
-            for (let i = 0; i < verts.length; i+= 3) {
-                const xi = verts[i];
-                const yi = verts[i + 1];
-                const xo = -xi;
-                const yo = -yi;
-                verts[i] = xo;
-                verts[i + 1] = yo;
-            }
-            break;
-        case 3:
-            for (let i = 0; i < verts.length; i+= 3) {
-                const xi = verts[i];
-                const yi = verts[i + 1];
-                const xo = -yi;
-                const yo = xi;
-                verts[i] = xo;
-                verts[i + 1] = yo;
-            }
-            break;
+    for (let i = 0; i < verts.length; i+= 3) {
+        race_track.rotateVert(verts, i, rot);
     }
 }
 // end utils
@@ -111,9 +107,27 @@ race_track.buildtrack = function(trackData) {
     };
 }
 race_track.collideTrack = function(trackData, pos) {
+    const trackWidth = trackData[0].length;
+    const trackHeight = trackData.length;
+    let fx = pos[0] / 2 + trackWidth  / 2;
+    let fy = -pos[1] / 2 + trackHeight / 2;
+    const ix = Math.floor(fx);
+    const iy = Math.floor(fy);
+    fx -= ix;
+    fy -= iy;
+    fx = 2 * fx - 1;
+    fy = 1 - 2 * fy;
+    let pieceEnum = 0;
+    let pieceRot = 0;
+    if (ix >=0 && ix < trackWidth && iy >= 0 && iy < trackHeight) {
+        const pce = trackData[iy][ix];
+        pieceEnum = pce.type;
+        pieceRot = pce.rot;
+    }
     const collInfo = {
-        boo: "hoo",
-        pos: pos,
+        pieceData: {name: race_track.trackTypeStrs[pieceEnum], rot: pieceRot},
+        pieceIdx: [ix, iy],
+        pieceOffset: [fx, fy],
         collide: pos[0] >= 0
     }
     return collInfo;
@@ -140,8 +154,6 @@ race_track.buildInfo = function () {
 };
 
 race_track.updateInfo = function(obj) {
-    //const carPos = race_track.carModel.pos;
-    //race_track.infoTree.mod.print("car pos = (" + carPos[0].toFixed(3) + ", " + carPos[1].toFixed(3) + ")");
     race_track.infoTree.mod.print("info obj = " + JSON.stringify(obj, null, "   "));
 }
 
@@ -151,7 +163,7 @@ race_track.buildCar = function() {
     carTree.scale = [1, 1, .1];
     const car = {
         model: {
-            pos: [2, 1, 0]
+            pos: [-2.5, -3, 0]
         },
         tree: carTree
     }
@@ -195,37 +207,38 @@ race_track.load = function() {
 };
 
 race_track.init = function() {
-    race_track.types = makeEnum([
+    race_track.trackTypeStrs = [
         "blank",
         "straight",
         "turn",
         "startFinish",
-    ]);
+    ];
+    race_track.trackTypeEnums = makeEnum(race_track.trackTypeStrs);
     race_track.funcs = [
         raceGetBlank,
         raceGetStraight,
         raceGetTurn,
         raceGetStartFinish,
     ];
-    const types = race_track.types;
+    const types = race_track.trackTypeEnums;
     race_track.trackAData = [
         [
+            {type: types.blank, rot: 0},
             {type: types.blank, rot: 0},
             {type: types.turn, rot: 3},
             {type: types.straight, rot: 0},
             {type: types.turn, rot: 0},
-            {type: types.blank, rot: 0},
-        ],
-        [
-            {type: types.blank, rot: 0},
-            {type: types.straight, rot: 1},
-            {type: types.blank, rot: 0},
-            {type: types.straight, rot: 1},
-            {type: types.blank, rot: 0},
         ],
         [
             {type: types.turn, rot: 3},
+            {type: types.straight, rot: 0},
             {type: types.turn, rot: 1},
+            {type: types.turn, rot: 3},
+            {type: types.turn, rot: 1},
+        ],
+        [
+            {type: types.straight, rot: 1},
+            {type: types.blank, rot: 0},
             {type: types.blank, rot: 0},
             {type: types.straight, rot: 1},
             {type: types.blank, rot: 0},
