@@ -7,20 +7,16 @@ race_track.title = "race_track";
 
 // trees
 race_track.roottree;
-race_track.multiTree;
-race_track.datatexTree;
 race_track.trackRoot;
 race_track.trackInfo; // start pos, dimensions
-race_track.trackA; // data
+race_track.trackA; // track data
 race_track.carTree;
 race_track.depth = 4.2;
-
-// data texture
-race_track.datatex; // data texture
 
 race_track.debvars = {
 	testarr:[3,4,[5,7],6],
 	testobj:{"hi":40,"ho":[50,99]},
+    testBool:true
 };
 
 // test moving object (car)
@@ -40,11 +36,15 @@ race_track.mapUVs = function(mesh) {
 };
 
 // in place, 0 to 3 is the same as 0 to 270, clockwise
-race_track.rotateVert = function(verts, i, rot) {
-    if (!rot) return;
+race_track.rotateVert = function(outVerts, inVerts, offset, rot) {
+    if (!rot) {
+        outVerts[0] = inVerts[0];
+        outVerts[1] = inVerts[1];
+        return;
+    }
     rot &= 3;
-    const xi = verts[i];
-    const yi = verts[i + 1];
+    const xi = inVerts[offset];
+    const yi = inVerts[offset + 1];
     let xo, yo;
     switch(rot) {
         case 1:
@@ -60,8 +60,8 @@ race_track.rotateVert = function(verts, i, rot) {
             yo = xi;
             break;
     }
-    verts[i] = xo;
-    verts[i + 1] = yo;
+    outVerts[offset] = xo;
+    outVerts[offset + 1] = yo;
 }
 
 // 0 to 3 is the same as 0 to 270
@@ -69,7 +69,7 @@ race_track.rotateVerts = function(verts, rot) {
     if (!rot) return;
     rot &= 3;
     for (let i = 0; i < verts.length; i+= 3) {
-        race_track.rotateVert(verts, i, rot);
+        race_track.rotateVert(verts, verts, i, rot);
     }
 }
 // end utils
@@ -106,6 +106,7 @@ race_track.buildtrack = function(trackData) {
         }
     };
 }
+
 race_track.collideTrack = function(trackData, pos) {
     const trackWidth = trackData[0].length;
     const trackHeight = trackData.length;
@@ -119,16 +120,39 @@ race_track.collideTrack = function(trackData, pos) {
     fy = 1 - 2 * fy;
     let pieceEnum = 0;
     let pieceRot = 0;
+    const collInfo = {
+        pieceData: {
+            name: race_track.trackTypeStrs[pieceEnum],
+            rot: pieceRot
+        },
+        pieceIdx: [ix, iy],
+        pieceOffset: [fx, fy],
+        collide: true
+    }
     if (ix >=0 && ix < trackWidth && iy >= 0 && iy < trackHeight) {
         const pce = trackData[iy][ix];
         pieceEnum = pce.type;
         pieceRot = pce.rot;
-    }
-    const collInfo = {
-        pieceData: {name: race_track.trackTypeStrs[pieceEnum], rot: pieceRot},
-        pieceIdx: [ix, iy],
-        pieceOffset: [fx, fy],
-        collide: pos[0] >= 0
+        if (pieceEnum != race_track.trackTypeEnums.blank) {
+            const pop = Array(2); // piece offset piece space 
+            race_track.rotateVert(pop, collInfo.pieceOffset, 0, -pieceRot);
+            const border = .5; // between grass and pavement
+            switch(pieceEnum) {
+                case race_track.trackTypeEnums.straight:
+                case race_track.trackTypeEnums.startFinish:
+                    collInfo.collide = pop[1] < -border || pop[1] > border;
+                    break;
+                case race_track.trackTypeEnums.turn:
+                    const popTurn = [pop[0] + 1, pop[1] + 1]; // from -1,-1 lower right corner
+                    const distSq = popTurn[0] * popTurn[0] + popTurn[1] * popTurn[1];
+                    const minTurn = 1 - border;
+                    const maxTurn = 1 + border;
+                    const minTurnSq = minTurn * minTurn;
+                    const maxTurnSq = maxTurn * maxTurn;
+                    collInfo.collide = distSq < minTurnSq || distSq > maxTurnSq;
+                    break;
+            }
+        }
     }
     return collInfo;
 }
@@ -159,7 +183,8 @@ race_track.updateInfo = function(obj) {
 
 
 race_track.buildCar = function() {
-    const carTree = buildsphere("car", .1875, "maptestnck.png", "texc");
+    const carSize = .1875;
+    const carTree = buildsphere("car", carSize, "maptestnck.png", "texc");
     carTree.scale = [1, 1, .1];
     const car = {
         model: {
@@ -173,7 +198,7 @@ race_track.buildCar = function() {
 
 race_track.procCar = function() {
     // move around
-    const step = .03125; //.0625;
+    const step = 1 / 32;
     if (input.keystate[keycodes.RIGHT])
         race_track.carModel.pos[0] += step;
     if (input.keystate[keycodes.LEFT])
@@ -256,23 +281,7 @@ race_track.init = function() {
 	setbutsname('race_track_buts');
     // tree root
     race_track.roottree = new Tree2("root");
-    race_track.roottree.trans = [0, 0, race_track.depth];
-
-    // data texture tree
-    race_track.datatexTree = raceGetDataTex();
-    race_track.datatexTree.trans = [5, 1.2, 0];
-    race_track.datatexTree.scale = [.5,.5,1];
-    race_track.roottree.linkchild(race_track.datatexTree);
-
-    // multi material
-    race_track.multiTree = raceGetMultiMat();    
-    race_track.multiTree.trans = [4.5,3.4,0];
-    race_track.multiTree.scale = [.25,.25,1];
-    race_track.roottree.linkchild(race_track.multiTree);
-    // make a copy of multi model
-    const multi2 = race_track.multiTree.newdup();
-    multi2.trans = [5.5, 3.4, 0];
-    race_track.roottree.linkchild(multi2);
+    race_track.roottree.trans = [0, 0, race_track.depth]; // move scene out a little for good camera shot
 
     // make the track
     const track = race_track.buildtrack(race_track.trackAData);
