@@ -161,7 +161,6 @@ race_track.collideTrack = function(trackData, pos) {
             if ( pop[1] < -border || pop[1] > border) {
                 pop[1] = range(-border, pop[1], border);
                 collInfo.collide = true;
-                collInfo.collidePos = [pop[0], pop[1]];
             }
             break;
         case race_track.trackTypeEnums.turn:
@@ -173,30 +172,25 @@ race_track.collideTrack = function(trackData, pos) {
             const maxTurnSq = maxTurn * maxTurn;
             if (distSq < minTurnSq) {
                 collInfo.collide = true;
-                vec2.Cnormalize(pop, pop);
-                collInfo.collidePos = [pop[0] * minTurn + 1, pop[1] * minTurn - 1];
+                vec2.Cnormalize(popTurn, popTurn);
+                pop[0] = popTurn[0] * minTurn - 1;
+                pop[1] = popTurn[1] * minTurn - 1;
             } else if (distSq > maxTurnSq) {
                 collInfo.collide = true;
                 vec2.Cnormalize(popTurn, popTurn);
-                collInfo.collidePos = [popTurn[0] * maxTurn + 1, popTurn[1] * maxTurn - 1];
+                pop[0] = popTurn[0] * maxTurn - 1;
+                pop[1] = popTurn[1] * maxTurn - 1;
             }
             break;
     }
     // move collide pos back to track space
-    if (collInfo.collidePos) {
+    if (collInfo.collide) {
         race_track.rotateVert(pop, pop, 0, pieceRot);
-        collInfo.collidePos[0] = -trackWidth + 1 + 2 * ix + pop[0];
-        collInfo.collidePos[1] = trackHeight - 1 - 2 * iy + pop[1];
-        /*
-        let fx = pos[0] / 2 + trackWidth / 2;
-        let fy = -pos[1] / 2 + trackHeight / 2;
-        const ix = Math.floor(fx);
-        const iy = Math.floor(fy);
-        fx -= ix;
-        fy -= iy;
-        fx = 2 * fx - 1;
-        fy = 1 - 2 * fy;*/
-        }
+        collInfo.collidePos = [
+            -trackWidth + 1 + 2 * ix + pop[0],
+            trackHeight - 1 - 2 * iy + pop[1]
+        ];
+    }
     return collInfo;
 }
 
@@ -227,20 +221,60 @@ race_track.updateInfo = function(obj) {
 
 race_track.buildCar = function() {
     const carSize = .1875;
-    const carTree = buildsphere("car", carSize, "maptestnck.png", "texc");
-    carTree.scale = [1, 1, .1];
+    const carRoot = new Tree2("carRoot");
+    // test sphere
+    const carTree = buildsphere("carSphere", 1, "maptestnck.png", "texc");
+    carTree.scale = [carSize, carSize, .2 * carSize];
+    carRoot.linkchild(carTree);
+    // body
+    const carTree2 = buildprism("carBody", [1, 2, 1], "Bark.png", "tex");
+    carTree2.scale = [.5 * carSize, .5 * carSize, .2 * carSize];
+    carRoot.linkchild(carTree2);
+    // wedge
+    const wedgeVerts = [
+        1, -2, 1,
+        -1, -2, 1,
+        0, 2, 1,
+        1, -2, -1,
+        -1, -2, -1,
+        0, 2, -1,
+    ];
+    const wedgeFaces = [
+        0, 3, 2,
+        2, 3, 5,
+        2, 5, 1,
+        1, 5, 4,
+        1, 4, 0,
+        0, 4, 3,
+        0, 2, 1,
+        3, 4, 5
+    ];
+    const wedgeMesh = {
+        "verts": wedgeVerts,
+        "faces": wedgeFaces
+    };
+    const wedgeModel = buildMeshModel("carWedge", null, "flat", wedgeMesh);
+    wedgeModel.mat.color = [1, 0, 0, 1];
+    const wedgeTree = new Tree2("carWedge");
+    wedgeTree.setmodel(wedgeModel);
+    wedgeTree.scale = [.45 * carSize, .45 * carSize, .3 * carSize];
+    carRoot.linkchild(wedgeTree);
+    // tie model and view together
     const car = {
         model: {
             pos: [-2.5, -3, 0],
+            dir: CMath.PI * .5,
             desiredPos: null
         },
-        tree: carTree
+        tree: carRoot
     }
-    carTree.trans = car.model.pos;
+    carRoot.trans = car.model.pos;
+    carRoot.rot = [0, 0, -car.model.dir];
     return car;
 }
 
 race_track.procCar = function() {
+    //return;
     const step = 1 / 32;
     // move around
     // with mouse
@@ -373,6 +407,7 @@ race_track.init = function() {
         
     // camera viewport
 	mainvp = defaultviewport();	
+    mainvp.trans = [-2.57, -2.8, 3.31];
 	mainvp.clearcolor = [.125,.5,.75,1];
 
     // add a test debprint
@@ -387,7 +422,7 @@ race_track.proc = function() {
         race_track.carModel.pos[0] = collInfo.collidePos[0];
         race_track.carModel.pos[1] = collInfo.collidePos[1];
     }
-    race_track.carTree.mat.color = collInfo.collide
+    race_track.carTree.children[0].mat.color = collInfo.collide
         ? [1, 0, 0, 1] 
         : [1, 1, 1, 1];
     race_track.updateInfo(collInfo);
