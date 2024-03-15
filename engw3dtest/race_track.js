@@ -10,19 +10,9 @@ race_track.roottree;
 race_track.trackRoot;
 race_track.trackInfo; // start pos, dimensions
 race_track.trackA; // track data
-race_track.carTree;
+race_track.carTreeRot;
+race_track.carTreeTrans;
 race_track.depth = 4.2; // how far away from track to be, camera
-
-race_track.debvars = {
-	testarr:[3,4,[5,7],6],
-	testobj:{"hi":40,"ho":[50,99]},
-    testBool:true,
-    testStr:"hi",
-    testNan: NaN,
-    testInf: Infinity,
-    testNull: null,
-    testund: undefined
-};
 
 // test moving object (car)
 race_track.carModel;
@@ -67,7 +57,7 @@ race_track.rotateVert = function(outVerts, inVerts, offset, rot) {
     }
     outVerts[offset] = xo;
     outVerts[offset + 1] = yo;
-}
+};
 
 // 0 to 3 is the same as 0 to 270
 race_track.rotateVerts = function(verts, rot) {
@@ -76,7 +66,7 @@ race_track.rotateVerts = function(verts, rot) {
     for (let i = 0; i < verts.length; i+= 3) {
         race_track.rotateVert(verts, verts, i, rot);
     }
-}
+};
 // end utils
 
 race_track.buildtrack = function(trackData) {
@@ -110,7 +100,7 @@ race_track.buildtrack = function(trackData) {
             startPos: startPos
         }
     };
-}
+};
 
 race_track.collideTrack = function(trackData, pos) {
     const trackWidth = trackData[0].length;
@@ -192,7 +182,7 @@ race_track.collideTrack = function(trackData, pos) {
         ];
     }
     return collInfo;
-}
+};
 
 race_track.buildTextInfo = function () {
 	var ftree = new Tree2("info");
@@ -216,21 +206,20 @@ race_track.buildTextInfo = function () {
 
 race_track.updateInfo = function(obj) {
     race_track.infoTree.mod.print("info obj = " + JSON.stringify(obj, null, "   "));
-}
+};
 
 
+// returns object with tree info and a 'model' mvc
 race_track.buildCar = function(root) {
     const carSize = .1875;
-    const carRoot = new Tree2("carRoot");
-    const wholeCar = new Tree2("carWhole");
     // test sphere
     //const carTree = buildsphere("carSphere", 1, "maptestnck.png", "texc");
     //carTree.scale = [carSize, carSize, .2 * carSize];
     //carRoot.linkchild(carTree);
+
     // body
-    const carTree = buildprism("carBody", [1, 2, 1], "Bark.png", "tex");
-    carTree.scale = [.5 * carSize, .5 * carSize, .2 * carSize];
-    wholeCar.linkchild(carTree);
+    const bodyTree = buildprism("carBody", [1, 2, 1], "Bark.png", "tex");
+    bodyTree.scale = [.5 * carSize, .5 * carSize, .2 * carSize];
     // wedge
     const wedgeVerts = [
         1, -2, 1,
@@ -259,32 +248,39 @@ race_track.buildCar = function(root) {
     const wedgeTree = new Tree2("carWedge");
     wedgeTree.setmodel(wedgeModel);
     wedgeTree.scale = [.45 * carSize, .45 * carSize, .3 * carSize];
-    wholeCar.linkchild(wedgeTree);
-    carRoot.linkchild(wholeCar);
+    // whole car rot
+    const wholeCarRot = new Tree2("carWholeRot");
+    wholeCarRot.linkchild(bodyTree);
+    wholeCarRot.linkchild(wedgeTree);
     const carAttach = new Tree2("carAttach");
     carAttach.trans = [0, 0, -3];
-    const lookCar = new Tree2("lookCar");
-    lookCar.linkchild(carAttach);
-    carRoot.linkchild(lookCar);
+    //carAttach.rot = [0, 0, CMath.PI /2]
+    // whole car trans
+    const wholeCarTrans = new Tree2("carWholeTrans");
+    wholeCarTrans.linkchild(wholeCarRot);
+    wholeCarTrans.linkchild(carAttach);
     // tie model and view together
-    const car = {
+    const car = { // model and some trees
         model: {
             pos: [-2.5, -3, 0],
             dir: CMath.PI * .5,
             //desiredPos: null
         },
-        tree: wholeCar,
+        treeRot: wholeCarRot, // THIS, don't rotate screen with car
+        //treeRot: wholeCarTrans, // OR THIS, rotate screen with car
+        treeTrans: wholeCarTrans,
         attachTree: carAttach
     }
-    wholeCar.trans = car.model.pos.slice();
-    wholeCar.rot = [0, 0, -car.model.dir];
-    root.linkchild(carRoot);
+    car.treeTrans.trans = car.model.pos.slice();
+    car.treeRot.rot = [0, 0, -car.model.dir];
+    // hook to parent
+    root.linkchild(wholeCarTrans);
     return car;
-}
+};
 
 race_track.procCar = function() {
-    //return;
     const step = 1 / 32;
+    const dirStep = 1 / 100;
     // move around
     // with mouse
     /*if (input.mclick[0]) {
@@ -310,6 +306,14 @@ race_track.procCar = function() {
     if (input.keystate[keycodes.DOWN]) {
         race_track.carModel.pos[1] -= step;
         //race_track.carModel.desiredPos = null;
+    }
+    if (input.keystate[keycodes.PAGEUP]) {
+        race_track.carModel.dir += dirStep;
+        race_track.carModel.dir = normalangrad(race_track.carModel.dir);
+    }
+    if (input.keystate[keycodes.PAGEDOWN]) {
+        race_track.carModel.dir -= dirStep;
+        race_track.carModel.dir = normalangrad(race_track.carModel.dir);
     }
     // mouse, move to desiredPos
     /*
@@ -337,8 +341,12 @@ race_track.procCar = function() {
         race_track.trackInfo.minPos[1] - extra,
         race_track.carModel.pos[1],
         race_track.trackInfo.maxPos[1] + extra);
-    race_track.carTree.trans = race_track.carModel.pos.slice(); // update view
-    }
+};
+
+race_track.m2v = function() {
+    race_track.carTreeTrans.trans = race_track.carModel.pos.slice(); // update view
+    race_track.carTreeRot.rot[2] = -race_track.carModel.dir; // update view
+};
 
 // load these before init
 race_track.load = function() {
@@ -415,9 +423,9 @@ race_track.init = function() {
     race_track.inforoottree.linkchild(race_track.infoTree);
     // make the car
     const car = race_track.buildCar(race_track.roottree);
-    race_track.carModel = car.model;
-    race_track.carTree = car.tree;
-    //race_track.roottree.linkchild(car.tree);
+    race_track.carModel = car.model; // mvc
+    race_track.carTreeRot = car.treeRot;
+    race_track.carTreeTrans = car.treeTrans;
         
     // camera viewport
 	mainvp = defaultviewport();	
@@ -427,14 +435,28 @@ race_track.init = function() {
 	mainvp.clearcolor = [.125,.5,.75,1];
 
     race_track.infovp = defaultviewport();
-    race_track.infovp.clearflags = 0;
-    //clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
+    race_track.infovp.clearflags = 0; // already cleared from mainvp
 
     // add a test debprint
-	debprint.addlist("race_track_debug",["race_track.debvars"]);
+    race_track.debvars = {
+        testarr: [3,4,[5,7],6],
+        testarr2: [3,4,[5,7],6],
+        testobj: {"hi":40,"ho":[50,99]},
+        testBool: true,
+        testStr: "hi",
+        testNan: NaN,
+        testInf: Infinity,
+        testNull: null,
+        testund: undefined
+    };
+    debprint.addlist("race_track_debug",["race_track.debvars"]);
 };
 
 race_track.proc = function() {
+    //input
+    if (input.key == 'v'.charCodeAt()) {
+        mainvp.incamattach ^= 1;
+    }
 	// proc
     race_track.procCar();
     const collInfo = race_track.collideTrack(race_track.trackAData ,race_track.carModel.pos);
@@ -442,7 +464,8 @@ race_track.proc = function() {
         race_track.carModel.pos[0] = collInfo.collidePos[0];
         race_track.carModel.pos[1] = collInfo.collidePos[1];
     }
-/*    race_track.carTree.children[0].mat.color = collInfo.collide
+    race_track.m2v();
+    /*    race_track.carTree.children[0].mat.color = collInfo.collide
         ? [1, 0, 0, 1] 
         : [1, 1, 1, 1]; */
     race_track.updateInfo("hi");

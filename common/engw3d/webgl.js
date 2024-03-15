@@ -5,6 +5,7 @@ var gllores = 1; // lower resolution on a given canvas, the lower the number the
 var dowebgl = true;
 var maxTextures = 16;
 var webglVersion = 0;
+var mainvp;
 // list of all shaders
 var shaderlist;
 /* = [
