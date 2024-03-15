@@ -263,6 +263,7 @@ race_track.buildCar = function(root) {
     const car = { // model and some trees
         model: {
             pos: [-2.5, -3, 0],
+            speed: 0,
             dir: CMath.PI * .5,
             //desiredPos: null
         },
@@ -279,58 +280,45 @@ race_track.buildCar = function(root) {
 };
 
 race_track.procCar = function() {
-    const step = 1 / 32;
-    const dirStep = 1 / 100;
-    // move around
-    // with mouse
-    /*if (input.mclick[0]) {
-        
-        race_track.carModel.desiredPos = [
-            input.fmx * race_track.depth,
-            input.fmy * race_track.depth
-        ];
-    }*/
-    // with keyboard
-    if (input.keystate[keycodes.RIGHT]) {
-        race_track.carModel.pos[0] += step;
-        //race_track.carModel.desiredPos = null;
-    }
-    if (input.keystate[keycodes.LEFT]) {
-        race_track.carModel.pos[0] -= step;
-        //race_track.carModel.desiredPos = null;
-    }
-    if (input.keystate[keycodes.UP]) {
-        race_track.carModel.pos[1] += step;
-        //race_track.carModel.desiredPos = null;
-    }
-    if (input.keystate[keycodes.DOWN]) {
-        race_track.carModel.pos[1] -= step;
-        //race_track.carModel.desiredPos = null;
-    }
-    if (input.keystate[keycodes.PAGEUP]) {
-        race_track.carModel.dir += dirStep;
-        race_track.carModel.dir = normalangrad(race_track.carModel.dir);
-    }
-    if (input.keystate[keycodes.PAGEDOWN]) {
-        race_track.carModel.dir -= dirStep;
-        race_track.carModel.dir = normalangrad(race_track.carModel.dir);
-    }
-    // mouse, move to desiredPos
-    /*
-    if (race_track.carModel.desiredPos) {
-        const close2 = step * step * 2;
-        const dist2 = vec2.sqrDist(race_track.carModel.desiredPos, race_track.carModel.pos);
-        if (dist2 < close2) {
-            vec2.copy(race_track.carModel.pos, race_track.carModel.desiredPos);
-            race_track.carModel.desiredPos = null;
-        } else {
-            const delta = vec2.create();
-            vec2.sub(delta, race_track.carModel.desiredPos, race_track.carModel.pos);
-            vec2.normalize(delta, delta);
-            vec2.scale(delta, delta, step);
-            vec2.add(race_track.carModel.pos, race_track.carModel.pos, delta);
+    //const step = 1 / 32;
+    const dirStep = 1.5;
+    const topSpeed = 1 / 32;
+    const topRevSpeed = -1 / 64;
+    const accel = topSpeed / 128;
+    const coast = -topSpeed / 512;
+    const brake = -topSpeed / 64;
+    // move around with keyboard
+    if (input.keystate[keycodes.UP]) { // accel
+        race_track.carModel.speed += accel;
+    } else if (input.keystate[keycodes.DOWN]) { // brake/reverse
+        race_track.carModel.speed += brake;
+    } else { // coast
+        if (race_track.carModel.speed > 0) {
+            race_track.carModel.speed += coast;
+            if (race_track.carModel.speed < 0) {
+                race_track.carModel.speed = 0;
+            }
+        } else if (race_track.carModel.speed < 0) {
+            race_track.carModel.speed -= coast;
+            if (race_track.carModel.speed > 0) {
+                race_track.carModel.speed = 0;
+            }
         }
-    }*/
+    }
+    race_track.carModel.speed = range(topRevSpeed, race_track.carModel.speed, topSpeed);
+    if (input.keystate[keycodes.LEFT]) {
+        race_track.carModel.dir -= dirStep * race_track.carModel.speed;
+        race_track.carModel.dir = normalangrad(race_track.carModel.dir);
+    }
+    if (input.keystate[keycodes.RIGHT]) {
+        race_track.carModel.dir += dirStep * race_track.carModel.speed;
+        race_track.carModel.dir = normalangrad(race_track.carModel.dir);
+    }
+    const stepX = race_track.carModel.speed * CMath.sin(race_track.carModel.dir);
+    const stepY = race_track.carModel.speed * CMath.cos(race_track.carModel.dir);
+    race_track.carModel.pos[0] += stepX;
+    race_track.carModel.pos[1] += stepY;
+
     // don't move out of entire track area
     const extra = .25;
     race_track.carModel.pos[0] = range(
@@ -430,7 +418,7 @@ race_track.init = function() {
     // camera viewport
 	mainvp = defaultviewport();	
     mainvp.camattach = car.attachTree;
-    //mainvp.incamattach = true;
+    mainvp.incamattach = true;
     //mainvp.trans = [-2.57, -2.8, 3.31];
 	mainvp.clearcolor = [.125,.5,.75,1];
 
@@ -468,7 +456,7 @@ race_track.proc = function() {
     /*    race_track.carTree.children[0].mat.color = collInfo.collide
         ? [1, 0, 0, 1] 
         : [1, 1, 1, 1]; */
-    race_track.updateInfo("hi");
+    race_track.updateInfo("car speed = " + (race_track.carModel.speed * 5000).toFixed(3));
 	doflycam(mainvp); // modify the trs of vp using flycam
 	// draw
 	beginscene(mainvp);
