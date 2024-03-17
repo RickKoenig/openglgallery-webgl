@@ -6,9 +6,10 @@ race_track.text = "WebGL: Track constructor and builder";
 race_track.title = "race_track";
 
 // trees
-race_track.roottree;
-race_track.trackRoot;
-race_track.trackInfo; // start pos, dimensions
+race_track.roottree; // 3d
+race_track.infoTree; // info
+race_track.trackRoot; // tree
+race_track.trackInfo; // static model, start pos, dimensions
 race_track.trackA; // track data
 race_track.carTreeRot;
 race_track.carTreeTrans;
@@ -59,7 +60,7 @@ race_track.rotateVert = function(outVerts, inVerts, offset, rot) {
     outVerts[offset + 1] = yo;
 };
 
-// 0 to 3 is the same as 0 to 270
+// rotation axis, but only 0, 90, 180, 270 degrees,  0 to 3 is the same as 0 to 270
 race_track.rotateVerts = function(verts, rot) {
     if (!rot) return;
     rot &= 3;
@@ -76,9 +77,9 @@ race_track.buildtrack = function(trackData) {
     for (let j = 0; j < height; ++j) {
         for (let i = 0; i < width; ++i) {
             const piece = trackData[j][i];
-            const fun = race_track.funcs[piece.type];
-            if (fun) {
-                const pieceTree = fun(piece.rot);
+            const pieceBuildFun = race_track.funcs[piece.type];
+            if (pieceBuildFun) {
+                const pieceTree = pieceBuildFun(piece.rot);
                 const trans = [
                     2 * i - width + 1,
                     -2 * j + height - 1,
@@ -205,18 +206,12 @@ race_track.buildTextInfo = function () {
 };
 
 race_track.updateInfo = function(obj) {
-    race_track.infoTree.mod.print("info obj = " + JSON.stringify(obj, null, "   "));
+    race_track.infoTree.mod.print(JSON.stringify(obj, null, "   "));
 };
-
 
 // returns object with tree info and a 'model' mvc
 race_track.buildCar = function(root) {
     const carSize = .1875;
-    // test sphere
-    //const carTree = buildsphere("carSphere", 1, "maptestnck.png", "texc");
-    //carTree.scale = [carSize, carSize, .2 * carSize];
-    //carRoot.linkchild(carTree);
-
     // body
     const bodyTree = buildprism("carBody", [1, 2, 1], "Bark.png", "tex");
     bodyTree.scale = [.5 * carSize, .5 * carSize, .2 * carSize];
@@ -254,7 +249,6 @@ race_track.buildCar = function(root) {
     wholeCarRot.linkchild(wedgeTree);
     const carAttach = new Tree2("carAttach");
     carAttach.trans = [0, 0, -3];
-    //carAttach.rot = [0, 0, CMath.PI /2]
     // whole car trans
     const wholeCarTrans = new Tree2("carWholeTrans");
     wholeCarTrans.linkchild(wholeCarRot);
@@ -262,25 +256,23 @@ race_track.buildCar = function(root) {
     // tie model and view together
     const car = { // model and some trees
         model: {
-            pos: [-2.5, -3, 0],
+            pos: [-2.5, -3, 0], // hard coded
             speed: 0,
             dir: CMath.PI * .5,
-            //desiredPos: null
         },
         treeRot: wholeCarRot, // THIS, don't rotate screen with car
-        //treeRot: wholeCarTrans, // OR THIS, rotate screen with car
-        treeTrans: wholeCarTrans,
+        treeTrans: wholeCarTrans, // OR THIS, rotate screen with car
         attachTree: carAttach
     }
     car.treeTrans.trans = car.model.pos.slice();
-    car.treeRot.rot = [0, 0, -car.model.dir];
+    car.treeRot.rot = [0, 0, 0];
+    car.treeTrans.rot = [0, 0, 0];
     // hook to parent
     root.linkchild(wholeCarTrans);
     return car;
 };
 
 race_track.procCar = function() {
-    //const step = 1 / 32;
     const dirStep = 1.5;
     const topSpeed = 1 / 32;
     const topRevSpeed = -1 / 64;
@@ -329,11 +321,23 @@ race_track.procCar = function() {
         race_track.trackInfo.minPos[1] - extra,
         race_track.carModel.pos[1],
         race_track.trackInfo.maxPos[1] + extra);
+    // don't move out of the pavement
+    const collInfo = race_track.collideTrack(race_track.trackAData ,race_track.carModel.pos);
+    if (collInfo.collide) {
+        race_track.carModel.pos[0] = collInfo.collidePos[0];
+        race_track.carModel.pos[1] = collInfo.collidePos[1];
+    }
 };
 
 race_track.m2v = function() {
     race_track.carTreeTrans.trans = race_track.carModel.pos.slice(); // update view
-    race_track.carTreeRot.rot[2] = -race_track.carModel.dir; // update view
+    if (race_track.rotCam) {
+        race_track.carTreeRot.rot[2] = 0; // update view
+        race_track.carTreeTrans.rot[2] = -race_track.carModel.dir; // update view
+    } else {
+        race_track.carTreeRot.rot[2] = -race_track.carModel.dir; // update view
+        race_track.carTreeTrans.rot[2] = 0; // update view
+    }
 };
 
 // load these before init
@@ -348,6 +352,7 @@ race_track.load = function() {
 };
 
 race_track.init = function() {
+    // track piece names
     race_track.trackTypeStrs = [
         "blank",
         "straight",
@@ -355,6 +360,7 @@ race_track.init = function() {
         "startFinish",
     ];
     race_track.trackTypeEnums = makeEnum(race_track.trackTypeStrs);
+    // build track piece trees
     race_track.funcs = [
         raceGetBlank,
         raceGetStraight,
@@ -412,14 +418,14 @@ race_track.init = function() {
     // make the car
     const car = race_track.buildCar(race_track.roottree);
     race_track.carModel = car.model; // mvc
-    race_track.carTreeRot = car.treeRot;
-    race_track.carTreeTrans = car.treeTrans;
+    race_track.carTreeRot = car.treeRot; // camera rigging
+    race_track.carTreeTrans = car.treeTrans; // camera rigging
         
     // camera viewport
 	mainvp = defaultviewport();	
     mainvp.camattach = car.attachTree;
     mainvp.incamattach = true;
-    //mainvp.trans = [-2.57, -2.8, 3.31];
+    race_track.rotCam = false;
 	mainvp.clearcolor = [.125,.5,.75,1];
 
     race_track.infovp = defaultviewport();
@@ -437,26 +443,29 @@ race_track.init = function() {
         testNull: null,
         testund: undefined
     };
-    debprint.addlist("race_track_debug",["race_track.debvars"]);
+    debprint.addlist("race_track_debug",[
+        "mainvp.incamattach",
+        "race_track.rotCam",
+        "race_track.debvars"
+    ]);
 };
 
 race_track.proc = function() {
     //input
     if (input.key == 'v'.charCodeAt()) {
-        mainvp.incamattach ^= 1;
+        if (race_track.rotCam) {
+            race_track.rotCam = false;
+            mainvp.incamattach = false;
+        } else if (mainvp.incamattach) {
+            race_track.rotCam = true;
+        } else {
+            mainvp.incamattach = true;
+        }
     }
 	// proc
     race_track.procCar();
-    const collInfo = race_track.collideTrack(race_track.trackAData ,race_track.carModel.pos);
-    if (collInfo.collide) {
-        race_track.carModel.pos[0] = collInfo.collidePos[0];
-        race_track.carModel.pos[1] = collInfo.collidePos[1];
-    }
     race_track.m2v();
-    /*    race_track.carTree.children[0].mat.color = collInfo.collide
-        ? [1, 0, 0, 1] 
-        : [1, 1, 1, 1]; */
-    race_track.updateInfo("car speed = " + (race_track.carModel.speed * 5000).toFixed(3));
+    race_track.updateInfo("car speed = " + (race_track.carModel.speed * 5000).toFixed(1));
 	doflycam(mainvp); // modify the trs of vp using flycam
 	// draw
 	beginscene(mainvp);

@@ -138,7 +138,6 @@ function setview(vp) {
 				mvMatrix[j] *= id;
 			}
 		}
-
 	}
 	mat4.invert(v2wMatrix,mvMatrix); // for env map and shadowmapping
 	
