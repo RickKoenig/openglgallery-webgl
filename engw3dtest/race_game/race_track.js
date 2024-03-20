@@ -5,6 +5,7 @@
 var race_track = {};
 
 // track piece names
+// pices go from -1,-1 to +1,+1
 race_track.trackTypeStrs = [
     "blank",
     "straight",

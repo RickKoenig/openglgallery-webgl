@@ -71,6 +71,8 @@ debprint.list = {
 		"input.dmy",
 		"input.fmx",
 		"input.fmy",
+		"input.wheelPos",
+		"input.wheelDelta"
 	],
 	sub:[
 		"mainvp",

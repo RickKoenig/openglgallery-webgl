@@ -71,60 +71,106 @@ race_car.buildCar = function(i, n) {
     return car;
 };
 
-race_car.procCar = function(carModel) {
+// move 2 circles apart, simple
+race_car.separate = function(posA, posB, distSep, extra) {
+    const distSep2 = distSep * distSep;
+    const dist2 = vec2.sqrDist(posA, posB);
+    if (dist2 > distSep2) {
+        return false;
+    }
+    let delta;
+    if (dist2 > 0) {
+        delta = vec2.create();
+        vec2.sub(delta, posB, posA);
+        vec2.normalize(delta, delta);
+    } else { // same position, separate horizontally
+        delta = vec2.fromValues(0, 1);
+    }
+    vec2.scale(delta, delta, distSep * .5 * extra);
+    const midPoint = vec2.create();
+    vec2.add(midPoint, posA, posB);
+    vec2.scale(midPoint, midPoint, .5); // midpoint is the average
+    vec2.sub(posA, midPoint, delta); // move out in opposite directions
+    vec2.add(posB, midPoint, delta);
+    return true;
+}
+race_car.separateCars = function(carModels) {
+    const extra = 1.001; // move apart a litte more
+    const distSep = .25
+    for (let i = 0; i < carModels.length; ++i) {
+        const carA = carModels[i];
+        for (let j = i + 1; j < carModels.length; ++j) {
+            const carB = carModels[j];
+            race_car.separate(carA.pos, carB.pos, distSep, extra);
+        }
+    }
+}
+
+race_car.procCar = function(carModels, inputIdx) {
     const dirStep = 1.5;
     const topSpeed = 1 / 32;
     const topRevSpeed = -1 / 64;
     const accel = topSpeed / 128;
     const coast = -topSpeed / 512;
     const brake = -topSpeed / 64;
-    // move around with keyboard
-    if (input.keystate[keycodes.UP]) { // accel
-        carModel.speed += accel;
-    } else if (input.keystate[keycodes.DOWN]) { // brake/reverse
-        carModel.speed += brake;
-    } else { // coast
-        if (carModel.speed > 0) {
-            carModel.speed += coast;
-            if (carModel.speed < 0) {
-                carModel.speed = 0;
-            }
-        } else if (carModel.speed < 0) {
-            carModel.speed -= coast;
+    for (let i = 0; i < carModels.length; ++i) {
+        const carModel = carModels[i]; // this car gets keyboard input
+        // move around with keyboard
+        if (input.keystate[keycodes.UP] && inputIdx == i) { // accel
+            carModel.speed += accel;
+        } else if (input.keystate[keycodes.DOWN] && inputIdx == i) { // brake/reverse
+            carModel.speed += brake;
+        } else { // coast
             if (carModel.speed > 0) {
-                carModel.speed = 0;
+                carModel.speed += coast;
+                if (carModel.speed < 0) {
+                    carModel.speed = 0;
+                }
+            } else if (carModel.speed < 0) {
+                carModel.speed -= coast;
+                if (carModel.speed > 0) {
+                    carModel.speed = 0;
+                }
             }
         }
+        carModel.speed = range(topRevSpeed, carModel.speed, topSpeed);
+        if (input.keystate[keycodes.LEFT] && inputIdx == i) {
+            carModel.dir -= dirStep * carModel.speed;
+            carModel.dir = normalangrad(carModel.dir);
+        }
+        if (input.keystate[keycodes.RIGHT] && inputIdx == i) {
+            carModel.dir += dirStep * carModel.speed;
+            carModel.dir = normalangrad(carModel.dir);
+        }
+        const stepX = carModel.speed * CMath.sin(carModel.dir);
+        const stepY = carModel.speed * CMath.cos(carModel.dir);
+        carModel.pos[0] += stepX;
+        carModel.pos[1] += stepY;
     }
-    carModel.speed = range(topRevSpeed, carModel.speed, topSpeed);
-    if (input.keystate[keycodes.LEFT]) {
-        carModel.dir -= dirStep * carModel.speed;
-        carModel.dir = normalangrad(carModel.dir);
-    }
-    if (input.keystate[keycodes.RIGHT]) {
-        carModel.dir += dirStep * carModel.speed;
-        carModel.dir = normalangrad(carModel.dir);
-    }
-    const stepX = carModel.speed * CMath.sin(carModel.dir);
-    const stepY = carModel.speed * CMath.cos(carModel.dir);
-    carModel.pos[0] += stepX;
-    carModel.pos[1] += stepY;
 
+    // keep cars apart
+    race_car.separateCars(carModels);
+    
+    /*
     // don't move out of entire track area
-    const extra = .25;
+    const extraBorder = .25;
     carModel.pos[0] = range(
-        race_main.trackInfo.minPos[0] - extra,
+        race_main.trackInfo.minPos[0] - extraBorder,
         carModel.pos[0],
-        race_main.trackInfo.maxPos[0] + extra);
+        race_main.trackInfo.maxPos[0] + extraBorder);
     carModel.pos[1] = range(
-        race_main.trackInfo.minPos[1] - extra,
+        race_main.trackInfo.minPos[1] - extraBorder,
         carModel.pos[1],
-        race_main.trackInfo.maxPos[1] + extra);
+        race_main.trackInfo.maxPos[1] + extraBorder);*/
+
     // don't move out of the pavement
-    const collInfo = race_track.collideTrack(race_trackData.race_track1 ,carModel.pos);
-    if (collInfo.collide) {
-        carModel.pos[0] = collInfo.collidePos[0];
-        carModel.pos[1] = collInfo.collidePos[1];
+    for (let i = 0; i < carModels.length; ++i) {
+        const carModel = carModels[i];
+        const collInfo = race_track.collideTrack(race_trackData.race_track1 ,carModel.pos);
+        if (collInfo.collide) {
+            carModel.pos[0] = collInfo.collidePos[0];
+            carModel.pos[1] = collInfo.collidePos[1];
+        }
     }
 };
 
