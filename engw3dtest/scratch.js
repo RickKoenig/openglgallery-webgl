@@ -10,7 +10,7 @@ scratch.ctree;
 scratch.dir = [];
 scratch.datatexd; // data texture
 
-scratch.jobtest = false;
+scratch.jobtest = true;
 scratch.testArrayBuffers = false;
 scratch.testStuff = false;
 scratch.test2 = false;
@@ -328,6 +328,51 @@ scratch.calcscale = function(bm) {
 	return scl;
 };
 
+// START run circle kill game
+// formula
+scratch.killMeFormula = function(n) {
+	const exp = Math.floor(Math.log(n) / Math.LN2);
+	const p2 = Math.pow(2, exp); // round down to a power of 2
+	const diff = n - p2;
+	return 2 * diff + 1;
+}
+// simulate with n players
+scratch.killNum = function(n) {
+	// init players
+	//console.log("killNum numplayers = " + n + " &&&&&&&&&");
+	const players = Array(n);
+	for (let i = 0; i < n; ++i) {
+		players[i] = i + 1;
+	}
+	let killer = 0; // position of killer
+	// start killing
+	while(players.length > 1) {
+		//console.log("players = " + JSON.stringify(players) + ", pos = " + killer);
+		const victim = (killer + 1) % players.length;
+		if (killer < victim) {
+			players.splice(victim, 1);
+			killer += 1;
+			killer %= players.length;
+			//console.log("remove victim index " + victim);
+		} else { // wrap around, victim is at 0
+			players.splice(0, 1);
+			killer = 0;
+			//console.log("remove victim index WRAP " + victim);
+
+		}
+	}
+	const left = players[0];
+	console.log("numplayers = " + n + ", goodpos = " + left + ", formula = " + scratch.killMeFormula(n));
+};
+
+scratch.testCircleKill = function() {
+	console.log("########## in testCircleKill ###########");
+	for (let n = 1; n < 80; ++n) {
+		scratch.killNum(n);
+	}
+};
+// END run circle kill game
+
 scratch.printLinkedList = function(ll) {
 	var str = "[";
 	var sep = "";
@@ -616,8 +661,9 @@ scratch.init = function() {
 	
 	if (scratch.jobtest) {
 		logger("jobtest\n");
-		scratch.testLinkList();
-		scratch.testCopyCyclicGraph();
+		//scratch.testLinkList();
+		//scratch.testCopyCyclicGraph();
+		scratch.testCircleKill();
 	}
 	
 	if (scratch.testArrayBuffers) {

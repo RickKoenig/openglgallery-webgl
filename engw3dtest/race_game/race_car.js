@@ -2,7 +2,7 @@
 
 var race_car = {};
 // returns object with tree info and a 'model' mvc
-race_car.buildCar = function() {
+race_car.buildCar = function(i, n) {
     const carSize = .1875;
     // body
     const bodyTree = buildprism("carBody", [1, 2, 1], "Bark.png", "tex");
@@ -30,11 +30,17 @@ race_car.buildCar = function() {
         "verts": wedgeVerts,
         "faces": wedgeFaces
     };
+    const colors = [
+        [.5, 0, 0, 1],
+        [0, .5, 0, 1],
+        [0, 0, .5, 1],
+        [.25, .25, 0, 1]
+    ];
     const wedgeModel = buildMeshModel("carWedge", null, "flat", wedgeMesh);
-    wedgeModel.mat.color = [.5, 0, 0, 1];
     const wedgeTree = new Tree2("carWedge");
     wedgeTree.setmodel(wedgeModel);
     wedgeTree.scale = [.45 * carSize, .45 * carSize, .3 * carSize];
+    wedgeTree.mat.color = colors[i % colors.length];
     // whole car rot
     const wholeCarRot = new Tree2("carWholeRot");
     wholeCarRot.linkchild(bodyTree);
@@ -46,9 +52,11 @@ race_car.buildCar = function() {
     wholeCarTrans.linkchild(wholeCarRot);
     wholeCarTrans.linkchild(carAttach);
     // tie model and view together
+    const j = Math.floor(i / 2);
+    i = i % 2;
     const car = { // model and some trees
         model: {
-            pos: [-2.5, -3, 0], // hard coded
+            pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
             speed: 0,
             dir: CMath.PI * .5,
         },

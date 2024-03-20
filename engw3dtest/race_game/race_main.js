@@ -32,14 +32,14 @@ race_main.updateInfo = function(str) {
 };
 
 // model to view
-race_main.m2v = function() {
-    race_main.carTreeTrans.trans = race_main.carModel.pos.slice(); // update view
+race_main.m2v = function(i) {
+    race_main.carTreeTrans[i].trans = race_main.carModel[i].pos.slice(); // update view
     if (race_main.rotCam) {
-        race_main.carTreeRot.rot[2] = 0; // update view
-        race_main.carTreeTrans.rot[2] = -race_main.carModel.dir; // update view
+        race_main.carTreeRot[i].rot[2] = 0; // update view
+        race_main.carTreeTrans[i].rot[2] = -race_main.carModel[i].dir; // update view
     } else {
-        race_main.carTreeRot.rot[2] = -race_main.carModel.dir; // update view
-        race_main.carTreeTrans.rot[2] = 0; // update view
+        race_main.carTreeRot[i].rot[2] = -race_main.carModel[i].dir; // update view
+        race_main.carTreeTrans[i].rot[2] = 0; // update view
     }
 };
 
@@ -73,15 +73,24 @@ race_main.init = function() {
     race_main.infoTree = race_main.buildTextInfo();
     race_main.inforoottree.linkchild(race_main.infoTree);
     // make the car
-    const car = race_car.buildCar();
-    race_main.carModel = car.model; // mvc
-    race_main.carTreeRot = car.treeRot; // camera rigging
-    race_main.carTreeTrans = car.treeTrans; // camera rigging
-    race_main.roottree.linkchild(car.tree);    
+    race_main.numPlayers = 4;
+    race_main.carModel = [];
+    race_main.carTreeRot = [];
+    race_main.carTreeTrans = [];
+    for (let i = 0; i < race_main.numPlayers; ++i) {
+        const car = race_car.buildCar(i, race_main.numPlayers);
+        race_main.carModel.push(car.model); // mvc
+        race_main.carTreeRot.push(car.treeRot); // camera rigging
+        race_main.carTreeTrans.push(car.treeTrans); // camera rigging
+        race_main.roottree.linkchild(car.tree);
+        if (i == 0) {
+            race_main.carAttach = car.attachTree;
+        }
+    }
 
     // main viewport
 	mainvp = defaultviewport();	
-    mainvp.camattach = car.attachTree;
+    mainvp.camattach = race_main.carAttach;
     mainvp.incamattach = true;
     race_main.rotCam = false;
 	mainvp.clearcolor = [.125,.5,.75,1];
@@ -122,9 +131,11 @@ race_main.proc = function() {
     }
 
 	// proc
-    race_car.procCar(race_main.carModel);
-    race_main.m2v(); // model to view
-    race_main.updateInfo("car speed = " + (race_main.carModel.speed * 5000).toFixed(1));
+    race_car.procCar(race_main.carModel[0]);
+    for (let i = 0; i < race_main.numPlayers; ++i) {
+        race_main.m2v(i); // model to view
+    }
+    race_main.updateInfo("car 0 speed = " + (race_main.carModel[0].speed * 5000).toFixed(1));
 	doflycam(mainvp); // modify the trs of vp using flycam
 
 	// draw main

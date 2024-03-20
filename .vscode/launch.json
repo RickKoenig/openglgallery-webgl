@@ -6,6 +6,7 @@
     "configurations": [
 
 
+
         {
             "type": "chrome",
             "request": "launch",
@@ -46,6 +47,13 @@
             "request": "launch",
             "name": "Run Race Net tracks",
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_main",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Scratch",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=scratch",
             "webRoot": "${workspaceFolder}"
         },
     ]

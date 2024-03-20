@@ -26,8 +26,8 @@ race_trackData.race_track1 = [
     ],
     [
         {type: types.turn, rot: 2},
-        {type: types.startFinish, rot: 0},
         {type: types.straight, rot: 0},
+        {type: types.startFinish, rot: 0},
         {type: types.turn, rot: 1},
         {type: types.blank, rot: 0},
     ],
