@@ -52,10 +52,12 @@ race_car.buildCar = function(i, n) {
     wholeCarTrans.linkchild(wholeCarRot);
     wholeCarTrans.linkchild(carAttach);
     // tie model and view together
+    i = n - 1 - i; // start in back for player 0
     const j = Math.floor(i / 2);
-    i = i % 2;
+    i = (i + 1) % 2;
     const car = { // model and some trees
         model: {
+            //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
             pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
             speed: 0,
             dir: CMath.PI * .5,
@@ -150,7 +152,7 @@ race_car.procCar = function(carModels, inputIdx) {
 
     // keep cars apart
     race_car.separateCars(carModels);
-    
+
     /*
     // don't move out of entire track area
     const extraBorder = .25;

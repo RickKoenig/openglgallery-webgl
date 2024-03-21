@@ -31,15 +31,39 @@ race_main.updateInfo = function(str) {
     race_main.infoTree.mod.print(str);
 };
 
+race_main.changeCameraView = function() {
+    switch(race_main.curCameraType) {
+    case race_main.cameraTypeEnums.static:
+        mainvp.incamattach = false;
+        race_main.rotCam = false;
+        viewportClearRotTrans(mainvp);
+        break;
+    case race_main.cameraTypeEnums.scroll:
+        mainvp.incamattach = true;
+        race_main.rotCam = false;
+        viewportClearRotTrans(mainvp);
+        break;
+    case race_main.cameraTypeEnums.rotScroll:
+        mainvp.incamattach = true;
+        race_main.rotCam = true;
+        viewportClearRotTrans(mainvp);
+        break;
+    case race_main.cameraTypeEnums.view3D:
+        mainvp.trans = [0, -.9, 2.7];
+        mainvp.rot = [-Math.PI / 2, 0, 0];
+        break;
+    }
+};
+
 // model to view
 race_main.m2v = function(i) {
     race_main.carTreeTranss[i].trans = race_main.carModels[i].pos.slice(); // update view
     if (race_main.rotCam) {
-        race_main.carTreeRots[i].rot[2] = 0; // update view
         race_main.carTreeTranss[i].rot[2] = -race_main.carModels[i].dir; // update view
+        race_main.carTreeRots[i].rot[2] = 0; // update view
     } else {
-        race_main.carTreeRots[i].rot[2] = -race_main.carModels[i].dir; // update view
         race_main.carTreeTranss[i].rot[2] = 0; // update view
+        race_main.carTreeRots[i].rot[2] = -race_main.carModels[i].dir; // update view
     }
 };
 
@@ -90,10 +114,20 @@ race_main.init = function() {
 
     // main viewport
 	mainvp = defaultviewport();	
+    // camera types (views)
     mainvp.camattach = race_main.carTreeAttachs[race_main.curPlayer];
-    mainvp.incamattach = true;
-    race_main.rotCam = false;
+    race_main.cameraTypeStrs = [
+        "static",
+        "scroll",
+        "rotScroll",
+        "view3D",
+    ];
+    race_main.cameraTypeEnums = makeEnum(race_main.cameraTypeStrs);
+    race_main.curCameraType = race_main.cameraTypeEnums.scroll;
+    race_main.cameraZoom = 1;
+    race_main.changeCameraView();
 	mainvp.clearcolor = [.125,.5,.75,1];
+
     // info viewport
     race_main.infovp = defaultviewport();
     race_main.infovp.clearflags = 0; // already cleared from mainvp
@@ -113,6 +147,7 @@ race_main.init = function() {
     debprint.addlist("race_track_debug",[
         "mainvp.incamattach",
         "race_main.rotCam",
+        "race_main.curCameraType",
         "race_main.debvars"
     ]);
 };
@@ -121,27 +156,26 @@ race_main.proc = function() {
     // input
     // change view
     if (input.key == 'v'.charCodeAt()) {
-        if (race_main.rotCam) {
-            race_main.rotCam = false;
-            mainvp.incamattach = false;
-        } else if (mainvp.incamattach) {
-            race_main.rotCam = true;
-        } else {
-            mainvp.incamattach = true;
-        }
+        race_main.curCameraType = (race_main.curCameraType + 1) % race_main.cameraTypeStrs.length;
+        race_main.changeCameraView();
     }
     // change zoom
-    let delta = input.wheelDelta;
-    const zf = 1.1;
-    while(delta) {
-        if (delta > 0) {
-            mainvp.zoom *= zf;
-            --delta;
-        } else if (delta < 0) {
-            mainvp.zoom /= zf;
-            ++delta;
+    if (race_main.curCameraType != race_main.cameraTypeEnums.view3D) {
+        let delta = input.wheelDelta;
+        const zf = 1.1;
+        while(delta) {
+            if (delta > 0) {
+                race_main.cameraZoom *= zf;
+                --delta;
+            } else if (delta < 0) {
+                race_main.cameraZoom /= zf;
+                ++delta;
+            }
         }
-        mainvp.zoom = range(1 / 8, mainvp.zoom, 8);
+        race_main.cameraZoom = range(1 / 8, race_main.cameraZoom, 8);
+        mainvp.zoom = race_main.cameraZoom;
+    } else {
+        mainvp.zoom = 2;
     }
 
     // change car view control
@@ -157,7 +191,6 @@ race_main.proc = function() {
             % race_main.numPlayers;
         mainvp.camattach = race_main.carTreeAttachs[race_main.curPlayer];
     }
-
 
 	// proc
     race_car.procCar(race_main.carModels, race_main.curPlayer); // input for car 0

@@ -160,6 +160,11 @@ function setview(vp) {
 	//dolights(); // call later in Tree2.draw
 }
 
+function viewportClearRotTrans(vp) {
+	vp.trans[0] = vp.trans[1] = vp.trans[2] = 0;
+	vp.rot[0] = vp.rot[1] = vp.rot[2] = 0;
+}
+
 function doflycam(vp) {
 	var leftright=0,foreback=0,updown=0;
 	var mxc,mxr,myc,myr,rcx,rsx,rcy,rsy;
@@ -186,8 +191,7 @@ function doflycam(vp) {
 	}
 	if (input.mx>=0 && input.mx<glc.clientWidth && input.my>=0 && input.my<glc.clientHeight) {
 		if (input.key == "r".charCodeAt(0)) {
-			vp.trans[0] = vp.trans[1] = vp.trans[2] = 0;
-			vp.rot[0] = vp.rot[1] = vp.rot[2] = 0;
+			viewportClearRotTrans(vp);
 			input.key = 0;
 		}
 		if (flycamstate.inflycam) {
