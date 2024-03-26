@@ -1,6 +1,15 @@
 'use strict';
 
 var race_car = {};
+
+race_car.modeStrs = [
+    "human",
+    "ai",
+    "none",
+];
+
+race_car.modeEnums = makeEnum(race_car.modeStrs);
+
 // returns object with tree info and a 'model' mvc
 race_car.buildCar = function(i, n) {
     const carSize = .1875;
@@ -52,15 +61,20 @@ race_car.buildCar = function(i, n) {
     wholeCarTrans.linkchild(wholeCarRot);
     wholeCarTrans.linkchild(carAttach);
     // tie model and view together
+    // placement of cars
+    //const mode = race_car.modeEnums.human;
+    const mode = Math.min(i, race_car.modeEnums.none);
     i = n - 1 - i; // start in back for player 0
     const j = Math.floor(i / 2);
     i = (i + 1) % 2;
     const car = { // model and some trees
         model: {
-            //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
+            //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
             pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
             speed: 0,
             dir: CMath.PI * .5,
+            mode: mode // TODO: move out of model LATER when porting to 'net race'
+
         },
         treeRot: wholeCarRot, // THIS, don't rotate screen with car
         treeTrans: wholeCarTrans, // OR THIS, rotate screen with car
@@ -96,6 +110,7 @@ race_car.separate = function(posA, posB, distSep, extra) {
     vec2.add(posB, midPoint, delta);
     return true;
 }
+
 race_car.separateCars = function(carModels) {
     const extra = 1.001; // move apart a litte more
     const distSep = .25
@@ -108,19 +123,45 @@ race_car.separateCars = function(carModels) {
     }
 }
 
-race_car.procCar = function(carModels, inputIdx) {
+race_car.procCars = function(carModels, focusIdx) {
     const dirStep = 1.5;
     const topSpeed = 1 / 32;
     const topRevSpeed = -1 / 64;
     const accel = topSpeed / 128;
     const coast = -topSpeed / 512;
     const brake = -topSpeed / 64;
+    // change mode of the car with focus
+    if (input.key == 'm'.charCodeAt()) {
+        const carModel = carModels[focusIdx];
+        carModel.mode = (carModel.mode + 1) % race_car.modeStrs.length;
+    }
     for (let i = 0; i < carModels.length; ++i) {
-        const carModel = carModels[i]; // this car gets keyboard input
+        const carModel = carModels[i];
         // move around with keyboard
-        if (input.keystate[keycodes.UP] && inputIdx == i) { // accel
+        let up = 0;
+        let down = 0;
+        let left = 0;
+        let right = 0;
+        switch(carModel.mode) {
+        case race_car.modeEnums.human:
+            up = input.keystate[keycodes.UP];
+            down = input.keystate[keycodes.DOWN];
+            left = input.keystate[keycodes.LEFT];
+            right = input.keystate[keycodes.RIGHT];
+            break;
+        case race_car.modeEnums.ai:
+            up = true;
+            right = true;
+            break;
+        case race_car.modeEnums.none:
+            left = true;
+            break;
+        }
+        // accel the car
+        // this car gets keyboard input
+        if (up) { // accel
             carModel.speed += accel;
-        } else if (input.keystate[keycodes.DOWN] && inputIdx == i) { // brake/reverse
+        } else if (down) { // brake/reverse
             carModel.speed += brake;
         } else { // coast
             if (carModel.speed > 0) {
@@ -136,14 +177,16 @@ race_car.procCar = function(carModels, inputIdx) {
             }
         }
         carModel.speed = range(topRevSpeed, carModel.speed, topSpeed);
-        if (input.keystate[keycodes.LEFT] && inputIdx == i) {
-            carModel.dir -= dirStep * carModel.speed;
+        // turn the car
+        if (left) {
+            carModel.dir -= dirStep * CMath.max(carModel.speed, .01);
             carModel.dir = normalangrad(carModel.dir);
         }
-        if (input.keystate[keycodes.RIGHT] && inputIdx == i) {
-            carModel.dir += dirStep * carModel.speed;
+        if (right) {
+            carModel.dir += dirStep * CMath.max(carModel.speed, .01);
             carModel.dir = normalangrad(carModel.dir);
         }
+        // move the car
         const stepX = carModel.speed * CMath.sin(carModel.dir);
         const stepY = carModel.speed * CMath.cos(carModel.dir);
         carModel.pos[0] += stepX;
@@ -152,18 +195,6 @@ race_car.procCar = function(carModels, inputIdx) {
 
     // keep cars apart
     race_car.separateCars(carModels);
-
-    /*
-    // don't move out of entire track area
-    const extraBorder = .25;
-    carModel.pos[0] = range(
-        race_main.trackInfo.minPos[0] - extraBorder,
-        carModel.pos[0],
-        race_main.trackInfo.maxPos[0] + extraBorder);
-    carModel.pos[1] = range(
-        race_main.trackInfo.minPos[1] - extraBorder,
-        carModel.pos[1],
-        race_main.trackInfo.maxPos[1] + extraBorder);*/
 
     // don't move out of the pavement
     for (let i = 0; i < carModels.length; ++i) {

@@ -161,9 +161,15 @@ race_main.proc = function() {
     }
     // change zoom
     if (race_main.curCameraType != race_main.cameraTypeEnums.view3D) {
-        let delta = input.wheelDelta;
+        let delta = Math.round(input.wheelDelta); // new with chrome, they now have non integer values
+        //console.log("wheel delta = " + delta);
         const zf = 1.1;
+        let watch = 0;
         while(delta) {
+            if (watch > 20) {
+                console.log("watch hit!!");
+                break;
+            }
             if (delta > 0) {
                 race_main.cameraZoom *= zf;
                 --delta;
@@ -171,6 +177,7 @@ race_main.proc = function() {
                 race_main.cameraZoom /= zf;
                 ++delta;
             }
+            ++watch;
         }
         race_main.cameraZoom = range(1 / 8, race_main.cameraZoom, 8);
         mainvp.zoom = race_main.cameraZoom;
@@ -193,7 +200,7 @@ race_main.proc = function() {
     }
 
 	// proc
-    race_car.procCar(race_main.carModels, race_main.curPlayer); // input for car 0
+    race_car.procCars(race_main.carModels, race_main.curPlayer); // input for car 0
     for (let i = 0; i < race_main.numPlayers; ++i) {
         race_main.m2v(i); // model to view
     }
