@@ -5,6 +5,7 @@ var race_car = {};
 race_car.modeStrs = [
     "human",
     "ai",
+    "revai",
     "none",
 ];
 
@@ -12,6 +13,7 @@ race_car.modeEnums = makeEnum(race_car.modeStrs);
 
 // returns object with tree info and a 'model' mvc
 race_car.buildCar = function(i, n) {
+    // build the car view model
     const carSize = .1875;
     // body
     const bodyTree = buildprism("carBody", [1, 2, 1], "Bark.png", "tex");
@@ -60,10 +62,13 @@ race_car.buildCar = function(i, n) {
     const wholeCarTrans = new Tree2("carWholeTrans");
     wholeCarTrans.linkchild(wholeCarRot);
     wholeCarTrans.linkchild(carAttach);
-    // tie model and view together
+
+    // pick driving mode for each car
+    //const mode = race_car.modeEnums.revai;
+    //const mode = Math.min(i, race_car.modeEnums.none);
+    const mode = i * 2 < n ? race_car.modeEnums.revai : race_car.modeEnums.ai;
+
     // placement of cars
-    //const mode = race_car.modeEnums.human;
-    const mode = Math.min(i, race_car.modeEnums.none);
     i = n - 1 - i; // start in back for player 0
     const j = Math.floor(i / 2);
     i = (i + 1) % 2;
@@ -72,7 +77,7 @@ race_car.buildCar = function(i, n) {
             //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
             pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
             speed: 0,
-            dir: CMath.PI * .5,
+            dir: mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
             mode: mode // TODO: move out of model LATER when porting to 'net race'
 
         },
@@ -113,7 +118,7 @@ race_car.separate = function(posA, posB, distSep, extra) {
 
 race_car.separateCars = function(carModels) {
     const extra = 1.001; // move apart a litte more
-    const distSep = .25
+    const distSep = .375;
     for (let i = 0; i < carModels.length; ++i) {
         const carA = carModels[i];
         for (let j = i + 1; j < carModels.length; ++j) {
@@ -130,6 +135,8 @@ race_car.procCars = function(carModels, focusIdx) {
     const accel = topSpeed / 128;
     const coast = -topSpeed / 512;
     const brake = -topSpeed / 64;
+    const slowTurnSpeed = .01;
+    const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
     // change mode of the car with focus
     if (input.key == 'm'.charCodeAt()) {
         const carModel = carModels[focusIdx];
@@ -150,12 +157,19 @@ race_car.procCars = function(carModels, focusIdx) {
             right = input.keystate[keycodes.RIGHT];
             break;
         case race_car.modeEnums.ai:
+        case race_car.modeEnums.revai:
+            let dir = race_track.getAiTrack(race_trackData.race_track1 ,carModel.pos, carModel.mode == race_car.modeEnums.revai);
+            let deltaDir = normalangrad(dir - carModel.dir);
             up = true;
-            right = true;
+            if (deltaDir >= aiNoTurnAng) {
+                right = true;
+            } else if (deltaDir <= -aiNoTurnAng) {
+                left = true;
+            }
             break;
-        case race_car.modeEnums.none:
+        /*case race_car.modeEnums.none:
             left = true;
-            break;
+            break;*/
         }
         // accel the car
         // this car gets keyboard input
@@ -178,12 +192,25 @@ race_car.procCars = function(carModels, focusIdx) {
         }
         carModel.speed = range(topRevSpeed, carModel.speed, topSpeed);
         // turn the car
+        let carTurn = 0;
         if (left) {
-            carModel.dir -= dirStep * CMath.max(carModel.speed, .01);
-            carModel.dir = normalangrad(carModel.dir);
+            carTurn = -1;
         }
         if (right) {
-            carModel.dir += dirStep * CMath.max(carModel.speed, .01);
+            carTurn = 1;
+        }
+        if (carTurn) {
+            let turnSpeed = carModel.speed;
+            if (turnSpeed >= 0) {
+                if (turnSpeed < slowTurnSpeed) {
+                    turnSpeed = slowTurnSpeed;
+                }
+            } else {
+                if (turnSpeed > -slowTurnSpeed) {
+                    turnSpeed = -slowTurnSpeed;
+                }
+            }
+            carModel.dir += carTurn * dirStep * turnSpeed;
             carModel.dir = normalangrad(carModel.dir);
         }
         // move the car

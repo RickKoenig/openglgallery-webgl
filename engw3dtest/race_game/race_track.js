@@ -105,6 +105,29 @@ race_track.buildtrack = function(trackData) {
     };
 };
 
+race_track.getAiTrack = function(trackData, pos, reverse) {
+    const trackWidth = trackData[0].length;
+    const trackHeight = trackData.length;
+    // piece index and offset
+    let fx = pos[0] / 2 + trackWidth / 2;
+    let fy = -pos[1] / 2 + trackHeight / 2;
+    const ix = Math.floor(fx);
+    const iy = Math.floor(fy);
+    fx -= ix;
+    fy -= iy;
+    fx = 2 * fx - 1;
+    fy = 1 - 2 * fy;
+    // check bounds, make 0 if out of bounds
+    let dir = 0; // 0 to 3
+    if (ix >=0 && ix < trackWidth && iy >= 0 && iy < trackHeight) {
+        const piece = trackData[iy][ix];
+        dir = reverse ? piece.revdir : piece.dir;
+        dir *= CMath.PI / 2;
+        dir = normalangrad(dir);
+    }
+    return dir;
+}
+
 race_track.collideTrack = function(trackData, pos) {
     const trackWidth = trackData[0].length;
     const trackHeight = trackData.length;

@@ -97,7 +97,7 @@ race_main.init = function() {
     race_main.infoTree = race_main.buildTextInfo();
     race_main.inforoottree.linkchild(race_main.infoTree);
     // make the car
-    race_main.numPlayers = 4;
+    race_main.numPlayers = 16;
     race_main.curPlayer = 0;
     race_main.carModels = [];
     race_main.carTreeRots = [];
@@ -161,7 +161,7 @@ race_main.proc = function() {
     }
     // change zoom
     if (race_main.curCameraType != race_main.cameraTypeEnums.view3D) {
-        let delta = Math.round(input.wheelDelta); // new with chrome, they now have non integer values
+        let delta = input.wheelDelta; // new with chrome, they now have non integer values
         //console.log("wheel delta = " + delta);
         const zf = 1.1;
         let watch = 0;
@@ -204,7 +204,11 @@ race_main.proc = function() {
     for (let i = 0; i < race_main.numPlayers; ++i) {
         race_main.m2v(i); // model to view
     }
-    race_main.updateInfo("car " + race_main.curPlayer + " speed = " + (race_main.carModels[race_main.curPlayer].speed * 5000).toFixed(1));
+    const carModel = race_main.carModels[race_main.curPlayer];
+    race_main.updateInfo("car " + race_main.curPlayer
+        + ", mode = " + race_car.modeStrs[carModel.mode]
+        + ", speed = " + (carModel.speed * 5000).toFixed(1)
+        + ", dir = " + carModel.dir.toFixed(3));
 	doflycam(mainvp); // modify the trs of vp using flycam
 
 	// draw main

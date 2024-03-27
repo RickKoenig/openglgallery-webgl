@@ -106,15 +106,18 @@ function bmousec(e) {
 
 // event mouse wheel changed
 function bmousewheel(e) {
+	/*
 	//rawwheeldelta = 0;
 	if (e.wheelDelta) {
 		rawwheeldelta += e.wheelDelta/120;
-	} else if (e.detail) { /** Mozilla case. */
-                /** In Mozilla, sign of delta is different than in IE.
-                 * Also, delta is multiple of 3.
-                 */
+	} else if (e.detail) { // Mozilla case.
+                // In Mozilla, sign of delta is different than in IE.
+                // Also, delta is multiple of 3.
+                
  		rawwheeldelta += -e.detail/3;
-	}
+	}*/
+	rawwheeldelta -= Math.sign(e.deltaY);
+
 	if (e.preventDefault)
         e.preventDefault();
 }
@@ -166,8 +169,9 @@ function mapinit() {
 		maparea.onmouseover = bmouseov;
 		maparea.onmouseout = bmouseou;
 		maparea.onmouseenter = bmouseenter;
-		maparea.onmousewheel = bmousewheel;
-		maparea.addEventListener('DOMMouseScroll', bmousewheel, false);
+		//maparea.onmousewheel = bmousewheel;
+		//maparea.addEventListener('DOMMouseScroll', bmousewheel, false);
+		maparea.addEventListener('wheel', bmousewheel);
 		//window.addEventListener('DOMMouseScroll', bmousewheel, false);
 		//document.onmousewheel = wheel;
 		//document.onmousewheel = wheel;
