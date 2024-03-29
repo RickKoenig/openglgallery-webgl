@@ -208,7 +208,6 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 	// do network stuff
 	if (sockInfo && sockInfo.sock) {
-
 		const gameClassStr = "Game" + race_gameState.gameType.toUpperCase();
 		console.log("game class string = " + gameClassStr);
 		race_gameState.gameClass = window[gameClassStr];
@@ -325,7 +324,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
 	}
 	if (race_gameState.gameType == 'b') {
-		mainvp.clearcolor = [.15, .85, .1, 1];
+		mainvp.clearcolor = [.05, .85, 1, 1];
 	}
 	fpswanted = race_gameState.fpswanted;
 	// run players at different framerates, test catchup logic

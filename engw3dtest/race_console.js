@@ -57,11 +57,18 @@ race_console.autoCommandJoin = function() {
 	race_console.doCommand('j');
 }
 
-race_console.autoCommand1P = function() {
+race_console.autoCommand1Pa = function() {
 	// log in and connect to room p0
 	race_console.doCommand('e');
 	race_console.doCommand('m');
 	race_console.doCommand('go a');
+}
+
+race_console.autoCommand1Pb = function() {
+	// log in and connect to room p0
+	race_console.doCommand('e');
+	race_console.doCommand('m');
+	race_console.doCommand('go b');
 }
 
 // get my profile from server after setting name game etc. 
@@ -317,9 +324,10 @@ race_console.doCommand = function(cmdStr) {
 				   // no new members, host can leave without destroying the room
 			if (race_console.socker) {
 				let gameType = words[0];
-				if (!gameType) gameType = 'a'; // default
-				if (gameType != 'a' && /*gameType != 'b' && */gameType != undefined) {
+				//if (!gameType) gameType = 'a'; // default
+				if (gameType != 'a' && gameType != 'b') {
 					race_console.terminal.print("not a valid gameType '" + gameType + "'");
+					race_console.terminal.print("valid gameTypes are, 'a' and 'b'");
 					break;
 				}
 				race_console.socker.emit('go', gameType);
@@ -425,7 +433,8 @@ race_console.init = function(intentData) {
 	// test state changes
 	//race_console.lobbyButton = makeabut("lobby", race_console.gotoLobby);
 	//race_console.fillButton = makeabut("sent go", race_console.gotoFill);
-	makeabut("start game", race_console.autoCommand1P);
+	makeabut("start game a", race_console.autoCommand1Pa);
+	makeabut("start game b", race_console.autoCommand1Pb);
 	makeabut("make room", race_console.autoCommandMake);
 	makeabut("join room", race_console.autoCommandJoin);
 	

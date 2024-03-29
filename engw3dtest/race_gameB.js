@@ -1,6 +1,6 @@
 'use strict';
 
-window.GameA = class GameA {
+window.GameB = class GameB {
     static keyCodes = {
         UP: 1,
         DOWN: 2,
@@ -13,7 +13,7 @@ window.GameA = class GameA {
     constructor(numPlayers, curPlayer, root) {
         this.res = [1024, 768];
         this.margin = 30; // border
-        this.size = 30; // radius
+        this.size = 25; // radius
         this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
         // push these npcs around
