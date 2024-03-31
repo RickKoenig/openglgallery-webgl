@@ -45,8 +45,8 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Run Race Net tracks",
-            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_main",
+            "name": "Run Race Net tracks standalone",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_mainStandalone",
             "webRoot": "${workspaceFolder}"
         },
         {

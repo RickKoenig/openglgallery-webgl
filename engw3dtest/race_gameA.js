@@ -1,5 +1,6 @@
 'use strict';
 
+// run a networked test game
 window.GameA = class GameA {
     static keyCodes = {
         UP: 1,

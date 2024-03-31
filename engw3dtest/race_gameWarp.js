@@ -1,7 +1,6 @@
 'use strict';
 
 class GameWarp {
-
     constructor(numPlayers, curPlayer, gameStatic, root, doChecksum) {
         this.doChecksum = doChecksum;
         this.gameStatic = gameStatic;

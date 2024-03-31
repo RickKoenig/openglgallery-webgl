@@ -317,8 +317,8 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 	// the 3D viewport
 	mainvp = defaultviewport();
-	mainvp.near = 7;
-	mainvp.far = 10000;
+	//mainvp.near = 7;
+	//mainvp.far = 10000;
 	mainvp.clearcolor = [.125, .125, .125, 1];
 	if (race_gameState.gameType == 'a') {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
@@ -474,7 +474,6 @@ race_gameState.proc = function() {
 	race_gameState.terminalFPS.print("FPS = " + Timers.fpsavg.toFixed(4));
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
-	beginscene(mainvp);
 	if (race_gameState.mvc) {
 		race_gameState.checksum = race_gameState.mvc.modelToView(race_gameState.count);
 		if (race_gameState.doChecksum) {
@@ -491,6 +490,7 @@ race_gameState.proc = function() {
 			race_gameState.validateFrames();
 		}
 	}
+	beginscene(mainvp);
 	race_gameState.roottree.draw();
 };
 

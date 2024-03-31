@@ -1,6 +1,7 @@
 'use strict';
 
-window.GameB = class GameB {
+// run a networked race game
+window.GameB = class RaceGameNetwork {
     static keyCodes = {
         UP: 1,
         DOWN: 2,
@@ -11,27 +12,12 @@ window.GameB = class GameB {
 
     // assume 1024 by 768 resolution
     constructor(numPlayers, curPlayer, root) {
-        this.res = [1024, 768];
-        this.margin = 30; // border
-        this.size = 25; // radius
-        this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
-        // push these npcs around
-        this.numDummyNpcsX = 4;
-        this.numDummyNpcsY = 6;
-        this.numDummyNpcs = this.numDummyNpcsX * this.numDummyNpcsY;
-        // these npcs move and push everything else
-        this.numMoveNpcsX = 3;
-        this.numMoveNpcsY = 6;
-        this.numMoveNpcs = this.numMoveNpcsX * this.numMoveNpcsY;
-
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
-        this.step = 4; // how fast players move
-        this.ghostModel = {angle: 0 }; // NO time warp model, this model is for animation, doesn't interact with game
-        this.curPlayerView = [];
-        this.curDummyNpcView = [];
-        this.curMoveNpcView = [];
+        this.ghostModel = {}; // NO time warp model, this model is for animation, doesn't interact with game
+        this.trackView = [];
+        this.carsView = [];
 
         // build 3D scene
         const viewParent = new Tree2("viewParent");
