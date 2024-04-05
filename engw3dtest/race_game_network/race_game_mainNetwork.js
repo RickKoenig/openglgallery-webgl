@@ -9,10 +9,37 @@ window.GameB = class RaceGameNetwork {
         LEFT: 8,
         GO: 16,
     };
-
+    static #buildTextInfo = function () {
+        var ftree = new Tree2("info");
+        var infofontmodel = new ModelFont("infoFont","font0.png","tex",
+            1,1,
+            60,20,
+            true);
+        //infofontmodel.flags |= modelflagenums.NOZBUFFER;
+        var str = "Welcome";
+        infofontmodel.print(str);
+        // make pixel perfect
+        ftree.trans = [-gl.asp, 1, 0];
+        ftree.scale = [
+            16 * 2 / glc.clientHeight * .5,
+            32 * 2 / glc.clientHeight * .5,
+            1
+        ];
+        ftree.setmodel(infofontmodel);
+        return ftree;
+    };
+    
+    #updateInfo = function(str) {
+        this.infoTree.mod.print(str);
+    };
+    
     // assume 1024 by 768 resolution
     constructor(numPlayers, curPlayer, root) {
+        this.size = 30; // radius
+        this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
+        this.slotPlayer = curPlayer; // network
+        this.curPlayer = curPlayer; // view
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
         this.ghostModel = {}; // NO time warp model, this model is for animation, doesn't interact with game
@@ -20,9 +47,12 @@ window.GameB = class RaceGameNetwork {
         this.carsView = [];
 
         // build 3D scene
-        const viewParent = new Tree2("viewParent");
-        viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
-        root.linkchild(viewParent);
+        this.infoParent = new Tree2("infoParent");
+        this.gameParent = new Tree2("gameParent");
+        this.gameParent.trans = [0, 0, 1];
+        // move back a little for camera
+        this.infoParent.trans = [0, 0, 1];
+        root.linkchild(this.infoParent);
         // view players
         const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
         treeMasterPlayer.scale = [1, 1, .01];
@@ -30,8 +60,8 @@ window.GameB = class RaceGameNetwork {
         for (let s = 0; s < numPlayers; ++s) {
             const playerTree = treeMasterPlayer.newdup();
             if (curPlayer == s) playerTree.mat.color = [1.5, 1.5, 1.5, 1]; // brighter color for self
-            this.curPlayerView[s] = playerTree;
-            viewParent.linkchild(playerTree);
+            this.carsView[s] = playerTree;
+            this.infoParent.linkchild(playerTree);
         }
         treeMasterPlayer.glfree();
         // view npcsDummy
@@ -41,7 +71,7 @@ window.GameB = class RaceGameNetwork {
         for (let n = 0; n < this.numDummyNpcs; ++n) {
             const npcDummyTree = treeMasterDummyNpc.newdup();
             this.curDummyNpcView[n] = npcDummyTree;
-            viewParent.linkchild(npcDummyTree);
+            infoParent.linkchild(npcDummyTree);
         }
         treeMasterDummyNpc.glfree();
         
@@ -52,37 +82,82 @@ window.GameB = class RaceGameNetwork {
         for (let n = 0; n < this.numMoveNpcs; ++n) {
             const npcMoveTree = treeMasterMoveNpc.newdup();
             this.curMoveNpcView[n] = npcMoveTree;
-            viewParent.linkchild(npcMoveTree);
+            infoParent.linkchild(npcMoveTree);
         }
         treeMasterMoveNpc.glfree();
 
-        // add some ghosts
-        // standard anim
-        const square = buildplanexy("spinner", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);
-        square.trans = [50, 50, 0];
-        square.rotvel = [0, 0, -Math.PI * 2 / 10];
-        viewParent.linkchild(square);
-        
-        // custom anim
-        this.squareG = buildplanexy("spinnerG", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);
-        viewParent.linkchild(this.squareG);
+        // make info text
+        this.infoTree = RaceGameNetwork.#buildTextInfo();
+        this.infoParent.linkchild(this.infoTree);
+        this.#updateInfo("hi ho!");
 
-        // test sizes
-        const block = buildprism("block",[this.size / 2,this.size / 2,this.size / 2],"maptestnck.png","tex");
-        block.trans = [150, 50, 0];
-        block.scale = [1, 1, .01];
-        viewParent.linkchild(block);
+        // make the track
+        RaceGameNetwork.gameViewPort = defaultviewport();
+        //RaceGameNetwork.gameViewPort.clearflags = 0; // already cleared from mainvp
+        mainvp.clearflags = 0;
 
-        const plane = buildplanexy("plane", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);;
-        plane.trans = [200, 50, 0];
-        viewParent.linkchild(plane);
 
-        const sphere = buildsphere("sphere",this.size / 2,"maptestnck.png","tex");
-        sphere.trans = [250, 50, 0];
-        sphere.scale = [1, 1, .01];
-        viewParent.linkchild(sphere);
+
+        const track = race_track.buildtrack(race_trackData.race_track1);
+        this.trackInfo = track.info;
+        this.trackTree = track.tree;
+        this.gameParent.linkchild(this.trackTree);
+        //root.linkchild(track.tree);
+
+        // make the car
+        this.numPlayers = 16;
+        this.curPlayer = 0;
+        this.carModels = [];
+        this.carTreeRots = [];
+        this.carTreeTranss = [];
+        this.carTreeAttachs = [];
+        for (let i = 0; i < this.numPlayers; ++i) {
+            const car = race_car_network.buildCar(i, this.numPlayers);
+            this.carModels.push(car.model); // mvc
+            this.carTreeRots.push(car.treeRot); // camera rigging
+            this.carTreeTranss.push(car.treeTrans); // camera rigging
+            this.carTreeAttachs.push(car.attachTree); // camera rigging
+            this.gameParent.linkchild(car.tree);
+        }
+        // camera types (views)
+        RaceGameNetwork.gameViewPort.camattach = this.carTreeAttachs[this.curPlayer];
+        RaceGameNetwork.cameraTypeStrs = [
+            "static",
+            "scroll",
+            "rotScroll",
+            "view3D",
+        ];
+        RaceGameNetwork.cameraTypeEnums = makeEnum(RaceGameNetwork.cameraTypeStrs);
+        RaceGameNetwork.curCameraType = RaceGameNetwork.cameraTypeEnums.scroll;
+        //RaceGameNetwork.gameViewPort.zoom = .5;
+        RaceGameNetwork.cameraZoom = .5;
+        RaceGameNetwork.#changeCameraView();
     }
 
+    static #changeCameraView() {
+        switch(this.curCameraType) {
+            case this.cameraTypeEnums.static:
+                RaceGameNetwork.gameViewPort.incamattach = false;
+                this.rotCam = false;
+                viewportClearRotTrans(RaceGameNetwork.gameViewPort);
+                break;
+            case this.cameraTypeEnums.scroll:
+                RaceGameNetwork.gameViewPort.incamattach = true;
+                this.rotCam = false;
+                viewportClearRotTrans(RaceGameNetwork.gameViewPort);
+                break;
+            case this.cameraTypeEnums.rotScroll:
+                RaceGameNetwork.gameViewPort.incamattach = true;
+                this.rotCam = true;
+                viewportClearRotTrans(RaceGameNetwork.gameViewPort);
+                break;
+            case this.cameraTypeEnums.view3D:
+                RaceGameNetwork.gameViewPort.trans = [0, -1.23, .475];
+                RaceGameNetwork.gameViewPort.rot = [-1.25, 0, 0];
+                break;
+        }
+    }
+  
     #setNpcsMoving(retModel) {
         const angOffset = retModel.npcsMovingAngle;
         let n = 0;
@@ -295,6 +370,7 @@ window.GameB = class RaceGameNetwork {
                 curPlayer.desiredPos = null;
                 return;
             }
+            /*
             const step = this.step
             if (keyCode & GameA.keyCodes.RIGHT) {
                 curPlayer.pos[0] += step;
@@ -334,8 +410,9 @@ window.GameB = class RaceGameNetwork {
                     vec2.scale(delta, delta, step);
                     vec2.add(curPlayer.pos, curPlayer.pos, delta);
                 }
-            }
+            }*/
         }
+        /*
         // npc moves
         this.#setNpcsMoving(this.curModel);
         const movingAngleStep = .005;
@@ -408,16 +485,11 @@ window.GameB = class RaceGameNetwork {
             const npcd = this.curModel.npcsDummy[nd];
             npcd.pos[0] = range(this.margin, npcd.pos[0], this.res[0] - this.margin);
             npcd.pos[1] = range(this.margin, npcd.pos[1], this.res[1] - this.margin);
-        }
+        }*/
     }
 
     // no timeWarp, mainly for animation
     stepGhostModel(frameNum) {
-        const ang = this.ghostModel.angle;
-        const fpsw = fpswanted <= 0 ? 1 : fpswanted;
-        this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
-        this.ghostModel.angle = normalangrad(this.ghostModel.angle);
-        this.squareG.trans = [40 * CMath.cos(ang) + 50, -40 * CMath.sin(ang) + 50 , 0];
     }
 
     // M to V
@@ -426,15 +498,72 @@ window.GameB = class RaceGameNetwork {
         // update the view from the model
         // players
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
-            this.curPlayerView[slot].trans = vec3.clone(this.curModel.players[slot].pos);
+            this.carsView[slot].trans = vec3.clone(this.curModel.players[slot].pos);
         }
-        // npcsDummy
-        for (let n = 0; n < this.curModel.npcsDummy.length; ++n) {
-            this.curDummyNpcView[n].trans = vec3.clone(this.curModel.npcsDummy[n].pos);
+    }
+
+    draw() {
+        if (input.key == 'v'.charCodeAt()) {
+            RaceGameNetwork.curCameraType = (RaceGameNetwork.curCameraType + 1) % RaceGameNetwork.cameraTypeStrs.length;
+            RaceGameNetwork.#changeCameraView();
         }
-        // npcsMove
-        for (let n = 0; n < this.curModel.npcsMoving.length; ++n) {
-            this.curMoveNpcView[n].trans = vec3.clone(this.curModel.npcsMoving[n].pos);
+        
+        // change zoom
+        if (RaceGameNetwork.curCameraType != RaceGameNetwork.cameraTypeEnums.view3D) {
+            let delta = input.wheelDelta; // new with chrome, they now have non integer values
+            //console.log("wheel delta = " + delta);
+            const zf = 1.1;
+            let watch = 0;
+            while(delta) {
+                if (watch > 20) {
+                    console.log("watch hit!!");
+                    break;
+                }
+                if (delta > 0) {
+                    RaceGameNetwork.cameraZoom *= zf;
+                    --delta;
+                } else if (delta < 0) {
+                    RaceGameNetwork.cameraZoom /= zf;
+                    ++delta;
+                }
+                ++watch;
+            }
+            RaceGameNetwork.cameraZoom = range(1 / 8, RaceGameNetwork.cameraZoom, 8);
+            RaceGameNetwork.gameViewPort.zoom = RaceGameNetwork.cameraZoom;
+        } else {
+            RaceGameNetwork.gameViewPort.zoom = 2;
         }
+
+        // change car view control
+        let changeCarView = 0;
+        if (input.key == ']'.charCodeAt()) {
+            changeCarView = 1;
+        } else if (input.key == '['.charCodeAt()) {
+            changeCarView = -1;
+        }
+        if (changeCarView) {
+            this.curPlayer 
+                = (this.curPlayer + this.numPlayers + changeCarView) 
+                % this.numPlayers;
+            RaceGameNetwork.gameViewPort.camattach = this.carTreeAttachs[this.curPlayer];
+        }
+
+        procCars();
+
+        // draw track and cars
+        //doflycam(RaceGameNetwork.gameViewPort);
+        beginscene(RaceGameNetwork.gameViewPort);
+        this.gameParent.draw();
+    }
+
+    exit() {
+        // show current usage
+        logger("before GAME PARENT glfree\n");
+        this.gameParent.log();
+        logrc();
+        // show usage after cleanup
+        this.gameParent.glfree();
+        logger("after GAME PARENT glfree\n");
+        logrc();
     }
 }

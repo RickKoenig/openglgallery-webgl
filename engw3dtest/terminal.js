@@ -130,6 +130,10 @@ class Terminal {
         }
     }
 
+    getShow() {
+        return !(this.backgnd.flags & treeflagenums.DONTDRAWC);
+    }
+
     clear() {
         //console.log(" ############### call clear");
         this.mainStr = "";

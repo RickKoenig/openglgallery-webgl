@@ -11,7 +11,7 @@ class Indicator {
 		this.index = 0; // index into scaling ranges
 		this.sep = 420;
 		const depth = glc.clientHeight / 2;
-        let offy = -120;
+        let offy = -200;
 		const stepy = 20;
         offy += depth;
 		this.num = num;
@@ -56,7 +56,7 @@ class Indicator {
 			cols: 10,
 			rows: 1,
 			offx: 40,
-			offy: 8,
+			offy: 32,
 			scale: 2
 		};
 		this.termLeft = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);

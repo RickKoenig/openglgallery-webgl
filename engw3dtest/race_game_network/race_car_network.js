@@ -1,18 +1,18 @@
 'use strict';
 
-var race_car = {};
+var race_car_network = {};
 
-race_car.modeStrs = [
+race_car_network.modeStrs = [
     "human",
     "ai",
     "revai",
     "none",
 ];
 
-race_car.modeEnums = makeEnum(race_car.modeStrs);
+race_car_network.modeEnums = makeEnum(race_car_network.modeStrs);
 
 // returns object with tree info and a 'model' mvc
-race_car.buildCar = function(i, n) {
+race_car_network.buildCar = function(i, n) {
     // build the car view model
     const carSize = .1875;
     // body
@@ -57,16 +57,16 @@ race_car.buildCar = function(i, n) {
     wholeCarRot.linkchild(bodyTree);
     wholeCarRot.linkchild(wedgeTree);
     const carAttach = new Tree2("carAttach");
-    carAttach.trans = [0, 0, -3];
+    carAttach.trans = [0, 0, -1];
     // whole car trans
     const wholeCarTrans = new Tree2("carWholeTrans");
     wholeCarTrans.linkchild(wholeCarRot);
     wholeCarTrans.linkchild(carAttach);
 
     // pick driving mode for each car
-    //const mode = race_car.modeEnums.revai;
-    //const mode = Math.min(i, race_car.modeEnums.none);
-    const mode = i * 2 < n ? race_car.modeEnums.revai : race_car.modeEnums.ai;
+    //const mode = race_car_network.modeEnums.revai;
+    //const mode = Math.min(i, race_car_network.modeEnums.none);
+    const mode = i * 2 < n ? race_car_network.modeEnums.revai : race_car_network.modeEnums.ai;
 
     // placement of cars
     i = n - 1 - i; // start in back for player 0
@@ -77,7 +77,7 @@ race_car.buildCar = function(i, n) {
             //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
             pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
             speed: 0,
-            dir: mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
+            dir: mode == race_car_network.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
             mode: mode // TODO: move out of model LATER when porting to 'net race'
 
         },
@@ -93,7 +93,7 @@ race_car.buildCar = function(i, n) {
 };
 
 // move 2 circles apart, simple
-race_car.separate = function(posA, posB, distSep, extra) {
+race_car_network.separate = function(posA, posB, distSep, extra) {
     const distSep2 = distSep * distSep;
     const dist2 = vec2.sqrDist(posA, posB);
     if (dist2 > distSep2) {
@@ -116,19 +116,19 @@ race_car.separate = function(posA, posB, distSep, extra) {
     return true;
 }
 
-race_car.separateCars = function(carModels) {
+race_car_network.separateCars = function(carModels) {
     const extra = 1.001; // move apart a litte more
     const distSep = .375;
     for (let i = 0; i < carModels.length; ++i) {
         const carA = carModels[i];
         for (let j = i + 1; j < carModels.length; ++j) {
             const carB = carModels[j];
-            race_car.separate(carA.pos, carB.pos, distSep, extra);
+            race_car_network.separate(carA.pos, carB.pos, distSep, extra);
         }
     }
 }
 
-race_car.procCars = function(carModels, focusIdx) {
+race_car_network.procCars = function(carModels, focusIdx) {
     const dirStep = 1.5;
     const topSpeed = 1 / 32;
     const topRevSpeed = -1 / 64;
@@ -137,10 +137,11 @@ race_car.procCars = function(carModels, focusIdx) {
     const brake = -topSpeed / 64;
     const slowTurnSpeed = .01;
     const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
+
     // change mode of the car with focus
     if (input.key == 'm'.charCodeAt()) {
         const carModel = carModels[focusIdx];
-        carModel.mode = (carModel.mode + 1) % race_car.modeStrs.length;
+        carModel.mode = (carModel.mode + 1) % race_car_network.modeStrs.length;
     }
     for (let i = 0; i < carModels.length; ++i) {
         const carModel = carModels[i];
@@ -150,15 +151,15 @@ race_car.procCars = function(carModels, focusIdx) {
         let left = 0;
         let right = 0;
         switch(carModel.mode) {
-        case race_car.modeEnums.human:
+        case race_car_network.modeEnums.human:
             up = input.keystate[keycodes.UP];
             down = input.keystate[keycodes.DOWN];
             left = input.keystate[keycodes.LEFT];
             right = input.keystate[keycodes.RIGHT];
             break;
-        case race_car.modeEnums.ai:
-        case race_car.modeEnums.revai:
-            let dir = race_track.getAiTrack(race_trackData.race_track1 ,carModel.pos, carModel.mode == race_car.modeEnums.revai);
+        case race_car_network.modeEnums.ai:
+        case race_car_network.modeEnums.revai:
+            let dir = race_track.getAiTrack(race_trackData.race_track1 ,carModel.pos, carModel.mode == race_car_network.modeEnums.revai);
             let deltaDir = normalangrad(dir - carModel.dir);
             up = true;
             if (deltaDir >= aiNoTurnAng) {
@@ -167,7 +168,7 @@ race_car.procCars = function(carModels, focusIdx) {
                 left = true;
             }
             break;
-        /*case race_car.modeEnums.none:
+        /*case race_car_network.modeEnums.none:
             left = true;
             break;*/
         }
@@ -221,7 +222,7 @@ race_car.procCars = function(carModels, focusIdx) {
     }
 
     // keep cars apart
-    race_car.separateCars(carModels);
+    race_car_network.separateCars(carModels);
 
     // don't move out of the pavement
     for (let i = 0; i < carModels.length; ++i) {

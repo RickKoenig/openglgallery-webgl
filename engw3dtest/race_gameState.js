@@ -187,6 +187,10 @@ race_gameState.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 	preloadimg("../common/sptpics/Bark.png");
+	preloadimg("../common/sptpics/take0016.jpg");
+	preloadimg("track/4pl_tile01.jpg");
+	preloadimg("track/grass.jpg");
+	preloadimg("track/sanddbl.jpg");
 	//preloadtime(3000); // show loading screen for minimum time
 }
 
@@ -195,6 +199,12 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	race_gameState.count = 0; // counter for this state
 	race_gameState.allready = false;
 	race_gameState.gameType = sockInfo?.game;
+
+	// the 3D viewport
+	mainvp = defaultviewport();
+	//mainvp.near = 7;
+	//mainvp.far = 10000;
+	mainvp.clearcolor = [.125, .125, .125, 1];
 
 	// ui
 	setbutsname('ingame');
@@ -312,14 +322,11 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 		race_gameState.pingTimes = Array(room.slots.length);
 		race_gameState.discon = Array(room.slots.length);
-		race_gameState.showPings = new Indicator(race_gameState.roottree, room.slots.length, race_gameState.mySlot);
+		race_gameState.indicatorTree = new Tree2("indicator");
+		race_gameState.roottree.linkchild(race_gameState.indicatorTree);
+		race_gameState.showPings = new Indicator(race_gameState.indicatorTree, room.slots.length, race_gameState.mySlot);
 	}
 
-	// the 3D viewport
-	mainvp = defaultviewport();
-	//mainvp.near = 7;
-	//mainvp.far = 10000;
-	mainvp.clearcolor = [.125, .125, .125, 1];
 	if (race_gameState.gameType == 'a') {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
 	}
@@ -351,6 +358,11 @@ race_gameState.proc = function() {
 	// proc
 	if (race_gameState.maxFrames && race_gameState.maxFrames <= race_gameState.count) {
 		return;
+	}
+	if (input.key == 'h'.charCodeAt()) {
+		race_gameState.indicatorTree.flags ^= treeflagenums.DONTDRAWC;
+		race_gameState.terminalFPS.doShow(!race_gameState.terminalFPS.getShow());
+		race_gameState.termValid.doShow(!race_gameState.termValid.getShow());
 	}
 	if (race_gameState.allready) {
 		// do something after N seconds
@@ -471,7 +483,7 @@ race_gameState.proc = function() {
 		}
 	}
 	race_gameState.roottree.proc(); // do animations that don't effect players
-	race_gameState.terminalFPS.print("FPS = " + Timers.fpsavg.toFixed(4));
+	race_gameState.terminalFPS.print("AVG FPS = " + Timers.fpsavg.toFixed(4));
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	if (race_gameState.mvc) {
@@ -490,6 +502,7 @@ race_gameState.proc = function() {
 			race_gameState.validateFrames();
 		}
 	}
+	race_gameState.mvc.draw();
 	beginscene(mainvp);
 	race_gameState.roottree.draw();
 };
@@ -511,6 +524,7 @@ race_gameState.exit = function() {
 	logger("after roottree glfree\n");
 	race_gameState.roottree.glfree();
 	race_gameState.terminal = null;
+	race_gameState.mvc.exit();
 	
 	// show usage after cleanup
 	logrc();

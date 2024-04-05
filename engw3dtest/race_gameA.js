@@ -452,4 +452,11 @@ window.GameA = class GameA {
             this.curMoveNpcView[n].trans = vec3.clone(this.curModel.npcsMoving[n].pos);
         }
     }
+
+    // finer control over multi viewports
+    draw() {
+    }
+
+    exit() {
+    }
 }

@@ -57,7 +57,7 @@ race_car.buildCar = function(i, n) {
     wholeCarRot.linkchild(bodyTree);
     wholeCarRot.linkchild(wedgeTree);
     const carAttach = new Tree2("carAttach");
-    carAttach.trans = [0, 0, -3];
+    carAttach.trans = [0, 0, -1];
     // whole car trans
     const wholeCarTrans = new Tree2("carWholeTrans");
     wholeCarTrans.linkchild(wholeCarRot);

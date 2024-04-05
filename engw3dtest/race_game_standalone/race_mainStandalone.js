@@ -5,8 +5,6 @@ var race_mainStandalone = {};
 race_mainStandalone.text = "WebGL: Race on a constructed track";
 race_mainStandalone.title = "race_main_standalone";
 
-race_mainStandalone.depth = 4.2; // how far away from track to be, camera
-
 race_mainStandalone.buildTextInfo = function () {
 	var ftree = new Tree2("info");
 	var scratchfontmodel = new ModelFont("infoFont","font0.png","tex",
@@ -17,10 +15,10 @@ race_mainStandalone.buildTextInfo = function () {
 	var str = "Welcome";
 	scratchfontmodel.print(str);
     // make pixel perfect
-    ftree.trans = [-race_mainStandalone.depth * gl.asp, race_mainStandalone.depth, 0];
+    ftree.trans = [-gl.asp, 1, 0];
     ftree.scale = [
-        race_mainStandalone.depth * 16 * 2 / glc.clientHeight * .5,
-        race_mainStandalone.depth * 32 * 2 / glc.clientHeight * .5,
+        16 * 2 / glc.clientHeight * .5,
+        32 * 2 / glc.clientHeight * .5,
         1
     ];
 	ftree.setmodel(scratchfontmodel);
@@ -49,8 +47,8 @@ race_mainStandalone.changeCameraView = function() {
         viewportClearRotTrans(mainvp);
         break;
     case race_mainStandalone.cameraTypeEnums.view3D:
-        mainvp.trans = [0, -.9, 2.7];
-        mainvp.rot = [-Math.PI / 2, 0, 0];
+        mainvp.trans = [0, -1.23, .475];
+        mainvp.rot = [-1.25, 0, 0];
         break;
     }
 };
@@ -85,9 +83,9 @@ race_mainStandalone.init = function() {
 	setbutsname('race_track_buts');
     // tree root
     race_mainStandalone.roottree = new Tree2("root");
-    race_mainStandalone.roottree.trans = [0, 0, race_mainStandalone.depth]; // move scene out a little for good camera shot
+    race_mainStandalone.roottree.trans = [0, 0, 1]; // move scene out a little for good camera shot
     race_mainStandalone.inforoottree = new Tree2("inforoot");
-    race_mainStandalone.inforoottree.trans = [0, 0, race_mainStandalone.depth]; // move scene out a little for good camera shot
+    race_mainStandalone.inforoottree.trans = [0, 0, 1]; // move scene out a little for good camera shot
 
     // make the track
     const track = race_track.buildtrack(race_trackData.race_track1);
@@ -124,7 +122,7 @@ race_mainStandalone.init = function() {
     ];
     race_mainStandalone.cameraTypeEnums = makeEnum(race_mainStandalone.cameraTypeStrs);
     race_mainStandalone.curCameraType = race_mainStandalone.cameraTypeEnums.scroll;
-    race_mainStandalone.cameraZoom = 1;
+    race_mainStandalone.cameraZoom = .5;
     race_mainStandalone.changeCameraView();
 	mainvp.clearcolor = [.125,.5,.75,1];
 

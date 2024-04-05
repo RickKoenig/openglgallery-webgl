@@ -112,4 +112,13 @@ class GameWarp {
         this.validModels = [];
         return ret;
     }
+
+    // finer control over multi viewports
+    draw() {
+        this.game.draw();
+    }
+
+    exit() {
+        this.game.exit();
+    }
 }
