@@ -12,7 +12,7 @@ race_car_network.modeStrs = [
 race_car_network.modeEnums = makeEnum(race_car_network.modeStrs);
 
 // returns object with tree info and a 'model' mvc
-race_car_network.buildCar = function(i, n) {
+race_car_network.buildCarView = function(i, n) {
     // build the car view model
     const carSize = .1875;
     // body
@@ -66,13 +66,14 @@ race_car_network.buildCar = function(i, n) {
     // pick driving mode for each car
     //const mode = race_car_network.modeEnums.revai;
     //const mode = Math.min(i, race_car_network.modeEnums.none);
-    const mode = i * 2 < n ? race_car_network.modeEnums.revai : race_car_network.modeEnums.ai;
+    //const mode = i * 2 < n ? race_car_network.modeEnums.revai : race_car_network.modeEnums.ai;
 
     // placement of cars
-    i = n - 1 - i; // start in back for player 0
-    const j = Math.floor(i / 2);
-    i = (i + 1) % 2;
+    //i = n - 1 - i; // start in back for player 0
+    //const j = Math.floor(i / 2);
+    //i = (i + 1) % 2;
     const car = { // model and some trees
+        /*
         model: {
             //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
             pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
@@ -80,16 +81,35 @@ race_car_network.buildCar = function(i, n) {
             dir: mode == race_car_network.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
             mode: mode // TODO: move out of model LATER when porting to 'net race'
 
-        },
+        },*/
         treeRot: wholeCarRot, // THIS, don't rotate screen with car
         treeTrans: wholeCarTrans, // OR THIS, rotate screen with car
         attachTree: carAttach,
         tree: wholeCarTrans // root of car
     }
-    car.treeTrans.trans = car.model.pos.slice();
+    car.treeTrans.trans = [0, 0, 0];//car.model.pos.slice();
     car.treeRot.rot = [0, 0, 0];
     car.treeTrans.rot = [0, 0, 0];
     return car;
+};
+
+race_car_network.buildCarModels = function(n) {
+    const models = [];
+    for (let i = 0; i < n; ++i) {
+        // placement of cars
+        i = n - 1 - i; // start in back for player 0
+        const j = Math.floor(i / 2);
+        i = (i + 1) % 2;
+        const model = {
+            //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
+            pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
+            speed: 0,
+            dir: 0, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
+            mode: 0//mode // TODO: move out of model LATER when porting to 'net race'
+        }
+        models.push(model);
+    }
+    return models;
 };
 
 // move 2 circles apart, simple

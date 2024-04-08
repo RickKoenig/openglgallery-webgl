@@ -2,7 +2,7 @@
 
 // run a networked race game
 window.GameB = class RaceGameNetwork {
-    static keyCodes = {
+    static #keyCodes = {
         UP: 1,
         DOWN: 2,
         RIGHT: 4,
@@ -33,7 +33,6 @@ window.GameB = class RaceGameNetwork {
         this.infoTree.mod.print(str);
     };
     
-    // assume 1024 by 768 resolution
     constructor(numPlayers, curPlayer, root) {
         this.size = 30; // radius
         this.viewDepth = glc.clientHeight / 2;
@@ -105,15 +104,15 @@ window.GameB = class RaceGameNetwork {
         //root.linkchild(track.tree);
 
         // make the car
-        this.numPlayers = 16;
+        this.numPlayers = 1;
         this.curPlayer = 0;
-        this.carModels = [];
+        //this.carModels = [];
         this.carTreeRots = [];
         this.carTreeTranss = [];
         this.carTreeAttachs = [];
         for (let i = 0; i < this.numPlayers; ++i) {
-            const car = race_car_network.buildCar(i, this.numPlayers);
-            this.carModels.push(car.model); // mvc
+            const car = race_car_network.buildCarView(i, this.numPlayers);
+            //this.carModels.push(car.model); // mvc
             this.carTreeRots.push(car.treeRot); // camera rigging
             this.carTreeTranss.push(car.treeTrans); // camera rigging
             this.carTreeAttachs.push(car.attachTree); // camera rigging
@@ -186,12 +185,11 @@ window.GameB = class RaceGameNetwork {
 
     // return initial model of the game
     #modelReset() {
-        const retModel = {
-            players: Array(this.numPlayers),
-            npcsDummy: Array(this.numDummyNpcs),
-            npcsMoving: Array(this.numMoveNpcs),
-            npcsMovingAngle: 0
-        };
+        const carModel = race_car_network.buildCarModels(this.numPlayers);
+        //const retModel = []
+        //    players: carModel
+        //};
+        /*
         // players
         for (let slot = 0; slot < this.numPlayers; ++slot) {
             const player = {
@@ -203,22 +201,8 @@ window.GameB = class RaceGameNetwork {
             player.lastPos = vec3.clone(player.pos);
             retModel.players[slot] = player;
         }
-        // npc dummys
-        let n = 0;
-        for (let y = 0; y < this.numDummyNpcsY; ++y) {
-            for (let x = 0; x < this.numDummyNpcsX; ++x) {
-                const npc = {
-                    pos: [
-                        //700 + x * 75, 550 - y * 75, 0,
-                        150 + x * 75, 550 - y * 75, 0,
-                    ]
-                }
-                retModel.npcsDummy[n++] = npc;
-            }
-        }
-        // npc moves
-        this.#setNpcsMoving(retModel);
-        return retModel;
+        */
+        return carModel;
     }
 
     getCurModel() {
@@ -241,15 +225,15 @@ window.GameB = class RaceGameNetwork {
         let keyCode = 0;
         // restart game
         if (input.key == 'g'.charCodeAt(0)) {
-            keyCode += GameA.keyCodes.GO;
+            keyCode += GameB.#keyCodes.GO;
             ret.kc = keyCode;
             return ret;
         }
         // move with arrow keys
-        if (input.keystate[keycodes.LEFT]) keyCode += GameA.keyCodes.LEFT;
-        if (input.keystate[keycodes.RIGHT]) keyCode += GameA.keyCodes.RIGHT;
-        if (input.keystate[keycodes.UP]) keyCode += GameA.keyCodes.UP;
-        if (input.keystate[keycodes.DOWN]) keyCode += GameA.keyCodes.DOWN;
+        if (input.keystate[keycodes.LEFT]) keyCode += GameB.#keyCodes.LEFT;
+        if (input.keystate[keycodes.RIGHT]) keyCode += GameB.#keyCodes.RIGHT;
+        if (input.keystate[keycodes.UP]) keyCode += GameB.#keyCodes.UP;
+        if (input.keystate[keycodes.DOWN]) keyCode += GameB.#keyCodes.DOWN;
         ret.kc = keyCode;
         // move with mouse
         ret.mouse = {
@@ -263,14 +247,14 @@ window.GameB = class RaceGameNetwork {
     predictLogic(prevInput, frameNum) {
         return prevInput; // full prediction
         //const kc = 0; // wait, no prediction
-        //const kc = GameA.keyCodes.RIGHT; // test, predict right
-        //const kc = GameA.keyCodes.UP | prevInput.kc; // racing, always press GAS/up
+        //const kc = GameB.#keyCodes.RIGHT; // test, predict right
+        //const kc = GameB.#keyCodes.UP | prevInput.kc; // racing, always press GAS/up
         //const ret = {kc: kc}
         //return kc;
     }
 
     // move 2 circles apart, simple
-    static separate(posA, posB, distSep, extra) {
+    static #separate(posA, posB, distSep, extra) {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
@@ -281,7 +265,7 @@ window.GameB = class RaceGameNetwork {
             delta = vec2.create();
             vec2.sub(delta, posB, posA);
             vec2.normalize(delta, delta);
-        } else { // same position, separate horizontally
+        } else { // same position, #separate horizontally
             delta = vec2.fromValues(0, 1);
         }
         vec2.scale(delta, delta, distSep * .5 * extra);
@@ -294,7 +278,7 @@ window.GameB = class RaceGameNetwork {
     }
 
     // move 2 circles apart, but with posB roughly following posA movement direction
-    static separateSticky(posA, lastPosA, posB, distSep, stickyLerp, extra) {
+    static #separateSticky(posA, lastPosA, posB, distSep, stickyLerp, extra) {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
@@ -305,7 +289,7 @@ window.GameB = class RaceGameNetwork {
             deltaPos = vec2.create();
             vec2.sub(deltaPos, posB, posA);
             vec2.normalize(deltaPos, deltaPos);
-        } else { // same position, separate horizontally
+        } else { // same position, #separate horizontally
             deltaPos = vec2.fromValues(0, 1);
         }
         const deltaAVel = vec2.create();
@@ -330,7 +314,7 @@ window.GameB = class RaceGameNetwork {
     }
 
     // move circleA away from circleB (circleB doesn't move)
-    static separateA(posA, posB, distSep, extra) {
+    static #separateA(posA, posB, distSep, extra) {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
@@ -341,7 +325,7 @@ window.GameB = class RaceGameNetwork {
             delta = vec2.create();
             vec2.sub(delta, posB, posA);
             vec2.normalize(delta, delta);
-        } else { // same position, separate horizontally
+        } else { // same position, #separate horizontally
             delta = vec2.fromValues(0, 1);
         }
         vec2.scale(delta, delta, distSep * extra);
@@ -353,6 +337,7 @@ window.GameB = class RaceGameNetwork {
     stepModel(pInputs, frameNum) {
         // movement
         // players
+        /*
         for (let slot = 0; slot < pInputs.length; ++slot) {
             const pInput = pInputs[slot];
             const curPlayer = this.curModel.players[slot];
@@ -365,26 +350,26 @@ window.GameB = class RaceGameNetwork {
             // keyboard
             const keyCode = pInput.kc;
             // reset game
-            if (keyCode & GameA.keyCodes.GO) {
+            if (keyCode & GameB.#keyCodes.GO) {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 curPlayer.desiredPos = null;
                 return;
             }
             /*
             const step = this.step
-            if (keyCode & GameA.keyCodes.RIGHT) {
+            if (keyCode & GameB.#keyCodes.RIGHT) {
                 curPlayer.pos[0] += step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameA.keyCodes.LEFT) {
+            if (keyCode & GameB.#keyCodes.LEFT) {
                 curPlayer.pos[0] -= step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameA.keyCodes.UP) {
+            if (keyCode & GameB.#keyCodes.UP) {
                 curPlayer.pos[1] += step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameA.keyCodes.DOWN) {
+            if (keyCode & GameB.#keyCodes.DOWN) {
                 curPlayer.pos[1] -= step;
                 curPlayer.desiredPos = null;
             }
@@ -410,8 +395,8 @@ window.GameB = class RaceGameNetwork {
                     vec2.scale(delta, delta, step);
                     vec2.add(curPlayer.pos, curPlayer.pos, delta);
                 }
-            }*/
-        }
+            }
+        }*/
         /*
         // npc moves
         this.#setNpcsMoving(this.curModel);
@@ -428,7 +413,7 @@ window.GameB = class RaceGameNetwork {
             for (let p1 = p0 + 1; p1 < pInputs.length; ++p1) {
                 const curPlayer1 = this.curModel.players[p1];
                 // move players apart
-                GameA.separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
+                GameA.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
             }
         }
 
@@ -439,7 +424,7 @@ window.GameB = class RaceGameNetwork {
             for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
                 const npcd = this.curModel.npcsDummy[nd];
                 // move players and npcsDummy apart
-                GameA.separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
+                GameA.#separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
             }
         }
 
@@ -449,7 +434,7 @@ window.GameB = class RaceGameNetwork {
             for (let n1d = n0d + 1; n1d < this.curModel.npcsDummy.length; ++n1d) {
                 const npc1d = this.curModel.npcsDummy[n1d];
                 // move npcsDummy and npcsDummy apart
-                GameA.separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
+                GameA.#separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
             }
         }
 
@@ -459,7 +444,7 @@ window.GameB = class RaceGameNetwork {
             for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
                 const npcm = this.curModel.npcsMoving[nm];
                 // move players away from npcsMoving
-                GameA.separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
+                GameA.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
             }
         }
 
@@ -469,7 +454,7 @@ window.GameB = class RaceGameNetwork {
             for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
                 const npcm = this.curModel.npcsMoving[nm];
                 // move players away from npcsMoving
-                GameA.separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
+                GameA.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
             }
         }
         
@@ -497,9 +482,9 @@ window.GameB = class RaceGameNetwork {
     modelToView() {
         // update the view from the model
         // players
-        for (let slot = 0; slot < this.curModel.players.length; ++slot) {
-            this.carsView[slot].trans = vec3.clone(this.curModel.players[slot].pos);
-        }
+        //for (let slot = 0; slot < this.curModel.players.length; ++slot) {
+        //    this.carsView[slot].trans = vec3.clone(this.curModel.players[slot].pos);
+        //}
     }
 
     draw() {
@@ -548,7 +533,7 @@ window.GameB = class RaceGameNetwork {
             RaceGameNetwork.gameViewPort.camattach = this.carTreeAttachs[this.curPlayer];
         }
 
-        procCars();
+        //procCars();
 
         // draw track and cars
         //doflycam(RaceGameNetwork.gameViewPort);
