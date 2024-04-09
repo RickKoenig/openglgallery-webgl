@@ -87,8 +87,8 @@ window.GameB = class RaceGameNetwork {
             "view3D",
         ];
         RaceGameNetwork.cameraTypeEnums = makeEnum(RaceGameNetwork.cameraTypeStrs);
-        this.curCameraType = RaceGameNetwork.cameraTypeEnums.static;
-        this.cameraZoom = .25;
+        this.curCameraType = RaceGameNetwork.cameraTypeEnums.scroll;
+        this.cameraZoom = .5;
         this.#changeCameraView();
         this.gameViewPort.camattach = this.carTreeAttachs[this.curPlayerView];
     }

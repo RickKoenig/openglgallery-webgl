@@ -104,7 +104,7 @@ race_car_network.buildCarModels = function(n) {
             //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
             pos: [-.25 - .5 * j, -2.75 - .5 * lane, 0], // hard coded
             speed: 0,
-            dir: (i + 1) * CMath.PI * .125, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
+            dir: CMath.PI  * .5, //(i + 1) * CMath.PI * .125, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
             mode: race_car_network.modeEnums.human //mode // TODO: move out of model LATER when porting to 'net race'
         }
         models.push(model);
