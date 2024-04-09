@@ -1,6 +1,6 @@
 'use strict';
 
-var race_car_network = {};
+var race_car_network = {}; // keep global
 
 race_car_network.modeStrs = [
     "human",
@@ -97,15 +97,15 @@ race_car_network.buildCarModels = function(n) {
     const models = [];
     for (let i = 0; i < n; ++i) {
         // placement of cars
-        i = n - 1 - i; // start in back for player 0
-        const j = Math.floor(i / 2);
-        i = (i + 1) % 2;
+        let lane = n - 1 - i; // start in back for player 0
+        const j = Math.floor(lane / 2);
+        lane = (lane + 1) % 2;
         const model = {
             //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
-            pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // hard coded
+            pos: [-.25 - .5 * j, -2.75 - .5 * lane, 0], // hard coded
             speed: 0,
-            dir: 0, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
-            mode: 0//mode // TODO: move out of model LATER when porting to 'net race'
+            dir: (i + 1) * CMath.PI * .125, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
+            mode: race_car_network.modeEnums.human //mode // TODO: move out of model LATER when porting to 'net race'
         }
         models.push(model);
     }
@@ -148,7 +148,7 @@ race_car_network.separateCars = function(carModels) {
     }
 }
 
-race_car_network.procCars = function(carModels, focusIdx) {
+race_car_network.procCars = function(carModels, pInputs) {
     const dirStep = 1.5;
     const topSpeed = 1 / 32;
     const topRevSpeed = -1 / 64;
@@ -157,12 +157,13 @@ race_car_network.procCars = function(carModels, focusIdx) {
     const brake = -topSpeed / 64;
     const slowTurnSpeed = .01;
     const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
-
+/*
     // change mode of the car with focus
     if (input.key == 'm'.charCodeAt()) {
         const carModel = carModels[focusIdx];
         carModel.mode = (carModel.mode + 1) % race_car_network.modeStrs.length;
     }
+*/
     for (let i = 0; i < carModels.length; ++i) {
         const carModel = carModels[i];
         // move around with keyboard
@@ -172,10 +173,11 @@ race_car_network.procCars = function(carModels, focusIdx) {
         let right = 0;
         switch(carModel.mode) {
         case race_car_network.modeEnums.human:
-            up = input.keystate[keycodes.UP];
-            down = input.keystate[keycodes.DOWN];
-            left = input.keystate[keycodes.LEFT];
-            right = input.keystate[keycodes.RIGHT];
+            const kc = pInputs[i].kc;
+            up = kc & GameB.keyCodes.UP;
+            down = kc & GameB.keyCodes.DOWN;
+            left = kc & GameB.keyCodes.LEFT;
+            right = kc & GameB.keyCodes.RIGHT;
             break;
         case race_car_network.modeEnums.ai:
         case race_car_network.modeEnums.revai:
