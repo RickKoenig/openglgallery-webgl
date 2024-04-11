@@ -105,7 +105,7 @@ race_car_network.buildCarModels = function(n) {
             pos: [-.25 - .5 * j, -2.75 - .5 * lane, 0], // hard coded
             speed: 0,
             dir: CMath.PI  * .5, //(i + 1) * CMath.PI * .125, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
-            mode: race_car_network.modeEnums.human //mode // TODO: move out of model LATER when porting to 'net race'
+           // mode: race_car_network.modeEnums.human //mode // TODO: move out of model LATER when porting to 'net race'
         }
         models.push(model);
     }
@@ -148,7 +148,7 @@ race_car_network.separateCars = function(carModels) {
     }
 }
 
-race_car_network.procCars = function(carModels, pInputs) {
+race_car_network.procCars = function(carModels, pInputs, parent) {
     const dirStep = 1.5;
     const topSpeed = 1 / 32;
     const topRevSpeed = -1 / 64;
@@ -157,13 +157,6 @@ race_car_network.procCars = function(carModels, pInputs) {
     const brake = -topSpeed / 64;
     const slowTurnSpeed = .01;
     const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
-/*
-    // change mode of the car with focus
-    if (input.key == 'm'.charCodeAt()) {
-        const carModel = carModels[focusIdx];
-        carModel.mode = (carModel.mode + 1) % race_car_network.modeStrs.length;
-    }
-*/
     for (let i = 0; i < carModels.length; ++i) {
         const carModel = carModels[i];
         // move around with keyboard
@@ -171,17 +164,25 @@ race_car_network.procCars = function(carModels, pInputs) {
         let down = 0;
         let left = 0;
         let right = 0;
-        switch(carModel.mode) {
+        let mode = parent.mode;
+        mode = race_car_network.modeEnums.human; // TODO: cleanup
+        if (parent.curPlayer != i) mode = race_car_network.modeEnums.human; // human, it's actually network, use 'kc' for input
+        switch(mode) {
         case race_car_network.modeEnums.human:
             const kc = pInputs[i].kc;
             up = kc & GameB.keyCodes.UP;
             down = kc & GameB.keyCodes.DOWN;
             left = kc & GameB.keyCodes.LEFT;
             right = kc & GameB.keyCodes.RIGHT;
+            // reset game
+            if (kc & GameB.keyCodes.GO) {
+                parent.curModel = clone(parent.resetModel); // the current model is the init model
+                return;
+            }
             break;
         case race_car_network.modeEnums.ai:
         case race_car_network.modeEnums.revai:
-            let dir = race_track.getAiTrack(race_trackData.race_track1 ,carModel.pos, carModel.mode == race_car_network.modeEnums.revai);
+            let dir = race_track.getAiTrack(race_trackData.race_track1 ,carModel.pos, parent.mode == race_car_network.modeEnums.revai);
             let deltaDir = normalangrad(dir - carModel.dir);
             up = true;
             if (deltaDir >= aiNoTurnAng) {
@@ -190,9 +191,9 @@ race_car_network.procCars = function(carModels, pInputs) {
                 left = true;
             }
             break;
-        /*case race_car_network.modeEnums.none:
-            left = true;
-            break;*/
+        case race_car_network.modeEnums.none:
+            //left = true;
+            break;
         }
         // accel the car
         // this car gets keyboard input

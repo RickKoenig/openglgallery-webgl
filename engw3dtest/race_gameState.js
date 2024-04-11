@@ -300,21 +300,21 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 				+ race_gameState.sockerInfo.id + " slot = " + race_gameState.sockerInfo.slotIdx);
 		}
 		const termParams = {
-			cols: 19,
+			cols: 39,
 			rows: 1,
 			offx: 40,
 			offy: 80,
 			scale: 2
 		};
 		if (race_gameState.doChecksum) {
-			race_gameState.termValid = new Terminal(race_gameState.roottree, [.1, 0, 0, 1], null, termParams);
+			race_gameState.termValid = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
 			const showValidFrames = true;
 			race_gameState.termValid.print("VALID FRAMES");
 			race_gameState.termValid.doShow(showValidFrames);
 		}
 		//termParams.cols= 39;
 		termParams.offy = 120;
-		race_gameState.terminalFPS = new Terminal(race_gameState.roottree, [.2, .2, .1, 1], null, termParams);
+		race_gameState.terminalFPS = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
 		race_gameState.terminalFPS.doShow(true);
 
 		race_gameState.validFrames = 0;
@@ -359,11 +359,21 @@ race_gameState.proc = function() {
 	if (race_gameState.maxFrames && race_gameState.maxFrames <= race_gameState.count) {
 		return;
 	}
+	// hide/show pings etc.
 	if (input.key == 'h'.charCodeAt()) {
 		race_gameState.indicatorTree.flags ^= treeflagenums.DONTDRAWC;
 		race_gameState.terminalFPS.doShow(!race_gameState.terminalFPS.getShow());
 		race_gameState.termValid.doShow(!race_gameState.termValid.getShow());
 	}
+	// change frame rate
+	if (input.key == ','.charCodeAt()) {
+		--fpswanted;
+		if (fpswanted < 1) fpswanted = 1;
+	} else if (input.key == '.'.charCodeAt()) {
+		++fpswanted;
+		if (fpswanted > 120) fpswanted = 120;
+	}
+
 	if (race_gameState.allready) {
 		// do something after N seconds
 		const numSeconds = 4;
@@ -415,7 +425,7 @@ race_gameState.proc = function() {
 		race_gameState.negPingTree.mod.mat.color[3] *=  .75;
 
 		// get some input
-		let keyCode = race_gameState.gameClass.modelMakeKeyCode();
+		let keyCode = race_gameState.gameClass.modelMakeKeyCode(race_gameState.mvc.game);
 		const testKeyCodeAuto = false; // auto move some players
 		const testKeyCodeAutoSlot = 0;
 		if (testKeyCodeAuto) {
@@ -483,7 +493,8 @@ race_gameState.proc = function() {
 		}
 	}
 	race_gameState.roottree.proc(); // do animations that don't effect players
-	race_gameState.terminalFPS.print("AVG FPS = " + Timers.fpsavg.toFixed(4));
+	race_gameState.terminalFPS.print("FPS: AVG = " + Timers.fpsavg.toFixed(4) 
+		+ ", WANTED " + fpswanted);
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	if (race_gameState.mvc) {

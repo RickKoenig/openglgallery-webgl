@@ -62,7 +62,7 @@ class Indicator {
 		this.termLeft = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
 		this.termLeft.doShow(show);
 		termParams.offx += this.sep - 80 - 20;
-		termParams.scale = 6;
+		termParams.scale = 4;
 		termParams.cols = 9;
 		this.termMiddle = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
 		this.termMiddle.doShow(show);

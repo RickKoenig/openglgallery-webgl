@@ -27,6 +27,7 @@ class Terminal {
         this.backgnd = buildplanexy01(makeuniq("aplane2"), glyphx * cols, glyphy * rows, null, "flat", 1, 1);
         this.backgnd.mod.flags |= modelflagenums.NOZBUFFER;
         this.backgnd.mod.mat.color = backColor;
+        if (backColor[3] < .9) this.backgnd.mod.flags |= modelflagenums.HASALPHA;
         this.backgnd.trans = [offx, offy, depth];
         this.backgnd.scale = [scale, scale, scale];
         rootTree.linkchild(this.backgnd);

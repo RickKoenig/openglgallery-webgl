@@ -21,8 +21,8 @@ window.GameB = class RaceGameNetwork {
         // make pixel perfect
         ftree.trans = [-gl.asp, 1, 0];
         ftree.scale = [
-            16 * 2 / glc.clientHeight * .5,
-            32 * 2 / glc.clientHeight * .5,
+            16 * 2 / glc.clientHeight * .5 * 1.5,
+            32 * 2 / glc.clientHeight * .5 * 1.5,
             1
         ];
         ftree.setmodel(infofontmodel);
@@ -43,6 +43,7 @@ window.GameB = class RaceGameNetwork {
         this.ghostModel = {}; // NO time warp model, this model is for animation, doesn't interact with game
         this.trackView = [];
         this.carsView = [];
+        this.mode = race_car_network.modeEnums.human;
 
         // build 3D scene
         this.infoParent = new Tree2("infoParent");
@@ -138,7 +139,7 @@ window.GameB = class RaceGameNetwork {
         kc: bitfield of up, down, left, right
         //mouse: pos and click
     */
-    static modelMakeKeyCode() {
+    static modelMakeKeyCode(parent) {
         const ret = {};
         let keyCode = 0;
         // restart game
@@ -147,11 +148,30 @@ window.GameB = class RaceGameNetwork {
             ret.kc = keyCode;
             return ret;
         }
-        // move with arrow keys
-        if (input.keystate[keycodes.LEFT]) keyCode += RaceGameNetwork.keyCodes.LEFT;
-        if (input.keystate[keycodes.RIGHT]) keyCode += RaceGameNetwork.keyCodes.RIGHT;
-        if (input.keystate[keycodes.UP]) keyCode += RaceGameNetwork.keyCodes.UP;
-        if (input.keystate[keycodes.DOWN]) keyCode += RaceGameNetwork.keyCodes.DOWN;
+        switch(parent.mode) {
+            case race_car_network.modeEnums.human:
+                // move with arrow keys
+                if (input.keystate[keycodes.LEFT]) keyCode += RaceGameNetwork.keyCodes.LEFT;
+                if (input.keystate[keycodes.RIGHT]) keyCode += RaceGameNetwork.keyCodes.RIGHT;
+                if (input.keystate[keycodes.UP]) keyCode += RaceGameNetwork.keyCodes.UP;
+                if (input.keystate[keycodes.DOWN]) keyCode += RaceGameNetwork.keyCodes.DOWN;
+                break;
+            case race_car_network.modeEnums.ai:
+            case race_car_network.modeEnums.revai:
+                const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
+                const carModel = parent.curModel[parent.curPlayer];
+                let dir = race_track.getAiTrack(race_trackData.race_track1, carModel.pos, parent.mode == race_car_network.modeEnums.revai);
+                let deltaDir = normalangrad(dir - carModel.dir);
+                keyCode |= RaceGameNetwork.keyCodes.UP;
+                if (deltaDir >= aiNoTurnAng) {
+                    keyCode |= RaceGameNetwork.keyCodes.RIGHT;
+                } else if (deltaDir <= -aiNoTurnAng) {
+                    keyCode |= RaceGameNetwork.keyCodes.LEFT;;
+                }
+                break;
+            case race_car_network.modeEnums.none:
+                break;
+        }
         ret.kc = keyCode;
         return ret;
     }
@@ -168,7 +188,7 @@ window.GameB = class RaceGameNetwork {
 
     // timeWarp
     stepModel(pInputs, frameNum) {
-        race_car_network.procCars(this.curModel, pInputs);
+        race_car_network.procCars(this.curModel, pInputs, this);
         // movement
         // players
         /*
@@ -373,9 +393,22 @@ window.GameB = class RaceGameNetwork {
                 % this.numPlayers;
             this.gameViewPort.camattach = this.carTreeAttachs[this.curPlayerView];
         }
+        // change mode of self car (you)
+        if (input.key == 'm'.charCodeAt()) {
+            this.mode = (this.mode + 1) % race_car_network.modeStrs.length;
+        }
     }
 
     draw() {
+        // update info about currently selected car
+        const curCarModel = this.curModel[this.curPlayerView];
+         const modeStr = this.curPlayer == this.curPlayerView
+            ? "self: mode " + race_car_network.modeStrs[this.mode]
+            : "network: ";
+        this.#updateInfo("car " + this.curPlayerView
+            + ", mode " + modeStr
+            + ", speed " + (curCarModel.speed * 5000).toFixed(1)
+            + ", dir " + curCarModel.dir.toFixed(3));
         // draw track and cars
         //doflycam(this.gameViewPort);
         beginscene(this.gameViewPort);
