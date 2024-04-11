@@ -72,11 +72,15 @@ window.GameB = class RaceGameNetwork {
         this.carTreeRots = [];
         this.carTreeTranss = [];
         this.carTreeAttachs = [];
+        this.carWedges = [];
+        this.carBodies = [];
         for (let i = 0; i < this.numPlayers; ++i) {
             const car = race_car_network.buildCarView(i, this.numPlayers);
             this.carTreeRots.push(car.treeRot); // camera rigging
             this.carTreeTranss.push(car.treeTrans); // camera rigging
             this.carTreeAttachs.push(car.attachTree); // camera rigging
+            this.carWedges.push(car.treeWedge);
+            this.carBodies.push(car.treeBody);
             this.gameParent.linkchild(car.tree);
         }
 
@@ -189,142 +193,6 @@ window.GameB = class RaceGameNetwork {
     // timeWarp
     stepModel(pInputs, frameNum) {
         race_car_network.procCars(this.curModel, pInputs, this);
-        // movement
-        // players
-        /*
-        for (let slot = 0; slot < pInputs.length; ++slot) {
-            const pInput = pInputs[slot];
-            const curPlayer = this.curModel.players[slot];
-            vec3.copy(curPlayer.lastPos, curPlayer.pos);
-            if (pInput.discon) {
-                this.curPlayerView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
-                curPlayer.desiredPos = null;
-                continue;
-            }
-            // keyboard
-            const keyCode = pInput.kc;
-            // reset game
-            if (keyCode & RaceGameNetwork.keyCodes.GO) {
-                this.curModel = clone(this.resetModel); // the current model is the init model
-                curPlayer.desiredPos = null;
-                return;
-            }
-            /*
-            const step = this.step
-            if (keyCode & RaceGameNetwork.keyCodes.RIGHT) {
-                curPlayer.pos[0] += step;
-                curPlayer.desiredPos = null;
-            }
-            if (keyCode & RaceGameNetwork.keyCodes.LEFT) {
-                curPlayer.pos[0] -= step;
-                curPlayer.desiredPos = null;
-            }
-            if (keyCode & RaceGameNetwork.keyCodes.UP) {
-                curPlayer.pos[1] += step;
-                curPlayer.desiredPos = null;
-            }
-            if (keyCode & RaceGameNetwork.keyCodes.DOWN) {
-                curPlayer.pos[1] -= step;
-                curPlayer.desiredPos = null;
-            }
-            if (pInput.mouse) {
-                if (pInput.mouse.click) {
-                    curPlayer.desiredPos = [
-                        range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin)
-                    ];
-                }
-            }
-            // mouse, move to desiredPos
-            if (curPlayer.desiredPos) {
-                const close2 = step * step * 2;
-                const dist2 = vec2.sqrDist(curPlayer.desiredPos, curPlayer.pos);
-                if (dist2 < close2) {
-                    vec2.copy(curPlayer.pos, curPlayer.desiredPos);
-                    curPlayer.desiredPos = null;
-                } else {
-                    const delta = vec2.create();
-                    vec2.sub(delta, curPlayer.desiredPos, curPlayer.pos);
-                    vec2.normalize(delta, delta);
-                    vec2.scale(delta, delta, step);
-                    vec2.add(curPlayer.pos, curPlayer.pos, delta);
-                }
-            }
-        }*/
-        /*
-        // npc moves
-        this.#setNpcsMoving(this.curModel);
-        const movingAngleStep = .005;
-        this.curModel.npcsMovingAngle += movingAngleStep;
-        this.curModel.npcsMovingAngle = normalangrad(this.curModel.npcsMovingAngle);
-
-        // collisions
-        const extra = 1.001; // move apart a litte more
-
-        // players to players
-        for (let p0 = 0; p0 < pInputs.length; ++p0) {
-            const curPlayer0 = this.curModel.players[p0];
-            for (let p1 = p0 + 1; p1 < pInputs.length; ++p1) {
-                const curPlayer1 = this.curModel.players[p1];
-                // move players apart
-                GameA.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
-            }
-        }
-
-        // players to npcsDummy
-        const sticky = .05;
-        for (let p = 0; p < pInputs.length; ++p) {
-            const curPlayer = this.curModel.players[p];
-            for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
-                const npcd = this.curModel.npcsDummy[nd];
-                // move players and npcsDummy apart
-                GameA.#separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
-            }
-        }
-
-        // npcsDummy to npcsDummy
-        for (let n0d = 0; n0d < this.curModel.npcsDummy.length; ++n0d) {
-            const npc0d = this.curModel.npcsDummy[n0d];
-            for (let n1d = n0d + 1; n1d < this.curModel.npcsDummy.length; ++n1d) {
-                const npc1d = this.curModel.npcsDummy[n1d];
-                // move npcsDummy and npcsDummy apart
-                GameA.#separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
-            }
-        }
-
-        // npcsMove to npcsDummy
-        for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
-            const npcd = this.curModel.npcsDummy[nd];
-            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
-                const npcm = this.curModel.npcsMoving[nm];
-                // move players away from npcsMoving
-                GameA.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
-            }
-        }
-
-        // npcsMove to players
-        for (let p = 0; p < pInputs.length; ++p) {
-            const curPlayer = this.curModel.players[p];
-            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
-                const npcm = this.curModel.npcsMoving[nm];
-                // move players away from npcsMoving
-                GameA.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
-            }
-        }
-        
-        // border to players
-        for (let p = 0; p < pInputs.length; ++p) {
-            const curPlayer = this.curModel.players[p];
-            curPlayer.pos[0] = range(this.margin, curPlayer.pos[0], this.res[0] - this.margin);
-            curPlayer.pos[1] = range(this.margin, curPlayer.pos[1], this.res[1] - this.margin);
-        }
-
-        // border to npcsDummy
-        for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
-            const npcd = this.curModel.npcsDummy[nd];
-            npcd.pos[0] = range(this.margin, npcd.pos[0], this.res[0] - this.margin);
-            npcd.pos[1] = range(this.margin, npcd.pos[1], this.res[1] - this.margin);
-        }*/
     }
 
     // no timeWarp, mainly for animation
@@ -402,9 +270,10 @@ window.GameB = class RaceGameNetwork {
     draw() {
         // update info about currently selected car
         const curCarModel = this.curModel[this.curPlayerView];
-         const modeStr = this.curPlayer == this.curPlayerView
+        const carStatus = curCarModel.discon ? "DISconnected" : "connected";
+        const modeStr = this.curPlayer == this.curPlayerView
             ? "self: mode " + race_car_network.modeStrs[this.mode]
-            : "network: ";
+            : "network: " + carStatus;
         this.#updateInfo("car " + this.curPlayerView
             + ", mode " + modeStr
             + ", speed " + (curCarModel.speed * 5000).toFixed(1)

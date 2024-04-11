@@ -16,7 +16,8 @@ race_car_network.buildCarView = function(i, n) {
     // build the car view model
     const carSize = .1875;
     // body
-    const bodyTree = buildprism("carBody", [1, 2, 1], "Bark.png", "tex");
+    const bodyTree = buildprism("carBody", [1, 2, 1], "Bark.png", "texc");
+    bodyTree.mat.color = [1, 1, 1, 1];
     bodyTree.scale = [.5 * carSize, .5 * carSize, .2 * carSize];
     // wedge
     const wedgeVerts = [
@@ -85,7 +86,9 @@ race_car_network.buildCarView = function(i, n) {
         treeRot: wholeCarRot, // THIS, don't rotate screen with car
         treeTrans: wholeCarTrans, // OR THIS, rotate screen with car
         attachTree: carAttach,
-        tree: wholeCarTrans // root of car
+        tree: wholeCarTrans, // root of car
+        treeWedge: wedgeTree,
+        treeBody: bodyTree
     }
     car.treeTrans.trans = [0, 0, 0];//car.model.pos.slice();
     car.treeRot.rot = [0, 0, 0];
@@ -106,6 +109,7 @@ race_car_network.buildCarModels = function(n) {
             speed: 0,
             dir: CMath.PI  * .5, //(i + 1) * CMath.PI * .125, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
            // mode: race_car_network.modeEnums.human //mode // TODO: move out of model LATER when porting to 'net race'
+            discon: false
         }
         models.push(model);
     }
@@ -159,17 +163,30 @@ race_car_network.procCars = function(carModels, pInputs, parent) {
     const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
     for (let i = 0; i < carModels.length; ++i) {
         const carModel = carModels[i];
+        const kc = pInputs[i].kc;
+        const discon = pInputs[i].discon;
         // move around with keyboard
         let up = 0;
         let down = 0;
         let left = 0;
         let right = 0;
         let mode = parent.mode;
-        mode = race_car_network.modeEnums.human; // TODO: cleanup
-        if (parent.curPlayer != i) mode = race_car_network.modeEnums.human; // human, it's actually network, use 'kc' for input
+        // show disconnect as ghost
+        if (discon) {
+            const treeBody = parent.carBodies[i];
+            const treeWedge = parent.carWedges[i];
+            treeBody.mod.flags |= modelflagenums.HASALPHA;
+            treeBody.mat.color = [1, 1, 1, .5];
+            treeWedge.mod.flags |= modelflagenums.HASALPHA;
+            treeWedge.mat.color[3] = .5;
+            carModel.discon = true;
+        }
+        mode = race_car_network.modeEnums.human; // human, it's actually network, use 'kc' for input
+        if (parent.curPlayer != i && discon) {
+            mode = race_car_network.modeEnums.ai; // disconnected players become bot cars
+        }
         switch(mode) {
         case race_car_network.modeEnums.human:
-            const kc = pInputs[i].kc;
             up = kc & GameB.keyCodes.UP;
             down = kc & GameB.keyCodes.DOWN;
             left = kc & GameB.keyCodes.LEFT;
@@ -181,8 +198,7 @@ race_car_network.procCars = function(carModels, pInputs, parent) {
             }
             break;
         case race_car_network.modeEnums.ai:
-        case race_car_network.modeEnums.revai:
-            let dir = race_track.getAiTrack(race_trackData.race_track1 ,carModel.pos, parent.mode == race_car_network.modeEnums.revai);
+            let dir = race_track.getAiTrack(race_trackData.race_track1 ,carModel.pos, false);
             let deltaDir = normalangrad(dir - carModel.dir);
             up = true;
             if (deltaDir >= aiNoTurnAng) {
