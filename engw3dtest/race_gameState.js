@@ -287,7 +287,8 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		race_gameState.mvc = new GameWarp(room.slots.length
 			, race_gameState.mySlot, race_gameState.gameClass
 			, race_gameState.roottree
-			, race_gameState.doChecksum);
+			, race_gameState.doChecksum
+			, race_gameState.sockerInfo.room.slotNames);
 		// frame 0 will be valid
 		race_gameState.checksum = race_gameState.mvc.modelToView(race_gameState.count);
 		if (race_gameState.doChecksum) {

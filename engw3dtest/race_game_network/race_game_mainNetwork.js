@@ -33,9 +33,9 @@ window.GameB = class RaceGameNetwork {
         this.infoTree.mod.print(str);
     };
     
-    constructor(numPlayers, curPlayer, root) {
-        //numPlayers = 8;
-        this.numPlayers = numPlayers;
+    constructor(numNetworkPlayers, curPlayer, root, slotNames) {
+        const totalPlayers = 16; // total number of players, including BOTS
+        this.numPlayers = Math.max(totalPlayers, numNetworkPlayers); // players without pInputs are BOTS
         this.curPlayer = curPlayer; // network
         this.curPlayerView = curPlayer; // view
         this.resetModel = this.#modelReset(); // the start model
@@ -44,6 +44,7 @@ window.GameB = class RaceGameNetwork {
         this.trackView = [];
         this.carsView = [];
         this.mode = race_car_network.modeEnums.human;
+        this.slotNames = slotNames;
 
         // build 3D scene
         this.infoParent = new Tree2("infoParent");
@@ -75,7 +76,7 @@ window.GameB = class RaceGameNetwork {
         this.carWedges = [];
         this.carBodies = [];
         for (let i = 0; i < this.numPlayers; ++i) {
-            const car = race_car_network.buildCarView(i, this.numPlayers);
+            const car = race_car_network.buildCarView(i, numNetworkPlayers);
             this.carTreeRots.push(car.treeRot); // camera rigging
             this.carTreeTranss.push(car.treeTrans); // camera rigging
             this.carTreeAttachs.push(car.attachTree); // camera rigging
@@ -191,8 +192,26 @@ window.GameB = class RaceGameNetwork {
     }
 
     // timeWarp
-    stepModel(pInputs, frameNum) {
+    stepModel(pInputs, frameNum, valid) {
         race_car_network.procCars(this.curModel, pInputs, this);
+        if (valid) { // no predictions, final status
+            // update info about currently selected car
+            const curCarModel = this.curModel[this.curPlayerView];
+            const carStatus = curCarModel.discon ? "DISconnected" : "connected";
+            let slotName = this.slotNames[this.curPlayerView];
+            let modeStr = "";
+            if (slotName) {
+                modeStr = this.curPlayer == this.curPlayerView
+                ? ", mode local " + race_car_network.modeStrs[this.mode]
+                : ", mode network " + carStatus;
+            } else {
+                slotName = "BOT";
+            }
+            this.#updateInfo("car " + this.curPlayerView + " < " + slotName + " >"
+                + modeStr
+                + ", speed " + (curCarModel.speed * 5000).toFixed(1)
+                + ", dir " + curCarModel.dir.toFixed(3));
+        }
     }
 
     // no timeWarp, mainly for animation
@@ -268,16 +287,6 @@ window.GameB = class RaceGameNetwork {
     }
 
     draw() {
-        // update info about currently selected car
-        const curCarModel = this.curModel[this.curPlayerView];
-        const carStatus = curCarModel.discon ? "DISconnected" : "connected";
-        const modeStr = this.curPlayer == this.curPlayerView
-            ? "self: mode " + race_car_network.modeStrs[this.mode]
-            : "network: " + carStatus;
-        this.#updateInfo("car " + this.curPlayerView
-            + ", mode " + modeStr
-            + ", speed " + (curCarModel.speed * 5000).toFixed(1)
-            + ", dir " + curCarModel.dir.toFixed(3));
         // draw track and cars
         //doflycam(this.gameViewPort);
         beginscene(this.gameViewPort);

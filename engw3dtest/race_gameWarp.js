@@ -1,10 +1,10 @@
 'use strict';
 
 class GameWarp {
-    constructor(numPlayers, curPlayer, gameStatic, root, doChecksum) {
+    constructor(numPlayers, curPlayer, gameStatic, root, doChecksum, slotNames) {
         this.doChecksum = doChecksum;
         this.gameStatic = gameStatic;
-        this.game = new gameStatic(numPlayers, curPlayer, root); // instance
+        this.game = new gameStatic(numPlayers, curPlayer, root, slotNames); // instance
         this.validModel = this.game.getCurModel(); // the current model is the init model
         this.validFrameNum = 0;
         this.inputs = [];
@@ -82,7 +82,7 @@ class GameWarp {
                 pInputs.push(pInput);
             }
             //console.log("step model on frame " + frm + " good = " + good);
-            this.game.stepModel(pInputs, frm);
+            this.game.stepModel(pInputs, frm, good);
 
             if (good) {
                 // nothing predicted, save a good validModel
