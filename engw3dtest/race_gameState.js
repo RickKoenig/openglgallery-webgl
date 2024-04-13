@@ -334,19 +334,22 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	if (race_gameState.gameType == 'b') {
 		mainvp.clearcolor = [.05, .85, 1, 1];
 	}
-	fpswanted = race_gameState.fpswanted;
-	// run players at different framerates, test catchup logic
-	const staggerFPSWanted = false;
-	const staggerDiff = 2;
-	if (race_gameState.sockerInfo && staggerFPSWanted) {
-		fpswanted += race_gameState.sockerInfo?.id * staggerDiff;
-		//if (race_gameState.sockerInfo?.id == 1) fpswanted = 1;
-	}
+
+	// catchup parameters
+	race_gameState.catchup0 = 0; // constant
+	race_gameState.catchup1 = 0; // linear
+	race_gameState.catchup2 = .01; // quadratic
+	race_gameState.catchupAccum = 0;
 
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[
 		"fpswanted",
 		"Timers.fpsavg",
+		"screenRefresh",
+		"race_gameState.catchup0",
+		"race_gameState.catchup1",
+		"race_gameState.catchup2",
+		"race_gameState.catchupAccum"
 	]);
 };
 
@@ -362,6 +365,7 @@ race_gameState.proc = function() {
 	}
 	// hide/show pings etc.
 	if (input.key == 'h'.charCodeAt()) {
+		race_gameState.negPingTree.flags ^= treeflagenums.DONTDRAWC;
 		race_gameState.indicatorTree.flags ^= treeflagenums.DONTDRAWC;
 		race_gameState.terminalFPS.doShow(!race_gameState.terminalFPS.getShow());
 		race_gameState.termValid.doShow(!race_gameState.termValid.getShow());
@@ -388,37 +392,23 @@ race_gameState.proc = function() {
 		race_gameState.pingTimes[race_gameState.mySlot] = 0; // my time
 		race_gameState.showPings.update(race_gameState.pingTimes, race_gameState.count);
 		// if any neg pings, speed up to catch up
-		const testCatchup = false;
-		let catchup = 0;
-		const delCatchup  = 2.8;
-		const slack = 0;
-		if (testCatchup) {
-			// test neg ping times
-			const negId = 1;
-			const negTime = 30;
-			const negPings = Array(race_gameState.pingTimes.length).fill(-negTime);
-			negPings[negId] = negTime - slack;
-			for (let i = 0; i < race_gameState.pingTimes.length; ++i) {
-				if (i != race_gameState.mySlot && race_gameState.pingTimes[i] < negPings[i]) {
-					catchup = 1;
-					break;
-				}
+		let behind = 0;
+		for (let i = 0; i < race_gameState.pingTimes.length; ++i) { // units are 'frames'
+			const negPing = -race_gameState.pingTimes[i];
+			if (negPing > 0) {
+				behind = Math.max(behind, negPing);
 			}
-		} else {
-			// normal catchup
-			for (let i = 0; i < race_gameState.pingTimes.length; ++i) {
-				const comp = -slack - race_gameState.pingTimes[i];
-				if (comp > 0) {
-					catchup = Math.max(catchup, comp);
-					//break;
-				}
-			}
-			catchup *= delCatchup;
 		}
-		catchup = Math.floor(catchup);
-		// TEST disable catchup if uncommented
-		// catchup = 0; // no catchup
-		if (catchup) {
+		// run slightly faster if time is behind other players
+		let catchup = 0; // no catchup
+		if (behind > 0) {
+			const faster = race_gameState.catchup0 
+				+ behind * (race_gameState.catchup1 + behind * race_gameState.catchup2);
+			race_gameState.catchupAccum += faster;
+			catchup = Math.floor(race_gameState.catchupAccum);
+			race_gameState.catchupAccum -= catchup;
+		}
+		if (catchup > 0) {
 			race_gameState.negPingTree.mod.mat.color = [1,0,0,1];
 		}
 		// drift catchup color
@@ -427,17 +417,12 @@ race_gameState.proc = function() {
 
 		// get some input
 		let keyCode = race_gameState.gameClass.modelMakeKeyCode(race_gameState.mvc.game);
-		const testKeyCodeAuto = false; // auto move some players
-		const testKeyCodeAutoSlot = 0;
-		if (testKeyCodeAuto) {
-			if (race_gameState.mySlot == testKeyCodeAutoSlot) {
-				keyCode.kc |= race_gameState.gameClass.keyCodes.RIGHT;
-			}
-		}
-		// process input
-		let loopCount = catchup + 1;// ? 5 : 1;
-		const maxCatchup = 8;
-		if (loopCount > maxCatchup) loopCount = maxCatchup;
+
+		race_gameState.catchupAccum;
+
+		let loopCount = catchup + 1; // run at least once
+
+		// run model 1 or more times
 		for (let loop = 0; loop < loopCount; ++loop) {
 			let myKeyCode = keyCode;
 			const breakChecksum = false;

@@ -51,6 +51,7 @@ window.Timers = class Timers
 				if (diff <= 0) diff = 1;
 				//console.log("diff timestamp = " + diff);
 				Timers.fpsrefreshactual = Math.round(Timers.#avgrefreshclass.add(Math.round(1000 / diff)));
+				screenRefresh = Timers.fpsrefreshactual;
 			}
 			Timers.#lasttimestamp = timestamp;
 			// call fun depending on fpswanted

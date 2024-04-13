@@ -60,6 +60,7 @@ var eoutinputevents;
 var eoutlogger;
 
 var fpswanted = 60;
+var screenRefresh = undefined;
 
 var viewx;// = 600;
 var viewy;// = 500;

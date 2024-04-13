@@ -34,7 +34,7 @@ window.GameB = class RaceGameNetwork {
     };
     
     constructor(numNetworkPlayers, curPlayer, root, slotNames) {
-        const totalPlayers = 16; // total number of players, including BOTS
+        const totalPlayers = 8; // total number of players, including BOTS
         this.numPlayers = Math.max(totalPlayers, numNetworkPlayers); // players without pInputs are BOTS
         this.curPlayer = curPlayer; // network
         this.curPlayerView = curPlayer; // view

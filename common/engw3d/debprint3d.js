@@ -36,6 +36,7 @@ debprint.list = {
 		// Main3d, for Timers
 		"frame",
 		"fpswanted",
+		"screenRefresh",
 
 		// Timers
 		// frames / second
