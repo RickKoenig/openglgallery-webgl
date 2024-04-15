@@ -336,9 +336,9 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	}
 
 	// catchup parameters
-	race_gameState.catchup0 = 0; // constant
-	race_gameState.catchup1 = 0; // linear
-	race_gameState.catchup2 = .01; // quadratic
+	race_gameState.catchup0 = .05 //0; // constant
+	race_gameState.catchup1 = .05 / 30; // linear
+	race_gameState.catchup2 = 0 //.01; // quadratic
 	race_gameState.catchupAccum = 0;
 
 	// UI debprint menu

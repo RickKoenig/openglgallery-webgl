@@ -43,16 +43,17 @@ race_car_network.buildCarView = function(i, n) {
         "faces": wedgeFaces
     };
     const colors = [
-        [.5, 0, 0, 1],
-        [0, .5, 0, 1],
-        [0, 0, .5, 1],
-        [.25, .25, 0, 1]
+        [.75, 0, 0, 1],
+        [0, .75, 0, 1],
+        [0, 0, 1, 1],
+        [.75, .75, 0, 1]
     ];
     const wedgeModel = buildMeshModel("carWedge", null, "flat", wedgeMesh);
     const wedgeTree = new Tree2("carWedge");
     wedgeTree.setmodel(wedgeModel);
     wedgeTree.scale = [.45 * carSize, .45 * carSize, .3 * carSize];
     wedgeTree.mat.color = i >= n ? [.25, .25, .25, 1] : colors[i % colors.length];
+    //wedgeTree.mat.color = colors[i % colors.length];
     // whole car rot
     const wholeCarRot = new Tree2("carWholeRot");
     wholeCarRot.linkchild(bodyTree);
@@ -86,11 +87,9 @@ race_car_network.buildCarModels = function(n) {
         const j = Math.floor(lane / 2);
         lane = (lane + 1) % 2;
         const model = {
-            //pos: [-.25 - .5 * j, -2.75 - .5 * i, 0], // TODO:  hard coded
             pos: [-.25 - .5 * j, -2.75 - .5 * lane, 0], // hard coded
             speed: 0,
             dir: CMath.PI  * .5, //(i + 1) * CMath.PI * .125, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
-           // mode: race_car_network.modeEnums.human //mode // TODO: move out of model LATER when porting to 'net race'
             discon: false
         }
         models.push(model);
@@ -160,12 +159,13 @@ race_car_network.procCars = function(carModels, pInputs, parent) {
         let mode = parent.mode;
         // show disconnect as ghost
         if (discon) {
+        //if (true) {
             const treeBody = parent.carBodies[i];
             const treeWedge = parent.carWedges[i];
             treeBody.mod.flags |= modelflagenums.HASALPHA;
             treeBody.mat.color = [1, .75, .75, .5];
             treeWedge.mod.flags |= modelflagenums.HASALPHA;
-            treeWedge.mat.color[3] = .5;
+            treeWedge.mat.color[3] = .375;
             carModel.discon = true;
         }
         mode = race_car_network.modeEnums.human; // human, it's actually network, use 'kc' for input
