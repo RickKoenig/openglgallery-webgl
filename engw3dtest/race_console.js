@@ -409,15 +409,29 @@ race_console.testDistColl = function() {
 	race_console.showPointPairs(pointPairs);
 }
 
+// find and list floating point inconsistencies here
 race_console.testFloat = function() {
-	let ang = 4 * 2 * Math.PI / 6;
+	let ang = 4 * 2 * CMath.PI / 6; // doesn't matter which library
 	ang = normalangrad(ang);
+
+	{console.log("Using Math library, standard math library");
+	const sinAng = Math.sin(ang);
+	console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
+	let bi = fromFloat(ang);
+	console.log("ang to bi = " + bi.toString(16) + "\n");
+	bi = fromFloat(sinAng);
+	console.log("sinAng to bi = " + bi.toString(16) + "\n");
+}
+
+	{console.log("Using Math library, consistent math library");
 	const sinAng = CMath.sin(ang);
 	console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
 	let bi = fromFloat(ang);
 	console.log("ang to bi = " + bi.toString(16) + "\n");
 	bi = fromFloat(sinAng);
 	console.log("sinAng to bi = " + bi.toString(16) + "\n");
+}
+
 }
 
 race_console.init = function(intentData) {
