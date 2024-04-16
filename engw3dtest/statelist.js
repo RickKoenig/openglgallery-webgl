@@ -57,7 +57,8 @@ var statelist = [
 	gridlines, // play with fwidth etc.
 	bargraph, // draw some bargraphs different ways
 	tubedots, // patterns inside a tube
-	nim, // the game
+	nim, // nim game
+	chomp, // chomp game
 	mandl, // the Mandelbrot set
 	neural6, // use deep learning to recognize hand written digits
 ];

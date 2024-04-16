@@ -1,6 +1,6 @@
 'use strict';
 
-// floating point consistancy
+// floating point consistency
 // implement when necessary
 
 class CMath {

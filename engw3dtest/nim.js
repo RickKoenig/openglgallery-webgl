@@ -3,8 +3,6 @@
 // nim game
 var nim = {}; // the nim game state
 
-// NIM DATA
-
 // state info
 nim.text = "Nim Game";
 nim.title = "Nim";
