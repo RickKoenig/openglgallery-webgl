@@ -23,11 +23,11 @@ chomp.fsmStateTable = [
 		endFunc: function() {
 			var done = chomp.playTurn();
 			if (done) {
-				if (chomp.lastLoses) {
-					return chomp.fsmStates.compWins;
-				} else {
+				//if (chomp.lastLoses) {
+				//	return chomp.fsmStates.compWins;
+				//} else {
 					return chomp.fsmStates.humanWins;
-				}
+				//}
 			} else {
 				return chomp.fsmStates.compMove;
 			}
@@ -43,11 +43,11 @@ chomp.fsmStateTable = [
 		endFunc: function() {
 			var done = chomp.playTurn();
 			if (done) {
-				if (chomp.lastLoses) {
-					return chomp.fsmStates.humanWins;
-				} else {
+				//if (chomp.lastLoses) {
+				//	return chomp.fsmStates.humanWins;
+				//} else {
 					return chomp.fsmStates.compWins;
-				}
+				//}
 			} else {
 				return chomp.fsmStates.humanMove;
 			}
@@ -101,11 +101,12 @@ chomp.fsmState = chomp.fsmStates.humanMove;
 chomp.fsmCounter = 0;
 chomp.fsmHumanTurnReady = false;
 
+/*
 // game rules
 chomp.threeMax = false;
 chomp.lastLoses = false;
 chomp.rulesButton = null;
-
+*/
 //intermediate
 
 // overall score
@@ -121,22 +122,29 @@ chomp.turnLine = null; // tree draw a line for move
 chomp.startPiles = null; // pile data, initial pile start
 chomp.curPiles = null; // current piles
 chomp.pilesTree = null; // tree draw 2d array
-chomp.curPileSet = 0;
+//chomp.curPileSet = 0;
 
 // all the different pile configurations
-chomp.pileSet = [
+chomp.makePileSet = function(x, y) {
+	const pileSet = Array(x).fill(y);
+	return pileSet;
+}
+/*
+chomp.pileSet = [];
 	[9],
 	[7, 7],
 	[3, 5, 7],
 	[3, 5, 7, 9],
-];
+];*/
 
-chomp.pileDesc = [
+/*chomp.pileDesc = [
 	"EASY",
 	"MEDIUM",
 	"STANDARD",
 	"ADVANCED"
-];
+];*/
+
+chomp.pileDim = [7, 4];
 
 // drawing piles metrics
 chomp.maxPile = 0; // maximum number of piles
@@ -153,7 +161,7 @@ chomp.textInfo = null; // tree font
 
 // game rules
 chomp.getMaxMove = function() {
-	return chomp.threeMax ? 3 : chomp.maxPile;
+	return chomp.maxPile;
 };
 
 
@@ -212,38 +220,19 @@ chomp.calcMove = function() {
 	// assume rightmost pile is the largest
 	//reason = "std";
 	//reasonArr = new Array(chomp.startPiles.length).fill("pile");
-	chomp.mod = (chomp.threeMax ? 3 : chomp.startPiles[chomp.startPiles.length - 1]) + 1;
+	chomp.mod = chomp.startPiles[chomp.startPiles.length - 1] + 1;
 	var xor = 0;
 	for (var np of chomp.curPiles) {
-		xor ^= (np % chomp.mod);
+		xor ^= np;
 	}
 	var ret = new Array(chomp.startPiles.length).fill(0);
 	// test
 	//xor = 0;
-	if (xor || chomp.lastLoses) {
+	if (xor) {
 		for (var i = 0; i < chomp.startPiles.length; ++i) {
-			var goodPile = xor ^ (chomp.curPiles[i] % chomp.mod);
+			var goodPile = xor ^ chomp.curPiles[i];
 			var amount = chomp.curPiles[i] - goodPile;
-			if (amount > 0) {
-				amount %= chomp.mod;
-			} else {
-				amount = 0;
-			}
 			var newPile = chomp.doMove(chomp.curPiles, i, amount);
-			if (chomp.lastLoses) {
-				var ones = chomp.isOnes(newPile, i);
-				if (ones >= 0) {
-					//reason = "spc1";
-					var goodPile = 1 - ones; // try to get an odd number of ones
-					var amount = chomp.curPiles[i] - goodPile;
-					if (amount > 0) {
-						amount %= chomp.mod;
-					} else {
-						//reason = "spc2";
-						amount = 0;
-					}
-				} 
-			}
 			ret[i] = amount;
 		}
 	} else {
@@ -345,19 +334,47 @@ chomp.doMove = function(arr, pile, amount) {
 	return ret;
 };
 
+chomp.minPileX = 1;
+chomp.minPileY = 1;
+chomp.maxPileX = 8;
+chomp.maxPileY = 8;
 // piles
+chomp.changeXm = function() {
+	console.log("xm");
+	chomp.pileDim[0] = Math.max(chomp.pileDim[0] - 1, chomp.minPileX);
+	chomp.createPiles();
+}
+
+chomp.changeXp = function() {
+	console.log("xp");
+	chomp.pileDim[0] = Math.min(chomp.pileDim[0] + 1, chomp.maxPileX);
+	chomp.createPiles();
+}
+
+chomp.changeYm = function() {
+	console.log("ym");
+	chomp.pileDim[1] = Math.max(chomp.pileDim[1] - 1, chomp.minPileY);
+	chomp.createPiles();
+}
+
+chomp.changeYp = function() {
+	console.log("yp");
+	chomp.pileDim[1] = Math.min(chomp.pileDim[1] + 1, chomp.maxPileY);
+	chomp.createPiles();
+}
+
 chomp.createPiles = function() {
-	chomp.pileSpace = [.3, .2];
+	chomp.pileSpace = [.2, .2];
 	chomp.pileSize = [.175, .175];
-	chomp.pileDescStr= chomp.pileDesc[chomp.curPileSet];
-	chomp.startPiles = chomp.pileSet[chomp.curPileSet];
-	++chomp.curPileSet;
+	chomp.pileDescStr = "" + chomp.pileDim;//chomp.pileDesc[chomp.curPileSet];
+	chomp.startPiles = chomp.makePileSet(chomp.pileDim[0], chomp.pileDim[1]);
+/*	++chomp.curPileSet;
 	if (chomp.curPileSet == chomp.pileSet.length) {
 		chomp.curPileSet = 0;
-	}
+	} */
 	
-	chomp.maxPile = chomp.startPiles[chomp.startPiles.length -1]; // assume right most pile is the largest
-	chomp.pileOffset = [(chomp.startPiles.length - 1) * -chomp.pileSpace[0] / 2,
+	chomp.maxPile = chomp.pileDim[1];//chomp.startPiles[chomp.startPiles.length -1]; // assume right most pile is the largest
+	chomp.pileOffset = [(chomp.pileDim[0] - 1) * -chomp.pileSpace[0] / 2,
 						(chomp.maxPile - 1) * -chomp.pileSpace[1] /2];
 	chomp.curPiles = chomp.startPiles.slice(); // start with the preset piles
 
@@ -449,16 +466,8 @@ chomp.updateTextInfo = function() {
 
 	var stateInfo = 0;
 	var rulesInfo = "These are the rules:\n";
-	if (chomp.threeMax) {
-		rulesInfo += "Take 1, 2 or 3 pieces\n from any one pile\n";
-	} else {
-		rulesInfo += "Take as many pieces as you want\n from any one pile\n";
-	}
-	if (chomp.lastLoses) {
-		rulesInfo += "Who ever takes the last piece LOSES!\n\n";
-	} else {
-		rulesInfo += "Who ever takes the last piece WINS!\n\n";
-	}
+	rulesInfo += "Take as many pieces as you want\n from any one pile\n";
+	rulesInfo += "Who ever takes the last piece WINS!\n\n";
 	var who1 = "#";
 	var who2 = "$";
 	var who3 = "?";
@@ -504,13 +513,13 @@ chomp.updateTextInfo = function() {
 chomp.resetLevel = function() {
 	chomp.curPiles = chomp.startPiles.slice();
 };
-
+/*
 chomp.changeRules = function() {
 	chomp.lastLoses = !chomp.lastLoses;
 	if (chomp.lastLoses)
 		chomp.threeMax = !chomp.threeMax;
 	chomp.updateTextInfo();
-};
+};*/
 
 chomp.procFSM = function() {
 	// init FSM when fsmState < 0
@@ -578,14 +587,18 @@ chomp.init = function() {
 	chomp.fsmState = -1;
 	
 	// rules
-	chomp.threeMax = true;
-	chomp.lastLoses = true;
+	//chomp.threeMax = true;
+	//chomp.lastLoses = true;
 
 	// ui
 	setbutsname('chomp');
 	//makeabut("Reset level",chomp.resetLevel); // temp, TEST
-	chomp.rulesButton = makeabut("Change rules", chomp.changeRules);
-	chomp.changePilesButton = makeabut("Change piles", chomp.createPiles);
+	//chomp.rulesButton = makeabut("Change rules", chomp.changeRules);
+	//chomp.changePilesButton = makeabut("Change piles", chomp.createPiles);
+	chomp.changeXm = makeabut("X-", chomp.changeXm);
+	chomp.changeXp = makeabut("X+", chomp.changeXp);
+	chomp.changeYm = makeabut("Y-", chomp.changeYm);
+	chomp.changeYp = makeabut("Y+", chomp.changeYp);
 	chomp.levelDest = makeaprintarea('level:');
 	
 	input.fmx = -10; // hack to not be over a piece when state starts
@@ -596,7 +609,7 @@ chomp.init = function() {
 
 	// build 3d assets
 	// piles
-	chomp.curPileSet = 2; // STD piles
+	//chomp.curPileSet = 2; // STD piles
 	chomp.createPiles();
 	// line
 	chomp.createTurnLine();
@@ -629,11 +642,19 @@ chomp.proc = function() {
 	
 	// change state of rules and pile set button depending on whether or not start of game and human
 	if (chomp.fsmState == chomp.fsmStates.humanMove && chomp.firstMove) {
-		chomp.rulesButton.disabled = false;
-		chomp.changePilesButton.disabled = false;
+		chomp.changeXm.disabled = false;
+		chomp.changeXp.disabled = false;
+		chomp.changeYm.disabled = false;
+		chomp.changeYp.disabled = false;
+		//chomp.rulesButton.disabled = false;
+		//chomp.changePilesButton.disabled = false;
 	} else {
-		chomp.rulesButton.disabled = true;
-		chomp.changePilesButton.disabled = true;
+		chomp.changeXm.disabled = true;
+		chomp.changeXp.disabled = true;
+		chomp.changeYm.disabled = true;
+		chomp.changeYp.disabled = true;
+		//chomp.rulesButton.disabled = true;
+		//chomp.changePilesButton.disabled = true;
 	}
 	
 	// general proc

@@ -349,7 +349,7 @@ nim.doMove = function(arr, pile, amount) {
 nim.createPiles = function() {
 	nim.pileSpace = [.3, .2];
 	nim.pileSize = [.175, .175];
-	nim.pileDescStr= nim.pileDesc[nim.curPileSet];
+	nim.pileDescStr = nim.pileDesc[nim.curPileSet];
 	nim.startPiles = nim.pileSet[nim.curPileSet];
 	++nim.curPileSet;
 	if (nim.curPileSet == nim.pileSet.length) {

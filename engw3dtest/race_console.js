@@ -137,11 +137,11 @@ race_console.setupCallbacks = function(socker, name) {
 
 	socker.on('disconnect', function (reason) {
 		console.log("disconnect reason '" + reason + "'");	
-		race_console.terminal.print("disconnect reason '" + reason + "'");
+		race_console.terminal?.print("disconnect reason '" + reason + "'");
 		if (socker) {
 			socker.disconnect();
 			race_console.socker = socker = null; // one side effect
-			race_console.terminal.setPrompt(">");
+			race_console.terminal?.setPrompt(">");
 		}
 	});
 
@@ -481,7 +481,7 @@ race_console.onresize = function() {
 
 race_console.proc = function() {
 	// proc
-	race_console.terminal.proc(input.key);
+	race_console.terminal?.proc(input.key);
 	race_console.roottree.proc(); // probably does nothing
 	//doflycam(mainvp); // modify the trs of mainvp using flycam
 

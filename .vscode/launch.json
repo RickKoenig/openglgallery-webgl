@@ -56,5 +56,12 @@
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=scratch",
             "webRoot": "${workspaceFolder}"
         },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Chomp game",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=chomp",
+            "webRoot": "${workspaceFolder}"
+        },
     ]
 }
