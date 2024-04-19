@@ -24,9 +24,9 @@ chomp.fsmStateTable = [
 			var done = chomp.playTurn();
 			if (done) {
 				//if (chomp.lastLoses) {
-				//	return chomp.fsmStates.compWins;
+					return chomp.fsmStates.compWins;
 				//} else {
-					return chomp.fsmStates.humanWins;
+				//	return chomp.fsmStates.humanWins;
 				//}
 			} else {
 				return chomp.fsmStates.compMove;
@@ -44,9 +44,9 @@ chomp.fsmStateTable = [
 			var done = chomp.playTurn();
 			if (done) {
 				//if (chomp.lastLoses) {
-				//	return chomp.fsmStates.humanWins;
+					return chomp.fsmStates.humanWins;
 				//} else {
-					return chomp.fsmStates.compWins;
+				//	return chomp.fsmStates.compWins;
 				//}
 			} else {
 				return chomp.fsmStates.humanMove;
@@ -232,7 +232,22 @@ chomp.calcMove = function() {
 		for (var i = 0; i < chomp.startPiles.length; ++i) {
 			var goodPile = xor ^ chomp.curPiles[i];
 			var amount = chomp.curPiles[i] - goodPile;
+			if (amount < 0) {
+				amount = 0;
+			}
 			var newPile = chomp.doMove(chomp.curPiles, i, amount);
+			var ones = chomp.isOnes(newPile, i);
+			if (ones >= 0) {
+				//reason = "spc1";
+				var goodPile = 1 - ones; // try to get an odd number of ones
+				var amount = chomp.curPiles[i] - goodPile;
+				if (amount > 0) {
+					amount %= chomp.mod;
+				} else {
+					//reason = "spc2";
+					amount = 0;
+				}
+			} 
 			ret[i] = amount;
 		}
 	} else {
@@ -244,9 +259,6 @@ chomp.calcMove = function() {
 		for (var i = 0; i < chomp.startPiles.length; ++i) {
 			ret[i] = chomp.curPiles[i] > 0 ? 1 : 0;
 		}
-		ret.push(1);
-	} else {
-		ret.push(0);
 	}
 	return ret;
 };
@@ -467,7 +479,7 @@ chomp.updateTextInfo = function() {
 	var stateInfo = 0;
 	var rulesInfo = "These are the rules:\n";
 	rulesInfo += "Take as many pieces as you want\n from any one pile\n";
-	rulesInfo += "Who ever takes the last piece WINS!\n\n";
+	rulesInfo += "Who ever takes the last piece LOSES!\n\n";
 	var who1 = "#";
 	var who2 = "$";
 	var who3 = "?";
@@ -595,10 +607,10 @@ chomp.init = function() {
 	//makeabut("Reset level",chomp.resetLevel); // temp, TEST
 	//chomp.rulesButton = makeabut("Change rules", chomp.changeRules);
 	//chomp.changePilesButton = makeabut("Change piles", chomp.createPiles);
-	chomp.changeXm = makeabut("X-", chomp.changeXm);
-	chomp.changeXp = makeabut("X+", chomp.changeXp);
-	chomp.changeYm = makeabut("Y-", chomp.changeYm);
-	chomp.changeYp = makeabut("Y+", chomp.changeYp);
+	chomp.changeXmBut = makeabut("X-", chomp.changeXm);
+	chomp.changeXpBut = makeabut("X+", chomp.changeXp);
+	chomp.changeYmBut = makeabut("Y-", chomp.changeYm);
+	chomp.changeYpBut = makeabut("Y+", chomp.changeYp);
 	chomp.levelDest = makeaprintarea('level:');
 	
 	input.fmx = -10; // hack to not be over a piece when state starts
@@ -642,17 +654,17 @@ chomp.proc = function() {
 	
 	// change state of rules and pile set button depending on whether or not start of game and human
 	if (chomp.fsmState == chomp.fsmStates.humanMove && chomp.firstMove) {
-		chomp.changeXm.disabled = false;
-		chomp.changeXp.disabled = false;
-		chomp.changeYm.disabled = false;
-		chomp.changeYp.disabled = false;
+		chomp.changeXmBut.disabled = false;
+		chomp.changeXpBut.disabled = false;
+		chomp.changeYmBut.disabled = false;
+		chomp.changeYpBut.disabled = false;
 		//chomp.rulesButton.disabled = false;
 		//chomp.changePilesButton.disabled = false;
 	} else {
-		chomp.changeXm.disabled = true;
-		chomp.changeXp.disabled = true;
-		chomp.changeYm.disabled = true;
-		chomp.changeYp.disabled = true;
+		chomp.changeXmBut.disabled = true;
+		chomp.changeXpBut.disabled = true;
+		chomp.changeYmBut.disabled = true;
+		chomp.changeYpBut.disabled = true;
 		//chomp.rulesButton.disabled = true;
 		//chomp.changePilesButton.disabled = true;
 	}

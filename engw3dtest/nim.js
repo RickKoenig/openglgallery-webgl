@@ -229,8 +229,8 @@ nim.calcMove = function() {
 			} else {
 				amount = 0;
 			}
-			var newPile = nim.doMove(nim.curPiles, i, amount);
 			if (nim.lastLoses) {
+				var newPile = nim.doMove(nim.curPiles, i, amount);
 				var ones = nim.isOnes(newPile, i);
 				if (ones >= 0) {
 					//reason = "spc1";
@@ -255,9 +255,9 @@ nim.calcMove = function() {
 		for (var i = 0; i < nim.startPiles.length; ++i) {
 			ret[i] = nim.curPiles[i] > 0 ? 1 : 0;
 		}
-		ret.push(1);
-	} else {
-		ret.push(0);
+	//	ret.push(1);
+	//} else {
+	//	ret.push(0);
 	}
 	return ret;
 };
@@ -281,7 +281,7 @@ nim.calcCompTurn = function() {
 	var outcomes = null;
 	// do outcomes and print them
 	var outcomes = JSON.stringify(possibleMoves);
-	console.log("calcCompturn start = " + nim.curPiles + " moves = " + moves 
+	console.log("calcCompturn start = " + nim.curPiles + " moves = " + moves
 				+ " outcomes = " + outcomes + " " + (moves[nim.curPiles.length] ? "Losing" : "Winning"));
 	var pile = validTurn[getRandomInt(validTurn.length)];
 	return [pile, moves[pile]];
