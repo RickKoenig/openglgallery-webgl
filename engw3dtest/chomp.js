@@ -29,7 +29,8 @@ chomp.fsmStateTable = [
 				//	return chomp.fsmStates.humanWins;
 				//}
 			} else {
-				return chomp.fsmStates.compMove;
+				//return chomp.fsmStates.compMove;
+				return chomp.fsmStates.humanMove;
 			}
 		},
 		endCondMove: true
@@ -78,7 +79,7 @@ chomp.fsmStateTable = [
 			++chomp.compScore;
 		},
 		endFunc: function() {
-			chomp.startMoveHuman = !chomp.startMoveHuman;
+			//chomp.startMoveHuman = !chomp.startMoveHuman;
 			chomp.resetLevel();
 			if (chomp.startMoveHuman) {
 				return chomp.fsmStates.humanMove;
@@ -169,8 +170,8 @@ chomp.getMaxMove = function() {
 chomp.createTurnLine = function() {
 	// turn line 3d assets
 	chomp.turnLine = buildplanexy("line for turn",1,1,"Bark.png","texc");
-	chomp.turnLine.mod.flags |= modelflagenums.DOUBLESIDED|modelflagenums.NOZBUFFER;
-	chomp.turnLine.mod.mat.color = [1,0,0,1];
+	chomp.turnLine.mod.flags |= modelflagenums.DOUBLESIDED|modelflagenums.NOZBUFFER|modelflagenums.HASALPHA;
+	chomp.turnLine.mod.mat.color = [1,0,0,.25];
 	chomp.roottree.linkchild(chomp.turnLine);
 };
 
@@ -189,21 +190,22 @@ chomp.updateTurnLine = function() {
 chomp.mouseToTurn = function() {
 	var mx = input.fmx;
 	var my = input.fmy;
-	var len = chomp.startPiles.length;
-	var tpX = mx / chomp.pileSpace[0] + chomp.startPiles.length / 2;
+	var len = chomp.pileDim[0];
+	var tpX = mx / chomp.pileSpace[0] + len / 2;
 	var turnPileX = Math.floor(tpX);
-	var turnSubPile = (tpX - turnPileX) * chomp.pileSpace[0];
-	var overPileX = turnPileX >= 0 && turnPileX < chomp.startPiles.length
-				&& turnSubPile >= (chomp.pileSpace[0] - chomp.pileSize[0]) / 2
-				&& turnSubPile < (chomp.pileSpace[0] + chomp.pileSize[0]) / 2;
+	//var turnSubPile = (tpX - turnPileX) * chomp.pileSpace[0];
+	var overPileX = turnPileX >= 0 && turnPileX < len;
+				//&& turnSubPile >= (chomp.pileSpace[0] - chomp.pileSize[0]) / 2
+				//&& turnSubPile < (chomp.pileSpace[0] + chomp.pileSize[0]) / 2;
 	if (!overPileX) {
 		chomp.turn = [0, 0];
 		return;
 	}
 
-	var turnPileY = Math.floor(-chomp.maxPile / 2 + chomp.curPiles[turnPileX] - my / chomp.pileSpace[1] + .5);
-	turnPileY = range(0, turnPileY, chomp.curPiles[turnPileX]);
-	turnPileY = range(0, turnPileY, chomp.getMaxMove());
+	var turnPileY = Math.floor(-chomp.maxPile / 2 + chomp.pileDim[1] - my / chomp.pileSpace[1] + 1);
+	turnPileY = range(0, turnPileY /*-  chomp.curPiles[turnPileX]*/, chomp.pileDim[1]);
+	//turnPileY = range(0, turnPileY, chomp.curPiles[turnPileX]);
+	//turnPileY = range(0, turnPileY, chomp.getMaxMove());
 	chomp.turn = [turnPileX, turnPileY];
 };
 
@@ -260,12 +262,12 @@ chomp.calcMove = function() {
 			ret[i] = chomp.curPiles[i] > 0 ? 1 : 0;
 		}
 	}
-	return ret;
+	return {moves: ret, win: !!cp};
 };
 
 // return 2d array that has the pile and the amount
 chomp.calcCompTurn = function() {
-	var moves = chomp.calcMove();
+	var {moves, win: winning} = chomp.calcMove();
 	var validTurn = [];
 	var possibleMoves = [];
 	for (var i = 0; i < chomp.curPiles.length; ++i) {
@@ -283,7 +285,7 @@ chomp.calcCompTurn = function() {
 	// do outcomes and print them
 	var outcomes = JSON.stringify(possibleMoves);
 	console.log("calcCompturn start = " + chomp.curPiles + " moves = " + moves 
-				+ " outcomes = " + outcomes + " " + (moves[chomp.curPiles.length] ? "Losing" : "Winning"));
+				+ " outcomes = " + outcomes + " " + (winning ? "Winning" : "Losing"));
 	var pile = validTurn[getRandomInt(validTurn.length)];
 	return [pile, moves[pile]];
 };
@@ -298,10 +300,12 @@ if (!chomp.turn[1] || (chomp.fsmState != chomp.fsmStates.humanMove && chomp.fsmS
 	}
 	// do draw
 	chomp.turnLine.flags &= ~treeflagenums.DONTDRAW;
-	var xTrans = chomp.turn[0] * chomp.pileSpace[0] - (chomp.startPiles.length - 1) * chomp.pileSpace[0] / 2;
-	var xScale = .025;
+	var xTrans = chomp.turn[0] * chomp.pileSpace[0] / 2;
+		- ((chomp.startPiles.length - 1) * chomp.pileSpace[0]) / 2;
+	var xScale = chomp.pileSpace[0] / 2 * (chomp.startPiles.length - chomp.turn[0]);//.025;
 	
-	var yStart = chomp.curPiles[chomp.turn[0]] * chomp.pileSpace[1] - chomp.maxPile * chomp.pileSpace[1] / 2;
+	//var yStart = chomp.curPiles[chomp.turn[0]] * chomp.pileSpace[1] - chomp.maxPile * chomp.pileSpace[1] / 2;
+	var yStart = chomp.pileDim[1] * chomp.pileSpace[1] - chomp.maxPile * chomp.pileSpace[1] / 2;
 	var yEnd = yStart - chomp.pileSpace[1] * chomp.turn[1];
 	var yTrans = (yStart + yEnd) / 2;
 	var yScale = (yStart - yEnd) / 2;
@@ -341,8 +345,14 @@ chomp.isOnes = function(piles, ignore) {
 };
 
 chomp.doMove = function(arr, pile, amount) {
+	var oldVal = chomp.curPiles[pile];
+	let newVal = chomp.pileDim[1] - amount;
 	var ret = arr.slice();
-	ret[pile] -= amount;
+	if (newVal < oldVal) {
+		//ret[pile] -= amount;
+		ret[pile] = newVal;
+
+	}
 	return ret;
 };
 

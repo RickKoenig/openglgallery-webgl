@@ -182,10 +182,10 @@ nim.mouseToTurn = function() {
 	var mx = input.fmx;
 	var my = input.fmy;
 	var len = nim.startPiles.length;
-	var tpX = mx / nim.pileSpace[0] + nim.startPiles.length / 2;
+	var tpX = mx / nim.pileSpace[0] + len / 2;
 	var turnPileX = Math.floor(tpX);
 	var turnSubPile = (tpX - turnPileX) * nim.pileSpace[0];
-	var overPileX = turnPileX >= 0 && turnPileX < nim.startPiles.length
+	var overPileX = turnPileX >= 0 && turnPileX < len
 				&& turnSubPile >= (nim.pileSpace[0] - nim.pileSize[0]) / 2
 				&& turnSubPile < (nim.pileSpace[0] + nim.pileSize[0]) / 2;
 	if (!overPileX) {
@@ -193,7 +193,7 @@ nim.mouseToTurn = function() {
 		return;
 	}
 
-	var turnPileY = Math.floor(-nim.maxPile / 2 + nim.curPiles[turnPileX] - my / nim.pileSpace[1] + .5);
+	var turnPileY = Math.floor(-nim.maxPile / 2 + nim.curPiles[turnPileX] - my / nim.pileSpace[1] + 1);
 	turnPileY = range(0, turnPileY, nim.curPiles[turnPileX]);
 	turnPileY = range(0, turnPileY, nim.getMaxMove());
 	nim.turn = [turnPileX, turnPileY];
@@ -259,12 +259,14 @@ nim.calcMove = function() {
 	//} else {
 	//	ret.push(0);
 	}
-	return ret;
+	return {moves: ret, win: !!cp};
 };
 
 // return 2d array that has the pile and the amount
 nim.calcCompTurn = function() {
-	var moves = nim.calcMove();
+	var {moves, win: winning} = nim.calcMove();
+	//var moves = ret.moves;
+	//var wining = ret.win;
 	var validTurn = [];
 	var possibleMoves = [];
 	for (var i = 0; i < nim.curPiles.length; ++i) {
@@ -282,7 +284,7 @@ nim.calcCompTurn = function() {
 	// do outcomes and print them
 	var outcomes = JSON.stringify(possibleMoves);
 	console.log("calcCompturn start = " + nim.curPiles + " moves = " + moves
-				+ " outcomes = " + outcomes + " " + (moves[nim.curPiles.length] ? "Losing" : "Winning"));
+				+ " outcomes = " + outcomes + " " + (winning ? "Winning" : "Losing"));
 	var pile = validTurn[getRandomInt(validTurn.length)];
 	return [pile, moves[pile]];
 };
