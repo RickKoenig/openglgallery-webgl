@@ -50,7 +50,8 @@ chomp.fsmStateTable = [
 				//	return chomp.fsmStates.compWins;
 				//}
 			} else {
-				return chomp.fsmStates.humanMove;
+				return chomp.fsmStates.compMove;
+				//return chomp.fsmStates.humanMove;
 			}
 		},
 		endCondTime: true
@@ -62,7 +63,7 @@ chomp.fsmStateTable = [
 			++chomp.humanScore;
 		},
 		endFunc: function() {
-			chomp.startMoveHuman = !chomp.startMoveHuman;
+			//chomp.startMoveHuman = !chomp.startMoveHuman;
 			chomp.resetLevel();
 			if (chomp.startMoveHuman) {
 				return chomp.fsmStates.humanMove;
@@ -98,52 +99,30 @@ chomp.fsmStateTable = [
 		endCondTime: true
 	}
 ];
-chomp.fsmState = chomp.fsmStates.humanMove;
+//chomp.fsmState = chomp.fsmStates.humanMove;
+//chomp.fsmState = chomp.fsmStates.compMove;
 chomp.fsmCounter = 0;
 chomp.fsmHumanTurnReady = false;
-
-/*
-// game rules
-chomp.threeMax = false;
-chomp.lastLoses = false;
-chomp.rulesButton = null;
-*/
-//intermediate
 
 // overall score
 chomp.humanScore = 0;
 chomp.compScore = 0;
 
 // line turn info
-chomp.startMoveHuman = true;
+chomp.startMoveHuman;
 chomp.turn = [0, 0];
-chomp.turnLine = null; // tree draw a line for move
+chomp.turnSelect = null; // tree draw a line for move
 
 // pile info
 chomp.startPiles = null; // pile data, initial pile start
 chomp.curPiles = null; // current piles
 chomp.pilesTree = null; // tree draw 2d array
-//chomp.curPileSet = 0;
 
 // all the different pile configurations
 chomp.makePileSet = function(x, y) {
 	const pileSet = Array(x).fill(y);
 	return pileSet;
 }
-/*
-chomp.pileSet = [];
-	[9],
-	[7, 7],
-	[3, 5, 7],
-	[3, 5, 7, 9],
-];*/
-
-/*chomp.pileDesc = [
-	"EASY",
-	"MEDIUM",
-	"STANDARD",
-	"ADVANCED"
-];*/
 
 chomp.pileDim = [7, 4];
 
@@ -160,27 +139,21 @@ chomp.textInfo = null; // tree font
 
 // CHOMP FUNCTIONS
 
-// game rules
-chomp.getMaxMove = function() {
-	return chomp.maxPile;
-};
-
-
 // line for showing turn in progress
-chomp.createTurnLine = function() {
+chomp.createTurnSelect = function() {
 	// turn line 3d assets
-	chomp.turnLine = buildplanexy("line for turn",1,1,"Bark.png","texc");
-	chomp.turnLine.mod.flags |= modelflagenums.DOUBLESIDED|modelflagenums.NOZBUFFER|modelflagenums.HASALPHA;
-	chomp.turnLine.mod.mat.color = [1,0,0,.25];
-	chomp.roottree.linkchild(chomp.turnLine);
+	chomp.turnSelect = buildplanexy("select for turn",1,1,"Bark.png","texc");
+	chomp.turnSelect.mod.flags |= modelflagenums.DOUBLESIDED|modelflagenums.NOZBUFFER|modelflagenums.HASALPHA;
+	chomp.turnSelect.mod.mat.color = [1,0,0,.25];
+	chomp.roottree.linkchild(chomp.turnSelect);
 };
 
-chomp.updateTurnLine = function() {
+chomp.updateTurnSelect = function() {
 	if (chomp.fsmState == chomp.fsmStates.humanMove) { // human
 		chomp.mouseToTurn();
 	}
 	chomp.turnToDraw();
-	if (input.mclick[0] && chomp.turn[1] > 0) {
+	if (input.mclick[0] && chomp.turn[1] >= 0) {
 		chomp.fsmHumanTurnReady = true;
 	}
 };
@@ -193,20 +166,22 @@ chomp.mouseToTurn = function() {
 	var len = chomp.pileDim[0];
 	var tpX = mx / chomp.pileSpace[0] + len / 2;
 	var turnPileX = Math.floor(tpX);
-	//var turnSubPile = (tpX - turnPileX) * chomp.pileSpace[0];
 	var overPileX = turnPileX >= 0 && turnPileX < len;
-				//&& turnSubPile >= (chomp.pileSpace[0] - chomp.pileSize[0]) / 2
-				//&& turnSubPile < (chomp.pileSpace[0] + chomp.pileSize[0]) / 2;
 	if (!overPileX) {
-		chomp.turn = [0, 0];
+		chomp.turn = [0, -1, 0];
 		return;
 	}
-
 	var turnPileY = Math.floor(-chomp.maxPile / 2 + chomp.pileDim[1] - my / chomp.pileSpace[1] + 1);
-	turnPileY = range(0, turnPileY /*-  chomp.curPiles[turnPileX]*/, chomp.pileDim[1]);
-	//turnPileY = range(0, turnPileY, chomp.curPiles[turnPileX]);
-	//turnPileY = range(0, turnPileY, chomp.getMaxMove());
-	chomp.turn = [turnPileX, turnPileY];
+	turnPileY = chomp.pileDim[1] - range(0, turnPileY, chomp.pileDim[1]);
+	const numPiecesBefore = chomp.countPieces(chomp.curPiles);
+	const piecesAfter = chomp.doMove(chomp.curPiles, turnPileX, turnPileY);
+	const numPiecesAfter = chomp.countPieces(piecesAfter);
+	const numChompedPieces = numPiecesBefore - numPiecesAfter;
+	if (!numChompedPieces) {
+		chomp.turn = [0, -1, 0];
+		return;
+	}
+	chomp.turn = [turnPileX, turnPileY, numChompedPieces];
 };
 
 chomp.countPieces = function(arr) {
@@ -215,6 +190,28 @@ chomp.countPieces = function(arr) {
 		cnt += arr[i];
 	}
 	return cnt;
+};
+
+// START Computer turn
+
+// see if piles have just 0's and 1's
+// return -1 if not, 0 if even, 1 if odd
+// ignore a pile if ignore >= 0 else count all piles
+/*
+chomp.isOnes = function(piles, ignore) {
+	// you lose if odd number of all piles of 1 and rest 0
+	var ones = 0;
+	for (var i = 0; i < piles.length; ++i) {
+		if (i == ignore)
+			continue;
+		var npm = piles[i] % chomp.mod;
+		if (npm > 1) {
+			return -1;
+		} else if (npm == 1) {
+			++ones;
+		}
+	}
+	return ones & 1;
 };
 
 // also append a 1 if losing, 0 if winning to return array
@@ -264,7 +261,8 @@ chomp.calcMove = function() {
 	}
 	return {moves: ret, win: !!cp};
 };
-
+*/
+/*
 // return 2d array that has the pile and the amount
 chomp.calcCompTurn = function() {
 	var {moves, win: winning} = chomp.calcMove();
@@ -289,29 +287,45 @@ chomp.calcCompTurn = function() {
 	var pile = validTurn[getRandomInt(validTurn.length)];
 	return [pile, moves[pile]];
 };
+*/
 
-// update chomp.turnLine.trans and chomp.turnLine.scale and chomp.turnLine.flags treeflagenums.DONTDRAW
+chomp.calcCompTurn = function() {
+	for (let i = chomp.pileDim[0] -1; i >= 0; --i) {
+		const val = chomp.curPiles[i];
+		if (val > 0) {
+			const oldAmount = chomp.countPieces(chomp.curPiles);
+			const newPile = chomp.doMove(chomp.curPiles,i,val - 1);
+			const newAmount = chomp.countPieces(newPile);
+			const diff = oldAmount - newAmount;
+			return [i, val - 1, diff]
+		}
+	}
+	return [0, -1, 0];
+};
+
+// END Computer turn
+
+// update chomp.turnSelect.trans and chomp.turnSelect.scale and chomp.turnSelect.flags treeflagenums.DONTDRAW
 // from chomp.turn
 chomp.turnToDraw = function() {
-if (!chomp.turn[1] || (chomp.fsmState != chomp.fsmStates.humanMove && chomp.fsmState != chomp.fsmStates.compMove)) {
+if (chomp.turn[1] < 0 || (chomp.fsmState != chomp.fsmStates.humanMove && chomp.fsmState != chomp.fsmStates.compMove)) {
 		// not a valid turn, don't draw
-		chomp.turnLine.flags |= treeflagenums.DONTDRAW;	
+		chomp.turnSelect.flags |= treeflagenums.DONTDRAW;	
 		return;
 	}
 	// do draw
-	chomp.turnLine.flags &= ~treeflagenums.DONTDRAW;
+	chomp.turnSelect.flags &= ~treeflagenums.DONTDRAW;
 	var xTrans = chomp.turn[0] * chomp.pileSpace[0] / 2;
 		- ((chomp.startPiles.length - 1) * chomp.pileSpace[0]) / 2;
 	var xScale = chomp.pileSpace[0] / 2 * (chomp.startPiles.length - chomp.turn[0]);//.025;
 	
-	//var yStart = chomp.curPiles[chomp.turn[0]] * chomp.pileSpace[1] - chomp.maxPile * chomp.pileSpace[1] / 2;
 	var yStart = chomp.pileDim[1] * chomp.pileSpace[1] - chomp.maxPile * chomp.pileSpace[1] / 2;
-	var yEnd = yStart - chomp.pileSpace[1] * chomp.turn[1];
+	var yEnd = yStart - chomp.pileSpace[1] * (chomp.pileDim[1] - chomp.turn[1]);
 	var yTrans = (yStart + yEnd) / 2;
 	var yScale = (yStart - yEnd) / 2;
 	
-	chomp.turnLine.trans = [xTrans, yTrans, 1];
-	chomp.turnLine.scale = [xScale, yScale, 1];
+	chomp.turnSelect.trans = [xTrans, yTrans, 1];
+	chomp.turnSelect.scale = [xScale, yScale, 1];
 };
 
 chomp.playTurn = function() {
@@ -325,33 +339,14 @@ chomp.playTurn = function() {
 	return true;
 };
 
-// see if piles have just 0's and 1's
-// return -1 if not, 0 if even, 1 if odd
-// ignore a pile if ignore >= 0 else count all piles
-chomp.isOnes = function(piles, ignore) {
-	// you lose if odd number of all piles of 1 and rest 0
-	var ones = 0;
-	for (var i = 0; i < piles.length; ++i) {
-		if (i == ignore)
-			continue;
-		var npm = piles[i] % chomp.mod;
-		if (npm > 1) {
-			return -1;
-		} else if (npm == 1) {
-			++ones;
+// take a bite
+chomp.doMove = function(arr, pile, newVal) {
+	const ret = arr.slice();
+	for (let i = pile; i < chomp.pileDim[0]; ++i) {
+		const oldVal = chomp.curPiles[i];
+		if (newVal < oldVal) {
+			ret[i] = newVal;
 		}
-	}
-	return ones & 1;
-};
-
-chomp.doMove = function(arr, pile, amount) {
-	var oldVal = chomp.curPiles[pile];
-	let newVal = chomp.pileDim[1] - amount;
-	var ret = arr.slice();
-	if (newVal < oldVal) {
-		//ret[pile] -= amount;
-		ret[pile] = newVal;
-
 	}
 	return ret;
 };
@@ -360,7 +355,8 @@ chomp.minPileX = 1;
 chomp.minPileY = 1;
 chomp.maxPileX = 8;
 chomp.maxPileY = 8;
-// piles
+
+// change start piles start rectangle
 chomp.changeXm = function() {
 	console.log("xm");
 	chomp.pileDim[0] = Math.max(chomp.pileDim[0] - 1, chomp.minPileX);
@@ -388,35 +384,20 @@ chomp.changeYp = function() {
 chomp.createPiles = function() {
 	chomp.pileSpace = [.2, .2];
 	chomp.pileSize = [.175, .175];
-	chomp.pileDescStr = "" + chomp.pileDim;//chomp.pileDesc[chomp.curPileSet];
+	chomp.pileDescStr = "" + chomp.pileDim;
 	chomp.startPiles = chomp.makePileSet(chomp.pileDim[0], chomp.pileDim[1]);
-/*	++chomp.curPileSet;
-	if (chomp.curPileSet == chomp.pileSet.length) {
-		chomp.curPileSet = 0;
-	} */
 	
-	chomp.maxPile = chomp.pileDim[1];//chomp.startPiles[chomp.startPiles.length -1]; // assume right most pile is the largest
+	chomp.maxPile = chomp.pileDim[1];
 	chomp.pileOffset = [(chomp.pileDim[0] - 1) * -chomp.pileSpace[0] / 2,
 						(chomp.maxPile - 1) * -chomp.pileSpace[1] /2];
 	chomp.curPiles = chomp.startPiles.slice(); // start with the preset piles
 
 	// build 3d assets
-	/*
-	var master = buildplanexy("a chomp piece", chomp.pileSize[0] / 2, chomp.pileSize[1] / 2, "maptestnck.png", "texDoubleSided");
-	master.mod.flags |= modelflagenums.DOUBLESIDED|modelflagenums.NOZBUFFER;
-	master.trans = [0,0,1];
-	*/
-		// bob 
-	//var pendpce2 = buildcylinderxz("pend1pce2",.4,.2,"panel.jpg","diffusespecp");
-	var master = buildsphere3("pend1pce2",[chomp.pileSize[0] / 2,chomp.pileSize[0] / 2 / 3,chomp.pileSize[0] / 2]
+	const master = buildsphere3("chompPiece",[chomp.pileSize[0] / 2,chomp.pileSize[0] / 2 / 3,chomp.pileSize[0] / 2]
 	,"panel.jpg","diffusespecp");
 	master.mod.mat.specpow = .0001;
 	master.trans = [0,0,1];
-	//pendpce2.trans = [0,4,-.1];
 	master.rot = [Math.PI/2,0,0];
-	//pendpce0.rotvel = [.1,.5,0];
-	//pendpce0.flags |= treeflagenums.ALWAYSFACING;
-	chomp.roottree.linkchild(master);
 	
 	// free up some resources when changing piles
 	if (chomp.pilesTree) {
@@ -444,16 +425,15 @@ chomp.createPiles = function() {
 	master.glfree();
 	
 	// put turnLine back in front of draw order
-	if (chomp.turnLine) {
-		chomp.turnLine.unlinkchild();
-		chomp.turnLine.glfree();
-		chomp.createTurnLine();
+	if (chomp.turnSelect) {
+		chomp.turnSelect.unlinkchild();
+		chomp.turnSelect.glfree();
+		chomp.createTurnSelect();
 	}
 };
 
 chomp.updatePiles = function() {
 	for (var i = 0; i < chomp.startPiles.length; ++i) {
-		var column = [];
 		var numCol = chomp.startPiles[i];
 		var numCurPieces = chomp.curPiles[i];
 		for (var j = 0; j < numCol; ++j) {
@@ -465,7 +445,6 @@ chomp.updatePiles = function() {
 		}
 	}
 };
-
 
 // text status of the game
 // create
@@ -487,8 +466,8 @@ chomp.updateTextInfo = function() {
 	var scoreInfo = "Score:\nYou " + chomp.humanScore + " ,Me " + chomp.compScore + "\n\n";
 
 	var stateInfo = 0;
-	var rulesInfo = "These are the rules:\n";
-	rulesInfo += "Take as many pieces as you want\n from any one pile\n";
+	var rulesInfo = "These are the rules:\n\n";
+	rulesInfo += "Chomp from upper right\n";
 	rulesInfo += "Who ever takes the last piece LOSES!\n\n";
 	var who1 = "#";
 	var who2 = "$";
@@ -513,8 +492,10 @@ chomp.updateTextInfo = function() {
 	} else if (chomp.fsmState == chomp.fsmStates.compMoveFirst) {
 		turnInfo = "I'll go first";
 	} else {
-		if (chomp.turn[1] > 0) {
-			turnInfo = who1 + " take " + chomp.turn[1] + " from pile " + (chomp.turn[0] + 1);
+		if (chomp.turn[1] >= 0) {
+			turnInfo = who1 + " take " + chomp.turn[1] + " from pile " + (chomp.turn[0]);
+			const chompPieces = chomp.turn[2];
+			turnInfo += " \n" + who1 + " chomp " + chompPieces + ( chompPieces == 1 ? " piece" : " pieces");
 		} else {
 			if (chomp.firstMove) {
 				turnInfo = who3 + " go first";
@@ -523,9 +504,6 @@ chomp.updateTextInfo = function() {
 			}
 		}
 	}
-	//var testInfo = "\n\nFSM state = " + chomp.fsmState 
-	//	+ ", FSM counter = " + chomp.fsmCounter;
-	//	//+ ",fmx = " + input.fmx.toFixed(3);
 	var pileInfo = "\n\n\nPiles: " + JSON.stringify(chomp.curPiles);
 	var info = rulesInfo + scoreInfo + turnInfo + pileInfo;
 	chomp.textInfo.mod.print(info);
@@ -535,13 +513,6 @@ chomp.updateTextInfo = function() {
 chomp.resetLevel = function() {
 	chomp.curPiles = chomp.startPiles.slice();
 };
-/*
-chomp.changeRules = function() {
-	chomp.lastLoses = !chomp.lastLoses;
-	if (chomp.lastLoses)
-		chomp.threeMax = !chomp.threeMax;
-	chomp.updateTextInfo();
-};*/
 
 chomp.procFSM = function() {
 	// init FSM when fsmState < 0
@@ -588,7 +559,6 @@ chomp.procFSM = function() {
 	}
 };
 
-
 // here we go, boot up the state
 // load these before init
 chomp.load = function() {
@@ -605,18 +575,11 @@ chomp.init = function() {
 	// overall game state
 	chomp.humanScore = 0;
 	chomp.compScore = 0;
-	chomp.startMoveHuman = true;
+	chomp.startMoveHuman = false;
 	chomp.fsmState = -1;
 	
-	// rules
-	//chomp.threeMax = true;
-	//chomp.lastLoses = true;
-
 	// ui
 	setbutsname('chomp');
-	//makeabut("Reset level",chomp.resetLevel); // temp, TEST
-	//chomp.rulesButton = makeabut("Change rules", chomp.changeRules);
-	//chomp.changePilesButton = makeabut("Change piles", chomp.createPiles);
 	chomp.changeXmBut = makeabut("X-", chomp.changeXm);
 	chomp.changeXpBut = makeabut("X+", chomp.changeXp);
 	chomp.changeYmBut = makeabut("Y-", chomp.changeYm);
@@ -627,14 +590,13 @@ chomp.init = function() {
 	
 	// build parent
 	chomp.roottree = new Tree2("chomp root tree");
-	chomp.turnLine = null;
+	chomp.turnSelect = null;
 
 	// build 3d assets
 	// piles
-	//chomp.curPileSet = 2; // STD piles
 	chomp.createPiles();
-	// line
-	chomp.createTurnLine();
+	// select
+	chomp.createTurnSelect();
 	// textInfo
 	chomp.createTextInfo();
 	
@@ -644,16 +606,15 @@ chomp.init = function() {
 	chomp.onresize(); // set textInfo trans a scale right
 	
 // test debug	
-	//debprint.addlist("chomp state",["chomp"]); // TMI
-	debprint.addlist("chomp state",["chomp.fsmStates", "chomp.turn", "chomp.curPiles", "chomp.turnLine"]);
+	debprint.addlist("chomp state",["chomp.fsmStates", "chomp.turn", "chomp.curPiles"]);
 };
 
 chomp.proc = function() {
 	// proc chomp game
 	chomp.procFSM();
 	
-	// proc line
-	chomp.updateTurnLine();
+	// proc select
+	chomp.updateTurnSelect();
 	
 	// proc graphics
 	chomp.updatePiles();
@@ -663,21 +624,12 @@ chomp.proc = function() {
 	chomp.updateTextInfo();
 	
 	// change state of rules and pile set button depending on whether or not start of game and human
-	if (chomp.fsmState == chomp.fsmStates.humanMove && chomp.firstMove) {
-		chomp.changeXmBut.disabled = false;
-		chomp.changeXpBut.disabled = false;
-		chomp.changeYmBut.disabled = false;
-		chomp.changeYpBut.disabled = false;
-		//chomp.rulesButton.disabled = false;
-		//chomp.changePilesButton.disabled = false;
-	} else {
-		chomp.changeXmBut.disabled = true;
-		chomp.changeXpBut.disabled = true;
-		chomp.changeYmBut.disabled = true;
-		chomp.changeYpBut.disabled = true;
-		//chomp.rulesButton.disabled = true;
-		//chomp.changePilesButton.disabled = true;
-	}
+	const enableButs = chomp.fsmState == chomp.fsmStates.humanMove && chomp.firstMove;
+	const disableButs = !enableButs;
+	chomp.changeXmBut.disabled = disableButs;
+	chomp.changeXpBut.disabled = disableButs;
+	chomp.changeYmBut.disabled = disableButs;
+	chomp.changeYpBut.disabled = disableButs;
 	
 	// general proc
 	chomp.roottree.proc(); // probably does nothing, run animations if available, and user procs too
