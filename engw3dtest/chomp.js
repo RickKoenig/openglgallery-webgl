@@ -23,14 +23,9 @@ chomp.fsmStateTable = [
 		endFunc: function() {
 			var done = chomp.playTurn();
 			if (done) {
-				//if (chomp.lastLoses) {
-					return chomp.fsmStates.compWins;
-				//} else {
-				//	return chomp.fsmStates.humanWins;
-				//}
+				return chomp.fsmStates.compWins;
 			} else {
-				//return chomp.fsmStates.compMove;
-				return chomp.fsmStates.humanMove;
+				return chomp.fsmStates.compMove;
 			}
 		},
 		endCondMove: true
@@ -44,14 +39,9 @@ chomp.fsmStateTable = [
 		endFunc: function() {
 			var done = chomp.playTurn();
 			if (done) {
-				//if (chomp.lastLoses) {
-					return chomp.fsmStates.humanWins;
-				//} else {
-				//	return chomp.fsmStates.compWins;
-				//}
+				return chomp.fsmStates.humanWins;
 			} else {
-				return chomp.fsmStates.compMove;
-				//return chomp.fsmStates.humanMove;
+				return chomp.fsmStates.humanMove;
 			}
 		},
 		endCondTime: true
@@ -63,7 +53,7 @@ chomp.fsmStateTable = [
 			++chomp.humanScore;
 		},
 		endFunc: function() {
-			//chomp.startMoveHuman = !chomp.startMoveHuman;
+			chomp.startMoveHuman = !chomp.startMoveHuman;
 			chomp.resetLevel();
 			if (chomp.startMoveHuman) {
 				return chomp.fsmStates.humanMove;
@@ -80,7 +70,7 @@ chomp.fsmStateTable = [
 			++chomp.compScore;
 		},
 		endFunc: function() {
-			//chomp.startMoveHuman = !chomp.startMoveHuman;
+			chomp.startMoveHuman = !chomp.startMoveHuman;
 			chomp.resetLevel();
 			if (chomp.startMoveHuman) {
 				return chomp.fsmStates.humanMove;
@@ -109,8 +99,7 @@ chomp.humanScore = 0;
 chomp.compScore = 0;
 
 // line turn info
-chomp.startMoveHuman;
-chomp.turn = [0, 0];
+chomp.turn = [0, 0, 0];
 chomp.turnSelect = null; // tree draw a line for move
 
 // pile info
@@ -124,7 +113,7 @@ chomp.makePileSet = function(x, y) {
 	return pileSet;
 }
 
-chomp.pileDim = [7, 4];
+chomp.pileDim = [3, 3];
 
 // drawing piles metrics
 chomp.maxPile = 0; // maximum number of piles
@@ -193,114 +182,42 @@ chomp.countPieces = function(arr) {
 };
 
 // START Computer turn
-
-// see if piles have just 0's and 1's
-// return -1 if not, 0 if even, 1 if odd
-// ignore a pile if ignore >= 0 else count all piles
-/*
-chomp.isOnes = function(piles, ignore) {
-	// you lose if odd number of all piles of 1 and rest 0
-	var ones = 0;
-	for (var i = 0; i < piles.length; ++i) {
-		if (i == ignore)
-			continue;
-		var npm = piles[i] % chomp.mod;
-		if (npm > 1) {
-			return -1;
-		} else if (npm == 1) {
-			++ones;
-		}
-	}
-	return ones & 1;
-};
-
-// also append a 1 if losing, 0 if winning to return array
-chomp.calcMove = function() {
-	// assume rightmost pile is the largest
-	//reason = "std";
-	//reasonArr = new Array(chomp.startPiles.length).fill("pile");
-	chomp.mod = chomp.startPiles[chomp.startPiles.length - 1] + 1;
-	var xor = 0;
-	for (var np of chomp.curPiles) {
-		xor ^= np;
-	}
-	var ret = new Array(chomp.startPiles.length).fill(0);
-	// test
-	//xor = 0;
-	if (xor) {
-		for (var i = 0; i < chomp.startPiles.length; ++i) {
-			var goodPile = xor ^ chomp.curPiles[i];
-			var amount = chomp.curPiles[i] - goodPile;
-			if (amount < 0) {
-				amount = 0;
-			}
-			var newPile = chomp.doMove(chomp.curPiles, i, amount);
-			var ones = chomp.isOnes(newPile, i);
-			if (ones >= 0) {
-				//reason = "spc1";
-				var goodPile = 1 - ones; // try to get an odd number of ones
-				var amount = chomp.curPiles[i] - goodPile;
-				if (amount > 0) {
-					amount %= chomp.mod;
-				} else {
-					//reason = "spc2";
-					amount = 0;
-				}
-			} 
-			ret[i] = amount;
-		}
-	} else {
-		ret.fill(0);
-	}
-	// convert losing position to take 1 from any nonzero pile
-	var cp = chomp.countPieces(ret);
-	if (!cp) {
-		for (var i = 0; i < chomp.startPiles.length; ++i) {
-			ret[i] = chomp.curPiles[i] > 0 ? 1 : 0;
-		}
-	}
-	return {moves: ret, win: !!cp};
-};
-*/
-/*
-// return 2d array that has the pile and the amount
-chomp.calcCompTurn = function() {
-	var {moves, win: winning} = chomp.calcMove();
-	var validTurn = [];
-	var possibleMoves = [];
-	for (var i = 0; i < chomp.curPiles.length; ++i) {
-		if (moves[i] > 0) {
-			validTurn.push(i);
-			var newPile = chomp.doMove(chomp.curPiles, i, moves[i]);
-			possibleMoves.push(newPile);
-		}
-		
-	}
-	if (!validTurn.length) {
-		return [0, 0]; // can't make a turn!
-	}
-	var outcomes = null;
-	// do outcomes and print them
-	var outcomes = JSON.stringify(possibleMoves);
-	console.log("calcCompturn start = " + chomp.curPiles + " moves = " + moves 
-				+ " outcomes = " + outcomes + " " + (winning ? "Winning" : "Losing"));
-	var pile = validTurn[getRandomInt(validTurn.length)];
-	return [pile, moves[pile]];
-};
-*/
-
-chomp.calcCompTurn = function() {
-	for (let i = chomp.pileDim[0] -1; i >= 0; --i) {
-		const val = chomp.curPiles[i];
+chomp.calcMove = function(curPiles) {
+	// a move has: pilex, piley, numChomps
+	const ret = {};
+	ret.moves = [];
+	ret.win = false;
+	for (let i = 0; i < curPiles.length; ++i) {
+		const val = curPiles[i];
 		if (val > 0) {
-			const oldAmount = chomp.countPieces(chomp.curPiles);
-			const newPile = chomp.doMove(chomp.curPiles,i,val - 1);
-			const newAmount = chomp.countPieces(newPile);
-			const diff = oldAmount - newAmount;
-			return [i, val - 1, diff]
+			const r = i + 1;
+			const valRight = r == curPiles.length ? 0 : curPiles[r];
+			if (val > valRight) { // chomp one piece
+				const oldAmount = chomp.countPieces(curPiles);
+				const newPile = chomp.doMove(curPiles, i, val - 1);
+				const newAmount = chomp.countPieces(newPile);
+				const diff = oldAmount - newAmount;
+				const move = [i, val - 1, diff];
+				ret.moves.push(move);
+				ret.win = true;
+			}
 		}
 	}
-	return [0, -1, 0];
+	return ret;
+}
+
+chomp.calcCompTurn = function() {
+	var {moves, win: winning} = chomp.calcMove(chomp.curPiles);
+	if (!moves.length) {
+		return [0, -1, 0]; // can't make a turn!
+	}
+	// do outcomes and print them
+	const outcomes = JSON.stringify(moves);
+	console.log("move is: x, y, numChomp");
+	console.log("   calcCompturn start = " + chomp.curPiles + " moves = " + outcomes
+		+ (winning ? " Winning" : " Losing"));
+	const move = moves[getRandomInt(moves.length)].slice();
+	return move;
 };
 
 // END Computer turn
@@ -575,7 +492,7 @@ chomp.init = function() {
 	// overall game state
 	chomp.humanScore = 0;
 	chomp.compScore = 0;
-	chomp.startMoveHuman = false;
+	chomp.startMoveHuman = true;
 	chomp.fsmState = -1;
 	
 	// ui

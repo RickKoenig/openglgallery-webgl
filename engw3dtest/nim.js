@@ -265,8 +265,6 @@ nim.calcMove = function() {
 // return 2d array that has the pile and the amount
 nim.calcCompTurn = function() {
 	var {moves, win: winning} = nim.calcMove();
-	//var moves = ret.moves;
-	//var wining = ret.win;
 	var validTurn = [];
 	var possibleMoves = [];
 	for (var i = 0; i < nim.curPiles.length; ++i) {
@@ -275,12 +273,10 @@ nim.calcCompTurn = function() {
 			var newPile = nim.doMove(nim.curPiles, i, moves[i]);
 			possibleMoves.push(newPile);
 		}
-		
 	}
 	if (!validTurn.length) {
 		return [0, 0]; // can't make a turn!
 	}
-	var outcomes = null;
 	// do outcomes and print them
 	var outcomes = JSON.stringify(possibleMoves);
 	console.log("calcCompturn start = " + nim.curPiles + " moves = " + moves
@@ -292,7 +288,7 @@ nim.calcCompTurn = function() {
 // update nim.turnLine.trans and nim.turnLine.scale and nim.turnLine.flags treeflagenums.DONTDRAW
 // from nim.turn
 nim.turnToDraw = function() {
-if (!nim.turn[1] || (nim.fsmState != nim.fsmStates.humanMove && nim.fsmState != nim.fsmStates.compMove)) {
+	if (!nim.turn[1] || (nim.fsmState != nim.fsmStates.humanMove && nim.fsmState != nim.fsmStates.compMove)) {
 		// not a valid turn, don't draw
 		nim.turnLine.flags |= treeflagenums.DONTDRAW;	
 		return;
