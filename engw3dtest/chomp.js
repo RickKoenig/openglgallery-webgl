@@ -174,40 +174,11 @@ chomp.mouseToTurn = function() {
 };
 
 chomp.countPieces = function(arr) {
-	var cnt = 0;
-	for (var i = 0; i < chomp.startPiles.length; ++i) {
-		cnt += arr[i];
-	}
-	return cnt;
+	return arr.reduce((a, b) => a + b, 0)
 };
 
-// START Computer turn
-chomp.calcMove = function(curPiles) {
-	// a move has: pilex, piley, numChomps
-	const ret = {};
-	ret.moves = [];
-	ret.win = false;
-	for (let i = 0; i < curPiles.length; ++i) {
-		const val = curPiles[i];
-		if (val > 0) {
-			const r = i + 1;
-			const valRight = r == curPiles.length ? 0 : curPiles[r];
-			if (val > valRight) { // chomp one piece
-				const oldAmount = chomp.countPieces(curPiles);
-				const newPile = chomp.doMove(curPiles, i, val - 1);
-				const newAmount = chomp.countPieces(newPile);
-				const diff = oldAmount - newAmount;
-				const move = [i, val - 1, diff];
-				ret.moves.push(move);
-				ret.win = true;
-			}
-		}
-	}
-	return ret;
-}
-
 chomp.calcCompTurn = function() {
-	var {moves, win: winning} = chomp.calcMove(chomp.curPiles);
+	var {moves, win: winning} = chomp.calcMove(chomp.curPiles); // in chompCalc.js file
 	if (!moves.length) {
 		return [0, -1, 0]; // can't make a turn!
 	}
@@ -303,6 +274,7 @@ chomp.createPiles = function() {
 	chomp.pileSize = [.175, .175];
 	chomp.pileDescStr = "" + chomp.pileDim;
 	chomp.startPiles = chomp.makePileSet(chomp.pileDim[0], chomp.pileDim[1]);
+	chomp.study(chomp.pileDim);
 	
 	chomp.maxPile = chomp.pileDim[1];
 	chomp.pileOffset = [(chomp.pileDim[0] - 1) * -chomp.pileSpace[0] / 2,
@@ -410,7 +382,7 @@ chomp.updateTextInfo = function() {
 		turnInfo = "I'll go first";
 	} else {
 		if (chomp.turn[1] >= 0) {
-			turnInfo = who1 + " take " + chomp.turn[1] + " from pile " + (chomp.turn[0]);
+			turnInfo = who1 + " take from " + JSON.stringify(chomp.turn.slice(0, 2));
 			const chompPieces = chomp.turn[2];
 			turnInfo += " \n" + who1 + " chomp " + chompPieces + ( chompPieces == 1 ? " piece" : " pieces");
 		} else {
