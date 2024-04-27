@@ -656,7 +656,7 @@ Model.prototype.glfree = function() {
 };
 
 Model.prototype.newdup = function() {
-	logger("Model newdup of " + this.name);
+	//logger("Model newdup of " + this.name);
 	++this.refcount;
 	return this;
 };

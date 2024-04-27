@@ -411,7 +411,7 @@ Model2.prototype.glfreenoref = function() {
 };
 
 Model2.prototype.newdup = function() {
-	logger("Model2 newdup of " + this.name);
+	//logger("Model2 newdup of " + this.name);
 	++this.refcount;
 	return this;
 };

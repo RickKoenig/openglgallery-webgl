@@ -113,7 +113,7 @@ chomp.makePileSet = function(x, y) {
 	return pileSet;
 }
 
-chomp.pileDim = [3, 3];
+chomp.pileDim = [7, 4];
 
 // drawing piles metrics
 chomp.maxPile = 0; // maximum number of piles
@@ -228,12 +228,12 @@ chomp.playTurn = function() {
 };
 
 // take a bite
-chomp.doMove = function(arr, pile, newVal) {
-	const ret = arr.slice();
-	for (let i = pile; i < chomp.pileDim[0]; ++i) {
-		const oldVal = chomp.curPiles[i];
-		if (newVal < oldVal) {
-			ret[i] = newVal;
+chomp.doMove = function(pile, x, y) {
+	const ret = pile.slice();
+	for (let i = x; i < pile.length; ++i) {
+		const oldVal = pile[i];
+		if (y < oldVal) {
+			ret[i] = y;
 		}
 	}
 	return ret;
@@ -282,11 +282,16 @@ chomp.createPiles = function() {
 	chomp.curPiles = chomp.startPiles.slice(); // start with the preset piles
 
 	// build 3d assets
-	const master = buildsphere3("chompPiece",[chomp.pileSize[0] / 2,chomp.pileSize[0] / 2 / 3,chomp.pileSize[0] / 2]
-	,"panel.jpg","diffusespecp");
-	master.mod.mat.specpow = .0001;
+	//function buildplanexy(name,wid,hit,texname,shadername,tessx,tessy) {
+	const master = buildplanexy("chompPiece", chomp.pileSize[0] / 2, chomp.pileSize[0] / 2
+		, "panel.jpg", "texc", 1, 1);
+	chomp.mainColor = [.83 * 1.75, .47 * 1.75, .09 * 1.75, 1];
+	master.mat.color = chomp.mainColor;
+	//const master = buildsphere3("chompPiece", [chomp.pileSize[0] / 2, chomp.pileSize[0] / 2 / 3, chomp.pileSize[0] / 2]
+	//,"panel.jpg","tex");
+	//master.mod.mat.specpow = .0001;
 	master.trans = [0,0,1];
-	master.rot = [Math.PI/2,0,0];
+	//master.rot = [Math.PI/2,0,0];
 	
 	// free up some resources when changing piles
 	if (chomp.pilesTree) {
@@ -296,7 +301,6 @@ chomp.createPiles = function() {
 			}
 		}
 	}
-	
 	// start over with tree resources
 	chomp.pilesTree = [];
 	for (var i = 0; i < chomp.startPiles.length; ++i) {
@@ -304,6 +308,10 @@ chomp.createPiles = function() {
 		var numCol = chomp.startPiles[i];
 		for (var j = 0; j < numCol; ++j) {
 			var piece = master.newdup();
+			if (i == 0 && j == 0) {
+				chomp.poisonPiece = piece;
+				chomp.poisonPiece.mat.color = [0, 1, 0, 1];
+			}
 			piece.trans[0] = i * chomp.pileSpace[0] + chomp.pileOffset[0]; // x
 			piece.trans[1] = j * chomp.pileSpace[1] + chomp.pileOffset[1]; // y
 			chomp.roottree.linkchild(piece);
@@ -375,9 +383,9 @@ chomp.updateTextInfo = function() {
 	}
 	var turnInfo;
 	if (chomp.fsmState == chomp.fsmStates.humanWins) {
-		turnInfo = "You Win!!!";
+		turnInfo = "You Win !!!";
 	} else if (chomp.fsmState == chomp.fsmStates.compWins) {
-		turnInfo = "You Lose!!!";
+		turnInfo = "You Lose !!!";
 	} else if (chomp.fsmState == chomp.fsmStates.compMoveFirst) {
 		turnInfo = "I'll go first";
 	} else {
@@ -460,6 +468,7 @@ chomp.init = function() {
 	logger("entering webgl chomp\n");
 	chomp.globalspecpow = globalmat.specpow;
 	globalmat.specpow = 2000;
+	chomp.poisonAngle = 0;
 	
 	// overall game state
 	chomp.humanScore = 0;
@@ -526,6 +535,11 @@ chomp.proc = function() {
 	
 	// draw
 	beginscene(mainvp);
+	chomp.poisonPiece.mat.color = [0, 0, 1, 1];
+	chomp.poisonAngle += Math.PI / 500;
+	chomp.poisonAngle = normalangrad(chomp.poisonAngle);
+	chomp.poisonPiece.mat.color = chomp.mainColor.slice();
+	chomp.poisonPiece.mat.color[1] = chomp.mainColor[1] +  .5 * (1 - Math.cos(chomp.poisonAngle)); // green
 	chomp.roottree.draw();
 };
 
