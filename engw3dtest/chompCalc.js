@@ -70,7 +70,11 @@ chomp.study = function(dim) {
 		++count;
 	}
 	// done studying
-	//console.log("count = " + count + ", loser count = " + chomp.losePositions.length);
+	console.log("count = " + count + ", loser count = " + chomp.losePositions.length);
+	console.log("lose piles");
+	for (const pile of chomp.losePositions) {
+		console.log("pile: " + pile);
+	}
 };
 
 chomp.calcMove = function(piles) {

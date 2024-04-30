@@ -657,17 +657,69 @@ scratch.testFloat = function() {
 	}
 }
 
+scratch.collIde2Obj = function(aVel, aMassInv, bVel, bMassInv) {
+	// return impulse applied to 'b'
+	return 2 * (aVel - bVel) / (aMassInv + bMassInv);
+};
+
+// return true if done with simulation, no future collisions found
+scratch.checkDone = function(aVel, bVel) {
+	// objA with wall and objA with objB
+	return aVel >= 0 && aVel <= bVel;
+}
+
+// run one simulation
+scratch.piBounceNumSim = function(bMassSqrt) {
+	let numColl = 0;
+	const aMass = 1;
+	const bMass = bMassSqrt * bMassSqrt;
+	let aMassInv = 1 / aMass;
+	let bMassInv = 1 / bMass;
+	let aVel = 0;
+	let bVel = -1;
+	while(true) {
+		if (scratch.checkDone(aVel, bVel)) break;
+		// collide both objects
+		const impulse = scratch.collIde2Obj(aVel, aMassInv, bVel, bMassInv);
+		++numColl;
+		aVel -= impulse * aMassInv;
+		bVel += impulse * bMassInv;
+		if (scratch.checkDone(aVel, bVel)) break;
+		// collide left object with left wall
+		aVel = -aVel;
+		++numColl;
+	}
+	console.log("PI val = " + Math.PI * bMassSqrt + " total collsions = " + numColl
+		+ ",  final velocities = " + aVel + ", " + bVel);
+}
+
+scratch.runBounceBaseSet = function(base, numdigs) {
+	console.log("run a bound set with base " + base + ", and numdigs = " + numdigs);
+	let bMassSqrt = 1;
+	for (let d = 0; d < numdigs; ++d) {
+		scratch.piBounceNumSim(bMassSqrt);
+		bMassSqrt *= base;
+	}
+};
+
+scratch.testPIBounce = function() {
+	// doesn't seem to work for a base < 1.93
+	console.log("test PI bounce");
+	scratch.runBounceBaseSet(10, 5);
+	scratch.runBounceBaseSet(2, 5);
+	scratch.runBounceBaseSet(1.93, 20);
+	scratch.runBounceBaseSet(16, 5);
+};
+
 scratch.init = function() {
-	
 	if (scratch.jobtest) {
 		logger("jobtest\n");
 		//scratch.testLinkList();
 		//scratch.testCopyCyclicGraph();
-		scratch.testCircleKill();
+		//scratch.testCircleKill();
+		scratch.testPIBounce();
 	}
-	
 	if (scratch.testArrayBuffers) {
-
 		// test ArrayBuffers
 		var sData = new Uint8ClampedArray([7,11,13,17,1,2,0,0]); // mem1 U8C
 		var outputABuffer = new ArrayBuffer(sData.length); // mem2 generic
@@ -678,19 +730,15 @@ scratch.init = function() {
 		logger("o32[0] = " + output32Array[0] + "\n");
 		logger("o32[1] = " + output32Array[1] + "\n");
 		var i;
-		for (i=0;i<8;++i)
+		for (i=0;i<8;++i) {
 			logger("i8[" + i + "] = " + input8Array[i] + "\n");
-		
+		}
 		var tData = new Uint32Array([2,3,5,7,11,13,17,19,23,29]);
 		var uData = new Uint32Array([20,30,50,70,110,130]);
 		var vData = new Uint32Array(uData.buffer,4*3,2);
 		tData.set(vData,3);
-	}	
-	
-	
-	
-	
-	logger("done!\n");
+	}
+	logger("done tests!\n");
 	// end test ArrayBuffers
 	
 	logger("entering webgl scratch\n");
