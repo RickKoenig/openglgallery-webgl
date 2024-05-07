@@ -55,6 +55,16 @@ chomp.lookMoves = function(pile) {
 	return goodMoves;
 };
 
+chomp.showPile = function(pile, dimY) {
+	for (let j = dimY; j > 0; --j) {
+		let rowStr = "";
+		for (let i = 0; i < pile.length; ++i) {
+			rowStr += pile[i] >= j ? "# " : ". ";
+		}
+		console.log(rowStr);
+	}
+};
+
 chomp.study = function(dim) {
     //console.log("study piles of a " + dim[0] + " by " + dim[1] + " game");
 	chomp.losePositions = Array();
@@ -73,7 +83,9 @@ chomp.study = function(dim) {
 	console.log("count = " + count + ", loser count = " + chomp.losePositions.length);
 	console.log("lose piles");
 	for (const pile of chomp.losePositions) {
+		console.log("======================");
 		console.log("pile: " + pile);
+		chomp.showPile(pile, dim[1]);
 	}
 };
 
