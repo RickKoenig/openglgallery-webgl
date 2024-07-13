@@ -350,64 +350,64 @@ function initializeSave() {
 	saveDOM.href = "data:text/plain," + txt;
 }
 
-			function handleFileSelect2(evt) {
-				var files = evt.target.files; // FileList object
+function handleFileSelect2(evt) {
+	var files = evt.target.files; // FileList object
 
-				//document.getElementById('list').innerHTML = "";
-				
-				// Loop through the FileList and render image files as thumbnails.
-				for (var i = 0, f; f = files[i]; i++) {
+	//document.getElementById('list').innerHTML = "";
+	
+	// Loop through the FileList and render image files as thumbnails.
+	for (var i = 0, f; f = files[i]; i++) {
 
-					/*
-					// Only process image files.
-					if (!f.type.match('image.*')) {
-						continue;
-					}
-					*/
-					// Only process .qcmp files.
-					//if (!f.name.endsWith(".qcmp")) {
-					//	continue;
-					//}
+		/*
+		// Only process image files.
+		if (!f.type.match('image.*')) {
+			continue;
+		}
+		*/
+		// Only process .qcmp files.
+		//if (!f.name.endsWith(".qcmp")) {
+		//	continue;
+		//}
 
-					var reader = new FileReader();
+		var reader = new FileReader();
 
-					// Closure to capture the file information.
-					reader.onload = (function(theFile) {
-						return function(e) {
-						
-							// Render thumbnail.
-							/*var span = document.createElement('span');
-							span.innerHTML = ['<img class="thumb" src="', e.target.result,
-								'" title="', escape(theFile.name), '"/>'].join(''); */
+		// Closure to capture the file information.
+		reader.onload = (function(theFile) {
+			return function(e) {
+			
+				// Render thumbnail.
+				/*var span = document.createElement('span');
+				span.innerHTML = ['<img class="thumb" src="', e.target.result,
+					'" title="', escape(theFile.name), '"/>'].join(''); */
 /*							
-							var span = document.createElement('span');
-							//var data = "123456";
-							var data = e.target.result;
-							span.innerHTML = "<p>" + "name = '" + theFile.name + "', data = '" + data + "'</p>";
+				var span = document.createElement('span');
+				//var data = "123456";
+				var data = e.target.result;
+				span.innerHTML = "<p>" + "name = '" + theFile.name + "', data = '" + data + "'</p>";
 
-							document.getElementById('list').insertBefore(span, null); */
-							var fname = removeExt(theFile.name);
-							document.getElementById('filename').value = fname;
-							var data = e.target.result;
-							//filedataDOM = document.getElementById('filedata');
-							//document.getElementById('filedata').innerHTML = data;
-							//filedataDOM.value = data;
-							g_loadcbf(data);
-							// set save link to same name
-							//theSaveLink
-							var saveDOM = document.getElementById('theSaveLink');
-							saveDOM.download = fname + saveext;
-						};
-					})(f);
+				document.getElementById('list').insertBefore(span, null); */
+				var fname = removeExt(theFile.name);
+				document.getElementById('filename').value = fname;
+				var data = e.target.result;
+				//filedataDOM = document.getElementById('filedata');
+				//document.getElementById('filedata').innerHTML = data;
+				//filedataDOM.value = data;
+				g_loadcbf(data);
+				// set save link to same name
+				//theSaveLink
+				var saveDOM = document.getElementById('theSaveLink');
+				saveDOM.download = fname + saveext;
+			};
+		})(f);
 
-					// Read in the image file as a data URL.
-					reader.readAsText(f);
-					// reset change, be able to select same external file, silly
-					document.getElementById('files').type = '';
-					document.getElementById('files').type = 'file';
-					//reader.readAsDataURL(f);
-				}
-			}
+		// Read in the image file as a data URL.
+		reader.readAsText(f);
+		// reset change, be able to select same external file, silly
+		document.getElementById('files').type = '';
+		document.getElementById('files').type = 'file';
+		//reader.readAsDataURL(f);
+	}
+}
 
 
 function makeafileloaddsave(loadcb,savecb,ext) {
