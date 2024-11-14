@@ -1,0 +1,31 @@
+/* load save stuff */
+/* hide input file, replace with label following */
+.loadsave.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+/* 'hand' cursor */
+.loadsave.inputfile + label {
+	cursor: pointer; 
+}
+
+.loadsave.buttonStyle {
+	text-decoration: none;
+	background-color: #7f9ccb;
+	padding: 5px 10px;
+	border-radius: 5px;
+	border: 1px ridge black;
+	font-size: 0.8rem;
+	height: auto;
+	color: #000;
+}
+
+.loadsave.buttonStyle:hover {
+	background-color: #2d5ba3;
+	color: white;
+}

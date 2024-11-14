@@ -171,19 +171,19 @@ function alertS(str) {
 }
 
 function spliturl(url) {
-	var s = {};
+	const  s = {};
 	s.path = "";
 	s.name = "";
 	s.ext = "";
-	var pidx = url.lastIndexOf("/");
-	if (pidx>=0) {
-		s.path = url.substr(0,pidx);
+	const pidx = url.lastIndexOf("/");
+	if (pidx >= 0) {
+		s.path = url.substr(0, pidx);
 		url = url.substr(pidx+1);
 	}
-	var eidx = url.lastIndexOf(".");
+	const eidx = url.lastIndexOf(".");
 	if (eidx >= 0) {
-		s.name = url.substr(0,eidx);
-		s.ext = url.substr(eidx+1);
+		s.name = url.substr(0, eidx);
+		s.ext = url.substr(eidx + 1);
 	} else {
 		s.name = url;
 	}

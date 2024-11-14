@@ -661,7 +661,7 @@ qcomp.init = function() {
 	}
 
 // load and save to the filesystem
-	makeafileloaddsave(qcomp.loadcb,qcomp.savecb,".qcmp"); 
+	makeafileloaddsave(qcomp.loadcb, qcomp.savecb, ".qcmp"); 
 	
 	// depends on edit box of makeafileloaddsave is already built
 	qcomp.selectExample(); // grab the data from currently selected pre-built init
