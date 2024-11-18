@@ -5,10 +5,15 @@ class fileLoadSave {
 	#loadCB;
 	#saveCB;
 	#ext;
+	static #staticID = 0;
+	#ID;
 	constructor(parentDom, loadCB, saveCB, ext) {
 		this.#loadCB = loadCB;
 		this.#saveCB = saveCB;
 		this.#ext = ext;
+		this.#ID = fileLoadSave.#staticID++; // unique ids for each instance of fileLoadSave
+		const uid = this.#ID;
+		console.log('fileLoadSaveID = ' + uid);
 // insert html UI into parent
 // html in js, hmm..
 		parentDom.innerHTML =
@@ -17,14 +22,14 @@ class fileLoadSave {
 			+ '	<br/>'
 			
 			+ '	<!-- load -->'
-			+ '	<input type="file" class="loadsave inputfile" id = "fileLoadDOM"'
+			+ '	<input type="file" class="loadsave inputfile" id="fileLoadDOM' + uid + '"'
 			+ '		accept=".' + ext + '">'
-			+ '	<label for="fileLoadDOM"><a class="loadsave buttonStyle">File Load</a></label>'
+			+ '	<label for="fileLoadDOM' + uid + '"><a class="loadsave buttonStyle">File Load</a></label>'
 			
 			+ '	<!-- save -->'
 			+ '	<a '
 			+ '		class="loadsave buttonStyle"'
-			+ '		id="theSaveLink"'
+			+ '		id="theSaveLink' + uid + '"'
 			+ '		href="data:text/plain,SAVE DATA"'
 			+ '	>File Save</a>'
 			+ '</p>'
@@ -32,15 +37,15 @@ class fileLoadSave {
 			+ '<p>'
 			+ '	File Name'
 			+ '	<br/>'
-			+ '	<input id="loadSaveFileName" '
+			+ '	<input id="loadSaveFileName' + uid + '"'
 			+ '		type="text" value="default"/>'
 			+ '	.' + ext
 			+ '</p>';
 
 		// setup load file dialog
-		const input = document.getElementById('fileLoadDOM');
+		const input = document.getElementById('fileLoadDOM' + uid);
 		if (input) {
-			input.onchange = this.doLoad.bind(this);
+			input.onchange = this.#doLoad.bind(this);
 			// clear old name so one can select same file
 			input.onclick = () => input.value = ""; 
 			console.log("yes INPUT!!");
@@ -49,9 +54,9 @@ class fileLoadSave {
 		}
 
 		// setup save file dialog
-		const output = document.getElementById("theSaveLink");
+		const output = document.getElementById('theSaveLink'+ uid);
 		if (output) {
-			output.onclick = this.doSave.bind(this);
+			output.onclick = this.#doSave.bind(this);
 			console.log("yes OUTPUT!!");
 		} else {
 			console.log("no OUTPUT!!");
@@ -70,10 +75,16 @@ class fileLoadSave {
 		}
 		return n;
 	}
+	
+	
+//		const uid = fileLoadSave.#fsID++; // unique ids for each instance of fileLoadSave
+	
+	
 
 	// handle loading files async
 	// called AFTER load dialog
-	doLoad(event) {
+	#doLoad(event) {
+		const uid = this.#ID; // unique ids for each instance of fileLoadSave
 		let files = event.target.files; // FileList object from load save dialog
 		// Loop through the FileList and async load file data
 		for (let i = 0, file; file = files[i]; i++) {
@@ -82,7 +93,7 @@ class fileLoadSave {
 			reader.onload = (function(theFile) {
 				return function(event) {
 					let fname = this.#remExt(theFile.name);
-					document.getElementById('loadSaveFileName').value = fname;
+					document.getElementById('loadSaveFileName' + uid).value = fname;
 					let data = event.target.result;
 					this.#loadCB(data, theFile.name);
 				};
@@ -94,10 +105,11 @@ class fileLoadSave {
 
 	// for saving
 	// called BEFORE save dialog
-	doSave() {
+	#doSave() {
+		const uid = this.#ID; // unique ids for each instance of fileLoadSave
 		// setup and make happen a save dialog
-		const saveLinkDOM = document.getElementById("theSaveLink");
-		const fileNameDOM = document.getElementById('loadSaveFileName');
+		const saveLinkDOM = document.getElementById('theSaveLink' + uid);
+		const fileNameDOM = document.getElementById('loadSaveFileName' + uid);
 		const fname = fileNameDOM.value;
 		const downloadName = fname + "." + this.#ext;
 		saveLinkDOM.download = downloadName;
