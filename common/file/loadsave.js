@@ -62,6 +62,10 @@ class fileLoadSave {
 			console.log("no OUTPUT!!");
 		}
 	}
+	
+	changeFileName(fname) {
+		document.getElementById('loadSaveFileName' + this.#ID).value = fname;
+	}
 
 	// remove file extension: 'name.ext' to 'name'
 	#remExt(ne) {
@@ -76,25 +80,21 @@ class fileLoadSave {
 		return n;
 	}
 	
-	
-//		const uid = fileLoadSave.#fsID++; // unique ids for each instance of fileLoadSave
-	
-	
 
 	// handle loading files async
 	// called AFTER load dialog
 	#doLoad(event) {
 		const uid = this.#ID; // unique ids for each instance of fileLoadSave
-		let files = event.target.files; // FileList object from load save dialog
+		const files = event.target.files; // FileList object from load save dialog
 		// Loop through the FileList and async load file data
 		for (let i = 0, file; file = files[i]; i++) {
-			let reader = new FileReader();
+			const reader = new FileReader();
 			// Closure to capture the file information.
 			reader.onload = (function(theFile) {
 				return function(event) {
-					let fname = this.#remExt(theFile.name);
+					const fname = this.#remExt(theFile.name);
 					document.getElementById('loadSaveFileName' + uid).value = fname;
-					let data = event.target.result;
+					const data = event.target.result;
 					this.#loadCB(data, theFile.name);
 				};
 			})(file).bind(this);

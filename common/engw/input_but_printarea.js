@@ -225,6 +225,19 @@ function printareadraw(node,text) {
 	node.innerHTML = escapehtmlwrap(text);
 }
 
+function makeloadsavearea(val, id) {
+	if (!myform)
+		return;
+	const dv = document.createElement('div');
+	dv.name = curname;
+	dv.id = id;
+	if (val)
+		dv.innerHTML = val;
+	myform.appendChild(dv);
+	++nchilds;
+	return dv;
+}
+
 // test1.qcmp becomes test1
 function removeExt(fin) {
 	var s = spliturl(fin);

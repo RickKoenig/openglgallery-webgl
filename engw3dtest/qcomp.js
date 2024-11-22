@@ -3,6 +3,9 @@
 // 268 after
 var qcomp = {}; // the state, load this file first
 
+qcomp.doOldLoadSave = false;
+qcomp.doNewLoadSave = true;
+
 // constants
 qcomp.SR2 = Math.sqrt(2);
 qcomp.SR3 = Math.sqrt(3);
@@ -221,7 +224,12 @@ qcomp.selectExample = function() {
 	logger("requesting example '" + exampleName + "'\n");
 	goAjaxText(qcomp.remoteDataFolder + "/" + exampleName,qcomp.loadcb);
 	var namenoext = exampleName.substr(0,exampleName.length - 5); // strip '.qcmp'
-	changefileloadsavename(namenoext);
+	if (qcomp.doOldLoadSave) {
+		changefileloadsavename(namenoext);
+	}
+	if (qcomp.doNewLoadSave) {
+		qcomp.fileLoadSave.changeFileName(namenoext);
+	}
 	logger("load example '" + namenoext + "'\n");
 };
 
@@ -661,7 +669,13 @@ qcomp.init = function() {
 	}
 
 // load and save to the filesystem
-	makeafileloaddsave(qcomp.loadcb, qcomp.savecb, ".qcmp"); 
+	if (qcomp.doOldLoadSave) {
+		makeafileloaddsave(qcomp.loadcb, qcomp.savecb, ".qcmp"); 
+	}
+	if (qcomp.doNewLoadSave) {
+		const dv = makeloadsavearea("load save value", "fileLoadSave");
+		qcomp.fileLoadSave = new fileLoadSave(dv, qcomp.loadcb, qcomp.savecb, "qcmp");
+}
 	
 	// depends on edit box of makeafileloaddsave is already built
 	qcomp.selectExample(); // grab the data from currently selected pre-built init

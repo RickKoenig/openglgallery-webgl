@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "chrome",
             "request": "launch",
@@ -60,5 +61,12 @@
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=chomp",
             "webRoot": "${workspaceFolder}"
         },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Quantum computer simulator",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=qcomp",
+            "webRoot": "${workspaceFolder}"
+        }
     ]
 }

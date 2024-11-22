@@ -228,3 +228,8 @@ canvas.inside {
 #myformB {
 	background-color: #8fe0cf;
 }
+
+#fileLoadSave {
+	border: solid;
+	background-color: #cde;
+}
