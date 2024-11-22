@@ -3,9 +3,6 @@
 // 268 after
 var qcomp = {}; // the state, load this file first
 
-qcomp.doOldLoadSave = false;
-qcomp.doNewLoadSave = true;
-
 // constants
 qcomp.SR2 = Math.sqrt(2);
 qcomp.SR3 = Math.sqrt(3);
@@ -224,12 +221,7 @@ qcomp.selectExample = function() {
 	logger("requesting example '" + exampleName + "'\n");
 	goAjaxText(qcomp.remoteDataFolder + "/" + exampleName,qcomp.loadcb);
 	var namenoext = exampleName.substr(0,exampleName.length - 5); // strip '.qcmp'
-	if (qcomp.doOldLoadSave) {
-		changefileloadsavename(namenoext);
-	}
-	if (qcomp.doNewLoadSave) {
-		qcomp.fileLoadSave.changeFileName(namenoext);
-	}
+	qcomp.fileLoadSave.changeFileName(namenoext);
 	logger("load example '" + namenoext + "'\n");
 };
 
@@ -669,13 +661,8 @@ qcomp.init = function() {
 	}
 
 // load and save to the filesystem
-	if (qcomp.doOldLoadSave) {
-		makeafileloaddsave(qcomp.loadcb, qcomp.savecb, ".qcmp"); 
-	}
-	if (qcomp.doNewLoadSave) {
-		const dv = makeloadsavearea("load save value", "fileLoadSave");
-		qcomp.fileLoadSave = new fileLoadSave(dv, qcomp.loadcb, qcomp.savecb, "qcmp");
-}
+	const dv = makeloadsavearea("load save value", "fileLoadSave");
+	qcomp.fileLoadSave = new fileLoadSave(dv, qcomp.loadcb, qcomp.savecb, "qcmp");
 	
 	// depends on edit box of makeafileloaddsave is already built
 	qcomp.selectExample(); // grab the data from currently selected pre-built init
@@ -1238,22 +1225,14 @@ qcomp.onresize = function() {
 	
 	// readjust spriter viewport
 	qcomp.spritevp = Spriter.createspritervp();
-	//qcomp.spritevp.clearflags &= ~gl.COLOR_BUFFER_BIT; // don't clear viewport
 	qcomp.spritevp.clearcolor = F32([200,255,255]);
 
 	var depth = glc.clientHeight/2;
-	//qcomp.flabeltree.trans = [-depth*gl.asp,depth,depth];
 	var nqb = qcomp.qf.getnumqubits();
-	//qcomp.flabelmodel.print("hey ho!\noff to work we go, dadadaadaddadada\nnumqubits = " + nqb);
 	if (nqb >= qcomp.QColumn.maxiqubits)
 		nqb = qcomp.QColumn.maxiqubits - 1;
 	qcomp.flargeconsoletree.trans = [ // position console
 	  -depth*gl.asp,
-/*	  
-	  [qcomp.QField.fpixleft-qcomp.QField.leftlabels,0],
-	  [qcomp.QField.fpixwid+qcomp.QField.leftlabels,qcomp.QGateBase.gpixhit*drawnumqubits + qcomp.QField.fpixtop + qcomp.QField.bottomMargin],
-*/	  
-	  
 	  depth - (qcomp.QField.fpixtop + qcomp.QGateBase.gpixhit*(nqb + 1) + qcomp.QField.bottomMargin),
 	  depth]; // TODO, hardcoded glyph height size
 
@@ -1311,5 +1290,4 @@ qcomp.exit = function() {
 	globalmat.alphacutoff = qcomp.alphacutoffsave;
 	
 	mainvp = defaultviewport();
-
 };

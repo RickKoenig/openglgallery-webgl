@@ -140,8 +140,8 @@ div.bottom {
 	width: 68px;
 }
 .centerv {
-	//text-align:center;
-	//font-size: 16px;
+	/*text-align:center;*/
+	/*font-size: 16px;*/
 	border-width: 1px;
 	background-color: #ffd;
 	margin: 3px;
@@ -184,7 +184,7 @@ canvas.inside {
  	width:1024px;
  	height:768px;
  	display:block;
-	//border-style:none;
+	/*border-style:none;*/
 }
 
 .inputfile {
