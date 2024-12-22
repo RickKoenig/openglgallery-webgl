@@ -6,17 +6,11 @@ var infullscreen = null;
 var lastinside = [0,0,0];
 
 function getxcode(e) {
-	if (infullscreen)
-		return e.clientX;
-	else
-		return e.clientX - e.currentTarget.offsetLeft;
+	return e.offsetX;
 }
 
 function getycode(e) {
-	if (infullscreen)
-		return e.clientY;
-	else
-		return e.clientY - e.currentTarget.offsetTop;
+	return e.offsetY;
 }
 
 // event mouse down
@@ -69,13 +63,8 @@ function bmouseenter(e) {
 
 // event mouse move
 function bmousem(e) {
-	if (e.layerX == null) {
-		input.mx = getxcode(e); // doesn't work with scrollbars
-		input.my = getycode(e);
-	} else {
-		input.mx = e.layerX; // works with scrollbars
-		input.my = e.layerY;
-	}
+	input.mx = getxcode(e);
+	input.my = getycode(e);
 	if (input.mx < 0)
 		input.mx = 0;
 	if (input.my < 0)
