@@ -275,21 +275,7 @@ scratch.getCssColorFromComplex = function(val) {
 	ang *= 180/Math.PI;
 	brt = 55*mg;
 	return "hsl(" + ang + ",100%," + brt + "%)";
-//	return "rgb(" + r + "," + g + "," + b + ")";
 };
-/*
-scratch.getCssColorFromComplex = function(val) {
-	var p = compf.abs(val);
-	var r = 255*p;
-	var g = 0;
-	var b = 0;
-	ang = 180;
-	sat = 75;
-	brt = 50;
-//	return "hsl(" + ang + "," + sat + "%," + brt + "%)";
-	return "rgb(" + r + "," + g + "," + b + ")";
-};
-*/
 
 scratch.updateBitmap = function() {
 	// test updating data texture using Bitmap32 class
