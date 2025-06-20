@@ -7,4 +7,4 @@ var statelist = [
 	state5b // Albert's socks simulation, 3 socks sometimes vertical
 ];
 
-var startstate = state5b;
+var startstate = state3;
