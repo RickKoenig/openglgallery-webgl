@@ -1,6 +1,6 @@
-spinning.txt
-building.txt
 dominos.txt
+building.txt
+spinning.txt
 phyobjs.txt
 testang.txt
 simple.txt
