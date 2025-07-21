@@ -464,8 +464,9 @@ function checkglerror(m,ignore) {
 		while(true) {
 			var err = gl.getError();
 			if (err != 0) {
-				if (!ignore)
-					alert("glerr : " + m + " " + err);
+				if (!ignore) {
+					//alert("glerr : " + m + " " + err);
+				}
 			} else {
 				break;
 			}

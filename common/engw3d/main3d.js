@@ -9,8 +9,10 @@
 	};
 })();
 
-if (typeof isMobile === 'undefined')
+if (typeof isMobile === 'undefined') {
 	var isMobile = false;
+}
+//isMobile = true; // TEST, force mobile
 var infullscreen = false;
 var layouts = false; // small
 var layoutm = false; // medium
