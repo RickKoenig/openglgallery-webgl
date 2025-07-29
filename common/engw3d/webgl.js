@@ -48,7 +48,7 @@ function loggerV(str) {
 
 function gl_resize() {
 //	alert("gl_resize to " + x + " " + y);
-	 // set gl wid,hit
+	 // set gl wid,hi
 	glc.width = glc.clientWidth*gllores;
     glc.height = glc.clientHeight*gllores;
 		//gl.drawingBufferWidth = glc.clientWidth*gllores;
@@ -72,6 +72,7 @@ function gl_resize() {
 //	mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, gl.asp, 0.5, 2.0);
 	//mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, gl.asp, 0.002,10000.0);
 }
+
 function gl_preinit() {
 	logger("gl_preinit\n");
 	checkglerror("start gl_preinit()");

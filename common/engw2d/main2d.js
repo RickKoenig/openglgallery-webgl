@@ -9,9 +9,6 @@
 	};
 })();
 
-if (typeof isMobile === 'undefined')
-	var isMobile = false;
-
 var inputevents = "inputevents = ";
 var logger_str = "logger = ";
 

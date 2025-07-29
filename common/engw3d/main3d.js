@@ -9,15 +9,12 @@
 	};
 })();
 
-if (typeof isMobile === 'undefined') {
-	var isMobile = false;
-}
 //isMobile = true; // TEST, force mobile
 var infullscreen = false;
 var layouts = false; // small
 var layoutm = false; // medium
-var layoutb = true; // big
-var layoutvb = true; // big
+var layoutl = true; // large
+var layoutp = false; // portrait
 if (layouts) {
 	var leftwidth = 300;
 	var rightwidth = 100;
@@ -30,17 +27,17 @@ if (layoutm) {
 	var middlewidth =  640;//1024;
 	var middleheight = 480;
 }
-if (layoutb) {
+if (layoutl) {
 	var leftwidth = 300;
 	var rightwidth = 100;
 	var middlewidth = 1024;
 	var middleheight = 768;
 }
-if (layoutvb) {
+if (layoutp) {
 	var leftwidth = 300;
 	var rightwidth = 100;
-	var middlewidth = 1024;
-	var middleheight = 768;
+	var middlewidth = 480;
+	var middleheight = 640;
 }
 var totalwidth = leftwidth + middlewidth + rightwidth;
 
@@ -277,7 +274,7 @@ function maindebugsetafter() {
 }
 
 function buildlayout() {
-	if (isMobile) {
+	if (window.isMobile) {
 		var ele1 = document.getElementsByClassName("centerg");		
 		var ele2 = document.getElementsByClassName("inside");		
 		
@@ -289,16 +286,12 @@ function buildlayout() {
 			width = cw;
 		if (ch > 0 && ch < height)
 			height = ch;
-		
-		/*var width = screen.width;
-		var height = screen.height;*/
 		var cv = document.getElementById("mycanvas2");
 		cv.style.width = width + "px";
 		cv.style.height = height + "px";
 		return;
 	}
 // play with styles
-	//document.style.div.bottom = "500px";
 	var layoutwidth = {
 		bottom:totalwidth,
 		top:totalwidth,
@@ -315,7 +308,6 @@ function buildlayout() {
 		var eles = document.getElementsByClassName(name);
 		if (!eles.length) {
 			break; // don't do any of this if first class not found
-			//alert("can't find class name " + name);
 		}
 		var i;
 		for (i=0;i<eles.length;++i) {
@@ -327,32 +319,12 @@ function buildlayout() {
 		var eles = document.getElementsByClassName(name);
 		if (!eles.length) {
 			break; // don't do any of this if first class not found
-			//alert("can't find class name " + name);
 		}
 		var i;
 		for (i=0;i<eles.length;++i) {
-			//eles[i].style.width = "300px";
 			eles[i].style.height = layoutheight[name] + "px";
 		}
 	}
-/*	
-	}
-	var i,j,eles;
-	// bottom
-	eles = document.getElementsByClassName('bottom');
-	for (i=0;i<eles.length;++i) {
-		eles[i].style.width = "500px";
-	}
-	// top
-	eles = document.getElementsByClassName('top');
-	for (i=0;i<eles.length;++i) {
-		eles[i].style.width = "500px";
-	}
-	// instructions
-	eles = document.getElementsByClassName('instructions');
-	for (i=0;i<eles.length;++i) {
-		eles[i].style.width = "500px";
-	} */
 }
 
 // main javascript entry point
@@ -360,26 +332,15 @@ function mainload() {
 	if (!dojavascript)
 		return;
 	gl_preinit();
-	//preloadShaders();
 	preloadshaderlist("shaders/shaderlist.txt");
-	//preloadtext("shaders/basic.ps");
-	//preloadtext("shaders/basic.vs");
-	//preloadimg("pics/panel.jpg");
-	//preloadimg("/engw/common/sptpics/maptestnck.png"); // preload the default texture
 	preloadimg("../common/sptpics/maptestnck.png"); // preload the default texture
-//	preloadimg("pics/maptestnck.png"); // preload the default texture
 	preloadimg("../common/sptpics/font0.png"); // preload the default texture
 	preloadimg("../common/sptpics/font3.png"); // for debprint, hmm..
-//	preloadimg("../common/sptpics/take0007.jpg"); // preload the default texture
-//	preloadimg("../common/sptpics/coin_logo.png"); // preload the default texture
-	//preloadimg("../tracks2/peelingwood.jpg");
 	setloaddonefunc(maininit);
 	document.oncontextmenu = function() {return false;};
 	console.log("in mainload!");
 	console.log("location search = '" + window.location.search + "'");
-	//console.log("still in mainload!");
 	buildlayout();
-	//doPageCounter("pagecounterid","pagecounteridT");
 	doPageCounter("pagecounterid","pagecounteridT","pagecounteridR","pagecounteridY"); // setup page counter, unique visitors and so on
 }
 
@@ -434,9 +395,6 @@ function loadingproc() {
 		loadingtreefont.setmodel(loadingmodelfont);
 		tex.glfree();
 	}
-//	logger_str += "loadingproc()\n";
-	//gl.clearColor(Math.random(),Math.random(),Math.random(),1);
-    //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     var percent = (loadcnt*100/reqcnt).toFixed(2);
     var loadingstr = 
 	"Loading " + percent + "%\n\n" +
@@ -469,7 +427,9 @@ function loadingresize() {
 		loadingvp.asp = gl.asp;
 		loadingvp.trans[2] = -loading_depth;
 		loadingvp.ortho_size = loading_depth*2;
-		loadingtreefont.trans = [-loading_depth,loading_depth,0];
+		if (loadingtreefont) {
+			loadingtreefont.trans = [-loading_depth,loading_depth,0];
+		}
 	}
 }
 
@@ -482,6 +442,7 @@ function doresize() {
 		onresizestate();
 }
 
+// enter full screen
 function gofullscreen() {
 	var didfullscreen = false;
 	var elem = document.getElementById("drawarea");
@@ -503,24 +464,15 @@ function gofullscreen() {
 //	if (false) {
 //	if (true) {
 	if (didfullscreen) {
-		//alert("Fullscreen succeeded\n" + window.screen.width + " " + window.screen.height);
-        // gl drawingBufferWidth Height
-		//glc.width = 320;//window.screen.width*gllores;
-        //glc.height = 240;//window.screen.height*gllores;
-		// canvas width and height
-        //glc.style.clientWidth = 320;//window.screen.width*gllores;
-        //glc.style.clientHeight = 240;//window.screen.height*gllores;
         glc.style.width = window.screen.width + 'px';
         glc.style.height = window.screen.height + 'px';
-		//gl.canvas.clientWidth = 640;
-		//gl.canvas.clientHeight = 480;
-		//glc.size(640,480);
 		addfullscreenchangehandler();
 		doresize();
 		infullscreen = true;
 	}
 }
 
+// change resolution of canvas
 function changeres() {
 	if (gllores == 1)
 		gllores = .5;
@@ -538,11 +490,11 @@ function addfullscreenchangehandler() {
 	}
 }	
 
+// exit full screen
 function exitfullscreenHandler()
 {
     if (!(document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement)) {
         // Run code on exit
-		//alert("exiting full screen");
 		buildlayout(); // for non fullscreen
 		infullscreen = false;
 	doresize();
@@ -570,18 +522,33 @@ function doUrlparams() {
 	}
 }
 
+function sizeChangedInit() {
+	if (!window.isMobile) {
+		return;
+	}
+	//return;
+	window.addEventListener('resize', function() {
+        // Code to execute when the window is resized
+        console.log
+			('Window resized! New width:', window.innerWidth
+			, 'New height:', window.innerHeight);
+        glc.style.width = window.innerWidth + 'px';
+        glc.style.height = window.innerHeight + 'px';
+		glc.width = window.innerWidth;
+		glc.height = window.innerHeight;
+		doresize();
+    });
+}
+
 function maininit() {
 	loadstatus = 0;
 	defaultimage = preloadedimages["maptestnck.png"];
-	//sprites_init();
 	gl_init();
 	checkglerror("after gl_init()");
 	initinput();
+	sizeChangedInit();
 	// get some nodes from html
-	//maindebug();
-	//initstate();
 	if (gl) {
-		//doUrlparams();
 		var stst = URLparams.startstate;
 		if (stst != null) {
 			var so = window[stst];
@@ -592,21 +559,6 @@ function maininit() {
 		} else {
 			changestate(startstate);
 		}
-		
-/*		var firstkey = "?startstate=";
-		if (ss.startsWith(firstkey)) {
-		//if (ss.length > 1 && ss.charAt(0) == '?') { // pick another state from search query uri
-			//var stst = ss.substring(1);
-			var stst = ss.substring(firstkey.length);
-			var so = window[stst];
-			if (so)
-				changestate(so);
-			else
-				changestate(startstate);
-		} else {
-			changestate(startstate);
-		} */
-		//mainproc(); // do 1 proc right away
 		//intervalid = window.setInterval(mainproc,intervaltime);
 		Timers.resetframestep();
 		Timers.setframerate(mainproc,fpswanted);
@@ -617,14 +569,7 @@ function maininit() {
 function mainproc() {
 	Timers.setframerate(mainproc,fpswanted);
 	inputproc();
-	//if (input.keystate[keycodes.DOWN]) {
-	//	clearlog();
-	//}
-	if (input.key)
-		;//logger_str += "KB " + input.key + " ";
 // proc
-	//sprites_reset();
-	//invfpswanted = 1.0/fpswanted;
 	debprint.proc();
 	procstate();
 	debprint.draw();
@@ -640,34 +585,17 @@ function mainexit() {
 		return;
 	}
 	Timers.setframerate(null,0);
-	//window.clearInterval(intervalid);
-	//intervalid = null;
-	//changestate(-1);
 	exitstate();
 	debprint.exit();
 	loadingexit();
 	gl_exit();
 }
 
-// call something
-// window.onload = maininit;
-//window.onload = mainload;
-//window.onunload = mainexit; // maybe save some cookies
-      
 var unloaded = false;
 window.addEventListener('load', function(event) {
 	console.log('Load event');
 	mainload();
 });
-/*
-// deprecated
-// this one doesn't fire sometimes...
-window.addEventListener('unload', function(event) {
-	console.log('Unload event');
-	if (!unloaded)
-		mainexit();
-});
-*/
 
 // this one seems newer
 window.addEventListener('beforeunload', function(event) {

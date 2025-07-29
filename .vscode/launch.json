@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "type": "chrome",
             "request": "launch",
@@ -52,6 +53,13 @@
             "request": "launch",
             "name": "Run Scratch",
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=scratch",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Scratch MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMOBILE.html?startstate=scratch",
             "webRoot": "${workspaceFolder}"
         },
         {

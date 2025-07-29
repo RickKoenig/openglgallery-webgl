@@ -10,7 +10,7 @@ scratch.ctree;
 scratch.dir = [];
 scratch.datatexd; // data texture
 
-scratch.jobtest = true;
+scratch.jobtest = false;
 scratch.testArrayBuffers = false;
 scratch.testStuff = false;
 scratch.test2 = false;
@@ -19,7 +19,7 @@ scratch.text = "WebGL: This state is where the developer trys new things.  Like 
 
 scratch.title = "Scratch";
 scratch.frame;
-
+/*
 scratch.debvars = {
 	pitch:0,
 	yaw:0,
@@ -30,9 +30,10 @@ scratch.debvars = {
 	scalex:0,
 	scaley:0,
 	scalez:0,
-	testarr:[3,4,[5,7],6],
+	testarr:[3,4,[5,7],6], 
 	testobj:{"hi":40,"ho":[50,99]},
-};
+	datatexTree: scratch.ptree.trans,
+};*/
 
 scratch.infocnt;
 
@@ -703,7 +704,7 @@ scratch.init = function() {
 		//scratch.testLinkList();
 		//scratch.testCopyCyclicGraph();
 		//scratch.testCircleKill();
-		scratch.testPIBounce();
+		//scratch.testPIBounce();
 	}
 	if (scratch.testArrayBuffers) {
 		// test ArrayBuffers
@@ -762,9 +763,9 @@ scratch.init = function() {
 		
 		//var numbits = 8; // R,G,B,A
 		//var numbits = 32; // ABGR , little endian?
-		//var numbits = 2; // draw procedure on <canvas>
+		var numbits = 2; // draw procedure on <canvas>
 		//var numbits = 1; // for test image on <canvas>
-		var numbits = 3; // test complex number color
+		//var numbits = 3; // test complex number color
 		//var numbits = 4; // test Bitmap32
 		
 		if (numbits == 8) { // 8 bit raw data
@@ -1048,9 +1049,10 @@ scratch.init = function() {
 		
         // draw the one with the data texture
 		scratch.ptree = buildplanexy("aplanexy",1,1,"datatex","tex");
-        scratch.ptree.trans = [0,0,0];
-		if (scratch.bm32)
+        scratch.ptree.trans = [0,0,-1];
+		if (scratch.bm32) {
 			scratch.ptree.scale = scratch.calcscale(scratch.bm32);
+		}
         scratch.roottree.linkchild(scratch.ptree);
 
 // test multi material 'Model2' from scratch
@@ -1200,8 +1202,22 @@ scratch.init = function() {
 	scratch.infocnt = 0;
 	scratch.updateinfo();
 	
+	scratch.debvars = {
+	/*	pitch:0,
+		yaw:0,
+		roll:0,
+		transx:0,
+		transy:0,
+		transz:0,
+		scalex:0,
+		scaley:0,
+		scalez:0,
+		testarr:[3,4,[5,7],6], */
+		testobj: {"hi":40,"ho":[50,99]},
+		datatexTree: scratch.ptree,
+	};
+
 	// add a test debprint
-	//debprint.addlist("scratch",["scratch.fvar"]);
 	debprint.addlist("scratch_debug",["scratch.debvars"]);
 };
 

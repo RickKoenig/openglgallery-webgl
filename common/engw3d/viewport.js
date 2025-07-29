@@ -143,7 +143,11 @@ function setview(vp) {
 	
 	// set projection matrix here
 	if (vp.isortho) {
-		mat4.ortholhc(pMatrix,-vp.ortho_size*vp.asp,vp.ortho_size*vp.asp,-vp.ortho_size,vp.ortho_size,vp.near,vp.far);
+		if (vp.asp > 1) { // landscape
+			mat4.ortholhc(pMatrix,-vp.ortho_size*vp.asp,vp.ortho_size*vp.asp,-vp.ortho_size,vp.ortho_size,vp.near,vp.far);
+		} else { // portrait
+			mat4.ortholhc(pMatrix,-vp.ortho_size,vp.ortho_size,-vp.ortho_size/vp.asp,vp.ortho_size/vp.asp,vp.near,vp.far);
+		}
 	} else {
 		mat4.perspectivelhczf(pMatrix,vp.zoom,vp.asp,vp.near,vp.far);
 		pMatrix[8] += vp.xo*2/gl.asp; // skew X

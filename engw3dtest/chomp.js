@@ -347,7 +347,7 @@ chomp.updatePiles = function() {
 // create
 chomp.createTextInfo = function () {
 	chomp.textInfo = new Tree2("chomp game info");
-	var fontSize = 1.5;
+	var fontSize = 2;
 	var scratchfontmodel = new ModelFont("font for chomp","font0.png","tex",
 		fontSize, fontSize,
 		80, 20,

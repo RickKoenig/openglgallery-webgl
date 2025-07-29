@@ -13,7 +13,7 @@ debprint.strarr = null;
 
 debprint.startline = 1;
 debprint.totalines = 0;
-debprint.ndrawlines = 20;
+debprint.ndrawlines = 10;
 
 debprint.debugkey = "`".charCodeAt(0);
 debprint.enable = true;
@@ -221,12 +221,14 @@ debprint.buildstr = function(name,parent,key) {
 	
 debprint.resize = function() {
 	debprint.depth = glc.clientHeight/2;//*8/h;
-	debprint.depth *= 2; // half pixel size still looks good, comment out for true 1 to 1 texel to pixel mapping
+	//debprint.depth *= 2; // half pixel size still looks good, comment out for true 1 to 1 texel to pixel mapping
 	if (debprint.vp) {
 		debprint.vp.asp = gl.asp;
 		debprint.vp.trans[2] = -debprint.depth;
 		debprint.vp.ortho_size = debprint.depth;
-		debprint.fonttree.trans = [-debprint.depth,debprint.depth - debprint.glyh*debprint.startline,0];
+		if (debprint.fonttree) {
+			debprint.fonttree.trans = [-debprint.depth,debprint.depth - debprint.glyh*debprint.startline,0];
+		}
 	}
 }
 
@@ -243,6 +245,7 @@ debprint.init = function() {
 	//	clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
 	//	clearcolor:[0,.75,1,1],
 		// orientation
+		//"trans":[-debprint.depth/2,0,-debprint.depth],
 		"trans":[0,0,-debprint.depth],
 		"rot":[0,0,0],
 		// frustum

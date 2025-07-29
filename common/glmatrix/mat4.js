@@ -748,12 +748,17 @@ mat4.frustum = function (out, left, right, bottom, top, near, far) {
 mat4.perspective = function (out, fovy, aspect, near, far) {
     var f = 1.0 / Math.tan(fovy / 2),
         nf = 1 / (near - far);
-    out[0] = f / aspect;
+    if (aspect > 1) {
+        out[0] = f / aspect;
+        out[5] = f;
+    } else {
+        out[0] = f;
+        out[5] = f * aspect;
+    }
     out[1] = 0;
     out[2] = 0;
     out[3] = 0;
     out[4] = 0;
-    out[5] = f;
     out[6] = 0;
     out[7] = 0;
     out[8] = 0;

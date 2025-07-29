@@ -5,6 +5,31 @@ var havemousedown = false; // don't use mouseenter until a mousedown happens
 var infullscreen = null;
 var lastinside = [0,0,0];
 
+function patchMouseTouchPosition() {
+	if (input.mx < 0)
+		input.mx = 0;
+	if (input.my < 0)
+		input.my = 0;
+	if (typeof glc === 'undefined') {
+		return;
+	}
+	if (input.mx >= glc.clientWidth)
+		input.mx = glc.clientWidth - 1;
+	if (input.my >= glc.clientHeight)
+		input.my = glc.clientHeight - 1;
+	input.fmx= 2*input.mx/glc.clientWidth - 1;
+	input.fmy = -2*input.my/glc.clientHeight + 1; // flip y
+	if (gl.asp === undefined) // incase there is no webgl context
+		return;
+	if (gl.asp > 1) {
+		input.fmx *= gl.asp;
+	} else {
+		input.fmy /= gl.asp;
+	}
+}
+
+
+// MOUSE
 function getxcode(e) {
 	return e.offsetX;
 }
@@ -46,7 +71,6 @@ function bmouseou(e) {
 	inputevents += "(Mout " + getxcode(e) + " " + getycode(e) + ") ";
 }
 
-
 // event mouse enter
 function bmouseenter(e) {
 	maparea.focus(); // get keyboard working on maparea
@@ -61,26 +85,6 @@ function bmousem(e) {
 	input.mx = getxcode(e);
 	input.my = getycode(e);
 	patchMouseTouchPosition();
-/*	if (input.mx < 0)
-		input.mx = 0;
-	if (input.my < 0)
-		input.my = 0;
-	if (typeof glc === 'undefined') {
-		return;
-	}
-	if (input.mx >= glc.clientWidth)
-		input.mx = glc.clientWidth - 1;
-	if (input.my >= glc.clientHeight)
-		input.my = glc.clientHeight - 1;
-	input.fmx= 2*input.mx/glc.clientWidth - 1;
-	input.fmy = -2*input.my/glc.clientHeight + 1; // flip y
-	if (gl.asp === undefined) // incase there is no webgl context
-		return;
-	//if (gl.asp > 1) {
-		input.fmx *= gl.asp;
-	//} else {
-	//	input.fmy /= gl.asp;
-	//}*/
 }
 
 // event mouse click, doesn't seem to work if you click on an image on the map, and you click on it, implement with bmoused and bmouseu
@@ -95,80 +99,53 @@ function bmousewheel(e) {
 	if (e.preventDefault)
         e.preventDefault();
 }
+/*
+*/
 
-function btouchstart(e)
-{
-	logger("touchstart\n");
-	//const rect = maparea.getBoundingClientRect();
+
+// TOUCH
+
+function touch(e) {
+	let pageX, pageY;
+	if (false) {
+		let clientX = e.touches[0].clientX;
+		let clientY = e.touches[0].clientY;
+		pageX = clientX + window.scrollX;
+		pageY = clientY + window.scrollY;
+	} else {
+		pageX = e.touches[0].pageX;
+		pageY = e.touches[0].pageY;
+
+	}
 	const inner = document.getElementById("mycanvas2");
 	const rect = inner.getBoundingClientRect();
-	input.mx = Math.floor(e.touches[0].pageX - rect.left);
-	input.my = Math.floor(e.touches[0].pageY - rect.top);
+	input.mx = Math.floor(pageX - rect.left);
+	input.my = Math.floor(pageY - rect.top);
 	mbutcur[0] = 1;
 	mbuthold[0] = 1;
 	if (e.preventDefault) {
 		e.preventDefault();
 	}
 	patchMouseTouchPosition();
+}
+
+function btouchstart(e)
+{
+	logger("touchstart\n");
+	touch(e);
 }
 
 function btouchmove(e)
 {
 	logger("touchmove\n");
-	//const rect = maparea.getBoundingClientRect();
-	const inner = document.getElementById("mycanvas2");
-	const rect = inner.getBoundingClientRect();
-	input.mx = Math.floor(e.touches[0].pageX - rect.left);
-	input.my = Math.floor(e.touches[0].pageY - rect.top);
-	mbutcur[0] = 1;
-	mbuthold[0] = 1;
-	if (e.preventDefault) {
-		e.preventDefault();
-	}
-	patchMouseTouchPosition();
-	/*	if (input.mx >= glc.clientWidth)
-		input.mx = glc.clientWidth - 1;
-	if (input.my >= glc.clientHeight)
-		input.my = glc.clientHeight - 1;
-	input.fmx= 2*input.mx/glc.clientWidth - 1;
-	input.fmy = -2*input.my/glc.clientHeight + 1; // flip y
-	if (gl.asp === undefined) // incase there is no webgl context
-		return;
-	//if (gl.asp > 1) {
-		input.fmx *= gl.asp;
-	//} else {
-	//	input.fmy /= gl.asp;
-	//} */
-}
-
-function patchMouseTouchPosition() {
-	if (input.mx < 0)
-		input.mx = 0;
-	if (input.my < 0)
-		input.my = 0;
-	if (typeof glc === 'undefined') {
-		return;
-	}
-	if (input.mx >= glc.clientWidth)
-		input.mx = glc.clientWidth - 1;
-	if (input.my >= glc.clientHeight)
-		input.my = glc.clientHeight - 1;
-	input.fmx= 2*input.mx/glc.clientWidth - 1;
-	input.fmy = -2*input.my/glc.clientHeight + 1; // flip y
-	if (gl.asp === undefined) // incase there is no webgl context
-		return;
-	//if (gl.asp > 1) {
-		input.fmx *= gl.asp;
-	//} else {
-	//	input.fmy /= gl.asp;
-	//}
+	touch(e);
 }
 
 function btouchend(e)
 {
 	logger("touchend\n");
-	mbutcur[0] = 0;
 	mbuthold[0] = 0;
+	++mclick[0];
 	if (e.preventDefault)
 		e.preventDefault();
 }
@@ -196,7 +173,6 @@ function mapinit() {
 function mapproc()
 {
 	// mouse clicks in current frame
-	
 	input.mclick[0] = mclick[0];
 	input.mclick[1] = mclick[1];
 	input.mclick[2] = mclick[2];

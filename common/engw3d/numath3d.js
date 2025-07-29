@@ -158,12 +158,17 @@ mat4.pop = function(out) {
 mat4.perspectivezf = function (out, zf, aspect, near, far) {
     var f = zf;
     var nf = 1 / (near - far);
-    out[0] = f / aspect;
+    if (aspect > 1) {
+        out[0] = f / aspect;
+        out[5] = f;
+    } else {
+        out[0] = f;
+        out[5] = f * aspect;
+    }
     out[1] = 0;
     out[2] = 0;
     out[3] = 0;
     out[4] = 0;
-    out[5] = f;
     out[6] = 0;
     out[7] = 0;
     out[8] = 0;

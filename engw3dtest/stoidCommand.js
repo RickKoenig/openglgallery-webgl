@@ -57,7 +57,7 @@ stoidCommand.calcscale = function(bm) {
 	var cx = glc.clientWidth;
 	var cy = glc.clientHeight; // to canvas client
 	var frac = 1;
-	if (isMobile)
+	if (window.isMobile)
 		frac = 4; // futs with mobile
 //	if (true) {
 	cx -= 20; // safe zone
@@ -179,7 +179,7 @@ sc.doUPDown = function() {
 	if (sc.scount & 1)
 		return;
 	var del = 0;
-	if (isMobile) {
+	if (window.isMobile) {
 		if (input.mbut[Input.MLEFT]) {
 			if (input.my < glc.clientHeight/2) {
 				del--;
@@ -288,7 +288,7 @@ sc.init = function() {
 	//makeabr();
 	//makeabr();
 
-	/*if (isMobile) {
+	/*if (window.isMobile) {
 		screen.orientation.lock("landscape-primary").catch(function(error) {
 			logger("can't lock orientation!");
 		});
@@ -348,7 +348,7 @@ sc.init = function() {
 	// build roottree
 	stoidCommand.roottree = new Tree2("stoidCommand root tree");
 
-	if (isMobile) {
+	if (window.isMobile) {
 		stoidCommand.ptreeL = buildplanexy("aLine",1,1,null,"flat");
 		stoidCommand.ptreeL.mod.flags |= modelflagenums.NOZBUFFER; // turn off zbuffer
 	//stoidCommand.ptree.trans = [0,0,0];
@@ -368,9 +368,9 @@ sc.init = function() {
 	//if (stoidCommand.B32S) { // pixel perfect
 		var sclObj = stoidCommand.calcscale(stoidCommand.B32S);
 		stoidCommand.ptree.scale = sclObj.scl;
-		if (isMobile) {
+		if (window.isMobile) {
 			stoidCommand.ptreeL.scale = vec3.clone(sclObj.scl);
-			stoidCommand.ptreeL.scale[0] *=2;
+			stoidCommand.ptreeL.scale[0] *=20;
 			stoidCommand.ptreeL.scale[1] *=.02;
 		}
 		
@@ -456,8 +456,9 @@ stoidCommand.proc = function() {
 		break;
 	case sc.StoidModeE.DONE:
 		--sc.delayCount;
-		if (!sc.delayCount)
+		if (!sc.delayCount) {
 			changestate("stoidCommand");
+		}
 		if (sc.delayCount % 48 >= 24) { // cheap animate win state, TODO: use more variables
 			sc.B32S.outTextXY(stoidCommand.B32Sfont, 160 - 4 * "Koodoos!!".length, 88, "Koodoos!!");
 			sc.B32S.outTextXY(stoidCommand.B32Sfont, 160 - 4 * "You Won!!".length, 112, "You Won!!");
