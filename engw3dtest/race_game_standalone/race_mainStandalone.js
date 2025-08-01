@@ -15,7 +15,7 @@ race_mainStandalone.buildTextInfo = function () {
 	var str = "Welcome";
 	scratchfontmodel.print(str);
     // make pixel perfect
-    ftree.trans = [-gl.asp, 1, 0];
+    ftree.trans = [-glc.asp, 1, 0];
     ftree.scale = [
         16 * 2 / glc.clientHeight * .5,
         32 * 2 / glc.clientHeight * .5,

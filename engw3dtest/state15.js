@@ -142,7 +142,7 @@ state15.proc = function() {
 	if (input.mbut[0]) {
 		var b = camz;
 		var m = 2*camz/glc.clientHeight;
-		pendpos = m*input.mx - b*gl.asp;
+		pendpos = m*input.mx - b*glc.asp;
 		if (lastbutsection < 0) {
 			if (pendpos < 0)
 				lastbutsection = 0;

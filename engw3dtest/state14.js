@@ -137,7 +137,7 @@ state14.proc = function() {
 		var b = camz;
 		var m = 2*camz/glc.clientHeight;
 		pendpos = [
-			 m*input.mx - b*gl.asp,
+			 m*input.mx - b*glc.asp,
 			-m*input.my + b,
 			0
 		];

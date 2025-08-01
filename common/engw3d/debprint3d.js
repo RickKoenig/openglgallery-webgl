@@ -223,7 +223,7 @@ debprint.resize = function() {
 	debprint.depth = glc.clientHeight/2;//*8/h;
 	//debprint.depth *= 2; // half pixel size still looks good, comment out for true 1 to 1 texel to pixel mapping
 	if (debprint.vp) {
-		debprint.vp.asp = gl.asp;
+		debprint.vp.asp = glc.asp;
 		debprint.vp.trans[2] = -debprint.depth;
 		debprint.vp.ortho_size = debprint.depth;
 		if (debprint.fonttree) {
@@ -252,7 +252,7 @@ debprint.init = function() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		isortho:true,
 		ortho_size:debprint.depth,
 		xo:0,

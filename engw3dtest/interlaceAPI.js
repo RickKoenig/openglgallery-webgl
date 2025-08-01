@@ -65,7 +65,7 @@ function Interleave3D() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		xo:0,
 		yo:0,
 		xs:1,
@@ -152,7 +152,7 @@ Interleave3D.prototype.onresize = function() {
 	}
 	globaltexflags &= ~textureflagenums.NOFLOAT;
 
-	Interleave3D.interleaveVP.asp = gl.asp;
+	Interleave3D.interleaveVP.asp = glc.asp;
 	Interleave3D.fbnPlaneXY.mat.resolution = [glc.clientWidth,glc.clientHeight];
 };
 
@@ -196,7 +196,7 @@ Interleave3D.prototype.beginsceneAndDraw = function(viewPort,scene) {
 	viewPort.target = null;
 	
 	beginscene(Interleave3D.interleaveVP);
-	Interleave3D.fbnPlaneXY.scale = [gl.asp,-1,1];
+	Interleave3D.fbnPlaneXY.scale = [glc.asp,-1,1];
 	Interleave3D.roottree.draw();	
 };
 

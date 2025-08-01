@@ -94,7 +94,7 @@ state9.init = function() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:1, //gl.asp
+		asp:1, //glc.asp
 		xo:0,
 		yo:0,
 		xs:1,
@@ -113,7 +113,7 @@ state9.init = function() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:1, //gl.asp
+		asp:1, //glc.asp
 		xo:0,
 		yo:0,
 		xs:1,
@@ -134,7 +134,7 @@ state9.init = function() {
 	near:.002,
 	far:10000.0,
 	zoom:1,
-	asp:gl.asp,
+	asp:glc.asp,
 	// optional target (overrides rot)
 	inlookat:0,
 	lookattrans:[0,0,0],

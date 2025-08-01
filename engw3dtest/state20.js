@@ -67,7 +67,7 @@ state20.init = function() {
 	   	near:.1,
 	   	far:10000.0,
 	   	zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		xo:0,
 		yo:0,
 		xs:1,

@@ -726,7 +726,7 @@ solarTest.init = function() {
 	   	near:.01,
 	   	far:10000.0,
 	   	zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		//inlookat:true
 		isortho:false,
 		ortho_size:1,
@@ -997,8 +997,8 @@ solarTest.init = function() {
 };
 
 solarTest.onresize = function() {
-	solarTest.mvp.asp = gl.asp;
-	solarTest.slidervp.asp = gl.asp;
+	solarTest.mvp.asp = glc.asp;
+	solarTest.slidervp.asp = glc.asp;
 };
 
 solarTest.proc = function() {

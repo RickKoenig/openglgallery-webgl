@@ -150,8 +150,13 @@ function setview(vp) {
 		}
 	} else {
 		mat4.perspectivelhczf(pMatrix,vp.zoom,vp.asp,vp.near,vp.far);
-		pMatrix[8] += vp.xo*2/gl.asp; // skew X
-		pMatrix[9] += vp.yo*2; // skew Y
+		if (vp.asp > 1) {
+			pMatrix[8] += vp.xo*2/glc.asp; // skew X
+			pMatrix[9] += vp.yo*2; // skew Y
+		} else {
+			pMatrix[8] += vp.xo*2; // skew X
+			pMatrix[9] += vp.yo*2*glc.asp; // skew Y
+		}
 	}
 	
 	// get light matrices over for 2nd pass
@@ -264,7 +269,7 @@ function defaultviewport() {
 		near:.002, // webgl version
 		far:10000.0,
 		zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		isortho:false,
 		ortho_size:10,
 		// optional target (overrides rot)
@@ -301,7 +306,7 @@ function defaultorthoviewport() {
 		near:-1000.0,
 		far:1000.0,
 		zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		isortho:true,
 		//ortho_size:depth,
 		ortho_size:1,

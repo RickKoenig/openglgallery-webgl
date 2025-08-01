@@ -54,14 +54,14 @@ function gl_resize() {
 		//gl.drawingBufferWidth = glc.clientWidth*gllores;
 		//gl.drawingBufferHeight = glc.clientHeight*gllores;
      // set asp
-	gl.asp = glc.clientWidth/glc.clientHeight;
+	glc.asp = glc.clientWidth/glc.clientHeight;
 	// set gl viewport
 	//var xo = 0;
 	//var yo = 0;
 	var xs = 1;
 	var ys = 1;
 	if (window.mainvp) {
-		mainvp.asp = gl.asp;
+		mainvp.asp = glc.asp;
 		//xo = mainvp.xo;
 		//yo = mainvp.yo;
 		xs = mainvp.xs;
@@ -69,8 +69,8 @@ function gl_resize() {
 	}
 	gl.viewport(0, 0, xs*gl.drawingBufferWidth, ys*gl.drawingBufferHeight);
 	//gl.viewport(xo*gl.drawingBufferWidth, yo*gl.drawingBufferHeight, xs*gl.drawingBufferWidth, ys*gl.drawingBufferHeight);
-//	mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, gl.asp, 0.5, 2.0);
-	//mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, gl.asp, 0.002,10000.0);
+//	mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, glc.asp, 0.5, 2.0);
+	//mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, glc.asp, 0.002,10000.0);
 }
 
 function gl_preinit() {

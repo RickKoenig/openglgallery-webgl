@@ -105,8 +105,8 @@ qcomp.updateSlider = function(force) {
 	// convert to 0 to 1
 	var sliderValue01 = sliderVal * .5 + .5;
 	qcomp.flabelredtree.trans =qcomp.flabeltree.trans = [
-//	  -depth*gl.asp + sliderValue01*1000,
-	-depth*gl.asp - sliderValue01*qcomp.QField.slideFactor,
+//	  -depth*glc.asp + sliderValue01*1000,
+	-depth*glc.asp - sliderValue01*qcomp.QField.slideFactor,
 	  depth + 12, // fudge y for font lining up with circuit '>---'
 	  depth
 	];
@@ -1232,16 +1232,16 @@ qcomp.onresize = function() {
 	if (nqb >= qcomp.QColumn.maxiqubits)
 		nqb = qcomp.QColumn.maxiqubits - 1;
 	qcomp.flargeconsoletree.trans = [ // position console
-	  -depth*gl.asp,
+	  -depth*glc.asp,
 	  depth - (qcomp.QField.fpixtop + qcomp.QGateBase.gpixhit*(nqb + 1) + qcomp.QField.bottomMargin),
 	  depth]; // TODO, hardcoded glyph height size
 
 	qcomp.fsmallconsoletree.trans = qcomp.flargeconsoletree.trans; // position console
  
-	qcomp.slidervp.asp = gl.asp;
+	qcomp.slidervp.asp = glc.asp;
 	qcomp.updateSlider(true);	
 	
-	qcomp.spherevp.asp = gl.asp;
+	qcomp.spherevp.asp = glc.asp;
 };
 
 qcomp.exit = function() {

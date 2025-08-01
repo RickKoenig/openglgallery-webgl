@@ -12,7 +12,7 @@ Spriter.prototype.reset = function() {
 	this.curdraw.glfree();
 	this.curdraw = new Tree2("sprite curdraw tree");
 	var scl = glc.clientHeight*.5;
-	this.curdraw.trans = [-scl*gl.asp,scl,1];
+	this.curdraw.trans = [-scl*glc.asp,scl,1];
 };
 
 Spriter.prototype.add = function(textu,pos,size,color,rot,hand) {

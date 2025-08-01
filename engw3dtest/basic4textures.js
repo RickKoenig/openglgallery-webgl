@@ -50,7 +50,7 @@ basic4textures.proc = function() {
 basic4textures.onresize = function() {
 	logger("basic4textures resize!\n");
 	// readjust planexy scale to fill the screen
-	basic4textures.planexy.scale = [gl.asp,1,1];
+	basic4textures.planexy.scale = [glc.asp,1,1];
 	if (basic4textures.shaderIndex == 0) {
 		// set 'resolution' uniform in shader
 		basic4textures.planexy.mat.resolution = [glc.clientWidth,glc.clientHeight];

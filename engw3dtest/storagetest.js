@@ -289,7 +289,7 @@ storagetest.init = function() {
 	storagetest.ftree = new Tree2("fmodel");
 	var depth = glc.clientHeight/2;
 	//var depth = storagetest.lines;//32*96;
-	storagetest.ftree.trans = [-depth*gl.asp,depth,depth];
+	storagetest.ftree.trans = [-depth*glc.asp,depth,depth];
 	//ftree.trans = [-depth,-32*4,depth];
 	storagetest.ftree.setmodel(storagetest.fmodel);
 	storagetest.roottree.linkchild(storagetest.ftree);
@@ -337,7 +337,7 @@ storagetest.onresize = function() {
 	//storagetest.sph.trans = [mainvp.asp*.9,-.9,1];
 	//var depth = storagetest.lines;
 	var depth = glc.clientHeight/2;
-	storagetest.ftree.trans = [-depth*gl.asp,depth,depth];
+	storagetest.ftree.trans = [-depth*glc.asp,depth,depth];
 };
 storagetest.exit = function() {
 	//localStorage.clear();

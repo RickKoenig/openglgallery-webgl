@@ -19,12 +19,12 @@ function patchMouseTouchPosition() {
 		input.my = glc.clientHeight - 1;
 	input.fmx= 2*input.mx/glc.clientWidth - 1;
 	input.fmy = -2*input.my/glc.clientHeight + 1; // flip y
-	if (gl.asp === undefined) // incase there is no webgl context
+	if (glc.asp === undefined) // incase there is no webgl context
 		return;
-	if (gl.asp > 1) {
-		input.fmx *= gl.asp;
+	if (glc.asp > 1) {
+		input.fmx *= glc.asp;
 	} else {
-		input.fmy /= gl.asp;
+		input.fmy /= glc.asp;
 	}
 }
 

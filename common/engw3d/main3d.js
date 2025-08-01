@@ -373,7 +373,7 @@ function loadingproc() {
 			near:.002,
 			far:10000.0,
 			zoom:1,
-			asp:gl.asp,
+			asp:glc.asp,
 			//isortho:true,
 			ortho_size:debprint_depth*2,
 			// optional target (overrides rot)
@@ -424,7 +424,7 @@ function loadingresize() {
 	var loading_depth = glc.clientHeight/2;//*8/h;
 	//loading_depth *= 2; // half pixel size still looks good, comment out for true 1 to 1 texel to pixel mapping
 	if (loadingvp) {
-		loadingvp.asp = gl.asp;
+		loadingvp.asp = glc.asp;
 		loadingvp.trans[2] = -loading_depth;
 		loadingvp.ortho_size = loading_depth*2;
 		if (loadingtreefont) {

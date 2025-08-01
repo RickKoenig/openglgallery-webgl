@@ -230,7 +230,7 @@ framebuffer4.init = function() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		xo:0,
 		yo:0,
 		xs:1,
@@ -244,7 +244,7 @@ framebuffer4.init = function() {
 		// view volume
 		near:-100,
 		far:100,
-		asp:gl.asp,
+		asp:glc.asp,
 		isortho:true,
 		ortho_size:glc.clientHeight/2, // make pixel perfect
 		xo:0,
@@ -433,7 +433,7 @@ framebuffer4.proc = function() {
 	// draw main vp
 	beginscene(mainvp);
 	if (framebuffer4.fbnPlaneXY) {
-		framebuffer4.fbnPlaneXY.scale = [gl.asp,-1,1];
+		framebuffer4.fbnPlaneXY.scale = [glc.asp,-1,1];
 	}
 	framebuffer4.roottree.draw(); // depends on FB 1,2,3
 
@@ -449,8 +449,8 @@ framebuffer4.onresize = function() {
 		rt.resize(glc.clientWidth,glc.clientHeight);
 	}
 	//mainvp.asp = 1; // tweek the asp, hack, put this back to 1 after main3d onresize of mainvp, TODO: should use another viewport
-	framebuffer4.frametexnvp.asp = gl.asp;
-	framebuffer4.pixelPerfectVp.asp = gl.asp;
+	framebuffer4.frametexnvp.asp = glc.asp;
+	framebuffer4.pixelPerfectVp.asp = glc.asp;
 	framebuffer4.pixelPerfectVp.ortho_size = glc.clientHeight/2; // make pixel perfect
         
 	//ViewPort.mainvp = new ViewPort();

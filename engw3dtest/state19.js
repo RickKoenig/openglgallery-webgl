@@ -218,7 +218,7 @@ state19.init = function() {
 	   	near:.1,
 	   	far:10000.0,
 	   	zoom:1,
-		asp:gl.asp,
+		asp:glc.asp,
 		inlookat:true,
 		xo:0,
 		yo:0,
@@ -344,7 +344,7 @@ state19.init = function() {
 };
 
 state19.onresize= function() {
-	state19.mvp.asp = gl.asp;
+	state19.mvp.asp = glc.asp;
 };
 
 state19.proc = function() {

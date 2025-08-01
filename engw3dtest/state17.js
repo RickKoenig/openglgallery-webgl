@@ -180,7 +180,7 @@ function centerarrowsview() {
 		vec3.scale(dpos,dpos,.5);
 		var spread = [];
 		vec3.sub(spread,maxpnt,minpnt);
-		dpos[2] = -.5*Math.max(spread[0]/gl.asp,spread[1]) - moveback;
+		dpos[2] = -.5*Math.max(spread[0]/glc.asp,spread[1]) - moveback;
 	}
 //	vec3.lerp(mainvp.trans,mainvp.trans,dpos,driftview);
 	var newpos = [];

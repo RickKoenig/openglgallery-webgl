@@ -545,7 +545,7 @@ chomp.proc = function() {
 
 chomp.onresize = function() {
 	logger("chomp resize!\n");
-	chomp.textInfo.trans = [-gl.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
+	chomp.textInfo.trans = [-glc.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
 	// TODO: stop using hard coded glyph sizes, (right now 16,32)
 	chomp.textInfo.scale = [16 / glc.clientHeight, 32 / glc.clientHeight, 1];
 };

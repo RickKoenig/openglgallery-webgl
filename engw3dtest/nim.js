@@ -645,7 +645,7 @@ nim.proc = function() {
 
 nim.onresize = function() {
 	logger("nim resize!\n");
-	nim.textInfo.trans = [-gl.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
+	nim.textInfo.trans = [-glc.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
 	// TODO: stop using hard coded glyph sizes, (right now 16,32)
 	nim.textInfo.scale = [16 / glc.clientHeight, 32 / glc.clientHeight, 1];
 };

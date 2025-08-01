@@ -176,7 +176,7 @@ vertexShadersV1.onresize = function() {
 	// fixup ortho viewport to handle the new size, lower left 0,0 to upper right XRES, YRES
 	logger("vertexShadersV1 resize!\n");
 	var scl = glc.clientHeight*.5;
-	mainvp.trans = [scl*gl.asp,scl,0];
+	mainvp.trans = [scl*glc.asp,scl,0];
 	mainvp.ortho_size = scl;
 };
 
