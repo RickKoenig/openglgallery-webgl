@@ -501,7 +501,7 @@ function exitfullscreenHandler()
     }
 }
 
-function doUrlparams() {
+function doURLParams() {
 	var ss = window.location.search;
 	
 //URLparams;

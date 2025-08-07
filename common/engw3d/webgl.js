@@ -86,7 +86,7 @@ function gl_preinit() {
 		premultipliedAlpha:true,
 		preserveDrawingBuffer:false
 	};
-	doUrlparams();
+	doURLParams();
 	// get a webgl context (gl)
 	if (dowebgl) {
 		try {
