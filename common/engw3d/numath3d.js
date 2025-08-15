@@ -159,13 +159,15 @@ mat4.perspectivezf = function (out, zf, aspect, near, far, extraWidth = 1, extra
     var f = zf;
     var nf = 1 / (near - far);
     //if (false) {
-    const extraAsp = extraWidth / extraHeight;
+    const invExtraHeight = 1 / extraHeight;
+    const invExtraWidth = 1 / extraWidth;
+    const extraAsp = extraWidth * invExtraHeight;
     if (aspect > extraAsp) { // landscape
-        out[0] = f / (aspect * extraHeight);
-        out[5] = f / extraHeight;
+        out[0] = f / aspect * invExtraHeight;
+        out[5] = f *  invExtraHeight;
     } else { // portrait
-        out[0] = f / extraWidth;
-        out[5] = f * aspect / extraWidth;
+        out[0] = f * invExtraWidth;
+        out[5] = f * aspect * invExtraWidth;
     }
     out[1] = 0;
     out[2] = 0;

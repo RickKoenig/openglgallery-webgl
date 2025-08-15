@@ -1189,12 +1189,17 @@ scratch.init = function() {
 	}
 
 	// move view back some using LHC
-	if (scratch.test1)
+	if (scratch.test1) {
 		mainvp.trans = [0,0,-2]; // for mouse test
 		// mainvp.trans = [1.31321,3.39566,-3.53785]; // flycam for barn, near clipping
-	else
+	} else {
 		mainvp.trans = [0,0,0];
+	}
 	mainvp.rot = [0,0,0]; // flycam
+
+	// use ndc extra system
+	mainvp.extraWidth = 7 / 5;
+	mainvp.extraHeight = 1;
 
 	// ui, realtime log update
 	setbutsname('scratch');
@@ -1223,6 +1228,11 @@ scratch.init = function() {
 
 scratch.proc = function() {
 	// proc
+	// use ndc extra system
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 	scratch.updateinfo();
 	if (scratch.test1 && input.mbut[0]) {
         scratch.dir[0] = input.fmx;
@@ -1260,8 +1270,12 @@ scratch.proc = function() {
 	beginscene(mainvp);
 	scratch.roottree.draw();
 	scratch.frame += 2*Math.PI/60/10;
-	if (scratch.frame >= Math.PI*2)
+	if (scratch.frame >= Math.PI*2) {
 		scratch.frame -= Math.PI*2;
+	}
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
 };
 
 scratch.onresize = function() {
@@ -1290,6 +1304,9 @@ scratch.exit = function() {
 	scratch.roottree = null;
 	logger("exiting webgl scratch\n");
 	clearbuts('scratch');
+	// reset extra ndc system, input
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 };
 
 

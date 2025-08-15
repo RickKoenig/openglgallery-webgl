@@ -46,6 +46,7 @@ basic.init = function() {
 		mainvp = defaultviewport();
 		mainvp.clearcolor = [0,.5,1,1];
 	}
+	// use ndc extra system
 	mainvp.extraWidth = 7 / 5;
 	mainvp.extraHeight = 1;//7 / 5;
 };

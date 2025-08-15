@@ -4,36 +4,12 @@ var flycamstate = {
 	"flycamspeed":.125
 };
 
-//var defaulttarget = null;
-
-/*function hexdig(d) {
-	if (d>=10)
-		return String.fromCharCode(d-10+'A'.charCodeAt(0));
-	else
-		return String.fromCharCode(d+'0'.charCodeAt(0));
-}
-
-function tohex2(val) {
-	if (val >= 1)
-		return "ff";
-	if (val < 0)
-		return "00";
-	var i = Math.floor(256*val);
-	return hexdig(i>>4) + hexdig(i&0xf);
-}
-*/
 function beginscene(vp) {
 	checkglerror("start beginscene");
-	//if (defaulttarget != vp.target) {
-		FrameBufferTexture.useframebuffer(vp.target);
-	//	defaulttarget = vp.target;
-	//}
+	FrameBufferTexture.useframebuffer(vp.target);
 	checkglerror("done useframebuffer");
 	if (vp.clearflags & gl.COLOR_BUFFER_BIT) {
-		// I'm not sure why css background-color has an effect on alpha blending ??
 		gl.clearColor(vp.clearcolor[0],vp.clearcolor[1],vp.clearcolor[2],vp.clearcolor[3]);
-		// So I'll just set the style.backgroundColor to the same as the gl.clearColor
-		//glc.style.backgroundColor = "#" + tohex2(vp.clearcolor[0]) + tohex2(vp.clearcolor[1]) + tohex2(vp.clearcolor[2]);
 	}
     if (vp.clearflags) {
 		gl.enable(gl.SCISSOR_TEST);
@@ -113,7 +89,6 @@ function setview(vp) {
 	} else { // no lookat, just check for camattach
 		mat4.identity(mvMatrix);
 
-//		if (false) {
 		// ajust mvMatrix for attached camera
 		buildtransrotscaleinv(mvMatrix,vp); // viewport first
 		if (vp.incamattach && vp.camattach) { // build up the camera to world matrix, then invert it
@@ -204,11 +179,6 @@ function viewportClearRotTrans(vp) {
 function doflycam(vp) {
 	var leftright=0,foreback=0,updown=0;
 	var mxc,mxr,myc,myr,rcx,rsx,rcy,rsy;
-	//if (wininfo.indebprint || wininfo.releasemode)
-	//	return;
-/*	if (input.key) {
-		logger("gotakey\n");
-} */
 	if (input.key == "c".charCodeAt(0)) {
 		flycamstate.inflycam = !flycamstate.inflycam;
 		//input.key = 0; // so other viewports don't get a key..
@@ -240,7 +210,6 @@ function doflycam(vp) {
 			if (input.keystate[keycodes.LEFT])
 				leftright -= flycamstate.flycamspeed;
 			if (input.keystate[keycodes.UP])
-			//if (true) // force UP
 				foreback += flycamstate.flycamspeed;
 			if (input.keystate[keycodes.DOWN]) {
 				foreback -= flycamstate.flycamspeed;
@@ -273,7 +242,6 @@ function doflycam(vp) {
 			vp.trans[2] += updown*rsx*rcy;
 		}
 	}
-//	setview(vp);
 }
 
 function defaultviewport() {
@@ -282,11 +250,7 @@ function defaultviewport() {
 		target:null,
 		// clear
 		clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-//			clearcolor:[0,0,0,1],
-//			clearcolor:[1,1,1,1],
 		clearcolor:[0,.75,1,1], // RGBA
-//			clearcolor:[.1,.2,.9,1],
-	//	mat4.create();
 		// orientation
 		"trans":[0,0,0],
 		"rot":[0,0,0],
@@ -320,11 +284,7 @@ function defaultorthoviewport() {
 		target:null,
 		// clear
 		clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-//			clearcolor:[0,0,0,1],
-//			clearcolor:[1,1,1,1],
 		clearcolor:[0,.75,1,1],
-//			clearcolor:[.1,.2,.9,1],
-	//	mat4.create();
 		// orientation
 		"trans":[0,0,0],
 		"rot":[0,0,0],
@@ -335,7 +295,6 @@ function defaultorthoviewport() {
 		zoom:1,
 		asp:glc.asp,
 		isortho:true,
-		//ortho_size:depth,
 		ortho_size:1,
 		inlookat:false,
 		lookat:null,
