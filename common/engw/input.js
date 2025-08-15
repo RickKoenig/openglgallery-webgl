@@ -16,6 +16,8 @@ function Input() {
 	this.mclick = [0,0,0];
 	this.wheelPos = 0;
 	this.wheelDelta = 0;
+	this.extraWidth = 1;
+	this.extraHeight = 1;
 }
 
 Input.MLEFT = 0;

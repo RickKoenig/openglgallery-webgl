@@ -14,6 +14,7 @@ sc.puzzcirc = null; // puzzle circles are drawn in this bitmap, left and right
 sc.mycirc = null; // magenta circle, my circle, up and down
 sc.SWIDTH = 320;
 sc.SHEIGHT = 200;
+sc.asp = sc.SWIDTH / sc.SHEIGHT;
 
 sc.level = null;
 sc.ypos = null;
@@ -35,10 +36,12 @@ stoidCommand.load = function() {
 };
 
 stoidCommand.calcscale = function(bm) {
+	const safe = .95;
+	return [2 * sc.SWIDTH / sc.SHEIGHT * safe, 2 * safe, 1];
 	const bx = bm.size.x; // from bitmap
 	const by = bm.size.y;
-	let cx = glc.clientWidth;
-	let cy = glc.clientHeight; // to canvas client
+	const cx = glc.clientWidth;
+	const cy = glc.clientHeight; // to canvas client
 	const scl = vec3.create();
 	if (cx >= cy) {
 		if (cx / bx >= cy / by) {
@@ -52,7 +55,7 @@ stoidCommand.calcscale = function(bm) {
 		scl[0] = 2;
 		scl[1] = 2 * by / bx;
 	}
-	const safe = .85;
+	//const safe = .95;
 	scl[0] *= safe;
 	scl[1] *= safe;
 	scl[2] = 1;
@@ -226,16 +229,23 @@ sc.init = function() {
 	}
 	stoidCommand.roottree.linkchild(stoidCommand.ptree);
 
-	mainvp = defaultviewport();	
+	mainvp = defaultviewport();
 	mainvp.trans = [0,0,-2]; // for mouse test // move back some
 	stoidCommand.oldclearcolor = mainvp.clearcolor;
 	mainvp.clearcolor = F32DARKGRAY;
 	sc.fpswantedsave = fpswanted;
 	fpswanted = 30;
+	mainvp.extraWidth = sc.SWIDTH / sc.SHEIGHT;
+	mainvp.extraHeight = 1;
 };
 
 stoidCommand.proc = function() {
 	// proc
+	// use ndc extra system
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 	switch (sc.stoidMode) {
 	case sc.StoidModeE.PLAYING:
 		sc.B32S.clipRect(0, 0, sc.SWIDTH, sc.SHEIGHT, C32BLACK);
@@ -304,10 +314,12 @@ stoidCommand.proc = function() {
 	// draw
 	beginscene(mainvp);
 	stoidCommand.roottree.draw();
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
 };
 
 stoidCommand.onresize = function() {
-	var bottomLines = 20; // for console
 	logger("stoidCommand resize to " + glc.clientWidth + "," + glc.clientHeight + "\n");
 	if (stoidCommand.B32S) {
 		var scl = stoidCommand.calcscale(stoidCommand.B32S);
@@ -339,4 +351,8 @@ stoidCommand.exit = function() {
 	logger("exiting webgl stoidCommand\n");
 	mainvp.clearcolor = stoidCommand.oldclearcolor;
 	fpswanted = sc.fpswantedsave;
+
+	// reset extra ndc system, input
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 };

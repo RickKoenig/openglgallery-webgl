@@ -155,15 +155,17 @@ mat4.pop = function(out) {
 	return out;
 };
 
-mat4.perspectivezf = function (out, zf, aspect, near, far) {
+mat4.perspectivezf = function (out, zf, aspect, near, far, extraWidth = 1, extraHeight = 1) {
     var f = zf;
     var nf = 1 / (near - far);
-    if (aspect > 1) {
-        out[0] = f / aspect;
-        out[5] = f;
-    } else {
-        out[0] = f;
-        out[5] = f * aspect;
+    //if (false) {
+    const extraAsp = extraWidth / extraHeight;
+    if (aspect > extraAsp) { // landscape
+        out[0] = f / (aspect * extraHeight);
+        out[5] = f / extraHeight;
+    } else { // portrait
+        out[0] = f / extraWidth;
+        out[5] = f * aspect / extraWidth;
     }
     out[1] = 0;
     out[2] = 0;
@@ -187,8 +189,8 @@ mat4.perspectivelhc = function(out,fovy,aspect,near,far) {
 	out[8] = -out[8]; out[9] = -out[9]; out[10] = -out[10]; out[11] = -out[11];
 };
 
-mat4.perspectivelhczf = function(out,zf,aspect,near,far) {
-	mat4.perspectivezf(out,zf,aspect,near,far);
+mat4.perspectivelhczf = function(out,zf,aspect,near,far,extraWidth,extraHeight) {
+	mat4.perspectivezf(out,zf,aspect,near,far,extraWidth,extraHeight);
 	out[8] = -out[8]; out[9] = -out[9]; out[10] = -out[10]; out[11] = -out[11];
 };
 

@@ -151,22 +151,8 @@ function gl_init() {
 	}
 	if (gl) {
 		logger("yes some webgl\n");
-/*		if (!myform) {
-			//var sw = screen.availWidth;
-			//var sh = screen.availHeight;
-			var sw = 1024;
-			var sh = 768;
-	        maparea.style.width = sw + "px";
-	        maparea.style.height = sh + "px";
-	        glc.style.width = sw + "px";
-	        glc.style.height = sh + "px";
-	        glc.clientWidth = sw;
-	        glc.clientHeight = sh;
-	} else { */
-	// set screen wid,hit
-	        //glc.clientWidth = glc.clientWidth;
-	        //glc.clientHeight = glc.clientHeight;
-	 //	}
+		glc.extraHeight = 1;
+		glc.extraWidth = 1;
 	 // set gl wid,hit
 	// set gl viewport and asp
 		checkglerror("after gl_mid()");

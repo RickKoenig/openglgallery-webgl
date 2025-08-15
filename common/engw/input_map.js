@@ -17,14 +17,17 @@ function patchMouseTouchPosition() {
 		input.mx = glc.clientWidth - 1;
 	if (input.my >= glc.clientHeight)
 		input.my = glc.clientHeight - 1;
-	input.fmx= 2*input.mx/glc.clientWidth - 1;
+	input.fmx = 2*input.mx/glc.clientWidth - 1;
 	input.fmy = -2*input.my/glc.clientHeight + 1; // flip y
 	if (glc.asp === undefined) // incase there is no webgl context
 		return;
-	if (glc.asp > 1) {
-		input.fmx *= glc.asp;
+	if (glc.asp > input.extraWidth / input.extraHeight) {
+	//if (false) {
+		input.fmx *= input.extraHeight * glc.asp;
+		input.fmy *= input.extraHeight;
 	} else {
-		input.fmy /= glc.asp;
+		input.fmx *= input.extraWidth;
+		input.fmy *= input.extraWidth / glc.asp;
 	}
 }
 
@@ -106,17 +109,9 @@ function bmousewheel(e) {
 // TOUCH
 
 function touch(e) {
-	let pageX, pageY;
-	if (false) {
-		let clientX = e.touches[0].clientX;
-		let clientY = e.touches[0].clientY;
-		pageX = clientX + window.scrollX;
-		pageY = clientY + window.scrollY;
-	} else {
-		pageX = e.touches[0].pageX;
-		pageY = e.touches[0].pageY;
+	const pageX = e.touches[0].pageX;
+	const pageY = e.touches[0].pageY;
 
-	}
 	const inner = document.getElementById("mycanvas2");
 	const rect = inner.getBoundingClientRect();
 	input.mx = Math.floor(pageX - rect.left);

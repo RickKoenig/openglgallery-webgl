@@ -35,15 +35,25 @@ function beginscene(vp) {
 		// So I'll just set the style.backgroundColor to the same as the gl.clearColor
 		//glc.style.backgroundColor = "#" + tohex2(vp.clearcolor[0]) + tohex2(vp.clearcolor[1]) + tohex2(vp.clearcolor[2]);
 	}
-    if (vp.clearflags)
+    if (vp.clearflags) {
+		gl.enable(gl.SCISSOR_TEST);
+		gl.scissor(vp.xo * gl.drawingBufferWidth
+			, vp.yo * gl.drawingBufferHeight
+			, vp.xs * gl.drawingBufferWidth
+			, vp.ys * gl.drawingBufferHeight);
 		gl.clear(vp.clearflags);
+		gl.disable(gl.SCISSOR_TEST);
+	}
 	checkglerror("start setview");
 	setview(vp);
 	checkglerror("end setview");
 	if (vp.target) {
 	    gl.viewport(0, 0, vp.target.width,vp.target.height);
 	} else {
-	    gl.viewport(0, 0, vp.xs*gl.drawingBufferWidth, vp.ys*gl.drawingBufferHeight);
+	    gl.viewport(vp.xo * gl.drawingBufferWidth
+			, vp.yo * gl.drawingBufferHeight
+			, vp.xs * gl.drawingBufferWidth
+			, vp.ys * gl.drawingBufferHeight);
 	}
 	if (vp.isshadowmap)
 		shadowmap.beginpass();
@@ -140,17 +150,34 @@ function setview(vp) {
 		}
 	}
 	mat4.invert(v2wMatrix,mvMatrix); // for env map and shadowmapping
-	
 	// set projection matrix here
 	if (vp.isortho) {
-		if (vp.asp > 1) { // landscape
-			mat4.ortholhc(pMatrix,-vp.ortho_size*vp.asp,vp.ortho_size*vp.asp,-vp.ortho_size,vp.ortho_size,vp.near,vp.far);
+			// out
+			// , left, right
+			// , bottom, top
+			// , near, far
+		if (vp.asp > glc.extraWidth / glc.extraHeight) { // landscape
+		//if (false) {
+			mat4.ortholhc(pMatrix
+				, -vp.ortho_size * vp.asp * glc.extraHeight
+				, vp.ortho_size * vp.asp * glc.extraHeight
+				, -vp.ortho_size * glc.extraHeight
+				, vp.ortho_size * glc.extraHeight
+				, vp.near, vp.far);
 		} else { // portrait
-			mat4.ortholhc(pMatrix,-vp.ortho_size,vp.ortho_size,-vp.ortho_size/vp.asp,vp.ortho_size/vp.asp,vp.near,vp.far);
+			mat4.ortholhc(pMatrix
+				, -vp.ortho_size * glc.extraWidth
+				, vp.ortho_size * glc.extraWidth
+				, -vp.ortho_size / vp.asp * glc.extraWidth
+				, vp.ortho_size / vp.asp * glc.extraWidth
+				, vp.near, vp.far);
 		}
 	} else {
-		mat4.perspectivelhczf(pMatrix,vp.zoom,vp.asp,vp.near,vp.far);
-		if (vp.asp > 1) {
+		// out
+		// ,zf,aspect
+		// ,near,far
+		mat4.perspectivelhczf(pMatrix,vp.zoom,vp.asp,vp.near,vp.far,glc.extraWidth,glc.extraHeight);
+		if (vp.asp > glc.extraWidth / glc.extraHeight) { // landscape
 			pMatrix[8] += vp.xo*2/glc.asp; // skew X
 			pMatrix[9] += vp.yo*2; // skew Y
 		} else {
@@ -280,7 +307,7 @@ function defaultviewport() {
 		xo:0,
 		yo:0,
 		xs:1,
-		ys:1
+		ys:1,
 	};
 	return vp;
 }
@@ -317,7 +344,9 @@ function defaultorthoviewport() {
 		xo:0,
 		yo:0,
 		xs:1,
-		ys:1
+		ys:1,
+		extraWidth:1,
+		extraHeight:1
 	};
 	return vpo;
 }
