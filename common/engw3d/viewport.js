@@ -12,13 +12,17 @@ function beginscene(vp) {
 		gl.clearColor(vp.clearcolor[0],vp.clearcolor[1],vp.clearcolor[2],vp.clearcolor[3]);
 	}
     if (vp.clearflags) {
-		gl.enable(gl.SCISSOR_TEST);
-		gl.scissor(vp.xo * gl.drawingBufferWidth
-			, vp.yo * gl.drawingBufferHeight
-			, vp.xs * gl.drawingBufferWidth
-			, vp.ys * gl.drawingBufferHeight);
+		if (!vp.isshadowmap) { // only do scissor on main drawing surfaces
+			gl.enable(gl.SCISSOR_TEST);
+			gl.scissor(vp.xo * gl.drawingBufferWidth
+				, vp.yo * gl.drawingBufferHeight
+				, vp.xs * gl.drawingBufferWidth
+				, vp.ys * gl.drawingBufferHeight);
+		}
 		gl.clear(vp.clearflags);
-		gl.disable(gl.SCISSOR_TEST);
+		if (!vp.isshadowmap) {
+			gl.disable(gl.SCISSOR_TEST);
+		}
 	}
 	checkglerror("start setview");
 	setview(vp);
