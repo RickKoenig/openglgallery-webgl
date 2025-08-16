@@ -89,6 +89,6 @@ basic.exit = function() {
 	logger("exiting webgl basic 3D\n");
 
 	// reset extra ndc system, input
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 };

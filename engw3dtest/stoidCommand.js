@@ -330,6 +330,6 @@ stoidCommand.exit = function() {
 	fpswanted = sc.fpswantedsave;
 
 	// reset extra ndc system, input
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 };

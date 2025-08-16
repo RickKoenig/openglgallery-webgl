@@ -1305,8 +1305,8 @@ scratch.exit = function() {
 	logger("exiting webgl scratch\n");
 	clearbuts('scratch');
 	// reset extra ndc system, input
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 };
 
 
