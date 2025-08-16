@@ -22,7 +22,6 @@ function patchMouseTouchPosition() {
 	if (glc.asp === undefined) // incase there is no webgl context
 		return;
 	if (glc.asp > input.extraWidth / input.extraHeight) {
-	//if (false) {
 		input.fmx *= input.extraHeight * glc.asp;
 		input.fmy *= input.extraHeight;
 	} else {

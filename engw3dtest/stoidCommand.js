@@ -38,28 +38,6 @@ stoidCommand.load = function() {
 stoidCommand.calcscale = function(bm) {
 	const safe = .95;
 	return [2 * sc.SWIDTH / sc.SHEIGHT * safe, 2 * safe, 1];
-	const bx = bm.size.x; // from bitmap
-	const by = bm.size.y;
-	const cx = glc.clientWidth;
-	const cy = glc.clientHeight; // to canvas client
-	const scl = vec3.create();
-	if (cx >= cy) {
-		if (cx / bx >= cy / by) {
-			scl[0] = 2 * bx / by;
-			scl[1] = 2;
-		} else {
-			scl[0] = 2 * cx / cy;
-			scl[1] = 2 * cx / cy * by / bx;
-		}
-	} else {
-		scl[0] = 2;
-		scl[1] = 2 * by / bx;
-	}
-	//const safe = .95;
-	scl[0] *= safe;
-	scl[1] *= safe;
-	scl[2] = 1;
-	return scl;
 };
 
 sc.fastScanAlpha = function(bmS,bmD,sx,sy,dx,dy,tx,ty) {
@@ -220,7 +198,7 @@ sc.init = function() {
 	stoidCommand.ptree = buildplanexy("aplanexy",1,1,"datatex","tex");
 	stoidCommand.ptree.mod.flags |= modelflagenums.NOZBUFFER; // turn off zbuffer
 	stoidCommand.ptree.trans = [0,0,0];
-	var scl = stoidCommand.calcscale(stoidCommand.B32S);
+	const scl = stoidCommand.calcscale(stoidCommand.B32S);
 	stoidCommand.ptree.scale = scl;
 	if (window.isMobile) {
 		stoidCommand.ptreeL.scale = vec3.clone(scl);
@@ -322,8 +300,7 @@ stoidCommand.proc = function() {
 stoidCommand.onresize = function() {
 	logger("stoidCommand resize to " + glc.clientWidth + "," + glc.clientHeight + "\n");
 	if (stoidCommand.B32S) {
-		var scl = stoidCommand.calcscale(stoidCommand.B32S);
-		stoidCommand.ptree.scale = scl;
+		stoidCommand.ptree.scale = stoidCommand.calcscale(stoidCommand.B32S);
 	}
 };
 
