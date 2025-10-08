@@ -38,6 +38,7 @@ class fileLoadSave {
 			+ '	File Name'
 			+ '	<br/>'
 			+ '	<input id="loadSaveFileName' + uid + '"'
+			+ '		class="lsfn"'
 			+ '		type="text" value="default"/>'
 			+ '	.' + ext
 			+ '</p>';
