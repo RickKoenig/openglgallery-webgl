@@ -23,6 +23,9 @@ doWordWrap = function(strIn, cols) {
 	// do it one char at a time, (maybe not so fast)
 	let numChars = 0; 
 	let strOut = "";
+	if (!strIn) {
+		console.log("not strin");
+	}
 	for (let i = 0; i < strIn.length; ++i) {
 		const chr = strIn.charAt(i);
 		if (chr == "\n") {

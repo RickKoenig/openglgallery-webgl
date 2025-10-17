@@ -44,6 +44,7 @@ var statelist = [
 	storagetest, // test localstorage
 	scratchfont, // test font again
 	test2d, // some sprite work
+	sensors, // sensors like gravity magnetic etc.
 	basic, // one 3d square, planexy
 	basic4textures, // one 3d square, planexy 4 different textures
 	qcomp, // future of computing (quantum)

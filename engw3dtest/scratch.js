@@ -1009,14 +1009,7 @@ scratch.init = function() {
 		}
 	// end build a datatexture procedurally
 	
-	
-        var us = planepatchu;
-        var vs = planepatchv;
-        planepatchu = 2;
-        planepatchv = 2;
-        scratch.atree =  buildplanexy2t("aplane", 1, 1, "maptestnck.png", "Bark.png", "blend2bc");
-        planepatchu = us;
-        planepatchv = vs;
+        scratch.atree =  buildplanexy2t("aplane", 1, 1, "maptestnck.png", "Bark.png", "blend2bc", 2, 2);
         //Texture.globaltexflags = Texture.FLAG_CLAMPUV;
         //scratch.atree.mod.flags |= Model.FLAG_DOUBLESIDED;
         scratch.atree.trans = [0,1,0];

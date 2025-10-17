@@ -75,6 +75,20 @@
             "name": "Quantum computer simulator",
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=qcomp",
             "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "basic MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile.html?startstate=basic",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Sensors MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile.html?startstate=sensors",
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

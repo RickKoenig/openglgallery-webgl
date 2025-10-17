@@ -125,19 +125,19 @@ function touch(e) {
 
 function btouchstart(e)
 {
-	logger("touchstart\n");
+	//logger("touchstart\n");
 	touch(e);
 }
 
 function btouchmove(e)
 {
-	logger("touchmove\n");
+	//logger("touchmove\n");
 	touch(e);
 }
 
 function btouchend(e)
 {
-	logger("touchend\n");
+	//logger("touchend\n");
 	mbuthold[0] = 0;
 	++mclick[0];
 	if (e.preventDefault)

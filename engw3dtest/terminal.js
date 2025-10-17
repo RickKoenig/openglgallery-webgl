@@ -109,7 +109,7 @@ class Terminal {
 
     print(str) {
         if (!str) return;
-        //console.log("terminal print '" + str + "'");
+        console.log("terminal print: '" + str + "'");
         str = doWordWrap(str, this.maxX);
         if (this.cmdCallback) {
             this.mainStr += '\n' + str + '\n';

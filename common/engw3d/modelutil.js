@@ -1287,11 +1287,9 @@ function buildconexy2t(name,rad,hit,texname,texname2,shadername) {
 }
 
 // planexy,planexz
-var planepatchi = 1;//2; // default tessalation
-var planepatchj = 1;//2; // default tessalation
-//var planepatchu = 3;
-//var planepatchv = 3;
-var planepatchu = 1;
+var planepatchi = 1; // default tessalation
+var planepatchj = 1;
+var planepatchu = 1; // default tiling
 var planepatchv = 1;
 
 // planexz
@@ -1350,8 +1348,19 @@ function buildplanexzmodel2t(name,wid,hit,texname1,texname2,shadername) {
     return mod;
 }
 
-function buildplanexz2t(name,wid,hit,texname1,texname2,shadername) {
-	var mod = buildplanexzmodel2t(name,wid,hit,texname1,texname2,shadername);
+function buildplanexz2t(name, wid, hit, texname1, texname2, shadername, tileX, tileY) {
+	let saveU, saveV;
+	if (tileX != undefined) {
+		saveU = planepatchu;
+		saveV = planepatchv;
+		planepatchu = tileX;
+		planepatchv = tileY;
+	}
+	var mod = buildplanexzmodel2t(name, wid, hit, texname1, texname2, shadername);
+	if (tileX != undefined) {
+		planepatchu = saveU;
+		planepatchv = saveV;
+	}
 	var ret = new Tree2(name);
 	ret.setmodel(mod);
 	return ret;
@@ -1376,8 +1385,8 @@ function planexy_surf(wid,hit) {
 	return functor;
 }
 
-function buildplanexymesh(wid,hit,tessx,tessy) {
-	return buildpatch(tessx,tessy,planepatchu,planepatchv,planexy_surf(wid,hit));
+function buildplanexymesh(wid, hit, tessx, tessy) {
+	return buildpatch(tessx, tessy, planepatchu, planepatchv, planexy_surf(wid, hit));
 }
 
 function buildplanexymodel(name,wid,hit,texname,shadername,tessx,tessy) {
@@ -1392,8 +1401,19 @@ function buildplanexymodel(name,wid,hit,texname,shadername,tessx,tessy) {
     return mod;
 }
 
-function buildplanexy(name,wid,hit,texname,shadername,tessx,tessy) {
+function buildplanexy(name, wid, hit, texname, shadername, tessx, tessy, tileX, tileY) {
+	let saveU, saveV;
+	if (tileX != undefined) {
+		saveU = planepatchu;
+		saveV = planepatchv;
+		planepatchu = tileX;
+		planepatchv = tileY;
+	}
 	var mod = buildplanexymodel(name,wid,hit,texname,shadername,tessx,tessy);
+	if (tileX != undefined) {
+		planepatchu = saveU;
+		planepatchv = saveV;
+	}
 	var ret = new Tree2(name);
 	ret.setmodel(mod);
 	return ret;
@@ -1450,8 +1470,19 @@ function buildplanexymodel2t(name,wid,hit,texname1,texname2,shadername) {
     return mod;
 }
 
-function buildplanexy2t(name,wid,hit,texname1,texname2,shadername) {
+function buildplanexy2t(name,wid,hit,texname1,texname2,shadername, tileX, tileY) {
+	let saveU, saveV;
+	if (tileX != undefined) {
+		saveU = planepatchu;
+		saveV = planepatchv;
+		planepatchu = tileX;
+		planepatchv = tileY;
+	}
 	var mod = buildplanexymodel2t(name,wid,hit,texname1,texname2,shadername);
+	if (tileX != undefined) {
+		planepatchu = saveU;
+		planepatchv = saveV;
+	}
 	var ret = new Tree2(name);
 	ret.setmodel(mod);
 	return ret;

@@ -220,13 +220,7 @@ state17.init = function() {
 	arrowmaster = makearrowmaster();
 	expmaster = makeexpmaster();
 	roottree = new Tree2("root");
-	var ppsaveu = planepatchu;
-	var ppsavev = planepatchv;
-	planepatchu = 20;
-	planepatchv = 20;
-	var pln = buildplanexy("back",200,200,"panel.jpg","tex");
-	planepatchu = ppsaveu;
-	planepatchv = ppsavev;
+	var pln = buildplanexy("back",200,200,"panel.jpg","tex", 1, 1, 20, 20);
 	pln.trans = [0,0,5];
 	roottree.linkchild(pln);
 

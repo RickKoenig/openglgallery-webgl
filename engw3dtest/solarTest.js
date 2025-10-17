@@ -653,14 +653,7 @@ solarTest.init = function() {
 	solarTest.roottree = new Tree2("root");
 	
 // ground plane
-	var planepatchusave = planepatchu;
-	var planepatchvsave = planepatchv;
-	planepatchu = 10;
-	planepatchv = 10;
-	var atree1b = buildplanexz2t("planexz1",20,20,"Grass01.png","shadowmapsharp","shadowmapuseblur"); // tex
-	planepatchu = planepatchusave;
-	planepatchv = planepatchvsave;
-	//atree1b.trans = [0,-20,0];
+	var atree1b = buildplanexz2t("planexz1", 20, 20, "Grass01.png", "shadowmapsharp", "shadowmapuseblur", 10, 10); // tex
 	atree1b.flags |= treeflagenums.DONTCASTSHADOW;
 	solarTest.roottree.linkchild(atree1b);
 	
