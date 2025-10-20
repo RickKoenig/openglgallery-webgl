@@ -86,6 +86,20 @@
         {
             "type": "chrome",
             "request": "launch",
+            "name": "Sensors secure",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=sensors",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Sensors NOT secure",
+            "url": "http://162.227.167.139:88/engw/engw3dtest/indexRAF.html?startstate=sensors",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
             "name": "Sensors MOBILE",
             "url": "http://localhost:88/engw/engw3dtest/indexMobile.html?startstate=sensors",
             "webRoot": "${workspaceFolder}"

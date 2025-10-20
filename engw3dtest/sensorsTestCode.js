@@ -1,69 +1,8 @@
-'use strict';
-
-// very minimalist 3D state
-var sensors = {}; // the 'sensors' state
-
-sensors.text = "WebGL: Most sensors 3D drawing";
-sensors.title = "sensors 3D";
-
-// arrow pointing up
-sensors.makearrowmaster = function() {
-	const arrowmaster = new Tree2("arrow");
-	let atree = buildcylinderxz("mid",.05,.75,"maptestnck.png","diffusespecp");
-	arrowmaster.linkchild(atree);
-	atree = buildconexz("head",.075,.25,"maptestnck.png","diffusespecp");
-	atree.trans = [0, .75, 0];
-	arrowmaster.linkchild(atree);
-	return arrowmaster;
-}
-
-// load these before init
-sensors.load = function() {
-	preloadimg("../common/sptpics/maptestnck.png");
-};
+// this code doesn't get run.
+// just has many test API's for powerful features
 
 sensors.init = function() {
 	logger("entering webgl sensors 3D\n");
-
-	// build root
-	sensors.roottree = new Tree2("sensors root tree");
-
-	// build a planexy (a square)
-	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","diffusespecp");
-	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","tex");
-	var plane = buildplanexy("aplane", 1, 1, "maptestnck.png", "texDoubleSided", 1, 1, 8, 8);
-	plane.mod.flags |= modelflagenums.DOUBLESIDED;
-	plane.trans = [0, 0, 1];
-	sensors.roottree.linkchild(plane);
-
-	sensors.sphere = buildsphere("asphere", 1 / 16, "maptestnck.png", "texc");
-	sensors.sphere.mod.mat.color = [.5, .5, 0, 1];
-	sensors.sphere.trans = [0, 0, 0];
-	sensors.roottree.linkchild(sensors.sphere);
-
-	sensors.arrow = sensors.makearrowmaster();
-	sensors.arrow.trans = [0, 0, 1];
-	sensors.arrow.scale = [1, 1, 1];
-	sensors.roottree.linkchild(sensors.arrow);
-	sensors.arrowDir = [0, 1, 0];
-
-	// build terminal
-		const termParams1 = {
-		cols: 60,
-		rows: 24,
-		offx: 8,
-		offy: 8,
-		scale: 1.2
-	};
-	sensors.terminal = new Terminal(sensors.roottree, [.1, 0, 0, 1], null, termParams1);
-	sensors.terminal.print("1\n12\n123\n1234\n12345\n123456\n1234567\n");
-
-	sensors.terminal.print("SECURE = " + window.isSecureContext);
-
-	mainvp = defaultviewport();
-	mainvp.clearcolor = [0,.25,.5,1];
-
-	// sensor api remove and moved to bottom
 
 	requestDevicePermissions();
 
@@ -76,27 +15,6 @@ sensors.init = function() {
 
 };
 
-sensors.proc = function() {
-	// proc
-	// use sphere as a cursor
-	//sensors.sphere.trans = [input.fmx, input.fmy, 0];
-	// update arrow
-	//sensors.arrowDir[0] = input.fmx;
-	//sensors.arrowDir[1] = input.fmy;
-	sensors.sphere.trans = [input.fmx, input.fmy, 1];
-	//sensors.terminal.print(JSON.stringify([input.fmx, input.fmy, 1]));
-	// update arrow);
-	const quat = dir2quat(sensors.arrowDir);
-	sensors.arrow.qrot = quat;
-	const len = vec3.length(sensors.arrowDir);
-	sensors.arrow.scale[1] = len;
-	sensors.roottree.proc(); // probably does nothing
-	doflycam(mainvp); // modify the trs of mainvp using flycam
-	
-	// draw
-	beginscene(mainvp);
-	sensors.roottree.draw();
-};
 
 sensors.exit = function() {
 	// show current usage before cleanup
@@ -159,8 +77,8 @@ function requestDevicePermissions() {
 
 
 	// if permission API exists
-    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function' 
-	  && window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function' 
+	  && typeof DeviceMotionEvent.requestPermission === 'function') {
 		sensors.terminal.print("found requestPermission API");
 
 
