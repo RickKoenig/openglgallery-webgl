@@ -12,6 +12,7 @@ window.GameA = class GameA {
 
     // assume 1024 by 768 resolution
     constructor(numPlayers, curPlayer, root) {
+		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
         this.margin = 30; // border
         this.size = 30; // radius

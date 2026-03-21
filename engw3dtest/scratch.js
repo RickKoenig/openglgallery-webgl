@@ -14,6 +14,7 @@ scratch.jobtest = false;
 scratch.testArrayBuffers = false;
 scratch.testStuff = false;
 scratch.test2 = false;
+scratch.testFixPoint = true;
 
 scratch.text = "WebGL: This state is where the developer trys new things.  Like JSONP";
 
@@ -705,6 +706,15 @@ scratch.init = function() {
 		//scratch.testCopyCyclicGraph();
 		//scratch.testCircleKill();
 		//scratch.testPIBounce();
+	}
+	if (scratch.testFixPoint) {
+		console.log("test fix point");
+		const fmi = new FMathBigIntInstance(3, 16);
+		const a = fmi.clone(fmi.QUARTERPI);
+		const sa = fmi.create();
+		fmi.sin(sa, a);
+		const str = fmi.toPrettyString(sa);
+		console.log("pretty string = " + str);
 	}
 	if (scratch.testArrayBuffers) {
 		// test ArrayBuffers

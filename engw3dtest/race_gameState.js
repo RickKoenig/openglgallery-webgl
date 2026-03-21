@@ -169,7 +169,7 @@ race_gameState.validateFrames = function() {
 		}
 	}
 	const str = "Valid Frm = " + race_gameState.validFrames;
-	race_gameState.termValid.print?.(str);
+	//race_gameState.termValid.print?.(str);
 }
 
 /*
@@ -327,14 +327,14 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		race_gameState.roottree.linkchild(race_gameState.indicatorTree);
 		race_gameState.showPings = new Indicator(race_gameState.indicatorTree, room.slots.length, race_gameState.mySlot);
 	}
-
+/*
 	if (race_gameState.gameType == 'a') {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
 	}
 	if (race_gameState.gameType == 'b') {
 		mainvp.clearcolor = [.05, .85, 1, 1];
 	}
-
+*/
 	// catchup parameters
 	race_gameState.catchup0 = .05 //0; // constant
 	race_gameState.catchup1 = .05 / 30; // linear
@@ -479,8 +479,8 @@ race_gameState.proc = function() {
 		}
 	}
 	race_gameState.roottree.proc(); // do animations that don't effect players
-	race_gameState.terminalFPS.print("FPS: AVG = " + Timers.fpsavg.toFixed(4) 
-		+ ", WANTED " + fpswanted);
+	//race_gameState.terminalFPS.print("FPS: AVG = " + Timers.fpsavg.toFixed(4) 
+	//	+ ", WANTED " + fpswanted);
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	if (race_gameState.mvc) {

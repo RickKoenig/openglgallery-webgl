@@ -116,7 +116,7 @@ class Indicator {
 	// same size arr
 	update(arr, tim) {
 		this.termMiddle.clear();
-		this.termMiddle.print(this.#frameToTime(tim));
+		//this.termMiddle.print(this.#frameToTime(tim));
 		let maxVal = 0;
 		for (let i = 0; i < this.num; ++i) {
 			let val = arr[i];

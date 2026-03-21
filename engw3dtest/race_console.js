@@ -159,7 +159,7 @@ race_console.setupCallbacks = function(socker, name) {
 	socker.on('news', function(strData) {
 		console.log("NEWS from server: " + strData + " client newsCount " 
 			+ race_console.clientNewsCount);
-			race_console.terminal.print(strData);
+			//race_console.terminal.print(strData);
 			++race_console.clientNewsCount;
 	});
 

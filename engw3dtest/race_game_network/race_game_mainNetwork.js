@@ -61,6 +61,7 @@ window.GameB = class RaceGameNetwork {
 
         // make game viewport
         this.gameViewPort = defaultviewport();
+        //this.gameViewPort.clearcolor = [1, 0, 0, 1];
         mainvp.clearflags = 0;
 
         // make the track
