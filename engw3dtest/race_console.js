@@ -71,6 +71,20 @@ race_console.autoCommand1Pb = function() {
 	race_console.doCommand('go b');
 }
 
+race_console.autoCommand1Pc = function() {
+	// log in and connect to room p0
+	race_console.doCommand('e');
+	race_console.doCommand('m');
+	race_console.doCommand('go c');
+}
+
+race_console.autoCommand1P = function(g) {
+	// log in and connect to room p0
+	race_console.doCommand('e');
+	race_console.doCommand('m');
+	race_console.doCommand('go ' + g);
+}
+
 // get my profile from server after setting name game etc. 
 // also has my id and room id if needed
 race_console.makePromptFromInfo = function(info) {
@@ -325,9 +339,9 @@ race_console.doCommand = function(cmdStr) {
 			if (race_console.socker) {
 				let gameType = words[0];
 				//if (!gameType) gameType = 'a'; // default
-				if (gameType != 'a' && gameType != 'b') {
+				if (gameType.length != 1 || gameType < 'a' || gameType > 'c') {
 					race_console.terminal.print("not a valid gameType '" + gameType + "'");
-					race_console.terminal.print("valid gameTypes are, 'a' and 'b'");
+					race_console.terminal.print("valid gameTypes are, 'a' thru 'c'");
 					break;
 				}
 				race_console.socker.emit('go', gameType);
@@ -444,11 +458,15 @@ race_console.init = function(intentData) {
 	logger("entering webgl race_console\n");
 	// ui
 	setbutsname('console');
-	// test state changes
-	//race_console.lobbyButton = makeabut("lobby", race_console.gotoLobby);
-	//race_console.fillButton = makeabut("sent go", race_console.gotoFill);
-	makeabut("start game a", race_console.autoCommand1Pa);
-	makeabut("start game b", race_console.autoCommand1Pb);
+	//makeabut("start game(a), move and push", race_console.autoCommand1Pa);
+	//makeabut("start game(b), 2d race", race_console.autoCommand1Pb);
+	//makeabut("start game(c), move and push fixP", race_console.autoCommand1Pc);
+	makeabut("start game(a), move and push", race_console.autoCommand1P.bind(this,'a'));
+	makeabr();
+	makeabut("start game(b), 2d race", race_console.autoCommand1P.bind(this,'b'));
+	makeabr();
+	makeabut("start game(c), 2d race", race_console.autoCommand1P.bind(this,'c'));
+	makeahr();
 	makeabut("make room", race_console.autoCommandMake);
 	makeabut("join room", race_console.autoCommandJoin);
 	
