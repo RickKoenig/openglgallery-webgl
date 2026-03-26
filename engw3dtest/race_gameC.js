@@ -34,24 +34,36 @@ window.GameC = class GameC {
         this.curPlayerView = [];
         this.curDummyNpcView = [];
         this.curMoveNpcView = [];
+        this.curDesiredNpcView = [];
 
         // build 3D scene
         const viewParent = new Tree2("viewParent");
         viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
         root.linkchild(viewParent);
-        // view players
+        // view players move
         const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
         treeMasterPlayer.scale = [1, 1, .01];
-        treeMasterPlayer.mat.color = [.75, .75, .75, 1];
+        treeMasterPlayer.mat.color = [.65, .65, .65, 1];
+        // and desired move
+        const treeMasterDesiredNpc = buildsphere("aDesiredNpc", this.size, "Bark.png", "texc");
+        treeMasterDesiredNpc.scale = [1, 1, .01];
+        treeMasterDesiredNpc.mat.color = [.65, .65, .65, 1];
         for (let s = 0; s < numPlayers; ++s) {
             const playerTree = treeMasterPlayer.newdup();
+            const npcDesiredTree = treeMasterDesiredNpc.newdup();
             if (curPlayer == s) {
-                playerTree.mat.color = [1.5, 1.5, 1.5, 1]; // brighter color for self
+                playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+                npcDesiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
             }
             this.curPlayerView[s] = playerTree;
+            this.curDesiredNpcView[s] = npcDesiredTree;
             viewParent.linkchild(playerTree);
+            viewParent.linkchild(npcDesiredTree);
+        }
+        for (let n = 0; n < this.numMoveNpcs; ++n) {
         }
         treeMasterPlayer.glfree();
+        treeMasterDesiredNpc.glfree();
         // view npcsDummy
         const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
         treeMasterDummyNpc.scale = [1, 1, .01];
@@ -133,7 +145,8 @@ window.GameC = class GameC {
             players: Array(this.numPlayers),
             npcsDummy: Array(this.numDummyNpcs),
             npcsMoving: Array(this.numMoveNpcs),
-            npcsMovingAngle: 0
+            npcsMovingAngle: 0,
+            npcsDesired: Array(this.numPlayers)
         };
         // players
         for (let slot = 0; slot < this.numPlayers; ++slot) {
@@ -334,7 +347,8 @@ window.GameC = class GameC {
                 if (pInput.mouse.click) {
                     curPlayer.desiredPos = [
                         range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin)
+                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin),
+                        0
                     ];
                 }
             }
@@ -444,7 +458,15 @@ window.GameC = class GameC {
         // update the view from the model
         // players
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
-            this.curPlayerView[slot].trans = vec3.clone(this.curModel.players[slot].pos);
+            const curPlayer = this.curModel.players[slot];
+            this.curPlayerView[slot].trans = vec3.clone(curPlayer.pos);
+            const dTree = this.curDesiredNpcView[slot];
+            if (curPlayer.desiredPos) {
+                dTree.trans = vec3.clone(curPlayer.desiredPos);
+                dTree.flags &= ~treeflagenums.DONTDRAWC;	
+            } else {
+                dTree.flags |= treeflagenums.DONTDRAWC;	
+            }
         }
         // npcsDummy
         for (let n = 0; n < this.curModel.npcsDummy.length; ++n) {
