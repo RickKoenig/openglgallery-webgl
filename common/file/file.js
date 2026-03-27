@@ -163,9 +163,9 @@ function logger(str) {
 let alertSCount = 3;
 function alertS(str) {
 	str = "alertS[" + alertSCount + "]: " + str;
-	console.error(str);
 	if (alertSCount > 0) {
 		alert(str);
+		console.error(str);
 		--alertSCount;
 	}
 }

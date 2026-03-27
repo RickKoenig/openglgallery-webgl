@@ -12,7 +12,7 @@ window.GameC = class GameC {
 
     // assume 1024 by 768 resolution
     constructor(numPlayers, curPlayer, root) {
-		mainvp.clearcolor = [.75 ,.75, .5, 1];
+		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
         this.margin = 30; // border
         this.size = 30; // radius
@@ -32,9 +32,10 @@ window.GameC = class GameC {
         this.step = 4; // how fast players move
         this.ghostModel = {angle: 0 }; // NO time warp model, this model is for animation, doesn't interact with game
         this.curPlayerView = [];
+        this.curDesiredView = [];
+        this.curLineView = [];
         this.curDummyNpcView = [];
         this.curMoveNpcView = [];
-        this.curDesiredNpcView = [];
 
         // build 3D scene
         const viewParent = new Tree2("viewParent");
@@ -45,25 +46,35 @@ window.GameC = class GameC {
         treeMasterPlayer.scale = [1, 1, .01];
         treeMasterPlayer.mat.color = [.65, .65, .65, 1];
         // and desired move
-        const treeMasterDesiredNpc = buildsphere("aDesiredNpc", this.size, "Bark.png", "texc");
-        treeMasterDesiredNpc.scale = [1, 1, .01];
-        treeMasterDesiredNpc.mat.color = [.65, .65, .65, 1];
+        const treeMasterDesired = buildsphere("aDesiredNpc", this.size, "Bark.png", "texc");
+        treeMasterDesired.scale = [1, 1, .01];
+        treeMasterDesired.mat.color = [.65, .65, .65, 1];
+        // and connecting line
+        const treeMasterLine = new Tree2("aplane");
+        const treeOffset = buildplanexy("aplaneOffset", 1, 1, "maptestnck.png", "tex");
+        treeOffset.trans = [1, 0, 0];
+        treeMasterLine.scale = [1, 3, 1];
+        treeMasterLine.rot = [0, 0, 0];
+        treeMasterLine.linkchild(treeOffset);
+
         for (let s = 0; s < numPlayers; ++s) {
             const playerTree = treeMasterPlayer.newdup();
-            const npcDesiredTree = treeMasterDesiredNpc.newdup();
+            const desiredTree = treeMasterDesired.newdup();
+            const lineTree = treeMasterLine.newdup();
             if (curPlayer == s) {
                 playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
-                npcDesiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+                desiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
             }
             this.curPlayerView[s] = playerTree;
-            this.curDesiredNpcView[s] = npcDesiredTree;
+            this.curDesiredView[s] = desiredTree;
+            this.curLineView[s] = lineTree;
             viewParent.linkchild(playerTree);
-            viewParent.linkchild(npcDesiredTree);
-        }
-        for (let n = 0; n < this.numMoveNpcs; ++n) {
+            viewParent.linkchild(desiredTree);
+            viewParent.linkchild(lineTree);
         }
         treeMasterPlayer.glfree();
-        treeMasterDesiredNpc.glfree();
+        treeMasterDesired.glfree();
+        treeMasterLine.glfree();
         // view npcsDummy
         const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
         treeMasterDummyNpc.scale = [1, 1, .01];
@@ -114,7 +125,7 @@ window.GameC = class GameC {
     }
 
     #setNpcsMoving(retModel) {
-        const angOffset = retModel.npcsMovingAngle;
+        const angOffset = retModel.npcsMovingAngle; // + .001 *Math.random(); // try to break timewarp
         let n = 0;
         const center = [700, 384];
         const startX = 100;
@@ -460,12 +471,20 @@ window.GameC = class GameC {
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
             const curPlayer = this.curModel.players[slot];
             this.curPlayerView[slot].trans = vec3.clone(curPlayer.pos);
-            const dTree = this.curDesiredNpcView[slot];
+            const dTree = this.curDesiredView[slot];
+            const lTree = this.curLineView[slot];
             if (curPlayer.desiredPos) {
                 dTree.trans = vec3.clone(curPlayer.desiredPos);
+                lTree.trans = vec3.clone(curPlayer.desiredPos);
+                lTree.rot = [0, 0, Math.atan2(curPlayer.pos[1] 
+                    - curPlayer.desiredPos[1], curPlayer.pos[0] - curPlayer.desiredPos[0])];
+                const dist = vec2.dist(curPlayer.pos, curPlayer.desiredPos);
+                lTree.scale[0] = dist / 2;
                 dTree.flags &= ~treeflagenums.DONTDRAWC;	
+                lTree.flags &= ~treeflagenums.DONTDRAWC;	
             } else {
                 dTree.flags |= treeflagenums.DONTDRAWC;	
+                lTree.flags |= treeflagenums.DONTDRAWC;
             }
         }
         // npcsDummy
