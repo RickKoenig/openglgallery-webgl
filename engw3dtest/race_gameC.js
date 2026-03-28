@@ -11,7 +11,7 @@ window.GameC = class GameC {
     };
 
     // assume 1024 by 768 resolution
-    constructor(numPlayers, curPlayer, root) {
+    constructor(numPlayers, youPlayer, root) {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
         this.margin = 30; // border
@@ -61,7 +61,7 @@ window.GameC = class GameC {
             const playerTree = treeMasterPlayer.newdup();
             const desiredTree = treeMasterDesired.newdup();
             const lineTree = treeMasterLine.newdup();
-            if (curPlayer == s) {
+            if (youPlayer == s) {
                 playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
                 desiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
             }
@@ -125,7 +125,7 @@ window.GameC = class GameC {
     }
 
     #setNpcsMoving(retModel) {
-        const angOffset = retModel.npcsMovingAngle; // + .001 *Math.random(); // try to break timewarp
+        const angOffset = retModel.npcsMovingAngle;// + .001 *Math.random(); // try to break timewarp
         let n = 0;
         const center = [700, 384];
         const startX = 100;

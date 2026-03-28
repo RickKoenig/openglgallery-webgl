@@ -13,7 +13,7 @@ window.GameB = class RaceGameNetwork {
         const ftree = new Tree2("info");
         const infofontmodel = new ModelFont("infoFont","font0.png","tex",
             1,1,
-            60,20,
+            80,20,
             true);
         infofontmodel.flags |= modelflagenums.NOZBUFFER;
         const str = "Welcome";
@@ -33,11 +33,11 @@ window.GameB = class RaceGameNetwork {
         this.infoTree.mod.print(str);
     };
     
-    constructor(numNetworkPlayers, curPlayer, root, slotNames) {
+    constructor(numNetworkPlayers, youPlayer, root, slotNames) {
         const totalPlayers = 8; // total number of players, including BOTS
         this.numPlayers = Math.max(totalPlayers, numNetworkPlayers); // players without pInputs are BOTS
-        this.curPlayer = curPlayer; // network
-        this.curPlayerView = curPlayer; // view
+        this.youPlayer = youPlayer; // network
+        this.curPlayerView = youPlayer; // view
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
         this.ghostModel = {}; // NO time warp model, this model is for animation, doesn't interact with game
@@ -165,7 +165,7 @@ window.GameB = class RaceGameNetwork {
             case race_car_network.modeEnums.ai:
             case race_car_network.modeEnums.revai:
                 const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
-                const carModel = parent.curModel[parent.curPlayer];
+                const carModel = parent.curModel[parent.youPlayer];
                 let dir = race_track.getAiTrack(race_trackData.race_track1, carModel.pos, parent.mode == race_car_network.modeEnums.revai);
                 let deltaDir = normalangrad(dir - carModel.dir);
                 keyCode |= RaceGameNetwork.keyCodes.UP;

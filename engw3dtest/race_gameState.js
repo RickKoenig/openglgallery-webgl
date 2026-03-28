@@ -169,7 +169,7 @@ race_gameState.validateFrames = function() {
 		}
 	}
 	const str = "Valid Frm = " + race_gameState.validFrames;
-	//race_gameState.termValid.print?.(str);
+	race_gameState.termValid.print?.(str);
 }
 
 /*
@@ -479,8 +479,8 @@ race_gameState.proc = function() {
 		}
 	}
 	race_gameState.roottree.proc(); // do animations that don't effect players
-	//race_gameState.terminalFPS.print("FPS: AVG = " + Timers.fpsavg.toFixed(4) 
-	//	+ ", WANTED " + fpswanted);
+	race_gameState.terminalFPS.print("FPS: AVG = " + Timers.fpsavg.toFixed(4) 
+		+ ", WANTED " + fpswanted);
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	if (race_gameState.mvc) {
