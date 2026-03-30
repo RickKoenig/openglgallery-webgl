@@ -427,31 +427,111 @@ race_console.testDistColl = function() {
 race_console.testFloat = function() {
 	let ang = 4 * 2 * CMath.PI / 6; // doesn't matter which library
 	ang = normalangrad(ang);
-
-	{console.log("Using Math library, standard math library");
-	const sinAng = Math.sin(ang);
-	console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
-	let bi = fromFloat(ang);
-	console.log("ang to bi = " + bi.toString(16) + "\n");
-	bi = fromFloat(sinAng);
-	console.log("sinAng to bi = " + bi.toString(16) + "\n");
+	{
+		console.log("Using Math library, standard math library");
+		const sinAng = Math.sin(ang);
+		console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
+		let bi = fromFloat(ang);
+		console.log("ang to bi = " + bi.toString(16) + "\n");
+		bi = fromFloat(sinAng);
+		console.log("sinAng to bi = " + bi.toString(16) + "\n");
+	}
+	{
+		console.log("Using Math library, consistent math library");
+		const sinAng = CMath.sin(ang);
+		console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
+		let bi = fromFloat(ang);
+		console.log("ang to bi = " + bi.toString(16) + "\n");
+		bi = fromFloat(sinAng);
+		console.log("sinAng to bi = " + bi.toString(16) + "\n");
+	}
 }
 
-	{console.log("Using Math library, consistent math library");
-	const sinAng = CMath.sin(ang);
-	console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
-	let bi = fromFloat(ang);
-	console.log("ang to bi = " + bi.toString(16) + "\n");
-	bi = fromFloat(sinAng);
-	console.log("sinAng to bi = " + bi.toString(16) + "\n");
-}
+race_console.testJSON = function() {
+	console.log("test JSON");
 
+	function replacer(key, value) {
+		// Filtering out properties
+		if (typeof value === "bigint") {
+			return value.toString() + 'n';
+		}
+		return value;
+	}
+
+	const containsOnlyDigitsEvery = (str) => {
+		return str.split('').every(char => {
+			return char >= '0' && char <= '9';
+		});
+	};	
+
+	function reviver(key, origValue) {
+		let value = origValue;
+		// Filtering out properties
+		if (typeof value !== "string") {
+			return value;
+		}
+		// length at least 2
+		console.log("string = " + value);
+		let len = value.length;
+		if (len < 2) {
+			return value;
+		}
+		// check for 'n' at the end
+		let pValue = value;
+		if (value.at(-1) === 'n') {
+			console.log('n found');
+			value = value.slice(0, -1);
+			--len;
+		} else {
+			return origValue;
+		}
+		// check for '-' at the front
+		if (value.at(0) === '-') {
+			pValue = value.slice(1);
+			console.log("remove - str now = " + value);
+			--len;
+		} else {
+			pValue = value;
+		}
+		if (!len) {
+			return origValue;
+		}
+		const allDigits = containsOnlyDigitsEvery(pValue);
+		if (allDigits) {
+			return BigInt(value);					
+		}
+		return origValue;
+	}
+
+	const obj = {
+		hi: "ho",
+		num1: 13.14,
+		num4: 42.72,
+		num14: {x: 33n, y: -44n},
+		num3: '-3149999n',
+		num5: '34n',
+		num2: 2.72,
+		num6: '-34n',
+		num7: '-0n',
+		num8: '0n',
+		num9: '-0',
+		num10: '0',
+		num11: '-n',
+		num12: 'n',
+		num13: '',
+	}
+	const objStr = JSON.sortify(obj, replacer, '   ');
+	const obj2 = JSON.parse(objStr, reviver);
+	console.log("objStr = " + objStr);
+	console.log(obj2);
+	console.log("end test JSON");
 }
 
 race_console.init = function(intentData) {
+	race_console.testJSON();
 	//race_console.testGameClass('a');
 	//race_console.testEqualsObj();
-	race_console.testFloat();
+	//race_console.testFloat();
 	//race_console.testDistColl();
 	race_console.keepSockInfo = false;
 	race_console.clientNewsCount = 0;
