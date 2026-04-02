@@ -209,6 +209,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	// ui
 	setbutsname('ingame');
 	race_lobby.fillButton = makeabut("console", race_gameState.gotoConsole);
+	makeaprintarea("GAME '" + race_gameState.gameType + "'");
 
 	race_gameState.roottree = new Tree2("race_gameState root tree");
 	race_gameState.terminal = new Terminal(race_gameState.roottree, [.2, .2, .1, 1]);
