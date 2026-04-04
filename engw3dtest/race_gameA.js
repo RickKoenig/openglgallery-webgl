@@ -1,6 +1,7 @@
 'use strict';
 
 // run a networked test game
+// push circle objects around
 window.GameA = class GameA {
     static #keyCodes = {
         UP: 1,
@@ -11,7 +12,7 @@ window.GameA = class GameA {
     };
 
     // assume 1024 by 768 resolution
-    constructor(numPlayers, curPlayer, root) {
+    constructor(numPlayers, youPlayer, root) {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
         this.margin = 30; // border
@@ -26,12 +27,15 @@ window.GameA = class GameA {
         this.numMoveNpcsX = 3;
         this.numMoveNpcsY = 6;
         this.numMoveNpcs = this.numMoveNpcsX * this.numMoveNpcsY;
+        this.npcsMoving = Array(this.numMoveNpcs);
 
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
         this.step = 4; // how fast players move
         this.ghostModel = {angle: 0 }; // NO time warp model, this model is for animation, doesn't interact with game
         this.curPlayerView = [];
+        this.curDesiredView = [];
+        this.curLineView = [];
         this.curDummyNpcView = [];
         this.curMoveNpcView = [];
 
@@ -39,19 +43,40 @@ window.GameA = class GameA {
         const viewParent = new Tree2("viewParent");
         viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
         root.linkchild(viewParent);
-        // view players
+        // view players move
         const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
         treeMasterPlayer.scale = [1, 1, .01];
         treeMasterPlayer.mat.color = [.75, .75, .75, 1];
-        for (let s = 0; s < numPlayers; ++s) {
+        // and desired move
+        const treeMasterDesired = buildsphere("aDesiredNpc", this.size, "Bark.png", "texc");
+        treeMasterDesired.scale = [1, 1, .01];
+        treeMasterDesired.mat.color = [.65, .65, .65, 1];
+        // and connecting line
+        const treeMasterLine = new Tree2("aplane");
+        const treeOffset = buildplanexy("aplaneOffset", 1, 1, "maptestnck.png", "tex");
+        treeOffset.trans = [1, 0, 0];
+        treeMasterLine.scale = [1, 3, 1];
+        treeMasterLine.rot = [0, 0, 0];
+        treeMasterLine.linkchild(treeOffset);
+        
+       for (let s = 0; s < numPlayers; ++s) {
             const playerTree = treeMasterPlayer.newdup();
-            if (curPlayer == s) {
-                playerTree.mat.color = [1.5, 1.5, 1.5, 1]; // brighter color for self
+            const desiredTree = treeMasterDesired.newdup();
+            const lineTree = treeMasterLine.newdup();
+            if (youPlayer == s) {
+                playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+                desiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
             }
             this.curPlayerView[s] = playerTree;
+            this.curDesiredView[s] = desiredTree;
+            this.curLineView[s] = lineTree;
             viewParent.linkchild(playerTree);
+            viewParent.linkchild(desiredTree);
+            viewParent.linkchild(lineTree);
         }
         treeMasterPlayer.glfree();
+        treeMasterDesired.glfree();
+        treeMasterLine.glfree();
         // view npcsDummy
         const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
         treeMasterDummyNpc.scale = [1, 1, .01];
@@ -122,7 +147,7 @@ window.GameA = class GameA {
                     ]
                 }
                 //console.log("NOTICE2: npc.pos[1] = " + npc.pos[1] + ", from rad = " + rad);
-                retModel.npcsMoving[n++] = npc;
+                this.npcsMoving[n++] = npc;
             }
         }
     }
@@ -132,7 +157,6 @@ window.GameA = class GameA {
         const retModel = {
             players: Array(this.numPlayers),
             npcsDummy: Array(this.numDummyNpcs),
-            npcsMoving: Array(this.numMoveNpcs),
             npcsMovingAngle: 0
         };
         // players
@@ -334,7 +358,8 @@ window.GameA = class GameA {
                 if (pInput.mouse.click) {
                     curPlayer.desiredPos = [
                         range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin)
+                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin),
+                        0
                     ];
                 }
             }
@@ -397,8 +422,8 @@ window.GameA = class GameA {
         // npcsMove to npcsDummy
         for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
             const npcd = this.curModel.npcsDummy[nd];
-            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
-                const npcm = this.curModel.npcsMoving[nm];
+            for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
+                const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
                 GameA.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
             }
@@ -407,8 +432,8 @@ window.GameA = class GameA {
         // npcsMove to players
         for (let p = 0; p < pInputs.length; ++p) {
             const curPlayer = this.curModel.players[p];
-            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
-                const npcm = this.curModel.npcsMoving[nm];
+            for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
+                const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
                 GameA.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
             }
@@ -444,15 +469,31 @@ window.GameA = class GameA {
         // update the view from the model
         // players
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
-            this.curPlayerView[slot].trans = vec3.clone(this.curModel.players[slot].pos);
+            const curPlayer = this.curModel.players[slot];
+            this.curPlayerView[slot].trans = vec3.clone(curPlayer.pos);
+            const dTree = this.curDesiredView[slot];
+            const lTree = this.curLineView[slot];
+            if (curPlayer.desiredPos) {
+                dTree.trans = vec3.clone(curPlayer.desiredPos);
+                lTree.trans = vec3.clone(curPlayer.desiredPos);
+                lTree.rot = [0, 0, Math.atan2(curPlayer.pos[1] 
+                    - curPlayer.desiredPos[1], curPlayer.pos[0] - curPlayer.desiredPos[0])];
+                const dist = vec2.dist(curPlayer.pos, curPlayer.desiredPos);
+                lTree.scale[0] = dist / 2;
+                dTree.flags &= ~treeflagenums.DONTDRAWC;	
+                lTree.flags &= ~treeflagenums.DONTDRAWC;	
+            } else {
+                dTree.flags |= treeflagenums.DONTDRAWC;	
+                lTree.flags |= treeflagenums.DONTDRAWC;
+            }
         }
         // npcsDummy
         for (let n = 0; n < this.curModel.npcsDummy.length; ++n) {
             this.curDummyNpcView[n].trans = vec3.clone(this.curModel.npcsDummy[n].pos);
         }
         // npcsMove
-        for (let n = 0; n < this.curModel.npcsMoving.length; ++n) {
-            this.curMoveNpcView[n].trans = vec3.clone(this.curModel.npcsMoving[n].pos);
+        for (let n = 0; n < this.npcsMoving.length; ++n) {
+            this.curMoveNpcView[n].trans = vec3.clone(this.npcsMoving[n].pos);
         }
     }
 

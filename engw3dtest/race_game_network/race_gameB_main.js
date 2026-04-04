@@ -1,6 +1,6 @@
 'use strict';
 
-// run a networked race game
+// run a simple networked constructed race game
 window.GameB = class RaceGameNetwork {
     static keyCodes = {
         UP: 1,

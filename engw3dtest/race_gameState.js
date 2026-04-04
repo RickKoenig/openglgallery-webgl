@@ -475,7 +475,9 @@ race_gameState.proc = function() {
 				}
 			}
 			race_gameState.checksum = [];
+			if (race_gameState.mvc.game.stepGhostModel) {
 			race_gameState.mvc.game.stepGhostModel(race_gameState.count);
+			}
 			++race_gameState.count;
 		}
 	}

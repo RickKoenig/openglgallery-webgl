@@ -1,6 +1,7 @@
 'use strict';
 
 // run a networked test game
+// fixed point
 window.GameC = class GameC {
     static #keyCodes = {
         UP: 1,
@@ -26,6 +27,7 @@ window.GameC = class GameC {
         this.numMoveNpcsX = 3;
         this.numMoveNpcsY = 6;
         this.numMoveNpcs = this.numMoveNpcsX * this.numMoveNpcsY;
+        this.npcsMoving = Array(this.numMoveNpcs);
 
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
@@ -145,7 +147,7 @@ window.GameC = class GameC {
                     ]
                 }
                 //console.log("NOTICE2: npc.pos[1] = " + npc.pos[1] + ", from rad = " + rad);
-                retModel.npcsMoving[n++] = npc;
+                this.npcsMoving[n++] = npc;
             }
         }
     }
@@ -155,9 +157,7 @@ window.GameC = class GameC {
         const retModel = {
             players: Array(this.numPlayers),
             npcsDummy: Array(this.numDummyNpcs),
-            npcsMoving: Array(this.numMoveNpcs),
             npcsMovingAngle: 0,
-            npcsDesired: Array(this.numPlayers)
         };
         // players
         for (let slot = 0; slot < this.numPlayers; ++slot) {
@@ -422,8 +422,8 @@ window.GameC = class GameC {
         // npcsMove to npcsDummy
         for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
             const npcd = this.curModel.npcsDummy[nd];
-            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
-                const npcm = this.curModel.npcsMoving[nm];
+            for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
+                const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
                 GameC.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
             }
@@ -432,8 +432,8 @@ window.GameC = class GameC {
         // npcsMove to players
         for (let p = 0; p < pInputs.length; ++p) {
             const curPlayer = this.curModel.players[p];
-            for (let nm = 0; nm < this.curModel.npcsMoving.length; ++nm) {
-                const npcm = this.curModel.npcsMoving[nm];
+            for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
+                const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
                 GameC.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
             }
@@ -492,8 +492,8 @@ window.GameC = class GameC {
             this.curDummyNpcView[n].trans = vec3.clone(this.curModel.npcsDummy[n].pos);
         }
         // npcsMove
-        for (let n = 0; n < this.curModel.npcsMoving.length; ++n) {
-            this.curMoveNpcView[n].trans = vec3.clone(this.curModel.npcsMoving[n].pos);
+        for (let n = 0; n < this.npcsMoving.length; ++n) {
+            this.curMoveNpcView[n].trans = vec3.clone(this.npcsMoving[n].pos);
         }
     }
 
