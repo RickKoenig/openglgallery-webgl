@@ -14,8 +14,8 @@ window.GameD = class GameD {
     constructor(numPlayers, youPlayer, root) {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
-        this.margin = 30; // border
-        this.size = 30; // radius
+        this.size = 80; // radius
+        this.margin = this.size; // 300; // border
         this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
 
@@ -64,16 +64,6 @@ window.GameD = class GameD {
         treeMasterPlayer.glfree();
         treeMasterDesired.glfree();
         treeMasterLine.glfree();
-        // view npcsDummy
-        const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
-        treeMasterDummyNpc.scale = [1, 1, .01];
-        treeMasterDummyNpc.mat.color = [.25, .75, .25, 1];
-        for (let n = 0; n < this.numDummyNpcs; ++n) {
-            const npcDummyTree = treeMasterDummyNpc.newdup();
-            this.curDummyNpcView[n] = npcDummyTree;
-            viewParent.linkchild(npcDummyTree);
-        }
-        treeMasterDummyNpc.glfree();
     }
 
     // return initial model of the game
@@ -83,9 +73,11 @@ window.GameD = class GameD {
         };
         // players
         for (let slot = 0; slot < this.numPlayers; ++slot) {
+            const slotY = slot % 4;
+            const slotX = Math.floor(slot / 4);
             const player = {
                 pos: [
-                    50, 550 - slot * 75, 0,
+                    100 + slotX * 190, 100 + slotY * 190, 0,
                 ],
                 desiredPos: null // if mouse click
             }
