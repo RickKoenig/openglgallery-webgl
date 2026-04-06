@@ -528,7 +528,7 @@ race_console.testJSON = function() {
 }
 
 race_console.init = function(intentData) {
-	//race_console.testJSON();
+	race_console.testJSON();
 	//race_console.testGameClass('a');
 	//race_console.testEqualsObj();
 	//race_console.testFloat();

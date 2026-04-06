@@ -22,6 +22,10 @@ window.GameD = class GameD {
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
         this.step = 4; // how fast players move
+        const breakSync = false;
+        if (breakSync) { 
+            this.step += youPlayer; // give inconsistent results
+        }
         this.curPlayerView = [];
         this.curDesiredView = [];
         this.curLineView = [];
