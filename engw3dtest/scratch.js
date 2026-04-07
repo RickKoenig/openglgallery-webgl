@@ -595,7 +595,7 @@ scratch.testEqualsObj = function() {
 	console.log("strings");
 	for (let i = 0; i < objs.length; ++i) {
 		const obj = objs[i];
-		console.log(i + ", " + JSON.sortify(obj));
+		console.log(i + ", " + JSON.sortify(obj), JSONbigintReplacer);
 	}
 
 	console.log("\ncompares");

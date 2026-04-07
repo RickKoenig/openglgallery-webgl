@@ -56,7 +56,7 @@ race_gameState.setupCallbacks = function(socker) {
 						if (race_gameState.broadcastReceiveVerbose) {
 							console.log("RECEIVE num checksum frames = " + checksum.length);
 							for (let i = 0; i < checksum.length; ++i) {
-								console.log("checksum from other player is S " + slot + ", checksum " + JSON.sortify(checksum[i]));
+								console.log("checksum from other player is S " + slot + ", checksum " + JSON.sortify(checksum[i]), JSONbigintReplacer);
 							}
 						}
 						const oldLen = race_gameState.validFramesSlots[slot].length;
@@ -144,8 +144,8 @@ race_gameState.validateFrames = function() {
 				let mess = "VF[" + i + "] VF[" + j + "] frame = " + race_gameState.validFrames;
 				const isEq = equalsObj(race_gameState.validFramesSlots[i][vf].model
 					, race_gameState.validFramesSlots[j][vf].model);
-				mess += "\n" + JSON.sortify(race_gameState.validFramesSlots[i][vf].model) + "\n"
-					+ "WITH\n" + JSON.sortify(race_gameState.validFramesSlots[j][vf].model);
+				mess += "\n" + JSON.sortify(race_gameState.validFramesSlots[i][vf].model, JSONbigintReplacer) + "\n"
+					+ "WITH\n" + JSON.sortify(race_gameState.validFramesSlots[j][vf].model, JSONbigintReplacer);
 				if (isEq) {
 					if (race_gameState.validateVerbose) console.log("DDD, good checksum frame: " + mess);
 				} else {
@@ -442,7 +442,7 @@ race_gameState.proc = function() {
 					if (race_gameState.doChecksum && loop == 0) {
 						if (race_gameState.broadcastSendVerbose) {
 							console.log(" -- LAG -- " + race_gameState.broadcastLag + "ms ---, SEND broadcast valid frame = " + count);
-							console.log("   WITH checksum = " + JSON.sortify(checksum));
+							console.log("   WITH checksum = " + JSON.sortify(checksum, JSONbigintReplacer));
 						}
 						race_gameState.socker?.emit('broadcast', {
 							frameNum: count, 
@@ -460,7 +460,7 @@ race_gameState.proc = function() {
 				if (race_gameState.doChecksum && loop == 0) {
 					if (race_gameState.broadcastSendVerbose) {
 						console.log("SEND broadcast valid frame = " + count);
-						console.log("   WITH checksum = " + JSON.sortify(race_gameState.checksum));
+						console.log("   WITH checksum = " + JSON.sortify(race_gameState.checksum, JSONbigintReplacer));
 					}
 					race_gameState.socker?.emit('broadcast', {
 						frameNum: count,

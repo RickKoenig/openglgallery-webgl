@@ -202,10 +202,62 @@ function makeEnum(strArr) {
 	return ret;
 }
 
+function JSONbigintReplacer(key, value) {
+	// Filtering out properties
+	if (typeof value === "bigint") {
+		return value.toString() + 'n';
+	}
+	return value;
+}
+
+const containsOnlyDigitsEvery = (str) => {
+	return str.split('').every(char => {
+		return char >= '0' && char <= '9';
+	});
+};	
+
+function JSONbigintReviver(key, origValue) {
+	let value = origValue;
+	// Filtering out properties
+	if (typeof value !== "string") {
+		return value;
+	}
+	// length at least 2
+	console.log("string = " + value);
+	let len = value.length;
+	if (len < 2) {
+		return value;
+	}
+	// check for 'n' at the end
+	if (value.at(-1) === 'n') {
+		console.log('n found');
+		value = value.slice(0, -1);
+		--len;
+	} else {
+		return origValue;
+	}
+	let pValue = value;
+	// check for '-' at the front
+	if (value.at(0) === '-') {
+		pValue = value.slice(1);
+		console.log("remove - str now = " + value);
+		--len;
+	}
+	if (!len) {
+		return origValue;
+	}
+	const allDigits = containsOnlyDigitsEvery(pValue);
+	if (allDigits) {
+		return BigInt(value);					
+	}
+	return origValue;
+}
+
+
 equalsObj = function(objA, objB, pretty) {
 	const pad = pretty ? '   ' : undefined;
-	const strA = JSON.sortify(objA, null, pad);
-	const strB = JSON.sortify(objB, null, pad);
+	const strA = JSON.sortify(objA, JSONbigintReplacer, pad);
+	const strB = JSON.sortify(objB, JSONbigintReplacer, pad);
 	return strA === strB;
 }
 
