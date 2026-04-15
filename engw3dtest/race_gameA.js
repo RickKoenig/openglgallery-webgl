@@ -32,6 +32,11 @@ window.GameA = class GameA {
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
         this.step = 4; // how fast players move
+        const breakSync = false;
+        if (breakSync) { 
+            this.step += youPlayer; // give inconsistent results
+            this.curModel.players[youPlayer].pos[0] += 15;
+        }
         this.ghostModel = {angle: 0 }; // NO time warp model, this model is for animation, doesn't interact with game
         this.curPlayerView = [];
         this.curDesiredView = [];
@@ -166,7 +171,7 @@ window.GameA = class GameA {
                     50, 550 - slot * 75, 0,
                 ],
                 desiredPos: null // if mouse click
-            }
+            };
             player.lastPos = vec3.clone(player.pos);
             retModel.players[slot] = player;
         }
@@ -358,7 +363,7 @@ window.GameA = class GameA {
                 if (pInput.mouse.click) {
                     curPlayer.desiredPos = [
                         range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin),
+                        range(this.margin, glc.clientHeight - 1 - pInput.mouse.pos[1], this.res[1] - this.margin),
                         0
                     ];
                 }

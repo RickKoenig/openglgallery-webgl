@@ -491,9 +491,9 @@ race_console.init = function(intentData) {
 	makeabr();
 	makeabut("start game(b), 2d race", race_console.autoCommand1P.bind(this,'b'));
 	makeabr();
-	makeabut("start game(c), move and push V2", race_console.autoCommand1P.bind(this,'c'));
+	makeabut("start game(c), move and push V2 fixed", race_console.autoCommand1P.bind(this,'c'));
 	makeabr();
-	makeabut("start game(d), move and push V2 fixed", race_console.autoCommand1P.bind(this,'d'));
+	makeabut("start game(d), move and push V2", race_console.autoCommand1P.bind(this,'d'));
 	makeahr();
 	makeabut("make room", race_console.autoCommandMake);
 	makeabut("join room", race_console.autoCommandJoin);

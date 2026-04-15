@@ -253,7 +253,7 @@ function JSONbigintReviver(key, origValue) {
 	return origValue;
 }
 
-
+// include bigint extension
 equalsObj = function(objA, objB, pretty) {
 	const pad = pretty ? '   ' : undefined;
 	const strA = JSON.sortify(objA, JSONbigintReplacer, pad);

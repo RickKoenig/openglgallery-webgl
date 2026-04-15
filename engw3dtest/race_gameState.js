@@ -74,7 +74,9 @@ race_gameState.setupCallbacks = function(socker) {
 					}
 				}
 			} else {
-				race_gameState.terminal.print?.(
+				//race_gameState.terminal?.print?.(
+				//	"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + slot);
+				race_gameState.terminal?.print(
 					"no broadPack data in ingame, is disconnect from other socket:  slotIdx = " + slot);
 				const kc = {discon: true};
 				race_gameState.mvc.controlToModel(null, slot, kc);
@@ -142,15 +144,28 @@ race_gameState.validateFrames = function() {
 					continue;
 				}
 				let mess = "VF[" + i + "] VF[" + j + "] frame = " + race_gameState.validFrames;
+
+/*
 				const isEq = equalsObj(race_gameState.validFramesSlots[i][vf].model
 					, race_gameState.validFramesSlots[j][vf].model);
 				mess += "\n" + JSON.sortify(race_gameState.validFramesSlots[i][vf].model, JSONbigintReplacer) + "\n"
-					+ "WITH\n" + JSON.sortify(race_gameState.validFramesSlots[j][vf].model, JSONbigintReplacer);
+					+ "WITH\n" + JSON.sortify(race_gameState.validFramesSlots[j][vf].model, JSONbigintReplacer) + "\n";
 				if (isEq) {
 					if (race_gameState.validateVerbose) console.log("DDD, good checksum frame: " + mess);
 				} else {
 					alertS("DDD, bad checksum frame: " + mess);
 				}
+*/
+				const isEq = race_gameState.validFramesSlots[i][vf].model === race_gameState.validFramesSlots[j][vf].model;
+				mess += "\n" + race_gameState.validFramesSlots[i][vf].model + "\n"
+					+ "WITH\n" + race_gameState.validFramesSlots[j][vf].model + "\n";
+				if (isEq) {
+					if (race_gameState.validateVerbose) console.log("DDD, good checksum frame: " + mess);
+				} else {
+					alertS("DDD, bad checksum frame: " + mess);
+				}
+
+
 			}
 		}
 		++race_gameState.validFrames;
@@ -169,7 +184,7 @@ race_gameState.validateFrames = function() {
 		}
 	}
 	const str = "Valid Frm = " + race_gameState.validFrames;
-	race_gameState.termValid.print?.(str);
+	race_gameState.termValid?.print(str);
 }
 
 /*
@@ -202,18 +217,19 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 	// the 3D viewport
 	mainvp = defaultviewport();
-	//mainvp.near = 7;
-	//mainvp.far = 10000;
 	mainvp.clearcolor = [.125, .125, .125, 1];
 
 	// ui
+	race_gameState.showHud = true;
 	setbutsname('ingame');
 	race_lobby.fillButton = makeabut("console", race_gameState.gotoConsole);
 	makeaprintarea("GAME '" + race_gameState.gameType + "'");
 
 	race_gameState.roottree = new Tree2("race_gameState root tree");
-	race_gameState.terminal = new Terminal(race_gameState.roottree, [.2, .2, .1, 1]);
-	race_gameState.terminal.doShow(false);
+	if (race_gameState.showHud) {
+		race_gameState.terminal = new Terminal(race_gameState.roottree, [.2, .2, .1, 1]);
+		race_gameState.terminal.doShow(false);
+	}
 
 	race_gameState.checksum = [];
 
@@ -233,7 +249,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 			}
 		}
 		// show myself and other info from 'intent'
-		race_gameState.terminal.print("INGAME\n\n"
+		race_gameState.terminal?.print("INGAME\n\n"
 			+ "sockerinfo = " + JSON.stringify(race_gameState.sockerInfo)
 			+ "\ngame = " + sockInfo.game
 			+ "\nrace_gameState count = " + race_gameState.count);
@@ -251,7 +267,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 						race_gameState.socker.disconnect();
 					}, 1000 * waitSec);
 				} else { // disconnect right away
-					race_gameState.terminal.print("disconnect right away");
+					race_gameState.terminal?.print("disconnect right away");
 					race_gameState.socker.disconnect();
 				}
 			}
@@ -267,22 +283,24 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 					race_gameState.socker.emit('ready');
 				}, 1000 * waitSec);
 			} else if (testNotReady != 3) {
-				race_gameState.terminal.print("say ready right away NOT testNotReady == 3");
+				race_gameState.terminal?.print("say ready right away NOT testNotReady == 3");
 				race_gameState.socker.emit('ready');
 			}
 		} else {
-			race_gameState.terminal.print("say ready right away NOT testId == " + testId);
+			race_gameState.terminal?.print("say ready right away NOT testId == " + testId);
 			race_gameState.socker.emit('ready');
 		}
 
 		const room = race_gameState.sockerInfo.room;
 
-		race_gameState.negPingTree = buildplanexy("anegping",.5,.5,null,"flat");
-		race_gameState.negPingTree.trans = [-7, 9.15, 10];
-        race_gameState.negPingTree.mod.flags |= modelflagenums.NOZBUFFER;
-		race_gameState.negPingTree.mod.mat.color = [0,0,0,0];
-		race_gameState.negPingTree.mod.flags |= modelflagenums.HASALPHA;
-		race_gameState.roottree.linkchild(race_gameState.negPingTree);
+		if (race_gameState.showHud) {
+			race_gameState.negPingTree = buildplanexy("anegping",.5,.5,null,"flat");
+			race_gameState.negPingTree.trans = [-7, 9.15, 10];
+			race_gameState.negPingTree.mod.flags |= modelflagenums.NOZBUFFER;
+			race_gameState.negPingTree.mod.mat.color = [0,0,0,0];
+			race_gameState.negPingTree.mod.flags |= modelflagenums.HASALPHA;
+			race_gameState.roottree.linkchild(race_gameState.negPingTree);
+		}
 
 		// setup the gamewarp system with the game 'gameClass'
 		race_gameState.mvc = new GameWarp(room.slots.length
@@ -298,7 +316,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 				// clone frame 0 to all slots, don't check frame 0 with other players
 				race_gameState.validFramesSlots[i] = clone(race_gameState.checksum);
 			}
-			race_gameState.terminal.print("done INGAME init with sockInfo, id = "
+			race_gameState.terminal?.print("done INGAME init with sockInfo, id = "
 				+ race_gameState.sockerInfo.id + " slot = " + race_gameState.sockerInfo.slotIdx);
 		}
 		const termParams = {
@@ -308,34 +326,29 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 			offy: 80,
 			scale: 2
 		};
-		if (race_gameState.doChecksum) {
-			race_gameState.termValid = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
-			const showValidFrames = true;
-			race_gameState.termValid.print("VALID FRAMES");
-			race_gameState.termValid.doShow(showValidFrames);
-		}
-		//termParams.cols= 39;
-		termParams.offy = 120;
-		race_gameState.terminalFPS = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
-		race_gameState.terminalFPS.doShow(true);
-
 		race_gameState.validFrames = 0;
 		race_gameState.validOffset = 0; // shift race_gameState.discon, to save memory
 
 		race_gameState.pingTimes = Array(room.slots.length);
 		race_gameState.discon = Array(room.slots.length);
-		race_gameState.indicatorTree = new Tree2("indicator");
-		race_gameState.roottree.linkchild(race_gameState.indicatorTree);
-		race_gameState.showPings = new Indicator(race_gameState.indicatorTree, room.slots.length, race_gameState.mySlot);
+		if (race_gameState.showHud) {
+			if (race_gameState.doChecksum) {
+				race_gameState.termValid = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
+				const showValidFrames = true;
+				race_gameState.termValid.print("VALID FRAMES");
+				race_gameState.termValid.doShow(showValidFrames);
+			}
+			//termParams.cols= 39;
+			termParams.offy = 120;
+			race_gameState.terminalFPS = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
+			race_gameState.terminalFPS.doShow(true);
+
+			race_gameState.indicatorTree = new Tree2("indicator");
+			race_gameState.roottree.linkchild(race_gameState.indicatorTree);
+			race_gameState.showPings = new Indicator(race_gameState.indicatorTree, room.slots.length, race_gameState.mySlot);
+		}
 	}
-/*
-	if (race_gameState.gameType == 'a') {
-		mainvp.clearcolor = [.25 ,.55, 1, 1];
-	}
-	if (race_gameState.gameType == 'b') {
-		mainvp.clearcolor = [.05, .85, 1, 1];
-	}
-*/
+
 	// catchup parameters
 	race_gameState.catchup0 = .05 //0; // constant
 	race_gameState.catchup1 = .05 / 30; // linear
@@ -356,7 +369,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 race_gameState.onresize = function() {
 	console.log("onresize");
-	race_gameState.terminal.onresize();
+	race_gameState.terminal?.onresize();
 }
 
 race_gameState.proc = function() {
@@ -366,10 +379,12 @@ race_gameState.proc = function() {
 	}
 	// hide/show pings etc.
 	if (input.key == 'h'.charCodeAt()) {
-		race_gameState.negPingTree.flags ^= treeflagenums.DONTDRAWC;
-		race_gameState.indicatorTree.flags ^= treeflagenums.DONTDRAWC;
-		race_gameState.terminalFPS.doShow(!race_gameState.terminalFPS.getShow());
-		race_gameState.termValid.doShow(!race_gameState.termValid.getShow());
+		if (race_gameState.showHud) {
+			race_gameState.negPingTree.flags ^= treeflagenums.DONTDRAWC;
+			race_gameState.indicatorTree.flags ^= treeflagenums.DONTDRAWC;
+			race_gameState.terminalFPS?.doShow(!race_gameState.terminalFPS.getShow());
+			race_gameState.termValid?.doShow(!race_gameState.termValid.getShow());
+		}
 	}
 	// change frame rate
 	if (input.key == ','.charCodeAt()) {
@@ -391,7 +406,7 @@ race_gameState.proc = function() {
 			}
 		}
 		race_gameState.pingTimes[race_gameState.mySlot] = 0; // my time
-		race_gameState.showPings.update(race_gameState.pingTimes, race_gameState.count);
+		race_gameState.showPings?.update(race_gameState.pingTimes, race_gameState.count);
 		// if any neg pings, speed up to catch up
 		let behind = 0;
 		for (let i = 0; i < race_gameState.pingTimes.length; ++i) { // units are 'frames'
@@ -413,8 +428,10 @@ race_gameState.proc = function() {
 			race_gameState.negPingTree.mod.mat.color = [1,0,0,1];
 		}
 		// drift catchup color
-		race_gameState.negPingTree.mod.mat.color[0] *=  .75;
-		race_gameState.negPingTree.mod.mat.color[3] *=  .75;
+		if (race_gameState.showHud) {
+			race_gameState.negPingTree.mod.mat.color[0] *=  .75;
+			race_gameState.negPingTree.mod.mat.color[3] *=  .75;
+		}
 
 		// get some input
 		let keyCode = race_gameState.gameClass.modelMakeKeyCode(race_gameState.mvc.game);
@@ -482,7 +499,7 @@ race_gameState.proc = function() {
 		}
 	}
 	race_gameState.roottree.proc(); // do animations that don't effect players
-	race_gameState.terminalFPS.print("FPS: AVG = " + Timers.fpsavg.toFixed(4) 
+	race_gameState.terminalFPS?.print("FPS: AVG = " + Timers.fpsavg.toFixed(4) 
 		+ ", WANTED " + fpswanted);
 	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
@@ -506,11 +523,6 @@ race_gameState.proc = function() {
 	beginscene(mainvp);
 	race_gameState.roottree.draw();
 };
-
-race_gameState.onresize = function() {
-	console.log("onresize");
-	race_gameState.terminal.onresize();
-}
 
 race_gameState.exit = function() {
 	if (race_gameState.socker) {

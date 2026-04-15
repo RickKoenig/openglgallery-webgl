@@ -243,7 +243,7 @@ race_car_network.procCars = function(carModels, pInputs, parent) {
         // move the car
         const stepX = carModel.speed * CMath.sin(carModel.dir);
         const stepY = carModel.speed * CMath.cos(carModel.dir);
-        carModel.pos[0] += stepX;
+        carModel.pos[0] += stepX; //  + Math.random() * .001; // uncomment to break time warp, test checksum game state
         carModel.pos[1] += stepY;
     }
 

@@ -21,7 +21,7 @@ class GameWarp {
             this.validModels = [
                 {
                     frameNum: this.validFrameNum,
-                    model: this.validModel
+                    model: JSON.sortify(this.validModel, JSONbigintReplacer)
                 }
             ];
         }
@@ -92,7 +92,7 @@ class GameWarp {
                 if (this.doChecksum) {
                     this.validModels.push ({
                         frameNum: this.validFrameNum,
-                        model: this.validModel
+                        model: JSON.sortify(this.validModel, JSONbigintReplacer)
                     });
                 }
                 // erase the past inputs that is no longer needed, Langoliers

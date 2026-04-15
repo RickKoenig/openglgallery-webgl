@@ -2,6 +2,7 @@
 
 // run a networked test game, fixed point
 window.GameC = class GameC {
+    static keep = true;
     static #keyCodes = {
         UP: 1,
         DOWN: 2,
@@ -13,63 +14,82 @@ window.GameC = class GameC {
     // assume 1024 by 768 resolution
     constructor(numPlayers, youPlayer, root) {
         this.FP = new FMathBigIntInstance(3, 16); // fixed point
-
 		mainvp.clearcolor = [.75 ,.55, 1, 1];
-        this.res = [this.FP.create(1024), this.FP.create(768)];
-        this.size = this.FP.create(80); // radius
-        this.margin = this.FP.clone(this.size); // 300; // border
-        this.viewDepth = glc.clientHeight / 2;
+        const size = 80;
+        if (GameC.keep) {
+            this.res = [1024, 768];
+            this.size = size; // radius
+            this.margin = size; // 300; // border
+            this.FrightMargin = this.FP.create(this.res[0] - this.size);
+            this.FbotMargin = this.FP.create(this.res[1] - this.size);
+            this.FtopLeftMargin = this.FP.create(this.margin);
+            this.viewDepth = glc.clientHeight / 2;
+        }
         this.numPlayers = numPlayers;
 
         this.resetModel = this.#modelReset(); // the start model
         this.curModel = clone(this.resetModel); // time warp model, the current model is the init model
         this.step = this.FP.create(4); // how fast players move
+
+
         const breakSync = false;
         if (breakSync) { 
-            // TODO: make work for FP, this.step += youPlayer; // give inconsistent results
+            //this.step += youPlayer; // give inconsistent results
+            this.FP.add(this.step, this.step, this.FP.create(youPlayer));
+            
+            //this.curModel.players[youPlayer].pos[0] += 15;
+            this.FP.add(this.curModel.players[youPlayer].pos[0]
+                , this.curModel.players[youPlayer].pos[0]
+                , this.FP.create(15))
         }
-        this.curPlayerView = [];
-        this.curDesiredView = [];
-        this.curLineView = [];
 
-        // build 3D scene
-        const viewParent = new Tree2("viewParent");
-        viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
-        root.linkchild(viewParent);
-        // view players move
-        const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
-        treeMasterPlayer.scale = [1, 1, .01];
-        treeMasterPlayer.mat.color = [.65, .65, .65, 1];
-        // and desired move
-        const treeMasterDesired = buildsphere("aDesiredNpc", this.size, "Bark.png", "texc");
-        treeMasterDesired.scale = [1, 1, .01];
-        treeMasterDesired.mat.color = [.65, .65, .65, 1];
-        // and connecting line
-        const treeMasterLine = new Tree2("aplane");
-        const treeOffset = buildplanexy("aplaneOffset", 1, 1, "maptestnck.png", "tex");
-        treeOffset.trans = [1, 0, 0];
-        treeMasterLine.scale = [1, 3, 1];
-        treeMasterLine.rot = [0, 0, 0];
-        treeMasterLine.linkchild(treeOffset);
 
-        for (let s = 0; s < numPlayers; ++s) {
-            const playerTree = treeMasterPlayer.newdup();
-            const desiredTree = treeMasterDesired.newdup();
-            const lineTree = treeMasterLine.newdup();
-            if (youPlayer == s) {
-                playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
-                desiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+        if (GameC.keep) {
+            this.curPlayerView = [];
+            this.curDesiredView = [];
+            this.curLineView = [];
+        }
+
+        if (GameC.keep) {
+            // build 3D scene
+            const viewParent = new Tree2("viewParent");
+            viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
+            root.linkchild(viewParent);
+            // view players move
+            const treeMasterPlayer = buildsphere("aplayer", size, "panel.jpg", "texc");
+            treeMasterPlayer.scale = [1, 1, .01];
+            treeMasterPlayer.mat.color = [.65, .65, .65, 1];
+            // and desired move
+            const treeMasterDesired = buildsphere("aDesiredNpc", size, "Bark.png", "texc");
+            treeMasterDesired.scale = [1, 1, .01];
+            treeMasterDesired.mat.color = [.65, .65, .65, 1];
+            // and connecting line
+            const treeMasterLine = new Tree2("aplane");
+            const treeOffset = buildplanexy("aplaneOffset", 1, 1, "maptestnck.png", "tex");
+            treeOffset.trans = [1, 0, 0];
+            treeMasterLine.scale = [1, 3, 1];
+            treeMasterLine.rot = [0, 0, 0];
+            treeMasterLine.linkchild(treeOffset);
+
+            for (let s = 0; s < numPlayers; ++s) {
+                const playerTree = treeMasterPlayer.newdup();
+                const desiredTree = treeMasterDesired.newdup();
+                const lineTree = treeMasterLine.newdup();
+                if (youPlayer == s) {
+                    playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+                    desiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+                }
+                this.curPlayerView[s] = playerTree;
+                this.curDesiredView[s] = desiredTree;
+                this.curLineView[s] = lineTree;
+                viewParent.linkchild(playerTree);
+                viewParent.linkchild(desiredTree);
+                viewParent.linkchild(lineTree);
             }
-            this.curPlayerView[s] = playerTree;
-            this.curDesiredView[s] = desiredTree;
-            this.curLineView[s] = lineTree;
-            viewParent.linkchild(playerTree);
-            viewParent.linkchild(desiredTree);
-            viewParent.linkchild(lineTree);
+            treeMasterPlayer.glfree();
+            treeMasterDesired.glfree();
+            treeMasterLine.glfree();
         }
-        treeMasterPlayer.glfree();
-        treeMasterDesired.glfree();
-        treeMasterLine.glfree();
     }
 
     // return initial model of the game
@@ -81,13 +101,11 @@ window.GameC = class GameC {
         for (let slot = 0; slot < this.numPlayers; ++slot) {
             const slotY = slot % 4;
             const slotX = Math.floor(slot / 4);
+            const pos = [this.FP.create(100 + slotX * 190), this.FP.create(100 + slotY * 190)];
             const player = {
-                pos: [
-                    this.FP.create(100 + slotX * 190), this.FP.create(100 + slotY * 190)
-                ],
+                pos: pos,
                 desiredPos: null // if mouse click
-            }
-            player.lastPos = clone(player.pos);
+            };
             retModel.players[slot] = player;
         }
         return retModel;
@@ -103,11 +121,11 @@ window.GameC = class GameC {
 
     // local input to keycode, helper
     // return object 
-    /* 
+    //
         // USER
-        kc: bitfield of up, down, left, right
-        mouse: pos and click
-    */
+    //    kc: bitfield of up, down, left, right
+    //    mouse: pos and click
+    //
     static modelMakeKeyCode() {
         const ret = {};
         let keyCode = 0;
@@ -140,40 +158,15 @@ window.GameC = class GameC {
         //const ret = {kc: kc}
         //return kc;
     }
-/*
-    // move 2 circles apart, simple
-    static #separate(posA, posB, distSep, extra) {
-        const distSep2 = distSep * distSep;
-        const dist2 = vec2.sqrDist(posA, posB);
-        if (dist2 > distSep2) {
-            return false;
-        }
-        let delta;
-        if (dist2 > 0) {
-            delta = vec2.create();
-            vec2.sub(delta, posB, posA);
-            vec2.normalize(delta, delta);
-        } else { // same position, #separate horizontally
-            delta = vec2.fromValues(0, 1);
-        }
-        vec2.scale(delta, delta, distSep * .5 * extra);
-        const midPoint = vec2.create();
-        vec2.add(midPoint, posA, posB);
-        vec2.scale(midPoint, midPoint, .5); // midpoint is the average
-        vec2.sub(posA, midPoint, delta); // move out in opposite directions
-        vec2.add(posB, midPoint, delta);
-        return true;
-    }
-    */
+
     // timeWarp
     stepModel(pInputs, frameNum) {
-        return;
+        //return;
         // movement
         // players
         for (let slot = 0; slot < pInputs.length; ++slot) {
             const pInput = pInputs[slot];
             const curPlayer = this.curModel.players[slot];
-            vec3.copy(curPlayer.lastPos, curPlayer.pos);
             if (pInput.discon) {
                 this.curPlayerView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
                 curPlayer.desiredPos = null;
@@ -189,29 +182,36 @@ window.GameC = class GameC {
             }
             const step = this.step
             if (keyCode & GameC.#keyCodes.RIGHT) {
-                curPlayer.pos[0] += step;
+                //curPlayer.pos[0] += step;
+                this.FP.add(curPlayer.pos[0], curPlayer.pos[0], step);
                 curPlayer.desiredPos = null;
             }
             if (keyCode & GameC.#keyCodes.LEFT) {
-                curPlayer.pos[0] -= step;
+                //curPlayer.pos[0] -= step;
+                this.FP.sub(curPlayer.pos[0], curPlayer.pos[0], step);
                 curPlayer.desiredPos = null;
             }
             if (keyCode & GameC.#keyCodes.UP) {
-                curPlayer.pos[1] += step;
+                //curPlayer.pos[1] += step;
+                this.FP.add(curPlayer.pos[1], curPlayer.pos[1], step);
                 curPlayer.desiredPos = null;
             }
             if (keyCode & GameC.#keyCodes.DOWN) {
-                curPlayer.pos[1] -= step;
+                //curPlayer.pos[1] -= step;
+                this.FP.sub(curPlayer.pos[1], curPlayer.pos[1], step);
                 curPlayer.desiredPos = null;
             }
             if (pInput.mouse) {
                 if (pInput.mouse.click) {
-                    curPlayer.desiredPos = [
-                        range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin)
-                    ];
+                    let x = this.FP.create(pInput.mouse.pos[0]);
+                    let y = this.FP.create(glc.clientHeight - 1 - pInput.mouse.pos[1]);
+                    this.FP.range(x,this.FtopLeftMargin,x,this.FrightMargin);
+                    this.FP.range(y,this.FtopLeftMargin,y,this.FbotMargin);
+                    curPlayer.desiredPos = [x, y];
+                    console.log("desired pos = " + this.FP.toNumber(x) + ", " + this.FP.toNumber(y));
                 }
             }
+            /*
             // mouse, move to desiredPos
             if (curPlayer.desiredPos) {
                 const close2 = step * step * 2;
@@ -227,34 +227,26 @@ window.GameC = class GameC {
                     vec2.add(curPlayer.pos, curPlayer.pos, delta);
                 }
             }
+            */
         }
 
         // collisions
         const extra = 1.001; // move apart a litte more
-        /*
-        // players to players
-        for (let p0 = 0; p0 < pInputs.length; ++p0) {
-            const curPlayer0 = this.curModel.players[p0];
-            for (let p1 = p0 + 1; p1 < pInputs.length; ++p1) {
-                const curPlayer1 = this.curModel.players[p1];
-                // move players apart
-                GameC.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
-            }
-        }
-        */
-       /*
+
         // border to players
         for (let p = 0; p < pInputs.length; ++p) {
             const curPlayer = this.curModel.players[p];
-            curPlayer.pos[0] = range(this.margin, curPlayer.pos[0], this.res[0] - this.margin);
-            curPlayer.pos[1] = range(this.margin, curPlayer.pos[1], this.res[1] - this.margin);
+            this.FP.range(curPlayer.pos[0], this.FtopLeftMargin, curPlayer.pos[0], this.FrightMargin);
+            this.FP.range(curPlayer.pos[1], this.FtopLeftMargin, curPlayer.pos[1], this.FbotMargin);
         }
-        */
     }
 
     // M to V
     // get Model to this frameNum, then move it into View
     modelToView() {
+        if (!GameC.keep) {
+            return;
+        }
         // update the view from the model
         // players
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
@@ -263,7 +255,7 @@ window.GameC = class GameC {
             const dTree = this.curDesiredView[slot];
             const lTree = this.curLineView[slot];
             if (curPlayer.desiredPos) {
-                //dTree.trans = [this.FP.toNumber(curPlayer.desiredPos[0]), this.FP.toNumber(curPlayer.desiredPos[1]), 0];
+                dTree.trans = [this.FP.toNumber(curPlayer.desiredPos[0]), this.FP.toNumber(curPlayer.desiredPos[1]), 0];
                 //lTree.trans = [curPlayer.desiredPos[0], curPlayer.desiredPos[1], 0];
                 //lTree.rot = [0, 0, Math.atan2(curPlayer.pos[1] 
                 //    - curPlayer.desiredPos[1], curPlayer.pos[0] - curPlayer.desiredPos[0])];

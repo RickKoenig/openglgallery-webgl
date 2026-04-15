@@ -2,6 +2,7 @@
 
 // run a networked test game, minimal, scratch
 window.GameD = class GameD {
+    static keep = true;
     static #keyCodes = {
         UP: 1,
         DOWN: 2,
@@ -13,10 +14,12 @@ window.GameD = class GameD {
     // assume 1024 by 768 resolution
     constructor(numPlayers, youPlayer, root) {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
-        this.res = [1024, 768];
-        this.size = 80; // radius
-        this.margin = this.size; // 300; // border
-        this.viewDepth = glc.clientHeight / 2;
+        if (GameD.keep) {
+            this.res = [1024, 768];
+            this.size = 80; // radius
+            this.margin = this.size; // 300; // border
+            this.viewDepth = glc.clientHeight / 2;
+        }
         this.numPlayers = numPlayers;
 
         this.resetModel = this.#modelReset(); // the start model
@@ -25,49 +28,54 @@ window.GameD = class GameD {
         const breakSync = false;
         if (breakSync) { 
             this.step += youPlayer; // give inconsistent results
+            this.curModel.players[youPlayer].pos[0] += 15;
         }
-        this.curPlayerView = [];
-        this.curDesiredView = [];
-        this.curLineView = [];
+        if (GameD.keep) {
+            this.curPlayerView = [];
+            this.curDesiredView = [];
+            this.curLineView = [];
+        }
 
-        // build 3D scene
-        const viewParent = new Tree2("viewParent");
-        viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
-        root.linkchild(viewParent);
-        // view players move
-        const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
-        treeMasterPlayer.scale = [1, 1, .01];
-        treeMasterPlayer.mat.color = [.65, .65, .65, 1];
-        // and desired move
-        const treeMasterDesired = buildsphere("aDesiredNpc", this.size, "Bark.png", "texc");
-        treeMasterDesired.scale = [1, 1, .01];
-        treeMasterDesired.mat.color = [.65, .65, .65, 1];
-        // and connecting line
-        const treeMasterLine = new Tree2("aplane");
-        const treeOffset = buildplanexy("aplaneOffset", 1, 1, "maptestnck.png", "tex");
-        treeOffset.trans = [1, 0, 0];
-        treeMasterLine.scale = [1, 3, 1];
-        treeMasterLine.rot = [0, 0, 0];
-        treeMasterLine.linkchild(treeOffset);
+        if (GameD.keep) {
+            // build 3D scene
+            const viewParent = new Tree2("viewParent");
+            viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
+            root.linkchild(viewParent);
+            // view players move
+            const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
+            treeMasterPlayer.scale = [1, 1, .01];
+            treeMasterPlayer.mat.color = [.65, .65, .65, 1];
+            // and desired move
+            const treeMasterDesired = buildsphere("aDesiredNpc", this.size, "Bark.png", "texc");
+            treeMasterDesired.scale = [1, 1, .01];
+            treeMasterDesired.mat.color = [.65, .65, .65, 1];
+            // and connecting line
+            const treeMasterLine = new Tree2("aplane");
+            const treeOffset = buildplanexy("aplaneOffset", 1, 1, "maptestnck.png", "tex");
+            treeOffset.trans = [1, 0, 0];
+            treeMasterLine.scale = [1, 3, 1];
+            treeMasterLine.rot = [0, 0, 0];
+            treeMasterLine.linkchild(treeOffset);
 
-        for (let s = 0; s < numPlayers; ++s) {
-            const playerTree = treeMasterPlayer.newdup();
-            const desiredTree = treeMasterDesired.newdup();
-            const lineTree = treeMasterLine.newdup();
-            if (youPlayer == s) {
-                playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
-                desiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+            for (let s = 0; s < numPlayers; ++s) {
+                const playerTree = treeMasterPlayer.newdup();
+                const desiredTree = treeMasterDesired.newdup();
+                const lineTree = treeMasterLine.newdup();
+                if (youPlayer == s) {
+                    playerTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+                    desiredTree.mat.color = [1, 1, 1, 1]; // brighter color for self
+                }
+                this.curPlayerView[s] = playerTree;
+                this.curDesiredView[s] = desiredTree;
+                this.curLineView[s] = lineTree;
+                viewParent.linkchild(playerTree);
+                viewParent.linkchild(desiredTree);
+                viewParent.linkchild(lineTree);
             }
-            this.curPlayerView[s] = playerTree;
-            this.curDesiredView[s] = desiredTree;
-            this.curLineView[s] = lineTree;
-            viewParent.linkchild(playerTree);
-            viewParent.linkchild(desiredTree);
-            viewParent.linkchild(lineTree);
+            treeMasterPlayer.glfree();
+            treeMasterDesired.glfree();
+            treeMasterLine.glfree();
         }
-        treeMasterPlayer.glfree();
-        treeMasterDesired.glfree();
-        treeMasterLine.glfree();
     }
 
     // return initial model of the game
@@ -79,13 +87,11 @@ window.GameD = class GameD {
         for (let slot = 0; slot < this.numPlayers; ++slot) {
             const slotY = slot % 4;
             const slotX = Math.floor(slot / 4);
+            const pos = [100 + slotX * 190, 100 + slotY * 190, 0];
             const player = {
-                pos: [
-                    100 + slotX * 190, 100 + slotY * 190, 0,
-                ],
+                pos: pos,
                 desiredPos: null // if mouse click
-            }
-            player.lastPos = vec3.clone(player.pos);
+            };
             retModel.players[slot] = player;
         }
         return retModel;
@@ -162,14 +168,15 @@ window.GameD = class GameD {
         vec2.add(posB, midPoint, delta);
         return true;
     }
+    
     // timeWarp
     stepModel(pInputs, frameNum) {
+        //return;
         // movement
         // players
         for (let slot = 0; slot < pInputs.length; ++slot) {
             const pInput = pInputs[slot];
             const curPlayer = this.curModel.players[slot];
-            vec3.copy(curPlayer.lastPos, curPlayer.pos);
             if (pInput.discon) {
                 this.curPlayerView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
                 curPlayer.desiredPos = null;
@@ -204,7 +211,7 @@ window.GameD = class GameD {
                 if (pInput.mouse.click) {
                     curPlayer.desiredPos = [
                         range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, glc.clientHeight - pInput.mouse.pos[1], this.res[1] - this.margin),
+                        range(this.margin, glc.clientHeight - 1 - pInput.mouse.pos[1], this.res[1] - this.margin),
                         0
                     ];
                 }
@@ -250,6 +257,9 @@ window.GameD = class GameD {
     // M to V
     // get Model to this frameNum, then move it into View
     modelToView() {
+        if (!GameD.keep) {
+            return;
+        }
         // update the view from the model
         // players
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
