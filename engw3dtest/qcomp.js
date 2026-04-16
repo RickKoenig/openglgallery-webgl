@@ -783,7 +783,7 @@ qcomp.init = function() {
 	// build parent
 	qcomp.roottree = new Tree2("root"); // main 3D tree
 	qcomp.sphereroottree = new Tree2("sphere root"); // main 3D tree
-	
+	//qcomp.sphereroottree.trans = [0, 3, 0];
 // color map of complex space TEXTURE
 	// make a <canvas>
 	var c = document.createElement('canvas');
@@ -992,7 +992,7 @@ qcomp.init = function() {
 	// sphere viewport
 	qcomp.spherevp = defaultviewport();
 	qcomp.spherevp.clearflags = 0; // don't clear anything
-	qcomp.spherevp.yo = -.25; // offset this viewport down, skew
+	//qcomp.spherevp.yo = -.25; // offset this viewport down, skew
 	
 	
 	// UI debprint 
