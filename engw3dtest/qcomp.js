@@ -992,7 +992,7 @@ qcomp.init = function() {
 	// sphere viewport
 	qcomp.spherevp = defaultviewport();
 	qcomp.spherevp.clearflags = 0; // don't clear anything
-	//qcomp.spherevp.yo = -.25; // offset this viewport down, skew
+	qcomp.spherevp.yo = -.125; // offset this viewport down, skew
 	
 	
 	// UI debprint 
