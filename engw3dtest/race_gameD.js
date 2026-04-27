@@ -270,10 +270,12 @@ window.GameD = class GameD {
             if (curPlayer.desiredPos) {
                 dTree.trans = vec3.clone(curPlayer.desiredPos);
                 lTree.trans = vec3.clone(curPlayer.desiredPos);
-                lTree.rot = [0, 0, Math.atan2(curPlayer.pos[1] 
-                    - curPlayer.desiredPos[1], curPlayer.pos[0] - curPlayer.desiredPos[0])];
+                lTree.rot = [0, 0, Math.atan2(
+                      curPlayer.pos[1] - curPlayer.desiredPos[1]
+                    , curPlayer.pos[0] - curPlayer.desiredPos[0])];
                 const dist = vec2.dist(curPlayer.pos, curPlayer.desiredPos);
                 lTree.scale[0] = dist / 2;
+                
                 dTree.flags &= ~treeflagenums.DONTDRAWC;	
                 lTree.flags &= ~treeflagenums.DONTDRAWC;	
             } else {

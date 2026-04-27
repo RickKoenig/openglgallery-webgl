@@ -13,7 +13,7 @@ window.GameC = class GameC {
 
     // assume 1024 by 768 resolution
     constructor(numPlayers, youPlayer, root) {
-        this.FP = new FMathBigIntInstance(3, 16); // fixed point
+        this.FP = new FMathBigIntInstanceALT(3, 16); // fixed point
 		mainvp.clearcolor = [.75 ,.55, 1, 1];
         const size = 80;
         if (GameC.keep) {
@@ -35,12 +35,11 @@ window.GameC = class GameC {
         const breakSync = false;
         if (breakSync) { 
             //this.step += youPlayer; // give inconsistent results
-            this.FP.add(this.step, this.step, this.FP.create(youPlayer));
+            this.step = this.FP.add(this.step, this.FP.create(youPlayer));
             
             //this.curModel.players[youPlayer].pos[0] += 15;
-            this.FP.add(this.curModel.players[youPlayer].pos[0]
-                , this.curModel.players[youPlayer].pos[0]
-                , this.FP.create(15))
+            this.curModel.players[youPlayer].pos[0] 
+                = this.FP.add(this.curModel.players[youPlayer].pos[0], this.FP.create(15));
         }
 
 
@@ -183,30 +182,30 @@ window.GameC = class GameC {
             const step = this.step
             if (keyCode & GameC.#keyCodes.RIGHT) {
                 //curPlayer.pos[0] += step;
-                this.FP.add(curPlayer.pos[0], curPlayer.pos[0], step);
+                curPlayer.pos[0] = this.FP.add(curPlayer.pos[0], step);
                 curPlayer.desiredPos = null;
             }
             if (keyCode & GameC.#keyCodes.LEFT) {
                 //curPlayer.pos[0] -= step;
-                this.FP.sub(curPlayer.pos[0], curPlayer.pos[0], step);
+                curPlayer.pos[0] = this.FP.sub(curPlayer.pos[0], step);
                 curPlayer.desiredPos = null;
             }
             if (keyCode & GameC.#keyCodes.UP) {
                 //curPlayer.pos[1] += step;
-                this.FP.add(curPlayer.pos[1], curPlayer.pos[1], step);
+                curPlayer.pos[1] = this.FP.add(curPlayer.pos[1], step);
                 curPlayer.desiredPos = null;
             }
             if (keyCode & GameC.#keyCodes.DOWN) {
                 //curPlayer.pos[1] -= step;
-                this.FP.sub(curPlayer.pos[1], curPlayer.pos[1], step);
+                curPlayer.pos[1] = this.FP.sub(curPlayer.pos[1], step);
                 curPlayer.desiredPos = null;
             }
             if (pInput.mouse) {
                 if (pInput.mouse.click) {
                     let x = this.FP.create(pInput.mouse.pos[0]);
                     let y = this.FP.create(glc.clientHeight - 1 - pInput.mouse.pos[1]);
-                    this.FP.range(x,this.FtopLeftMargin,x,this.FrightMargin);
-                    this.FP.range(y,this.FtopLeftMargin,y,this.FbotMargin);
+                    x = this.FP.range(this.FtopLeftMargin, x, this.FrightMargin);
+                    y = this.FP.range(this.FtopLeftMargin, y, this.FbotMargin);
                     curPlayer.desiredPos = [x, y];
                     console.log("desired pos = " + this.FP.toNumber(x) + ", " + this.FP.toNumber(y));
                 }
@@ -236,8 +235,8 @@ window.GameC = class GameC {
         // border to players
         for (let p = 0; p < pInputs.length; ++p) {
             const curPlayer = this.curModel.players[p];
-            this.FP.range(curPlayer.pos[0], this.FtopLeftMargin, curPlayer.pos[0], this.FrightMargin);
-            this.FP.range(curPlayer.pos[1], this.FtopLeftMargin, curPlayer.pos[1], this.FbotMargin);
+            curPlayer.pos[0] = this.FP.range(this.FtopLeftMargin, curPlayer.pos[0], this.FrightMargin);
+            curPlayer.pos[1] = this.FP.range(this.FtopLeftMargin, curPlayer.pos[1], this.FbotMargin);
         }
     }
 
@@ -251,16 +250,20 @@ window.GameC = class GameC {
         // players
         for (let slot = 0; slot < this.curModel.players.length; ++slot) {
             const curPlayer = this.curModel.players[slot];
-            this.curPlayerView[slot].trans = [this.FP.toNumber(curPlayer.pos[0]), this.FP.toNumber(curPlayer.pos[1]), 0];
+            const pTree = this.curPlayerView[slot];
+            pTree.trans = vec2Fix.toNumber(curPlayer.pos, this.FP);
             const dTree = this.curDesiredView[slot];
             const lTree = this.curLineView[slot];
             if (curPlayer.desiredPos) {
-                dTree.trans = [this.FP.toNumber(curPlayer.desiredPos[0]), this.FP.toNumber(curPlayer.desiredPos[1]), 0];
-                //lTree.trans = [curPlayer.desiredPos[0], curPlayer.desiredPos[1], 0];
-                //lTree.rot = [0, 0, Math.atan2(curPlayer.pos[1] 
-                //    - curPlayer.desiredPos[1], curPlayer.pos[0] - curPlayer.desiredPos[0])];
-                //const dist = vec2.dist(curPlayer.pos, curPlayer.desiredPos);
-                //lTree.scale[0] = dist / 2;
+                dTree.trans = vec2Fix.toNumber(curPlayer.desiredPos, this.FP);
+                lTree.trans = vec3.clone(dTree.trans);
+                lTree.rot = [0, 0, Math.atan2(
+                      pTree.trans[1] - dTree.trans[1]
+                    , pTree.trans[0] - dTree.trans[0])
+                ];
+                const dist = vec2.dist(pTree.trans, dTree.trans);
+                lTree.scale[0] = dist / 2;
+
                 dTree.flags &= ~treeflagenums.DONTDRAWC;	
                 lTree.flags &= ~treeflagenums.DONTDRAWC;	
             } else {
