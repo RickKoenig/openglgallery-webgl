@@ -207,31 +207,43 @@ window.GameC = class GameC {
                     x = this.FP.range(this.FtopLeftMargin, x, this.FrightMargin);
                     y = this.FP.range(this.FtopLeftMargin, y, this.FbotMargin);
                     curPlayer.desiredPos = [x, y];
-                    console.log("desired pos = " + this.FP.toNumber(x) + ", " + this.FP.toNumber(y));
+                    //console.log("desired pos = " + this.FP.toNumber(x) + ", " + this.FP.toNumber(y));
                 }
             }
-            /*
+            
             // mouse, move to desiredPos
             if (curPlayer.desiredPos) {
-                const close2 = step * step * 2;
-                const dist2 = vec2.sqrDist(curPlayer.desiredPos, curPlayer.pos);
+                //const close2 = step * step * 2;
+                const close2 = this.FP.mul(this.FP.mul(step, step), this.FP.TWO);
+                const dist2 = vec2Fix.sqrDist(curPlayer.desiredPos, curPlayer.pos, this.FP);
                 if (dist2 < close2) {
-                    vec2.copy(curPlayer.pos, curPlayer.desiredPos);
+                    vec2Fix.copy(curPlayer.pos, curPlayer.desiredPos, this.FP);
                     curPlayer.desiredPos = null;
                 } else {
-                    const delta = vec2.create();
-                    vec2.sub(delta, curPlayer.desiredPos, curPlayer.pos);
-                    vec2.normalize(delta, delta);
-                    vec2.scale(delta, delta, step);
-                    vec2.add(curPlayer.pos, curPlayer.pos, delta);
+                    const delta = vec2Fix.create();
+                    vec2Fix.sub(delta, curPlayer.desiredPos, curPlayer.pos, this.FP);
+                    vec2Fix.normalize(delta, delta, this.FP);
+                    vec2Fix.scale(delta, delta, step, this.FP);
+                    vec2Fix.add(curPlayer.pos, curPlayer.pos, delta, this.FP);
                 }
             }
-            */
+            
         }
 
         // collisions
+/*
         const extra = 1.001; // move apart a litte more
 
+        // players to players
+        for (let p0 = 0; p0 < pInputs.length; ++p0) {
+            const curPlayer0 = this.curModel.players[p0];
+            for (let p1 = p0 + 1; p1 < pInputs.length; ++p1) {
+                const curPlayer1 = this.curModel.players[p1];
+                // move players apart
+                GameD.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
+            }
+        }
+*/
         // border to players
         for (let p = 0; p < pInputs.length; ++p) {
             const curPlayer = this.curModel.players[p];

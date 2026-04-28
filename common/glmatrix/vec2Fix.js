@@ -11,8 +11,14 @@ class vec2Fix {
         return ret;
     }
 
-    static create() {
-        return [0n, 0n];
+    // number to fixed
+    static create(aVec2, round = true) {
+        const ret = [0n, 0n];
+        if (Array.isArray(aVec2)) {
+	        ret[0] = FP.setNumber(aVec2[0], round);
+	        ret[1] = FP.setNumber(aVec2[1], round);
+        }
+        return ret;
     }
 
     static clone(a) {
@@ -32,7 +38,7 @@ class vec2Fix {
         return out;
     }
 
-    static sub(out, a, b) {
+    static sub(out, a, b, FP) {
         out[0] = FP.sub(a[0], b[0]);
         out[1] = FP.sub(a[1], b[1]);
         return out;
@@ -50,15 +56,16 @@ class vec2Fix {
         const ret = FP.add(FP.mul(del[0], del[0]), FP.mul(del[1], del[1]));
         return ret;
     }
+    static sqrDist = vec2Fix.squaredDistance;
 
-/*
-    //const delta = vec2.create();
-    //vec2.copy(curPlayer.pos, curPlayer.desiredPos);
-    //vec2.add(curPlayer.pos, curPlayer.pos, delta);
-    //vec2.sub(delta, curPlayer.desiredPos, curPlayer.pos);
-    //vec2.scale(delta, delta, step);
-    //const dist2 = vec2.sqrDist(curPlayer.desiredPos, curPlayer.pos);
-    vec2.normalize(delta, delta);
-*/
-
-}
+    static normalize = function(ret, a, FP) {
+        const x = a[0];
+        const y = a[1];
+        let len = FP.add(FP.mul(x, x), FP.mul(y, y));
+        if (len > 0n) {
+            len = FP.inv(FP.sqrt(len));
+            vec2Fix.scale(ret, a, len, FP);
+        }
+        return ret;
+    }
+};
