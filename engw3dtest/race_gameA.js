@@ -19,10 +19,12 @@ window.GameA = class GameA {
         this.size = 30; // radius
         this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
+
         // push these npcs around
         this.numDummyNpcsX = 4;
         this.numDummyNpcsY = 6;
         this.numDummyNpcs = this.numDummyNpcsX * this.numDummyNpcsY;
+
         // these npcs move and push everything else
         this.numMoveNpcsX = 3;
         this.numMoveNpcsY = 6;
@@ -82,6 +84,7 @@ window.GameA = class GameA {
         treeMasterPlayer.glfree();
         treeMasterDesired.glfree();
         treeMasterLine.glfree();
+        
         // view npcsDummy
         const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
         treeMasterDummyNpc.scale = [1, 1, .01];
@@ -99,6 +102,9 @@ window.GameA = class GameA {
         treeMasterMoveNpc.mat.color = [1.25, .25, 1.25, 1];
         for (let n = 0; n < this.numMoveNpcs; ++n) {
             const npcMoveTree = treeMasterMoveNpc.newdup();
+            if (n < this.numMoveNpcsX) {
+                npcMoveTree.mat.color = [1.75, .25, 1.75, 1];
+            }
             this.curMoveNpcView[n] = npcMoveTree;
             viewParent.linkchild(npcMoveTree);
         }
@@ -118,16 +124,21 @@ window.GameA = class GameA {
         // test sizes
         const block = buildprism("block",[this.size / 2,this.size / 2,this.size / 2],"maptestnck.png","tex");
         block.trans = [150, 50, 0];
-        block.scale = [1, 1, .01];
+        block.rotvel = [0, 1, 0];
+        //block.scale = [1, 1, .01];
         viewParent.linkchild(block);
 
-        const plane = buildplanexy("plane", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);;
+        const plane = buildplanexy("plane", this.size / 2, this.size / 2, "maptestnck.png", "tex", 1, 1);
+	    plane.mod.flags |= modelflagenums.DOUBLESIDED;
         plane.trans = [200, 50, 0];
+        plane.rotvel = [0, 1, 0];
         viewParent.linkchild(plane);
 
         const sphere = buildsphere("sphere",this.size / 2,"maptestnck.png","tex");
         sphere.trans = [250, 50, 0];
-        sphere.scale = [1, 1, .01];
+        //sphere.scale = [1, 1, .01];
+        //sphere.rotvel = [0, -Math.PI * 2 / 10, 0];//[0, 1, 0];
+        sphere.rotvel = [0, 1, 0];
         viewParent.linkchild(sphere);
     }
 
@@ -254,7 +265,7 @@ window.GameA = class GameA {
             vec2.sub(delta, posB, posA);
             vec2.normalize(delta, delta);
         } else { // same position, #separate horizontally
-            delta = vec2.fromValues(0, 1);
+            delta = vec2.fromValues(1, 0);
         }
         vec2.scale(delta, delta, distSep * .5 * extra);
         const midPoint = vec2.create();
@@ -278,7 +289,7 @@ window.GameA = class GameA {
             vec2.sub(deltaPos, posB, posA);
             vec2.normalize(deltaPos, deltaPos);
         } else { // same position, #separate horizontally
-            deltaPos = vec2.fromValues(0, 1);
+            deltaPos = vec2.fromValues(1, 0);
         }
         const deltaAVel = vec2.create();
         vec2.sub(deltaAVel, posA, lastPosA);
@@ -314,7 +325,7 @@ window.GameA = class GameA {
             vec2.sub(delta, posB, posA);
             vec2.normalize(delta, delta);
         } else { // same position, #separate horizontally
-            delta = vec2.fromValues(0, 1);
+            delta = vec2.fromValues(1, 0);
         }
         vec2.scale(delta, delta, distSep * extra);
         vec2.sub(posA, posB, delta); // move circleA away from circleB
@@ -363,7 +374,7 @@ window.GameA = class GameA {
                 if (pInput.mouse.click) {
                     curPlayer.desiredPos = [
                         range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, glc.clientHeight - 1 - pInput.mouse.pos[1], this.res[1] - this.margin),
+                        range(this.margin, this.res[1] - 1 - pInput.mouse.pos[1], this.res[1] - this.margin),
                         0
                     ];
                 }

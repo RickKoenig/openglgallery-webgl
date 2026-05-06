@@ -105,7 +105,7 @@ race_car.separate = function(posA, posB, distSep, extra) {
         vec2.sub(delta, posB, posA);
         vec2.normalize(delta, delta);
     } else { // same position, separate horizontally
-        delta = vec2.fromValues(0, 1);
+        delta = vec2.fromValues(1, 0);
     }
     vec2.scale(delta, delta, distSep * .5 * extra);
     const midPoint = vec2.create();

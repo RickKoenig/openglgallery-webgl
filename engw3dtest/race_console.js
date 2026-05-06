@@ -378,7 +378,7 @@ race_console.distColl = function(a, b, dist) {
 		vec2.sub(delta, b, a);
 		vec2.normalize(delta, delta);
 	} else {
-		delta = vec2.fromValues(0, 1);
+		delta = vec2.fromValues(1, 0);
 	}
 	const mid = vec2.create();
 	vec2.add(mid, a, b);
