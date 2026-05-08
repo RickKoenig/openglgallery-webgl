@@ -207,10 +207,13 @@ function makeahr() {
 	return hr;
 }
 
-function makeaprintarea(val) {
+function makeaprintarea(val, style) {
 	if (!myform)
 		return;
 	var pa = document.createElement('p');
+	if (style) {
+		pa.style = style;
+	}
 	pa.name = curname;
 	if (val)
 		pa.innerHTML = val;

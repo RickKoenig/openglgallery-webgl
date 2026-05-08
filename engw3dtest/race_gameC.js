@@ -152,8 +152,6 @@ window.GameC = class GameC {
 
         const sphere = buildsphere("sphere",this.size / 2,"maptestnck.png","tex");
         sphere.trans = [250, 50, 0];
-        //sphere.scale = [1, 1, .01];
-        //sphere.rotvel = [0, -Math.PI * 2 / 10, 0];//[0, 1, 0];
         sphere.rotvel = [0, 1, 0];
         viewParent.linkchild(sphere);
     }
@@ -203,7 +201,7 @@ window.GameC = class GameC {
                 pos: pos,
                 desiredPos: null // if mouse click
             };
-            player.lastPos = clone(player.pos);
+            player.lastPos = this.FPvec2.clone(player.pos);
             retModel.players[slot] = player;
         }
         // npc dummys
@@ -213,10 +211,6 @@ window.GameC = class GameC {
             const pos = this.FPvec2.create([150 + x * 75, 550 - y * 75]);
                 const npc = {
                     pos: pos
-
-                        //700 + x * 75, 550 - y * 75, 0,
-                        //150 + x * 75, 550 - y * 75, 0,
-                    
                 }
                 retModel.npcsDummy[n++] = npc;
             }
@@ -290,7 +284,7 @@ window.GameC = class GameC {
             delta = FPvec2.create([1, 0]); // right on top of each other, separate horizontally
         }
         // move apart in direction of delta with some 'extra' factor
-        FPvec2.scale(delta, delta, FPvec2.FP.mul(FPvec2.FP.mul(distSep, this.FPvec2.FP.HALF),extra));
+        FPvec2.scale(delta, delta, FPvec2.FP.mul(FPvec2.FP.mul(distSep, this.FP.HALF), extra));
         const midPoint = FPvec2.create();
         FPvec2.add(midPoint, posA, posB);
         FPvec2.scale(midPoint, midPoint, FPvec2.FP.HALF); // midpoint is the average
@@ -300,45 +294,46 @@ window.GameC = class GameC {
     }
 
     // move 2 circles apart, but with posB roughly following posA movement direction
-    static #separateSticky(posA, lastPosA, posB, distSep, stickyLerp, extra) {
-        const distSep2 = distSep * distSep;
-        const dist2 = vec2.sqrDist(posA, posB);
+    #separateSticky(posA, lastPosA, posB, distSep, stickyLerp, extra, FPvec2) {
+        const distSep2 = FPvec2.FP.mul(distSep, distSep);
+        const dist2 = FPvec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
-            return false;
+            return false; // too far apart
         }
-        let deltaPos;
+        let deltaPos; // normal
         if (dist2 > 0) {
-            deltaPos = vec2.create();
-            vec2.sub(deltaPos, posB, posA);
-            vec2.normalize(deltaPos, deltaPos);
+            deltaPos = FPvec2.create();
+            FPvec2.sub(deltaPos, posB, posA);
+            FPvec2.normalize(deltaPos, deltaPos);
         } else { // same position, #separate horizontally
-            deltaPos = vec2.fromValues(1, 0);
+            deltaPos = FPvec2.create(1, 0);
         }
-        const deltaAVel = vec2.create();
-        vec2.sub(deltaAVel, posA, lastPosA);
-        const moveLen2 = vec2.sqrLen(deltaAVel);
-        if (moveLen2 > 0) {
-            vec2.normalize(deltaAVel, deltaAVel);
+        const deltaAVel = FPvec2.create(); // sticky
+        FPvec2.sub(deltaAVel, posA, lastPosA);
+        const moveLen2 = FPvec2.sqrLen(deltaAVel);
+        if (moveLen2 > 0n) {
+            FPvec2.normalize(deltaAVel, deltaAVel);
         } else {
-            vec2.copy(deltaAVel, deltaPos); // no movement, just use deltaPos
+            FPvec2.copy(deltaAVel, deltaPos); // no movement, just use deltaPos
         }
-        const delta = vec2.create();
-        vec2.lerp(delta, deltaPos, deltaAVel, stickyLerp);
+        const delta = FPvec2.create();
+        FPvec2.lerp(delta, deltaPos, deltaAVel, stickyLerp);
+        //FPvec2.copy(delta, deltaAVel);
 
-        vec2.normalize(delta, delta);
-        vec2.scale(delta, delta, distSep * .5 * extra);
-        const midPoint = vec2.create();
-        vec2.add(midPoint, posA, posB);
-        vec2.scale(midPoint, midPoint, .5); // midpoint is the average
-        vec2.sub(posA, midPoint, delta); // move out in opposite directions
-        vec2.add(posB, midPoint, delta);
+        FPvec2.normalize(delta, delta);
+        FPvec2.scale(delta, delta, this.FP.mul(this.FP.mul(distSep, this.FP.HALF), extra));
+        const midPoint = FPvec2.create();
+        FPvec2.add(midPoint, posA, posB);
+        FPvec2.scale(midPoint, midPoint, this.FP.HALF); // midpoint is the average
+        FPvec2.sub(posA, midPoint, delta); // move out in opposite directions
+        FPvec2.add(posB, midPoint, delta);
         return true;
     }
 
     // move circleA away from circleB (circleB doesn't move)
     #separateA(posA, posB, distSep, extra, FPvec2) {
-        const distSep2 = FPvec2.FP.mul(distSep, distSep);
-        const dist2 = FPvec2.sqrDist(posA, posB);
+        const distSep2 = this.FPvec2.FP.mul(distSep, distSep);
+        const dist2 = this.FPvec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
             return false; // too far apart
         }
@@ -363,6 +358,7 @@ window.GameC = class GameC {
         for (let slot = 0; slot < pInputs.length; ++slot) {
             const pInput = pInputs[slot];
             const curPlayer = this.curModel.players[slot];
+            this.FPvec2.copy(curPlayer.lastPos, curPlayer.pos);
             if (pInput.discon) {
                 this.curPlayerView[slot].mat.color = [1.75, 0, 0, 1]; // disconnect color
                 curPlayer.desiredPos = null;
@@ -404,12 +400,10 @@ window.GameC = class GameC {
                     x = this.FP.range(this.FtopLeftMargin, x, this.FrightMargin);
                     y = this.FP.range(this.FtopLeftMargin, y, this.FbotMargin);
                     curPlayer.desiredPos = [x, y];
-                    //console.log("desired pos = " + this.FP.toNumber(x) + ", " + this.FP.toNumber(y));
                 }
             }
             
             // mouse, move to desiredPos
-            
             if (curPlayer.desiredPos) {
                 //const close2 = step * step * 2;
                 const close2 = this.FP.mul(this.FP.mul(step, step), this.FP.TWO);
@@ -435,7 +429,6 @@ window.GameC = class GameC {
 
         // collisions
         const extra = this.FP.create(1.001); // move apart a litte more, trust
-
         const size2 = this.FP.mul(this.FP.TWO, this.FPSize);
         // players to players
         for (let p0 = 0; p0 < pInputs.length; ++p0) {
@@ -444,6 +437,37 @@ window.GameC = class GameC {
                 const curPlayer1 = this.curModel.players[p1];
                 // move players apart
                 this.#separate(curPlayer0.pos, curPlayer1.pos, size2, extra, this.FPvec2);
+            }
+        }
+
+        // players to npcsDummy
+        const sticky = this.FP.create(.05);
+        for (let p = 0; p < pInputs.length; ++p) {
+            const curPlayer = this.curModel.players[p];
+            for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
+                const npcd = this.curModel.npcsDummy[nd];
+                // move players and npcsDummy apart
+                this.#separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, size2, sticky, extra, this.FPvec2);
+            }
+        }
+
+        // npcsDummy to npcsDummy
+        for (let n0d = 0; n0d < this.curModel.npcsDummy.length; ++n0d) {
+            const npc0d = this.curModel.npcsDummy[n0d];
+            for (let n1d = n0d + 1; n1d < this.curModel.npcsDummy.length; ++n1d) {
+                const npc1d = this.curModel.npcsDummy[n1d];
+                // move npcsDummy and npcsDummy apart
+                this.#separate(npc0d.pos, npc1d.pos, size2, extra, this.FPvec2);
+            }
+        }
+
+        // npcsMove to npcsDummy
+        for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
+            const npcd = this.curModel.npcsDummy[nd];
+            for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
+                const npcm = this.npcsMoving[nm];
+                // move players away from npcsMoving
+                this.#separateA(npcd.pos, npcm.pos, size2, extra,this.FPvec2);
             }
         }
 
@@ -462,6 +486,13 @@ window.GameC = class GameC {
             const curPlayer = this.curModel.players[p];
             curPlayer.pos[0] = this.FP.range(this.FtopLeftMargin, curPlayer.pos[0], this.FrightMargin);
             curPlayer.pos[1] = this.FP.range(this.FtopLeftMargin, curPlayer.pos[1], this.FbotMargin);
+        }
+
+        // border to npcsDummy
+        for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
+            const npcd = this.curModel.npcsDummy[nd];
+            npcd.pos[0] = this.FP.range(this.FtopLeftMargin, npcd.pos[0], this.FrightMargin);
+            npcd.pos[1] = this.FP.range(this.FtopLeftMargin, npcd.pos[1], this.FbotMargin);
         }
     }
 

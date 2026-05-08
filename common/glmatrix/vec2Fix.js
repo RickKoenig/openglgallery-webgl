@@ -24,12 +24,12 @@ class vec2Fix {
         }
         return ret;
     }
-/*
-    static clone(a) {
-        const out = a.slice();
+
+    clone(a) {
+        const out = [a[0], a[1]];
         return out;
     }
-*/
+
     copy(out, a) {
         out[0] = a[0];
         out[1] = a[1];
@@ -61,14 +61,30 @@ class vec2Fix {
         return ret;
     }
 
+    sqrLen(a) {
+        const ret = this.FP.add(this.FP.mul(a[0], a[0]), this.FP.mul(a[1], a[1]));
+        return ret;
+    }
+
     normalize(ret, a) {
         const x = a[0];
         const y = a[1];
         let len = this.FP.add(this.FP.mul(x, x), this.FP.mul(y, y));
         if (len > 0n) {
             len = this.FP.inv(this.FP.sqrt(len));
-            this.scale(ret, a, len, this.FP);
+            this.scale(ret, a, len);
+        } else {
+            console.error("can't normalize");
         }
         return ret;
     }
+
+    lerp(out, a, b, t) {
+        //out[0] = a[0] + t * (b[0] - a[0]);
+        //out[1] = a[1] + t * (b[1] - a[1]);
+        out[0] = this.FP.add(a[0], this.FP.mul(t, this.FP.sub(b[0], a[0])));
+        out[1] = this.FP.add(a[1], this.FP.mul(t, this.FP.sub(b[1], a[1])));
+        return out;
+    };
 };
+

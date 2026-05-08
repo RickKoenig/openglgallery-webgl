@@ -136,8 +136,6 @@ window.GameA = class GameA {
 
         const sphere = buildsphere("sphere",this.size / 2,"maptestnck.png","tex");
         sphere.trans = [250, 50, 0];
-        //sphere.scale = [1, 1, .01];
-        //sphere.rotvel = [0, -Math.PI * 2 / 10, 0];//[0, 1, 0];
         sphere.rotvel = [0, 1, 0];
         viewParent.linkchild(sphere);
     }
@@ -152,7 +150,6 @@ window.GameA = class GameA {
             const ang = j * 2 * CMath.PI / this.numMoveNpcsY + angOffset;
             const cosAng = CMath.cos(ang);
             const sinAng = CMath.sin(ang);
-            //console.log("NOTICE: j = " + j + ", " + sinAng + " =  sin ( " + ang + " ) ");
             for (let i = 0; i < this.numMoveNpcsX; ++i) {
                 const rad = startX + stepX * i;
                 const npc = {
@@ -162,7 +159,6 @@ window.GameA = class GameA {
                         0
                     ]
                 }
-                //console.log("NOTICE2: npc.pos[1] = " + npc.pos[1] + ", from rad = " + rad);
                 this.npcsMoving[n++] = npc;
             }
         }
@@ -192,7 +188,6 @@ window.GameA = class GameA {
             for (let x = 0; x < this.numDummyNpcsX; ++x) {
                 const npc = {
                     pos: [
-                        //700 + x * 75, 550 - y * 75, 0,
                         150 + x * 75, 550 - y * 75, 0,
                     ]
                 }

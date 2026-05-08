@@ -139,8 +139,6 @@ window.GameD = class GameD {
 
         const sphere = buildsphere("sphere",this.size / 2,"maptestnck.png","tex");
         sphere.trans = [250, 50, 0];
-        //sphere.scale = [1, 1, .01];
-        //sphere.rotvel = [0, -Math.PI * 2 / 10, 0];//[0, 1, 0];
         sphere.rotvel = [0, 1, 0];
         viewParent.linkchild(sphere);
     }
@@ -195,7 +193,6 @@ window.GameD = class GameD {
             for (let x = 0; x < this.numDummyNpcsX; ++x) {
                 const npc = {
                     pos: [
-                        //700 + x * 75, 550 - y * 75, 0,
                         150 + x * 75, 550 - y * 75, 0,
                     ]
                 }
@@ -284,9 +281,9 @@ window.GameD = class GameD {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
-            return false;
+            return false; // too far apart
         }
-        let deltaPos;
+        let deltaPos; // normal
         if (dist2 > 0) {
             deltaPos = vec2.create();
             vec2.sub(deltaPos, posB, posA);
@@ -294,7 +291,7 @@ window.GameD = class GameD {
         } else { // same position, #separate horizontally
             deltaPos = vec2.fromValues(1, 0);
         }
-        const deltaAVel = vec2.create();
+        const deltaAVel = vec2.create(); // sticky
         vec2.sub(deltaAVel, posA, lastPosA);
         const moveLen2 = vec2.sqrLen(deltaAVel);
         if (moveLen2 > 0) {
@@ -304,6 +301,7 @@ window.GameD = class GameD {
         }
         const delta = vec2.create();
         vec2.lerp(delta, deltaPos, deltaAVel, stickyLerp);
+        //vec2.copy(delta, deltaAVel);
 
         vec2.normalize(delta, delta);
         vec2.scale(delta, delta, distSep * .5 * extra);
