@@ -223,7 +223,8 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	race_gameState.showHud = true;
 	setbutsname('ingame');
 	race_lobby.fillButton = makeabut("console", race_gameState.gotoConsole);
-	makeaprintarea("GAME '" + race_gameState.gameType + "'", "font-size: 2.4em;");
+	makeaprintarea("GAME '" + race_gameState.gameType + "'", "font-size: 2.1em;");
+	makeabr();
 
 	race_gameState.roottree = new Tree2("race_gameState root tree");
 	if (race_gameState.showHud) {

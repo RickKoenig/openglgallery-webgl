@@ -42,6 +42,20 @@
         {
             "type": "chrome",
             "request": "launch",
+            "name": "Run Race Net console standalone",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_console_standalone",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net console RAF standalone",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_console_standalone",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
             "name": "Run Race Net tracks standalone",
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_mainStandalone",
             "webRoot": "${workspaceFolder}"

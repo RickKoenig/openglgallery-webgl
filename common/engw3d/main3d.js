@@ -593,7 +593,7 @@ function mainexit() {
 
 var unloaded = false;
 window.addEventListener('load', function(event) {
-	console.log('Load event');
+	console.log('\n\n\n\n\nLoad event');
 	mainload();
 });
 

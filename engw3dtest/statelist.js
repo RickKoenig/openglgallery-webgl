@@ -14,11 +14,13 @@ var statelist = [
 	multiplayer, // test out multiplayer stuff
 
 	race_console,
+	race_console_standalone,
 	race_login,
 	race_lobby,
 	race_sentgo,
 	race_results,
 	race_gameState,
+	race_gameState_standalone,
 	race_mainStandalone,
 	
 	state9, // scratch, test render targets
