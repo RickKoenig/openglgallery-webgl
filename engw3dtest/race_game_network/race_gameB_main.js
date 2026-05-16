@@ -184,7 +184,7 @@ window.GameB = class RaceGameNetwork {
 
     // let game decide what to do with predictions
     predictLogic(prevInput, frameNum) {
-        //return prevInput; // full prediction
+        //return prevInput; // full prediction, same as last time
         //const kc = 0; // wait, no prediction
         //const kc = RaceGameNetwork.keyCodes.RIGHT; // test, predict right
         const kc = RaceGameNetwork.keyCodes.UP | prevInput.kc; // racing, always press GAS/up
@@ -193,9 +193,9 @@ window.GameB = class RaceGameNetwork {
     }
 
     // timeWarp
-    stepModel(pInputs, frameNum, valid) {
+    stepModel(pInputs, frameNum/*, valid*/) {
         race_car_network.procCars(this.curModel, pInputs, this);
-        if (valid) { // no predictions, final status
+        //if (valid) { // no predictions, final status
             // update info about currently selected car
             const curCarModel = this.curModel[this.curPlayerView];
             const carStatus = curCarModel.discon ? "DISconnected" : "connected";
@@ -204,7 +204,7 @@ window.GameB = class RaceGameNetwork {
             if (slotName) {
                 modeStr = this.curPlayer == this.curPlayerView
                 ? ", mode local " + race_car_network.modeStrs[this.mode]
-                : ", mode network " + carStatus;
+                : ", mode " + carStatus;
             } else {
                 slotName = "BOT";
             }
@@ -212,7 +212,7 @@ window.GameB = class RaceGameNetwork {
                 + modeStr
                 + ", speed " + (curCarModel.speed * 5000).toFixed(1)
                 + ", dir " + curCarModel.dir.toFixed(3));
-        }
+        //}
     }
 
     // no timeWarp, mainly for animation

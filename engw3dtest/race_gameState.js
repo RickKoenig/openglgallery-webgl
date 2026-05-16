@@ -12,7 +12,7 @@ race_gameState.doChecksum = true; // check all valid frames (race state)
 race_gameState.validateVerbose = false;
 race_gameState.broadcastReceiveVerbose = false;
 race_gameState.broadcastSendVerbose = false;
-race_gameState.fpswanted = 60;
+fpswanted = 60;
 
 race_gameState.maxFrames = 0; // 0 is unlimited
 

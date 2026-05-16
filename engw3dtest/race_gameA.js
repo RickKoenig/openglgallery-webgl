@@ -239,7 +239,7 @@ window.GameA = class GameA {
 
     // let game decide what to do with predictions
     predictLogic(prevInput, frameNum) {
-        return prevInput; // full prediction
+        return prevInput; // full prediction, same as last time
         //const kc = 0; // wait, no prediction
         //const kc = GameA.#keyCodes.RIGHT; // test, predict right
         //const kc = GameA.#keyCodes.UP | prevInput.kc; // racing, always press GAS/up
