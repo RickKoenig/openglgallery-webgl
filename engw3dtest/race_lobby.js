@@ -1,15 +1,15 @@
 'use strict';
 
 // terminal
-var race_console = {}; // the 'race_console' state
-race_console.text = "WebGL: race_console 3D drawing";
-race_console.title = "race_console";
+var race_lobby = {}; // the 'race_lobby' state
+race_lobby.text = "WebGL: race_lobby 3D drawing";
+race_lobby.title = "race_lobby";
 
 // BEGIN test internet breakage
 const testDisconnect = 0;
 // when to disconnect
 // 0 no test
-// 1 race_console got go
+// 1 race_lobby got go
 // 2 race_sentgo init
 // 3 race_sentgo proc soon after
 // 4 race_sentgo exit
@@ -26,47 +26,47 @@ const testNotReady = 0;
 const testId = 1;
 // END test internet breakage
 
-race_console.broadcastModes = {
+race_lobby.broadcastModes = {
 	lobby: 0,
 	room: 1,
 };
-race_console.modeStrs = ['L', 'R'];
+race_lobby.modeStrs = ['L', 'R'];
 
 // load these before init
-race_console.load = function() {
+race_lobby.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 };
 
-race_console.gotoLobby = function() {
+race_lobby.gotoLobby = function() {
     changestate("race_lobby");
 }
 
-race_console.gotoFill = function() {
+race_lobby.gotoFill = function() {
     changestate("race_sentgo");
 }
 
-race_console.autoCommandMake = function() {
+race_lobby.autoCommandMake = function() {
 	// log in and make room p0
-	race_console.doCommand('e');
-	race_console.doCommand('m');
+	race_lobby.doCommand('e');
+	race_lobby.doCommand('m');
 }
 
-race_console.autoCommandJoin = function() {
+race_lobby.autoCommandJoin = function() {
 	// log in and connect to room p0
-	race_console.doCommand('e');
-	race_console.doCommand('j');
+	race_lobby.doCommand('e');
+	race_lobby.doCommand('j');
 }
 
-race_console.autoCommand1P = function(g) {
+race_lobby.autoCommand1P = function(g) {
 	// log in and connect to room p0
-	race_console.doCommand('e');
-	race_console.doCommand('m');
-	race_console.doCommand('go ' + g);
+	race_lobby.doCommand('e');
+	race_lobby.doCommand('m');
+	race_lobby.doCommand('go ' + g);
 }
 
 // get my profile from server after setting name game etc. 
 // also has my id and room id if needed
-race_console.makePromptFromInfo = function(info) {
+race_lobby.makePromptFromInfo = function(info) {
 /*
 	//like this
 	L {slayer0} > // lobby
@@ -82,15 +82,15 @@ race_console.makePromptFromInfo = function(info) {
 	roomName
 	roomIdx
 */
-	race_console.terminal.print("info = " + JSON.stringify(info, null, '   '));
-	let modeStr = race_console.modeStrs[info.mode]; // L or R
+	race_lobby.terminal.print("info = " + JSON.stringify(info, null, '   '));
+	let modeStr = race_lobby.modeStrs[info.mode]; // L or R
 	if (info.room?.locked) {
 		modeStr = 'S';
 	} else if (info.roomIdx == 0) {
 		modeStr = 'H'; // room host
 	}
 	let prompt = modeStr;
-	if (info.mode == race_console.broadcastModes.room) {
+	if (info.mode == race_lobby.broadcastModes.room) {
 		prompt += " [" + info.room.name + "]";
 	}
 	prompt += " {" + info.name + "}";
@@ -98,7 +98,7 @@ race_console.makePromptFromInfo = function(info) {
 	return prompt;
 };
 
-race_console.setupCallbacks = function(socker, name) {
+race_lobby.setupCallbacks = function(socker, name) {
 	// handle all events from SERVER
 	socker.on('connect', function() {
 		if (socker) {
@@ -112,11 +112,11 @@ race_console.setupCallbacks = function(socker, name) {
 	});
 
 	socker.on('prompt', function(info) {
-		race_console.sockerInfo = info;
+		race_lobby.sockerInfo = info;
 		console.log("INFO from server: " + JSON.stringify(info));
 		if (socker) {
-			const newPrompt = race_console.makePromptFromInfo(info);
-			race_console.terminal.setPrompt(newPrompt);
+			const newPrompt = race_lobby.makePromptFromInfo(info);
+			race_lobby.terminal.setPrompt(newPrompt);
 		} else {
 			console.log('on prompt with null socker!!');
 			alert('on prompt with null socker!!');
@@ -125,16 +125,16 @@ race_console.setupCallbacks = function(socker, name) {
 
 	// server sends message to terminal
 	socker.on('message', function(message) {
-		race_console.terminal.print(message);
+		race_lobby.terminal.print(message);
 	});
 
 	socker.on('disconnect', function (reason) {
 		console.log("disconnect reason '" + reason + "'");	
-		race_console.terminal?.print("disconnect reason '" + reason + "'");
+		race_lobby.terminal?.print("disconnect reason '" + reason + "'");
 		if (socker) {
 			socker.disconnect();
-			race_console.socker = socker = null; // one side effect
-			race_console.terminal?.setPrompt(">");
+			race_lobby.socker = socker = null; // one side effect
+			race_lobby.terminal?.setPrompt(">");
 		}
 	});
 
@@ -144,33 +144,33 @@ race_console.setupCallbacks = function(socker, name) {
 			console.log("no broadPack data, is disconnect from other socket: id = " + broadPack.id + ", roomIdx = " + broadPack.roomIdx);
 		} else if (typeof broadPack.data === 'string') {
 			console.log("broadcast from server: " + JSON.stringify(broadPack));
-			race_console.terminal.print("{" + broadPack.name + "} '" + broadPack.data + "'");
+			race_lobby.terminal.print("{" + broadPack.name + "} '" + broadPack.data + "'");
 		}
 	});
 
 	// display news from server
 	socker.on('news', function(strData) {
 		console.log("NEWS from server: " + strData + " client newsCount " 
-			+ race_console.clientNewsCount);
-			//race_console.terminal.print(strData);
-			++race_console.clientNewsCount;
+			+ race_lobby.clientNewsCount);
+			//race_lobby.terminal.print(strData);
+			++race_lobby.clientNewsCount;
 	});
 
 	socker.on('go', function(gameType) {
-		if (race_console.sockerInfo.id == testId) { // test disconnect some sockets
+		if (race_lobby.sockerInfo.id == testId) { // test disconnect some sockets
 			if (testDisconnect == 1) {
-				race_console.socker?.disconnect(true);
+				race_lobby.socker?.disconnect(true);
 			}
 		}
 		//const jGoData = JSON.stringify(goData);
 		console.log("GO!: '" + gameType + "' client newsCount " 
-			+ race_console.clientNewsCount);
-		race_console.terminal.print(gameType);
-		++race_console.clientNewsCount;
-		race_console.keepSockInfo = true;
+			+ race_lobby.clientNewsCount);
+		race_lobby.terminal.print(gameType);
+		++race_lobby.clientNewsCount;
+		race_lobby.keepSockInfo = true;
 		changestate("race_sentgo", {
 			sock: socker,
-			info: race_console.sockerInfo,
+			info: race_lobby.sockerInfo,
 			gameType: gameType
 		});
 	});
@@ -194,7 +194,7 @@ mul
 status s
 */
 
-race_console.doCommand = function(cmdStr) {
+race_lobby.doCommand = function(cmdStr) {
 	console.log("got a command from terminal '" + cmdStr + "'");
 	const words = cmdStr.trim().split(/\s+/);
 	if (!words[0]) return;
@@ -208,7 +208,7 @@ race_console.doCommand = function(cmdStr) {
 		case "echo":
 			// local with delay
 			setTimeout(function() {
-				race_console.terminal.print(words.join(' '));
+				race_lobby.terminal.print(words.join(' '));
 			}, 2000);
 			break;
 		case "add":
@@ -221,8 +221,8 @@ race_console.doCommand = function(cmdStr) {
 			break;
 		case "mul":
 			// remote
-			if (race_console.socker) {
-				race_console.socker.emit('mul', words);
+			if (race_lobby.socker) {
+				race_lobby.socker.emit('mul', words);
 			} else {
 				this.print("please connect first with 'enter (name)'!");
 			}
@@ -231,101 +231,101 @@ race_console.doCommand = function(cmdStr) {
 		case "e":
 			// connect
 			if (typeof io !== 'undefined') {
-				if (race_console.socker) {
-					race_console.terminal.print("already connected!");
+				if (race_lobby.socker) {
+					race_lobby.terminal.print("already connected!");
 				} else {
 					// upgrade to websocket
-					race_console.socker = io.connect("http://" + location.host);
+					race_lobby.socker = io.connect("http://" + location.host);
 					const name = words[0];
-					race_console.setupCallbacks(race_console.socker, name);
+					race_lobby.setupCallbacks(race_lobby.socker, name);
 				}
 			} else {
-				race_console.terminal.print("no 'socket IO' library!");
+				race_lobby.terminal.print("no 'socket IO' library!");
 			}
 			break;
 		case "exit":
 			// disconnect
-			if (race_console.socker) {
-				race_console.socker.disconnect();
-				race_console.socker = null;
+			if (race_lobby.socker) {
+				race_lobby.socker.disconnect();
+				race_lobby.socker = null;
 			} else {
-				race_console.terminal.print("already disconnected!");
+				race_lobby.terminal.print("already disconnected!");
 			}
 			break;
 		case "status":
 		case "s":
 			// remote, status
-			if (race_console.socker) {
-				race_console.socker.emit('status', null);
+			if (race_lobby.socker) {
+				race_lobby.socker.emit('status', null);
 			} else {
-				race_console.terminal.print("please connect first with 'enter (name)'!");
+				race_lobby.terminal.print("please connect first with 'enter (name)'!");
 			}
 			break;
 		case "kickme":
 			// remote, kill my connection in about 5 seconds
-			if (race_console.socker) {
-				race_console.socker.emit('kickme', null);
+			if (race_lobby.socker) {
+				race_lobby.socker.emit('kickme', null);
 			} else {
-				race_console.terminal.print("not connected!");
+				race_lobby.terminal.print("not connected!");
 			}
 			break;
 		// send a message to everyone
 		case "chat":
 		case "c":
-			if (race_console.socker) {
+			if (race_lobby.socker) {
 				const message = words.join(' ');
-				race_console.socker.emit('broadcast', message);
-				race_console.terminal.print("broadcast '" + message + "'");
+				race_lobby.socker.emit('broadcast', message);
+				race_lobby.terminal.print("broadcast '" + message + "'");
 			} else {
-				race_console.terminal.print("not connected!");
+				race_lobby.terminal.print("not connected!");
 			}
 			break;
 
 		// rooms
 		case "makeroom":
 		case "m":
-			if (race_console.socker) {
-				race_console.socker.emit('makeroom', words[0]);
+			if (race_lobby.socker) {
+				race_lobby.socker.emit('makeroom', words[0]);
 			} else {
-				race_console.terminal.print("not connected!");
+				race_lobby.terminal.print("not connected!");
 			}
 			break;
 		case "joinroom":
 		case "j":
-			if (race_console.socker) {
+			if (race_lobby.socker) {
 				let roomName = words[0];
 				if (!roomName) roomName = "p0";
 				if (roomName) {
-					race_console.socker.emit('joinroom', roomName);
+					race_lobby.socker.emit('joinroom', roomName);
 				} else {
-					race_console.terminal.print("usage: joinroom roomname");
+					race_lobby.terminal.print("usage: joinroom roomname");
 				}
 			} else {
-				race_console.terminal.print("not connected!");
+				race_lobby.terminal.print("not connected!");
 			}
 			break;
 		case "exitroom":
-			if (race_console.socker) {
-				race_console.socker.emit('exitroom', null);
+			if (race_lobby.socker) {
+				race_lobby.socker.emit('exitroom', null);
 			} else {
-				race_console.terminal.print("not connected!");
+				race_lobby.terminal.print("not connected!");
 			}
 			break;
 
 		// start a game
 		case "go": // go from room to sim/game, a room that is locked
 				   // no new members, host can leave without destroying the room and game
-			if (race_console.socker) {
+			if (race_lobby.socker) {
 				let gameType = words[0];
 				//if (!gameType) gameType = 'a'; // default
 				if (!gameType || gameType.length != 1 || gameType < 'a' || gameType > 'c') {
-					race_console.terminal.print("not a valid gameType '" + gameType + "'");
-					race_console.terminal.print("valid gameTypes are, 'a' thru 'c'");
+					race_lobby.terminal.print("not a valid gameType '" + gameType + "'");
+					race_lobby.terminal.print("valid gameTypes are, 'a' thru 'c'");
 					break;
 				}
-				race_console.socker.emit('go', gameType);
+				race_lobby.socker.emit('go', gameType);
 			} else {
-				race_console.terminal.print("not connected!");
+				race_lobby.terminal.print("not connected!");
 			}
 			break;
 
@@ -336,7 +336,7 @@ race_console.doCommand = function(cmdStr) {
 	}
 }
 
-race_console.testGameClass = function(gameType) {
+race_lobby.testGameClass = function(gameType) {
 	console.log("start test game class");
 	const game = GameA;
 	const typeofgame = typeof game;
@@ -349,7 +349,7 @@ race_console.testGameClass = function(gameType) {
 	console.log("finish test game class");
 }
 
-race_console.distColl = function(a, b, dist) {
+race_lobby.distColl = function(a, b, dist) {
 	const dist2 = vec2.sqrDist(a, b);
 	let delta;
 	if (dist2 > 0) {
@@ -366,18 +366,18 @@ race_console.distColl = function(a, b, dist) {
 	vec2.add(b, mid, delta);
 }
 
-race_console.showPoint = function(p) {
+race_lobby.showPoint = function(p) {
 	return"(" + p[0].toFixed(4) + ", " + p[1].toFixed(4) + ")";
 }
 
-race_console.showPointPairs = function(pps) {
+race_lobby.showPointPairs = function(pps) {
 	console.log("POINT PAIRS");
 	for (const pp of pps) {
-		console.log("p0 = [" + race_console.showPoint(pp[0]) + ", p1 " + race_console.showPoint(pp[1]));
+		console.log("p0 = [" + race_lobby.showPoint(pp[0]) + ", p1 " + race_lobby.showPoint(pp[1]));
 	}
 }
 
-race_console.testDistColl = function() {
+race_lobby.testDistColl = function() {
 	const pointPairs = [
 		[[3, 4], [4, 5]],
 		[[3, 6], [4, 7]],
@@ -394,16 +394,16 @@ race_console.testDistColl = function() {
 
 	console.log("TEST DIST COLL");
 	console.log("BEFORE separation");
-	race_console.showPointPairs(pointPairs);
+	race_lobby.showPointPairs(pointPairs);
 	for (const pp of pointPairs) {
-		race_console.distColl(pp[0], pp[1], dist);
+		race_lobby.distColl(pp[0], pp[1], dist);
 	}
 	console.log("AFTER separation");
-	race_console.showPointPairs(pointPairs);
+	race_lobby.showPointPairs(pointPairs);
 }
 
 // find and list floating point inconsistencies here
-race_console.testFloat = function() {
+race_lobby.testFloat = function() {
 	let ang = 4 * 2 * CMath.PI / 6; // doesn't matter which library
 	ang = normalangrad(ang);
 	{
@@ -426,7 +426,7 @@ race_console.testFloat = function() {
 	}
 }
 
-race_console.testJSON = function() {
+race_lobby.testJSON = function() {
 	console.log("test JSON");
 
 	const obj = {
@@ -453,32 +453,32 @@ race_console.testJSON = function() {
 	console.log("end test JSON");
 }
 
-race_console.init = function(intentData) {
-	//race_console.testJSON();
-	//race_console.testGameClass('a');
-	//race_console.testFloat();
-	//race_console.testDistColl();
-	race_console.keepSockInfo = false;
-	race_console.clientNewsCount = 0;
-	logger("entering webgl race_console\n");
+race_lobby.init = function(intentData) {
+	//race_lobby.testJSON();
+	//race_lobby.testGameClass('a');
+	//race_lobby.testFloat();
+	//race_lobby.testDistColl();
+	race_lobby.keepSockInfo = false;
+	race_lobby.clientNewsCount = 0;
+	logger("entering webgl race_lobby\n");
 	// ui
 	setbutsname('console');
-	makeabut("start game(a), move and push", race_console.autoCommand1P.bind(this,'a'));
+	makeabut("start game(a), move and push", race_lobby.autoCommand1P.bind(this,'a'));
 	makeabr();
-	makeabut("start game(b), 2d race", race_console.autoCommand1P.bind(this,'b'));
+	makeabut("start game(b), 2d race", race_lobby.autoCommand1P.bind(this,'b'));
 	makeabr();
-	makeabut("start game(c), move and push V2 fixed", race_console.autoCommand1P.bind(this,'c'));
+	makeabut("start game(c), move and push V2 fixed", race_lobby.autoCommand1P.bind(this,'c'));
 	makeabr();
-	makeabut("make room", race_console.autoCommandMake);
-	makeabut("join room", race_console.autoCommandJoin);
+	makeabut("make room", race_lobby.autoCommandMake);
+	makeabut("join room", race_lobby.autoCommandJoin);
 	
-	//race_console.showIntent = makeaprintarea("intent = '" + intentData + "'");
+	//race_lobby.showIntent = makeaprintarea("intent = '" + intentData + "'");
 	
 	// build parent
-	race_console.roottree = new Tree2("race_console root tree");
+	race_lobby.roottree = new Tree2("race_lobby root tree");
 
-	race_console.socker = null; // the client socket
-	race_console.sockerInfo = null; // info about the socket
+	race_lobby.socker = null; // the client socket
+	race_lobby.sockerInfo = null; // info about the socket
 
 	const termParams1 = {
 		cols: 120,
@@ -486,49 +486,49 @@ race_console.init = function(intentData) {
 		offx: 8,
 		offy: 8
 	};
-	race_console.terminal = new Terminal(race_console.roottree, [.1, 0, 0, 1], race_console.doCommand, termParams1);
-	race_console.terminal.print("Welcome");
+	race_lobby.terminal = new Terminal(race_lobby.roottree, [.1, 0, 0, 1], race_lobby.doCommand, termParams1);
+	race_lobby.terminal.print("Welcome");
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	const waitSec = 1;
 };
 
-race_console.onresize = function() {
+race_lobby.onresize = function() {
 	console.log("onresize");
-	race_console.terminal.onresize();
+	race_lobby.terminal.onresize();
 }
 
-race_console.proc = function() {
+race_lobby.proc = function() {
 	// proc
-	race_console.terminal?.proc(input.key);
-	race_console.roottree.proc(); // probably does nothing
+	race_lobby.terminal?.proc(input.key);
+	race_lobby.roottree.proc(); // probably does nothing
 	//doflycam(mainvp); // modify the trs of mainvp using flycam
 
 	// draw
 	beginscene(mainvp);
-	race_console.roottree.draw();
+	race_lobby.roottree.draw();
 };
 
-race_console.exit = function() {
-	race_console.terminal = null;
-	clearTimeout(race_console.timeout);
-	if (race_console.keepSockInfo) {
-		race_console.socker.off(); // kill all callbacks
-	} else if (race_console.socker) {
-		race_console.socker.disconnect();
+race_lobby.exit = function() {
+	race_lobby.terminal = null;
+	clearTimeout(race_lobby.timeout);
+	if (race_lobby.keepSockInfo) {
+		race_lobby.socker.off(); // kill all callbacks
+	} else if (race_lobby.socker) {
+		race_lobby.socker.disconnect();
 	}
-	race_console.socker = null;
+	race_lobby.socker = null;
 
 	// show current usage before cleanup
-	race_console.roottree.log();
+	race_lobby.roottree.log();
 	logrc();
 	logger("after roottree glfree\n");
-	race_console.roottree.glfree();
+	race_lobby.roottree.glfree();
 	
 	// show usage after cleanup
 	logrc();
-	race_console.roottree = null;
+	race_lobby.roottree = null;
 	clearbuts('console');
-	logger("exiting webgl race_console\n");
+	logger("exiting webgl race_lobby\n");
 };

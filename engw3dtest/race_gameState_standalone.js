@@ -10,7 +10,7 @@ race_gameState_standalone.title = "race_gameState_standalone";
 fpswanted = 60;
 
 race_gameState_standalone.gotoStandaloneConsole = function() {
-    changestate("race_console_standalone", "from gameState standalone");
+    changestate("race_lobby_standalone", "from gameState standalone");
 }
 
 // load these before init
@@ -117,7 +117,7 @@ race_gameState_standalone.proc = function() {
 };
 
 race_gameState_standalone.exit = function() {
-	changestate("race_console_standalone", "from gameState_standalone, reload state");
+	changestate("race_lobby_standalone", "from gameState_standalone, reload state");
 
 	// show current usage before cleanup
 	race_gameState_standalone.roottree.log();

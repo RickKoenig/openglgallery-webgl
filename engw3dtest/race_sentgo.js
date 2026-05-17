@@ -8,7 +8,7 @@ race_sentgo.text = "WebGL: race_sentgo 3D drawing";
 race_sentgo.title = "race_sentgo";
 
 race_sentgo.gotoConsole = function() {
-    changestate("race_console", "from SENTGO");
+    changestate("race_lobby", "from SENTGO");
 }
 
 race_sentgo.gotoLogin = function() {
@@ -22,7 +22,7 @@ race_sentgo.setupCallbacks = function(socker) {
 		if (socker) {
 			socker.disconnect();
 			race_sentgo.socker = socker = null; // one side effect
-			changestate("race_console");
+			changestate("race_lobby");
 			clearTimeout(race_sentgo.timeout);
 			race_sentgo.timeout = null;
 		}
@@ -88,7 +88,7 @@ sockerinfo........
 	room: null
 */
 
-race_sentgo.init = function(sockInfo) { // network state tranfered from race_console
+race_sentgo.init = function(sockInfo) { // network state tranfered from race_lobby
 	race_sentgo.keepSockInfo = false;
 	logger("entering webgl race_sentgo, gameType = '" + sockInfo?.gameType + "'\n");
 	race_sentgo.count = 0; // counter for this state
@@ -175,7 +175,7 @@ race_sentgo.proc = function() {
 
 race_sentgo.onresize = function() {
 	console.log("onresize");
-	race_console.terminal.onresize();
+	race_lobby.terminal.onresize();
 }
 
 race_sentgo.exit = function() {
@@ -188,7 +188,7 @@ race_sentgo.exit = function() {
 	if (race_sentgo.sockerInfo && race_sentgo.sockerInfo.id == testId && testDisconnect == 4) {
 		race_sentgo.socker.disconnect();
 		race_sentgo.socker = socker = null; // one side effect
-		changestate("race_console");
+		changestate("race_lobby");
 	}
 	race_sentgo.socker = null;
 	// show current usage before cleanup

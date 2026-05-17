@@ -12,7 +12,7 @@ window.GameC = class GameC {
 
     // assume 1024 by 768 resolution
     constructor(numPlayers, youPlayer, root) {
-        this.FP = new FMathBigIntInstanceALT(3, 16); // fixed point
+        this.FP = new FMathBigIntInstance(3, 16); // fixed point
         this.FPvec2 = new vec2Fix(this.FP);
 		mainvp.clearcolor = [.5 ,.55, 1, 1];
         const size = 30;

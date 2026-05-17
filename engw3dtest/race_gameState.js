@@ -17,7 +17,7 @@ fpswanted = 60;
 race_gameState.maxFrames = 0; // 0 is unlimited
 
 race_gameState.gotoConsole = function() {
-    changestate("race_console", "from gameState");
+    changestate("race_lobby", "from gameState");
 }
 
 race_gameState.setupCallbacks = function(socker) {
@@ -27,7 +27,7 @@ race_gameState.setupCallbacks = function(socker) {
 		if (socker) {
 			socker.disconnect();
 			race_gameState.socker = socker = null; // one side effect
-			changestate("race_console", "from gameState, disconnect");
+			changestate("race_lobby", "from gameState, disconnect");
 		}
 	});
 
