@@ -122,7 +122,7 @@ race_track.getAiTrack = function(trackData, pos, reverse) {
     if (ix >=0 && ix < trackWidth && iy >= 0 && iy < trackHeight) {
         const piece = trackData[iy][ix];
         dir = reverse ? piece.revdir : piece.dir;
-        dir *= CMath.PI / 2;
+        dir *= Math.PI / 2;
         dir = normalangrad(dir);
     }
     return dir;
@@ -188,12 +188,12 @@ race_track.collideTrack = function(trackData, pos) {
             const maxTurnSq = maxTurn * maxTurn;
             if (distSq < minTurnSq) {
                 collInfo.collide = true;
-                vec2.Cnormalize(popTurn, popTurn);
+                vec2.normalize(popTurn, popTurn);
                 pop[0] = popTurn[0] * minTurn - 1;
                 pop[1] = popTurn[1] * minTurn - 1;
             } else if (distSq > maxTurnSq) {
                 collInfo.collide = true;
-                vec2.Cnormalize(popTurn, popTurn);
+                vec2.normalize(popTurn, popTurn);
                 pop[0] = popTurn[0] * maxTurn - 1;
                 pop[1] = popTurn[1] * maxTurn - 1;
             }

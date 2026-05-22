@@ -21,13 +21,6 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Run Race Net login",
-            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_login",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
             "name": "Run Race Net lobby",
             "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_lobby",
             "webRoot": "${workspaceFolder}"
@@ -51,13 +44,6 @@
             "request": "launch",
             "name": "Run Race Net lobby RAF standalone",
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_lobby_standalone",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Run Race Net tracks standalone",
-            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_mainStandalone",
             "webRoot": "${workspaceFolder}"
         },
         {

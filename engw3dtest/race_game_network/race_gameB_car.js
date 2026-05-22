@@ -89,7 +89,7 @@ race_car_network.buildCarModels = function(n) {
         const model = {
             pos: [-.25 - .5 * j, -2.75 - .5 * lane, 0], // hard coded
             speed: 0,
-            dir: CMath.PI  * .5, //(i + 1) * CMath.PI * .125, //mode == race_car.modeEnums.revai ? -CMath.PI * .5 :  CMath.PI * .5,
+            dir: Math.PI  * .5,
             discon: false
         }
         models.push(model);
@@ -141,7 +141,7 @@ race_car_network.procCars = function(carModels, pInputs, parent) {
     const coast = -topSpeed / 512;
     const brake = -topSpeed / 64;
     const slowTurnSpeed = .01;
-    const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
+    const aiNoTurnAng = 5 * Math.PI / 180; // don't turn if almost heading in right direction
     for (let i = 0; i < carModels.length; ++i) {
         const carModel = carModels[i];
         const pInput = pInputs[i];
@@ -241,8 +241,8 @@ race_car_network.procCars = function(carModels, pInputs, parent) {
             carModel.dir = normalangrad(carModel.dir);
         }
         // move the car
-        const stepX = carModel.speed * CMath.sin(carModel.dir);
-        const stepY = carModel.speed * CMath.cos(carModel.dir);
+        const stepX = carModel.speed * Math.sin(carModel.dir);
+        const stepY = carModel.speed * Math.cos(carModel.dir);
         carModel.pos[0] += stepX; //  + Math.random() * .001; // uncomment to break time warp, test checksum game state
         carModel.pos[1] += stepY;
     }

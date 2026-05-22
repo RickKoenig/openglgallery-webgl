@@ -147,9 +147,9 @@ window.GameA = class GameA {
         const startX = 100;
         const stepX = 60;
         for (let j = 0; j < this.numMoveNpcsY; ++j) {
-            const ang = j * 2 * CMath.PI / this.numMoveNpcsY + angOffset;
-            const cosAng = CMath.cos(ang);
-            const sinAng = CMath.sin(ang);
+            const ang = j * 2 * Math.PI / this.numMoveNpcsY + angOffset;
+            const cosAng = Math.cos(ang);
+            const sinAng = Math.sin(ang);
             for (let i = 0; i < this.numMoveNpcsX; ++i) {
                 const rad = startX + stepX * i;
                 const npc = {
@@ -471,7 +471,7 @@ window.GameA = class GameA {
         const fpsw = fpswanted <= 0 ? 1 : fpswanted;
         this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
         this.ghostModel.angle = normalangrad(this.ghostModel.angle);
-        this.squareG.trans = [40 * CMath.cos(ang) + 50, -40 * CMath.sin(ang) + 50 , 0];
+        this.squareG.trans = [40 * Math.cos(ang) + 50, -40 * Math.sin(ang) + 50 , 0];
     }
 
     // M to V

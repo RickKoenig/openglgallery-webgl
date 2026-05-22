@@ -164,7 +164,7 @@ window.GameC = class GameC {
         const stepX = 60;
         const FPmovesY = this.FP.create(this.numMoveNpcsY);
         for (let j = 0; j < this.numMoveNpcsY; ++j) {
-            // const ang = j * 2 * CMath.PI / this.numMoveNpcsY + angOffset;
+            // const ang = j * 2 * Math.PI / this.numMoveNpcsY + angOffset;
             let ang = this.FP.create(j * 2);
             ang = this.FP.mul(ang, this.FP.PI);
             ang = this.FP.div(ang, FPmovesY);
@@ -502,7 +502,7 @@ window.GameC = class GameC {
         const fpsw = fpswanted <= 0 ? 1 : fpswanted;
         this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
         this.ghostModel.angle = normalangrad(this.ghostModel.angle);
-        this.squareG.trans = [40 * CMath.cos(ang) + 50, -40 * CMath.sin(ang) + 50 , 0];
+        this.squareG.trans = [40 * Math.cos(ang) + 50, -40 * Math.sin(ang) + 50 , 0];
     }
 
     // M to V

@@ -66,11 +66,13 @@ function makeuniq(str) {
 } */
 
 // running average class
-function Runavg(nele) {
-	this.nele = nele;
-	this.arr = [];
-	this.idx = 0;
-	this.sum = 0;
+if (!Runavg) {
+	function Runavg(nele) {
+		this.nele = nele;
+		this.arr = [];
+		this.idx = 0;
+		this.sum = 0;
+	}
 }
 
 Runavg.prototype.add = function(num) {

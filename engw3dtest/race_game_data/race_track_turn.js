@@ -11,18 +11,18 @@ function raceGetTurn(rot = 0) {
         // left to bottom
         verts.push(-1, -1, 0); // corner
         for (let i = 0; i <= segments; ++i) {
-            const ang = i * .5 * CMath.PI / segments;
-            const x = border * CMath.sin(ang) - 1;
-            const y = border * CMath.cos(ang) - 1;
+            const ang = i * .5 * Math.PI / segments;
+            const x = border * Math.sin(ang) - 1;
+            const y = border * Math.cos(ang) - 1;
             verts.push(x, y , 0);
         }
         // pavement  STRIP, num verts == 2 * segments + 2
         // left to bottom
         for (let i = 0; i <= segments; ++i) {
-            const ang = i * .5 * CMath.PI / segments;
+            const ang = i * .5 * Math.PI / segments;
             const ob = 1 + border;
-            const sn = CMath.sin(ang);
-            const cs = CMath.cos(ang);
+            const sn = Math.sin(ang);
+            const cs = Math.cos(ang);
             const ix = border * sn - 1;
             const iy = border * cs - 1;
             verts.push(ix, iy, 0);
@@ -35,10 +35,10 @@ function raceGetTurn(rot = 0) {
         verts.push(1, -1, 0);
         // bottom to left
         for (let i = 0; i <= segments; ++i) {
-            const ang = (segments - i) * .5 * CMath.PI / segments;
+            const ang = (segments - i) * .5 * Math.PI / segments;
             const ob = 1 + border;
-            const x = ob * CMath.sin(ang) - 1;
-            const y = ob * CMath.cos(ang) - 1;
+            const x = ob * Math.sin(ang) - 1;
+            const y = ob * Math.cos(ang) - 1;
             verts.push(x, y , 0);
         }
         verts.push(-1, 1, 0);

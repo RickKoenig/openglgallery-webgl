@@ -402,27 +402,29 @@ race_lobby.testDistColl = function() {
 	race_lobby.showPointPairs(pointPairs);
 }
 
-// find and list floating point inconsistencies here
+// find and list floating point inconsistencies here between firefox and chrome
 race_lobby.testFloat = function() {
-	let ang = 4 * 2 * CMath.PI / 6; // doesn't matter which library
+	let ang = 4 * 2 * Math.PI / 6; // doesn't matter which library
 	ang = normalangrad(ang);
 	{
-		console.log("Using Math library, standard math library");
+		console.log("\nUsing Math library, standard math library");
 		const sinAng = Math.sin(ang);
 		console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
 		let bi = fromFloat(ang);
-		console.log("ang to bi = " + bi.toString(16) + "\n");
+		console.log("ang to bi = " + bi.toString(16));
 		bi = fromFloat(sinAng);
 		console.log("sinAng to bi = " + bi.toString(16) + "\n");
 	}
 	{
-		console.log("Using Math library, consistent math library");
+		CMath.enable();
+		console.log("Using CMath library, consistent math library");
 		const sinAng = CMath.sin(ang);
 		console.log("TEST FLOAT: ang = " + ang + ", sinAng = " + sinAng);
 		let bi = fromFloat(ang);
-		console.log("ang to bi = " + bi.toString(16) + "\n");
+		console.log("ang to bi = " + bi.toString(16));
 		bi = fromFloat(sinAng);
 		console.log("sinAng to bi = " + bi.toString(16) + "\n");
+		CMath.disable();
 	}
 }
 
@@ -456,7 +458,7 @@ race_lobby.testJSON = function() {
 race_lobby.init = function(intentData) {
 	//race_lobby.testJSON();
 	//race_lobby.testGameClass('a');
-	//race_lobby.testFloat();
+	race_lobby.testFloat();
 	//race_lobby.testDistColl();
 	race_lobby.keepSockInfo = false;
 	race_lobby.clientNewsCount = 0;

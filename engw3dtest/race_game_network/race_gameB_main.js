@@ -164,7 +164,7 @@ window.GameB = class RaceGameNetwork {
                 break;
             case race_car_network.modeEnums.ai:
             case race_car_network.modeEnums.revai:
-                const aiNoTurnAng = 5 * CMath.PI / 180; // don't turn if almost heading in right direction
+                const aiNoTurnAng = 5 * Math.PI / 180; // don't turn if almost heading in right direction
                 const carModel = parent.curModel[parent.youPlayer];
                 let dir = race_track.getAiTrack(race_trackData.race_track1, carModel.pos, parent.mode == race_car_network.modeEnums.revai);
                 let deltaDir = normalangrad(dir - carModel.dir);
