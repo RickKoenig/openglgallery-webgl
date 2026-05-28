@@ -215,6 +215,8 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	race_gameState.allready = false;
 	race_gameState.gameType = sockInfo?.game;
 
+	CMath.enable();
+
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.125, .125, .125, 1];
@@ -531,6 +533,9 @@ race_gameState.exit = function() {
 		race_gameState.socker = null;
 		race_gameState.sockInfo = null;
 	}
+	
+	CMath.disable();
+
 	// show current usage before cleanup
 	race_gameState.roottree.log();
 	logrc();

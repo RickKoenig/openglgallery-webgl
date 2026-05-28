@@ -71,7 +71,7 @@ class GameWarp {
                 } else if (frm - this.validFrameNum >= inputLength) { // predict if possible
                     pInput = input[inputLength]; // using last known keycode
                     if (pInput.discon) {
-                        console.log("discon");
+                        //console.log("discon");
                     } else {
                         pInput = this.game.predictLogic(pInput, frm); // let game decide predict
                         good = false;
