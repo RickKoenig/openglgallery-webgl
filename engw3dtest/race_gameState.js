@@ -65,9 +65,13 @@ race_gameState.setupCallbacks = function(socker) {
 						// check frame numbers
 						for (let i = oldLen; i < newLen; ++i) {
 							const oi = i + race_gameState.validOffset;
-							if (oi != race_gameState.validFramesSlots[slot][i].frameNum) {
-								alertS("EEE, on broadcast race_gameState.checksum[i].frameNum("
-								    + race_gameState.validFramesSlots[slot][i].frameNum + ") != i " + i);
+							//if (true) {
+							if (race_gameState.validFramesSlots[slot][i].frameNum != oi) {
+								alertS("EEE, on broadcast race_gameState.validFramesSlots[" + slot + "][" + i + "].frameNum "
+								    + race_gameState.validFramesSlots[slot][i].frameNum +
+									 " != i "
+									+ i + 
+									" race_gameState.validOffset + " + race_gameState.validOffset);
 							}
 						}
 						race_gameState.validateFrames();
@@ -211,6 +215,7 @@ race_gameState.load = function() {
 
 race_gameState.init = function(sockInfo) { // network state tranfered from race_sentgo
 	logger("entering webgl race_gameState with game '" + sockInfo?.game + "'\n");
+	resetAlertS();
 	race_gameState.count = 0; // counter for this state
 	race_gameState.allready = false;
 	race_gameState.gameType = sockInfo?.game;
@@ -377,6 +382,7 @@ race_gameState.onresize = function() {
 
 race_gameState.proc = function() {
 	// proc
+	//alertS("test alertS");
 	if (race_gameState.maxFrames && race_gameState.maxFrames <= race_gameState.count) {
 		return;
 	}

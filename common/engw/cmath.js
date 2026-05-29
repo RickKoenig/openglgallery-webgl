@@ -62,16 +62,13 @@ class CMath {
     };
 
     static funs = [
-        // unary functions
-        /*
         "sqrt",
         "cbrt",
-        */
+        
         "sin", 
         "cos",
-        // "tan",
-/*
-        "asin",
+        "tan",
+		"asin",
         "acos",
         "atan",
 
@@ -83,7 +80,6 @@ class CMath {
         "sinh",
         "cosh",
         "tanh",
-
         "atanh",
 
         "random",
@@ -92,7 +88,6 @@ class CMath {
         "hypot",
         "pow",
         "atan2"
-*/
     ];
 
     // use CMath functions when using Math, substitute
@@ -194,7 +189,7 @@ class CMath {
 			neg = true;
 			a = -a;
 		}
-		let ret = this.pow(a, this.consts.THIRD);
+		let ret = CMath.pow(a, CMath.consts.THIRD);
 		if (neg) {
 			ret = -ret;
 		}
@@ -206,18 +201,18 @@ class CMath {
 	static cbrt = this.cbrtN;
 
 	static hypot(a, b) {
-		return this.sqrt(a * a + b * b);
+		return CMath.sqrt(a * a + b * b);
 	}
 
 	// trigonometric
 
 	// output (-PI to PI]
 	static normAngRad(a) {
-        a %= this.consts.TWOPI;
+        a %= CMath.consts.TWOPI;
         if (a > Math.PI) {
-            a -= this.consts.TWOPI;
+            a -= CMath.consts.TWOPI;
         } else if (a <= -Math.PI) {
-            a += this.consts.TWOPI;
+            a += CMath.consts.TWOPI;
         }
 		return a;
 	}
@@ -225,9 +220,9 @@ class CMath {
 	// output (-PI/2 to PI/2]
 	static normAngRadHalf(a) {
         a %= Math.PI;
-        if (a > this.consts.HALFPI) {
+        if (a > CMath.consts.HALFPI) {
             a -= Math.PI;
-        } else if (a <= -this.consts.HALFPI) {
+        } else if (a <= -CMath.consts.HALFPI) {
             a += Math.PI;
         }
 		return a;
@@ -239,9 +234,9 @@ class CMath {
 		if (neg) {
 			a = -a; // or na = -n;
 		}
-		a %= this.consts.TWOPI;
+		a %= CMath.consts.TWOPI;
 		if (a >= (3 / 2) * Math.PI) {
-			a -= this.consts.TWOPI;
+			a -= CMath.consts.TWOPI;
 		} else if (a >= Math.PI / 2) {
 			a = Math.PI - a;
 		}
@@ -275,20 +270,20 @@ class CMath {
 	}
 
     static sinT(a) {
-		const na = this.normAngRad(a);
-        return this.sinTNoNorm(na);
+		const na = CMath.normAngRad(a);
+        return CMath.sinTNoNorm(na);
     }
 
 	// remez
 	static sinRNoNorm(a) {
-		const ret = this.calcCoefFixOdd(a, this.consts.SIN_1r, this.consts.SIN_3r, this.consts.SIN_5r, this.consts.SIN_7r);
+		const ret = CMath.calcCoefFixOdd(a, CMath.consts.SIN_1r, CMath.consts.SIN_3r, CMath.consts.SIN_5r, CMath.consts.SIN_7r);
 		return ret;
 	}
 
 	static sinR(a) {
 		const neg = a < 0;
-		a = this.normAngRadSin(a);
-		let ret = this.sinRNoNorm(a);
+		a = CMath.normAngRadSin(a);
+		let ret = CMath.sinRNoNorm(a);
 		if (ret > 1) {
 			ret = 1;
 		} else if (ret < -1) {
@@ -331,13 +326,13 @@ class CMath {
 	}
 
 	static cosT(a) {
-		const na = this.normAngRad(a);
-        return this.cosTNoNorm(na);
+		const na = CMath.normAngRad(a);
+        return CMath.cosTNoNorm(na);
 	}
 
 	static cosR(a) {
-		a += this.consts.HALFPI;
-		const ret = this.sinR(a);
+		a += CMath.consts.HALFPI;
+		const ret = CMath.sinR(a);
 		return ret;
 	}
 
@@ -347,27 +342,27 @@ class CMath {
 
     	// remez
 	static tanRNoNorm(a) {
-		const ret = this.calcCoefFixOdd(a, this.consts.TAN_1r, this.consts.TAN_3r, this.consts.TAN_5r, this.consts.TAN_7r);
+		const ret = CMath.calcCoefFixOdd(a, CMath.consts.TAN_1r, CMath.consts.TAN_3r, CMath.consts.TAN_5r, CMath.consts.TAN_7r);
 		return ret;
 	}
 
 	static tanR(a) {
-		a = this.normAngRadHalf(a); // (-PI/2 to PI/2]
-        const QUARTERPI = this.consts.QUARTERPI;
-        const HALFPI = this.consts.HALFPI;
+		a = CMath.normAngRadHalf(a); // (-PI/2 to PI/2]
+        const QUARTERPI = CMath.consts.QUARTERPI;
+        const HALFPI = CMath.consts.HALFPI;
 		let ret;
 		if (a > QUARTERPI) {
 			a = HALFPI - a;
-			ret = this.tanRNoNorm(a);
+			ret = CMath.tanRNoNorm(a);
 			ret = 1 / ret;
 		} else if (a < -QUARTERPI) {
 			let mp = HALFPI;
 			mp = -mp;
 			a = mp - a;
-			ret = this.tanRNoNorm(a);
+			ret = CMath.tanRNoNorm(a);
 			ret = 1 / ret;
 		} else {
-			ret = this.tanRNoNorm(a);
+			ret = CMath.tanRNoNorm(a);
 		}
 		return ret;
 	}
@@ -378,7 +373,7 @@ class CMath {
 
 	// remez
 	static aSinRNoCheck(y) {
-		const ret = this.calcCoefFixOdd(y, this.consts.ASIN_1r, this.consts.ASIN_3r, this.consts.ASIN_5r, this.consts.ASIN_7r);
+		const ret = CMath.calcCoefFixOdd(y, CMath.consts.ASIN_1r, CMath.consts.ASIN_3r, CMath.consts.ASIN_5r, CMath.consts.ASIN_7r);
 		return ret;
 	}
 
@@ -387,7 +382,7 @@ class CMath {
 		if (ay > 1) {
 			return 0;
 		}
-		const ret = this.aSinRNoCheck(y);
+		const ret = CMath.aSinRNoCheck(y);
 		return ret;
 	}
 
@@ -397,15 +392,15 @@ class CMath {
 		if (ya >= Math.SQRT1_2) {
 			let my = y * y;
 			my = 1 - my;
-			my = this.sqrt(my);
-			let ret = this.calcCoefFixOdd(my, this.consts.ASIN_1t, this.consts.ASIN_3t, this.consts.ASIN_5t, this.consts.ASIN_7t, this.consts.ASIN_9t);
-			ret = this.consts.HALFPI - ret;
+			my = CMath.sqrt(my);
+			let ret = CMath.calcCoefFixOdd(my, CMath.consts.ASIN_1t, CMath.consts.ASIN_3t, CMath.consts.ASIN_5t, CMath.consts.ASIN_7t, CMath.consts.ASIN_9t);
+			ret = CMath.consts.HALFPI - ret;
 			if (y < 0) {
 				ret = -ret;
 			}
 			return ret;
 		}
-		const ret = this.calcCoefFixOdd(y, this.consts.ASIN_1t, this.consts.ASIN_3t, this.consts.ASIN_5t, this.consts.ASIN_7t, this.consts.ASIN_9t);
+		const ret = CMath.calcCoefFixOdd(y, CMath.consts.ASIN_1t, CMath.consts.ASIN_3t, CMath.consts.ASIN_5t, CMath.consts.ASIN_7t, CMath.consts.ASIN_9t);
 		return ret;
 	}
 
@@ -414,7 +409,7 @@ class CMath {
 		if (ay > 1) {
 			return 0;
 		}
-		const ret = this.aSinTNoCheck(y);
+		const ret = CMath.aSinTNoCheck(y);
 		return ret;
 	}
 
@@ -427,8 +422,8 @@ class CMath {
 		if (ay > 1) {
 			return 0;
 		}
-		let ret  = this.aSinTNoCheck(y);
-		ret = this.consts.HALFPI - ret;
+		let ret  = CMath.aSinTNoCheck(y);
+		ret = CMath.consts.HALFPI - ret;
 		return ret;
 	}
 
@@ -437,7 +432,7 @@ class CMath {
 
     // promote to atan2
 	static atan(m) {
-		const ret = this.atan2(m, 1);
+		const ret = CMath.atan2(m, 1);
 		return ret;
 	}
 
@@ -451,9 +446,9 @@ class CMath {
 			return 0; // avoid division by zero
 		}
 		const m = num / den; // 0 to 1
-		let ret = this.calcCoefFixOdd(m, this.consts.ATAN_1r, this.consts.ATAN_3r, this.consts.ATAN_5r, this.consts.ATAN_7r);
+		let ret = CMath.calcCoefFixOdd(m, CMath.consts.ATAN_1r, CMath.consts.ATAN_3r, CMath.consts.ATAN_5r, CMath.consts.ATAN_7r);
 		if (ya > xa) {
-			ret = this.consts.HALFPI - ret;
+			ret = CMath.consts.HALFPI - ret;
 		}
 		if (x < 0) {
 			ret = Math.PI - ret;
@@ -507,9 +502,9 @@ class CMath {
 		if (b <= low) {
 			return 0;
 		}
-		let lb = this.log(b);
+		let lb = CMath.log(b);
 		lb *= e;
-		return this.exp(lb);
+		return CMath.exp(lb);
 	}
 
 	// logarithms
@@ -523,15 +518,15 @@ class CMath {
 		let offset = 0;
 		let watch = 20;
 		
-		while (mx >= this.consts.E_1_4 && watch > 0) {
-			offset += this.consts.FOURTH;
-			mx *= this.consts.E_M1_4;
+		while (mx >= CMath.consts.E_1_4 && watch > 0) {
+			offset += CMath.consts.FOURTH;
+			mx *= CMath.consts.E_M1_4;
 			--watch;
 		}
 
-		while (mx < this.consts.E_M1_2 && watch > 0) {
-			offset -= this.consts.HALF;
-			mx *= this.consts.E_1_2;
+		while (mx < CMath.consts.E_M1_2 && watch > 0) {
+			offset -= CMath.consts.HALF;
+			mx *= CMath.consts.E_1_2;
 			--watch;
 		}
 
@@ -562,13 +557,13 @@ class CMath {
 	static log = this.logA;
 
 	static log10(y) {
-		let ret = this.log(y);
+		let ret = CMath.log(y);
 		ret *= Math.LOG10E;
 		return ret;
 	}
 
 	static log2(y) {
-		let ret = this.log(y);
+		let ret = CMath.log(y);
 		ret *= Math.LOG2E;
 		return ret;
 	}
@@ -581,10 +576,10 @@ class CMath {
 			a = -a;
 			neg = true;
 		}
-		const e = this.exp(a);
+		const e = CMath.exp(a);
 		const inve = 1 / e;
 		let terms = e - inve;
-		terms *= this.consts.HALF;
+		terms *= CMath.consts.HALF;
 		if (neg) {
 			terms = -terms;
 		}
@@ -595,15 +590,15 @@ class CMath {
 		if (a < 0) { // how does this help?
 			a = -a;
 		}
-		const e = this.exp(a);
+		const e = CMath.exp(a);
 		const inve = 1 / e;
 		let terms = e + inve;
-		terms *= this.consts.HALF;
+		terms *= CMath.consts.HALF;
 		return terms;
 	}
 
 	static tanh(a) {
-		const e = this.exp(a);
+		const e = CMath.exp(a);
 		const inve = 1 / e;
 		const topTerms = e - inve;
 		const botTerms = e + inve;

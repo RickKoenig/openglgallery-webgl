@@ -159,8 +159,13 @@ function logger(str) {
 	console.log(str);
 }
 
+let startCount = 1; // 3;
 // only alert a certain number of times
-let alertSCount = 3;
+let alertSCount = startCount;
+
+function resetAlertS() {
+	alertSCount = startCount;
+}
 function alertS(str) {
 	str = "alertS[" + alertSCount + "]: " + str;
 	if (alertSCount > 0) {
