@@ -464,7 +464,7 @@ race_lobby.init = function(intentData) {
 	race_lobby.clientNewsCount = 0;
 	logger("entering webgl race_lobby\n");
 	// ui
-	setbutsname('console');
+	setbutsname('lobby');
 	makeabut("start game(a), move and push", race_lobby.autoCommand1P.bind(this,'a'));
 	makeabr();
 	makeabut("start game(b), 2d race", race_lobby.autoCommand1P.bind(this,'b'));
@@ -531,6 +531,6 @@ race_lobby.exit = function() {
 	// show usage after cleanup
 	logrc();
 	race_lobby.roottree = null;
-	clearbuts('console');
+	clearbuts('lobby');
 	logger("exiting webgl race_lobby\n");
 };

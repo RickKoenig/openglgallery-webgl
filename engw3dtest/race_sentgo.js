@@ -7,12 +7,8 @@ race_sentgo.hidden = true; // can't be selected in the engine UI
 race_sentgo.text = "WebGL: race_sentgo 3D drawing";
 race_sentgo.title = "race_sentgo";
 
-race_sentgo.gotoConsole = function() {
+race_sentgo.gotoLobby = function() {
     changestate("race_lobby", "from SENTGO");
-}
-
-race_sentgo.gotoLogin = function() {
-    changestate("race_login", "from SENTGO");
 }
 
 race_sentgo.setupCallbacks = function(socker) {
@@ -96,8 +92,7 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 
 	// ui
 	setbutsname('sentgo');
-	race_lobby.fillButton = makeabut("console", race_sentgo.gotoConsole);
-	race_lobby.fillButton = makeabut("login", race_sentgo.gotoLogin);
+	race_lobby.fillButton = makeabut("lobby", race_sentgo.gotoLobby);
 
     // build 3D scene
 	race_sentgo.roottree = new Tree2("race_sentgo root tree");
@@ -179,11 +174,15 @@ race_sentgo.onresize = function() {
 }
 
 race_sentgo.exit = function() {
+	if (!race_sentgo.socker) {
+		return;
+	}
 	if (race_sentgo.keepSockInfo) {
 		race_sentgo.socker.off(); // kill all callbacks
 	} else if (race_sentgo.socker) {
 		race_sentgo.socker.disconnect();
-		race_sentgo.socker = socker = null; // one side effect
+		race_sentgo.socker = null; // one side effect
+		//race_sentgo.socker = socker = null; // one side effect
 	}
 	if (race_sentgo.sockerInfo && race_sentgo.sockerInfo.id == testId && testDisconnect == 4) {
 		race_sentgo.socker.disconnect();

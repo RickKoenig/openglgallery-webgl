@@ -16,7 +16,7 @@ fpswanted = 60;
 
 race_gameState.maxFrames = 0; // 0 is unlimited
 
-race_gameState.gotoConsole = function() {
+race_gameState.gotoLobby = function() {
     changestate("race_lobby", "from gameState");
 }
 
@@ -149,17 +149,6 @@ race_gameState.validateFrames = function() {
 				}
 				let mess = "VF[" + i + "] VF[" + j + "] frame = " + race_gameState.validFrames;
 
-/*
-				const isEq = equalsObj(race_gameState.validFramesSlots[i][vf].model
-					, race_gameState.validFramesSlots[j][vf].model);
-				mess += "\n" + JSON.sortify(race_gameState.validFramesSlots[i][vf].model, JSONbigintReplacer) + "\n"
-					+ "WITH\n" + JSON.sortify(race_gameState.validFramesSlots[j][vf].model, JSONbigintReplacer) + "\n";
-				if (isEq) {
-					if (race_gameState.validateVerbose) console.log("DDD, good checksum frame: " + mess);
-				} else {
-					alertS("DDD, bad checksum frame: " + mess);
-				}
-*/
 				const isEq = race_gameState.validFramesSlots[i][vf].model === race_gameState.validFramesSlots[j][vf].model;
 				mess += "\n" + race_gameState.validFramesSlots[i][vf].model + "\n"
 					+ "WITH\n" + race_gameState.validFramesSlots[j][vf].model + "\n";
@@ -168,8 +157,6 @@ race_gameState.validateFrames = function() {
 				} else {
 					alertS("DDD, bad checksum frame: " + mess);
 				}
-
-
 			}
 		}
 		++race_gameState.validFrames;
@@ -229,7 +216,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	// ui
 	race_gameState.showHud = true;
 	setbutsname('ingame');
-	race_lobby.fillButton = makeabut("console", race_gameState.gotoConsole);
+	race_lobby.fillButton = makeabut("lobby", race_gameState.gotoLobby);
 	makeaprintarea("GAME '" + race_gameState.gameType + "'", "font-size: 2.1em;");
 	makeabr();
 
@@ -502,7 +489,7 @@ race_gameState.proc = function() {
 			}
 			race_gameState.checksum = [];
 			if (race_gameState.mvc.game.stepGhostModel) {
-			race_gameState.mvc.game.stepGhostModel(race_gameState.count);
+				race_gameState.mvc.game.stepGhostModel(race_gameState.count);
 			}
 			++race_gameState.count;
 		}

@@ -710,7 +710,8 @@ scratch.init = function() {
 	if (scratch.testFixPoint) {
 		console.log("test fix point");
 		const fmi = new FMathBigIntInstance(3, 16);
-		const a = fmi.clone(fmi.QUARTERPI);
+		//const a = fmi.clone(fmi.QUARTERPI);
+		const a = fmi.QUARTERPI;
 		const sa = fmi.create();
 		fmi.sin(sa, a);
 		const str = fmi.toPrettyString(sa);

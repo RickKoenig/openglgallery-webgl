@@ -9,7 +9,7 @@ race_gameState_standalone.title = "race_gameState_standalone";
 
 fpswanted = 60;
 
-race_gameState_standalone.gotoStandaloneConsole = function() {
+race_gameState_standalone.gotoStandaloneLobby = function() {
     changestate("race_lobby_standalone", "from gameState standalone");
 }
 
@@ -37,7 +37,7 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 	// ui
 	race_gameState_standalone.showHud = true;
 	setbutsname('ingame');
-	makeabut("standalone console", race_gameState_standalone.gotoStandaloneConsole);
+	makeabut("standalone lobby", race_gameState_standalone.gotoStandaloneLobby);
 	makeaprintarea("GAME '" + race_gameState_standalone.gameType + "'", "font-size: 2.1em;");
 	makeabr();
 
