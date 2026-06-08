@@ -32,6 +32,8 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 
 	// the 3D viewport
 	mainvp = defaultviewport();
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;//7 / 5;
 	mainvp.clearcolor = [.125, .125, .125, 1];
 
 	// ui
@@ -136,4 +138,6 @@ race_gameState_standalone.exit = function() {
 	mainvp.lookat = null;
 	mainvp.inlookat = false;
 	debprint.removelist("ingame test variables");
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;
 };

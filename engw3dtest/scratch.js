@@ -1286,7 +1286,7 @@ scratch.onresize = function() {
 	var bottomLines = 20; // for console
 	logger("scratch resize to " + glc.clientWidth + "," + glc.clientHeight + "\n");
 	if (scratch.bm32)
-		scratch.ptree.scale = scratch.calcscale(scratch.bm32);
+		;//scratch.ptree.scale = scratch.calcscale(scratch.bm32);
 };
 
 scratch.exit = function() {

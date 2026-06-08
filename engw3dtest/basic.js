@@ -22,10 +22,10 @@ basic.init = function() {
 	//var plane = buildplanexy("aplane",1,1,"maptestnck.png","tex");
 	var plane = buildplanexy("aplane",1,1,"maptestnck.png","texDoubleSided");
 	plane.mod.flags |= modelflagenums.DOUBLESIDED;
-	plane.trans = [-1.5,1.5,2.5];
+	plane.trans = [-1.5, 1.5, 2.5];
 	basic.roottree.linkchild(plane);
 	plane = plane.newdup();
-	plane.trans = [1.5,-1.5,2.5];
+	plane.trans = [1.5, -1.5, 2.5];
 	basic.roottree.linkchild(plane);
 
 	var prism = buildprism("aprism",[1, 1, 1], "maptestnck.png", "tex");
@@ -40,6 +40,12 @@ basic.init = function() {
 	basic.sphere.trans = [0, 0, 1];
 	basic.roottree.linkchild(basic.sphere);
 
+	const backgnd = buildplanexy("backgnd", 4 / 3, 3 / 3, "maptestnck.png", "texc", 1, 1, 4, 3);
+	backgnd.mod.mat.color = [1, 1, 1, .25];
+	backgnd.mod.flags |= modelflagenums.DOUBLESIDED | modelflagenums.HASALPHA | modelflagenums.NOZBUFFER;
+	backgnd.trans = [0, 0, 1];
+	basic.roottree.linkchild(backgnd);
+
 	if (URLparams.isOrtho) {
 		mainvp = defaultorthoviewport();
 		mainvp.ortho_size = 2.5;
@@ -49,8 +55,8 @@ basic.init = function() {
 		mainvp.clearcolor = [0,.5,1,1];
 	}
 	// use ndc extra system
-	mainvp.extraWidth = 7 / 5;
-	mainvp.extraHeight = 1;//7 / 5;
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;//1;//7 / 5;
 };
 
 basic.proc = function() {

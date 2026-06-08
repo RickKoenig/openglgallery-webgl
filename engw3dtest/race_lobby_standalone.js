@@ -31,6 +31,8 @@ race_lobby_standalone.init = function(intentData) {
 	makeabut("start game(b), 2d race", race_lobby_standalone.autoCommand1P.bind(this,'b'));
 	makeabr();
 	makeabut("start game(c), move and push V2 fixed", race_lobby_standalone.autoCommand1P.bind(this,'c'));
+	makeabr();
+	makeabut("start game(d), move and push MOBILE", race_lobby_standalone.autoCommand1P.bind(this,'d'));
 	
 	// build parent
 	race_lobby_standalone.roottree = new Tree2("race_lobby_standalone root tree");
@@ -44,7 +46,11 @@ race_lobby_standalone.init = function(intentData) {
 		scale: 2
 	};
 	race_lobby_standalone.terminal = new Terminal(race_lobby_standalone.roottree, [.1, 0, 0, 1], race_lobby_standalone.doCommand, termParams1);
-	race_lobby_standalone.terminal.print("Welcome, select a game from the left panel.");
+	if (window.isMobile) {
+		race_lobby_standalone.terminal.print("Welcome, select a game letter 'a' thru 'd' when in focus.");
+	} else {
+		race_lobby_standalone.terminal.print("Welcome, select a game from the left panel.");
+	}
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
@@ -56,6 +62,9 @@ race_lobby_standalone.onresize = function() {
 }
 
 race_lobby_standalone.proc = function() {
+	if (input.key >= 'a'.charCodeAt(0) && input.key <= 'd'.charCodeAt(0)) {
+		race_lobby_standalone.autoCommand1P.call(this, String.fromCharCode(input.key));
+	}
 	// draw
 	beginscene(mainvp);
 	race_lobby_standalone.roottree.draw();

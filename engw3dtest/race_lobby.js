@@ -318,9 +318,9 @@ race_lobby.doCommand = function(cmdStr) {
 			if (race_lobby.socker) {
 				let gameType = words[0];
 				//if (!gameType) gameType = 'a'; // default
-				if (!gameType || gameType.length != 1 || gameType < 'a' || gameType > 'c') {
+				if (!gameType || gameType.length != 1 || gameType < 'a' || gameType > 'd') {
 					race_lobby.terminal.print("not a valid gameType '" + gameType + "'");
-					race_lobby.terminal.print("valid gameTypes are, 'a' thru 'c'");
+					race_lobby.terminal.print("valid gameTypes are, 'a' thru 'd'");
 					break;
 				}
 				race_lobby.socker.emit('go', gameType);
@@ -470,6 +470,8 @@ race_lobby.init = function(intentData) {
 	makeabut("start game(b), 2d race", race_lobby.autoCommand1P.bind(this,'b'));
 	makeabr();
 	makeabut("start game(c), move and push V2 fixed", race_lobby.autoCommand1P.bind(this,'c'));
+	makeabr();
+	makeabut("start game(d), move and push MOBILE", race_lobby.autoCommand1P.bind(this,'d'));
 	makeabr();
 	makeabut("make room", race_lobby.autoCommandMake);
 	makeabut("join room", race_lobby.autoCommandJoin);

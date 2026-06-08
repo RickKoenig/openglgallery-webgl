@@ -7,8 +7,43 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Run Many Cubes, controller test",
-            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=state8",
+            "name": "Run Race Net Lobby Interval",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_lobby",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net Lobby RAF",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_lobby",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net Lobby MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMOBILE.html?startstate=race_lobby",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net Lobby Standalone Interval",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_lobby_standalone",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net Lobby Standalone RAF",
+            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_lobby_standalone",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run Race Net Lobby Standalone MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMOBILE.html?startstate=race_lobby_standalone",
             "webRoot": "${workspaceFolder}"
         },
         {
@@ -16,34 +51,6 @@
             "request": "launch",
             "name": "Run Simple multiplayer Test",
             "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=multiplayer",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Run Race Net lobby",
-            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_lobby",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Run Race Net lobby RAF",
-            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_lobby",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Run Race Net lobby standalone",
-            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=race_lobby_standalone",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Run Race Net lobby RAF standalone",
-            "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=race_lobby_standalone",
             "webRoot": "${workspaceFolder}"
         },
         {
@@ -63,6 +70,13 @@
         {
             "type": "chrome",
             "request": "launch",
+            "name": "Run Many Cubes, controller test",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=state8",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
             "name": "Run Chomp game",
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=chomp",
             "webRoot": "${workspaceFolder}"
@@ -72,6 +86,13 @@
             "request": "launch",
             "name": "Quantum computer simulator",
             "url": "http://localhost:88/engw/engw3dtest/indexRAF.html?startstate=qcomp",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "basic",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=basic",
             "webRoot": "${workspaceFolder}"
         },
         {

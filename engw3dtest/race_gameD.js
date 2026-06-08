@@ -2,7 +2,7 @@
 
 // run a networked test game
 // push circle objects around
-window.GameA = class GameA {
+window.GameD = class GameD {
     static #keyCodes = {
         UP: 1,
         DOWN: 2,
@@ -15,7 +15,7 @@ window.GameA = class GameA {
     constructor(numPlayers, youPlayer, root) {
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
-        GameA.res = this.res;
+        GameD.res = this.res;
         this.margin = 30; // border
         this.size = 30; // radius
         this.viewDepth = glc.clientHeight / 2;
@@ -89,7 +89,7 @@ window.GameA = class GameA {
         // view npcsDummy
         const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
         treeMasterDummyNpc.scale = [1, 1, .01];
-        treeMasterDummyNpc.mat.color = [.25, .75, .25, 1];
+        treeMasterDummyNpc.mat.color = [, 1.75, 0, 1];
         for (let n = 0; n < this.numDummyNpcs; ++n) {
             const npcDummyTree = treeMasterDummyNpc.newdup();
             this.curDummyNpcView[n] = npcDummyTree;
@@ -140,6 +140,34 @@ window.GameA = class GameA {
         this.sphere.trans = [250, 50, 0];
         this.sphere.rotvel = [0, 1, 0];
         viewParent.linkchild(this.sphere);
+
+        // corners
+        
+        let sphere = this.sphere.newdup();
+        sphere.trans = [0, 0, 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+        
+        sphere = this.sphere.newdup();
+        sphere.trans = [this.res[0], 0, 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+
+        sphere = this.sphere.newdup();
+        sphere.trans = [0, this.res[1], 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+
+        sphere = this.sphere.newdup();
+        sphere.trans = [this.res[0], this.res[1], 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+
+        const backgnd = buildplanexy("backgnd", this.res[0] / 2, this.res[1] / 2, "maptestnck.png", "texc", 1, 1, 4, 3);
+        backgnd.mod.mat.color = [1, 1, 1, .125];
+	    backgnd.mod.flags |= modelflagenums.DOUBLESIDED | modelflagenums.HASALPHA | modelflagenums.NOZBUFFER;
+        backgnd.trans = [this.res[0] / 2, this.res[1] / 2, 0];
+        viewParent.linkchild(backgnd);
     }
 
     #setNpcsMoving(retModel) {
@@ -221,20 +249,31 @@ window.GameA = class GameA {
         let keyCode = 0;
         // restart game
         if (input.key == 'g'.charCodeAt(0)) {
-            keyCode += GameA.#keyCodes.GO;
+            keyCode += GameD.#keyCodes.GO;
             ret.kc = keyCode;
             return ret;
         }
         // move with arrow keys
-        if (input.keystate[keycodes.LEFT]) keyCode += GameA.#keyCodes.LEFT;
-        if (input.keystate[keycodes.RIGHT]) keyCode += GameA.#keyCodes.RIGHT;
-        if (input.keystate[keycodes.UP]) keyCode += GameA.#keyCodes.UP;
-        if (input.keystate[keycodes.DOWN]) keyCode += GameA.#keyCodes.DOWN;
+        if (input.keystate[keycodes.LEFT]) keyCode += GameD.#keyCodes.LEFT;
+        if (input.keystate[keycodes.RIGHT]) keyCode += GameD.#keyCodes.RIGHT;
+        if (input.keystate[keycodes.UP]) keyCode += GameD.#keyCodes.UP;
+        if (input.keystate[keycodes.DOWN]) keyCode += GameD.#keyCodes.DOWN;
         ret.kc = keyCode;
         // move with mouse
-        ret.mouse = {
-            pos: [input.mx, input.my],
-            click: input.mclick[0]
+        // for now, try mobile just here...
+        if (window.isMobile) {
+            let mx = input.fmx * .5 * glc.clientWidth;
+            let my = input.fmy * .5 * glc.clientHeight;
+            my = this.res[1] - my;
+            ret.mouse = {
+                pos: [mx, my],
+                click: input.mclick[0]
+            }
+        } else {
+            ret.mouse = {
+                pos: [input.mx, input.my],
+                click: input.mclick[0]
+            }
         }
         return ret;
     }
@@ -243,8 +282,8 @@ window.GameA = class GameA {
     predictLogic(prevInput, frameNum) {
         return prevInput; // full prediction, same as last time
         //const kc = 0; // wait, no prediction
-        //const kc = GameA.#keyCodes.RIGHT; // test, predict right
-        //const kc = GameA.#keyCodes.UP | prevInput.kc; // racing, always press GAS/up
+        //const kc = GameD.#keyCodes.RIGHT; // test, predict right
+        //const kc = GameD.#keyCodes.UP | prevInput.kc; // racing, always press GAS/up
         //const ret = {kc: kc}
         //return kc;
     }
@@ -345,25 +384,25 @@ window.GameA = class GameA {
             // keyboard
             const keyCode = pInput.kc;
             // reset game
-            if (keyCode & GameA.#keyCodes.GO) {
+            if (keyCode & GameD.#keyCodes.GO) {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 curPlayer.desiredPos = null;
                 return;
             }
             const step = this.step
-            if (keyCode & GameA.#keyCodes.RIGHT) {
+            if (keyCode & GameD.#keyCodes.RIGHT) {
                 curPlayer.pos[0] += step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameA.#keyCodes.LEFT) {
+            if (keyCode & GameD.#keyCodes.LEFT) {
                 curPlayer.pos[0] -= step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameA.#keyCodes.UP) {
+            if (keyCode & GameD.#keyCodes.UP) {
                 curPlayer.pos[1] += step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameA.#keyCodes.DOWN) {
+            if (keyCode & GameD.#keyCodes.DOWN) {
                 curPlayer.pos[1] -= step;
                 curPlayer.desiredPos = null;
             }
@@ -407,7 +446,7 @@ window.GameA = class GameA {
             for (let p1 = p0 + 1; p1 < pInputs.length; ++p1) {
                 const curPlayer1 = this.curModel.players[p1];
                 // move players apart
-                GameA.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
+                GameD.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
             }
         }
 
@@ -418,7 +457,7 @@ window.GameA = class GameA {
             for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
                 const npcd = this.curModel.npcsDummy[nd];
                 // move players and npcsDummy apart
-                GameA.#separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
+                GameD.#separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
             }
         }
 
@@ -428,7 +467,7 @@ window.GameA = class GameA {
             for (let n1d = n0d + 1; n1d < this.curModel.npcsDummy.length; ++n1d) {
                 const npc1d = this.curModel.npcsDummy[n1d];
                 // move npcsDummy and npcsDummy apart
-                GameA.#separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
+                GameD.#separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
             }
         }
 
@@ -438,7 +477,7 @@ window.GameA = class GameA {
             for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
                 const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
-                GameA.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
+                GameD.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
             }
         }
 
@@ -448,7 +487,7 @@ window.GameA = class GameA {
             for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
                 const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
-                GameA.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
+                GameD.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
             }
         }
         

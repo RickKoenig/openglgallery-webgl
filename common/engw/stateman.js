@@ -68,7 +68,8 @@ function initstate() {
 function procstate() {
 	//if (window.checkglerror)
 	//	checkglerror("start proc state");
-	if (infullscreen) {
+	//if (true) { // allow 'n', 'p' always
+	if (infullscreen) { // only in fullscreen
 		if (input.key == 'n'.charCodeAt(0) /* && !myform */)
 			nextstate();
 		else if (input.key == 'p'.charCodeAt(0) /* && !myform */)
