@@ -3,6 +3,7 @@
 // run a networked test game
 // push circle objects around
 window.GameD = class GameD {
+    // TODO: try and remove all 'static' and change 'GameD' to 'this'
     static #keyCodes = {
         UP: 1,
         DOWN: 2,

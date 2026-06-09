@@ -527,6 +527,7 @@ function sizeChangedInit() {
 		return;
 	}
 	//return;
+	// add resize for MOBILE
 	window.addEventListener('resize', function() {
         // Code to execute when the window is resized
         console.log

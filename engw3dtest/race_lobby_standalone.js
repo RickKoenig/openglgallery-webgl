@@ -5,6 +5,8 @@ var race_lobby_standalone = {}; // the 'race_lobby_standalone' state
 race_lobby_standalone.text = "WebGL: race_lobby_standalone 3D drawing";
 race_lobby_standalone.title = "race_lobby_standalone";
 
+race_lobby_standalone.lastGame = 'd';
+
 // load these before init
 race_lobby_standalone.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -47,7 +49,8 @@ race_lobby_standalone.init = function(intentData) {
 	};
 	race_lobby_standalone.terminal = new Terminal(race_lobby_standalone.roottree, [.1, 0, 0, 1], race_lobby_standalone.doCommand, termParams1);
 	if (window.isMobile) {
-		race_lobby_standalone.terminal.print("Welcome, select a game letter 'a' thru 'd' when in focus.");
+		race_lobby_standalone.terminal.print("Welcome, select a game letter 'a' thru '" 
+			+ race_lobby_standalone.lastGame + "' when in focus.");
 	} else {
 		race_lobby_standalone.terminal.print("Welcome, select a game from the left panel.");
 	}
@@ -62,7 +65,7 @@ race_lobby_standalone.onresize = function() {
 }
 
 race_lobby_standalone.proc = function() {
-	if (input.key >= 'a'.charCodeAt(0) && input.key <= 'd'.charCodeAt(0)) {
+	if (input.key >= 'a'.charCodeAt(0) && input.key <= race_lobby_standalone.lastGame.charCodeAt(0)) {
 		race_lobby_standalone.autoCommand1P.call(this, String.fromCharCode(input.key));
 	}
 	// draw
