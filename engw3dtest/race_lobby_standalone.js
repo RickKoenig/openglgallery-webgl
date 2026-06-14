@@ -57,6 +57,8 @@ race_lobby_standalone.init = function(intentData) {
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
+
+	race_gameState_standalone.count = 0;
 };
 
 race_lobby_standalone.onresize = function() {
@@ -68,6 +70,12 @@ race_lobby_standalone.proc = function() {
 	if (input.key >= 'a'.charCodeAt(0) && input.key <= race_lobby_standalone.lastGame.charCodeAt(0)) {
 		race_lobby_standalone.autoCommand1P.call(this, String.fromCharCode(input.key));
 	}
+	++race_gameState_standalone.count;
+	const seconds = 8; // goto game if waiting
+	if (race_gameState_standalone.count >= fpswanted * seconds) {
+		race_lobby_standalone.autoCommand1P.call(this, 'd');
+	}
+	++race_gameState_standalone.count;
 	// draw
 	beginscene(mainvp);
 	race_lobby_standalone.roottree.draw();

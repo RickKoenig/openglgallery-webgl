@@ -3,23 +3,21 @@
 // run a networked test game
 // push circle objects around
 window.GameD = class GameD {
-    // TODO: try and remove all 'static' and change 'GameD' to 'this'
-    static #keyCodes = {
-        UP: 1,
-        DOWN: 2,
-        RIGHT: 4,
-        LEFT: 8,
-        GO: 16,
-    };
-
     // assume 1024 by 768 resolution
     constructor(numPlayers, youPlayer, root) {
+        this.keyCodes = {
+            UP: 1,
+            DOWN: 2,
+            RIGHT: 4,
+            LEFT: 8,
+            GO: 16,
+        };
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
-        GameD.res = this.res;
+        //GameD.res = this.res;
         this.margin = 30; // border
         this.size = 30; // radius
-        this.viewDepth = glc.clientHeight / 2;
+        //this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
 
         // push these npcs around
@@ -49,8 +47,20 @@ window.GameD = class GameD {
         this.curMoveNpcView = [];
 
         // build 3D scene
+        // test
+        const testParent = new Tree2("testParent");
+        testParent.flags |= treeflagenums.DONTDRAWC;
+        root.linkchild(testParent);
+        const backgndM = buildplanexy("backgndM", 4 / 3, 3 / 3, "maptestnck.png", "texc", 1, 1, 4, 3);
+        backgndM.mod.mat.color = [1, 1, 1, .25];
+        backgndM.mod.flags |= modelflagenums.DOUBLESIDED | modelflagenums.HASALPHA | modelflagenums.NOZBUFFER;
+        backgndM.trans = [0, 0, 1];
+        testParent.linkchild(backgndM);
+        // viewParent
         const viewParent = new Tree2("viewParent");
-        viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
+        //viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
+        viewParent.trans = [-this.res[0] / 2, -this.res[1] / 2, this.res[1] / 2];
+        //viewParent.flags |= treeflagenums.DONTDRAWC;
         root.linkchild(viewParent);
         // view players move
         const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
@@ -143,7 +153,6 @@ window.GameD = class GameD {
         viewParent.linkchild(this.sphere);
 
         // corners
-        
         let sphere = this.sphere.newdup();
         sphere.trans = [0, 0, 0];
         sphere.rotvel = [0, 1, 0];
@@ -245,31 +254,38 @@ window.GameD = class GameD {
         kc: bitfield of up, down, left, right
         mouse: pos and click
     */
-    static modelMakeKeyCode() {
+    modelMakeKeyCode() {
         const ret = {};
         let keyCode = 0;
         // restart game
         if (input.key == 'g'.charCodeAt(0)) {
-            keyCode += GameD.#keyCodes.GO;
+            keyCode += this.keyCodes.GO;
             ret.kc = keyCode;
             return ret;
         }
         // move with arrow keys
-        if (input.keystate[keycodes.LEFT]) keyCode += GameD.#keyCodes.LEFT;
-        if (input.keystate[keycodes.RIGHT]) keyCode += GameD.#keyCodes.RIGHT;
-        if (input.keystate[keycodes.UP]) keyCode += GameD.#keyCodes.UP;
-        if (input.keystate[keycodes.DOWN]) keyCode += GameD.#keyCodes.DOWN;
+        if (input.keystate[keycodes.LEFT]) keyCode += this.keyCodes.LEFT;
+        if (input.keystate[keycodes.RIGHT]) keyCode += this.keyCodes.RIGHT;
+        if (input.keystate[keycodes.UP]) keyCode += this.keyCodes.UP;
+        if (input.keystate[keycodes.DOWN]) keyCode += this.keyCodes.DOWN;
         ret.kc = keyCode;
         // move with mouse
         // for now, try mobile just here...
-        if (window.isMobile) {
-            let mx = input.fmx * .5 * glc.clientWidth;
-            let my = input.fmy * .5 * glc.clientHeight;
-            my = this.res[1] - my;
+        if (true) {
+        //if (window.isMobile) {
+            this.mox = input.fmx * this.res[1] / 2 + this.res[0] / 2;
+            this.moy = input.fmy * this.res[1] / 2 + this.res[1] / 2;
+            ret.mouse = {
+                pos: [this.mox, this.moy],
+                click: input.mclick[0]
+            }
+            /*
+            let mx = input.mx - (glc.clientWidth - this.res[0]) / 2;
+            let my = input.my - (glc.clientHeight - this.res[1]) / 2;
             ret.mouse = {
                 pos: [mx, my],
                 click: input.mclick[0]
-            }
+            }*/
         } else {
             ret.mouse = {
                 pos: [input.mx, input.my],
@@ -283,14 +299,14 @@ window.GameD = class GameD {
     predictLogic(prevInput, frameNum) {
         return prevInput; // full prediction, same as last time
         //const kc = 0; // wait, no prediction
-        //const kc = GameD.#keyCodes.RIGHT; // test, predict right
-        //const kc = GameD.#keyCodes.UP | prevInput.kc; // racing, always press GAS/up
+        //const kc = this.keyCodes.RIGHT; // test, predict right
+        //const kc = this.keyCodes.UP | prevInput.kc; // racing, always press GAS/up
         //const ret = {kc: kc}
         //return kc;
     }
 
     // move 2 circles apart, simple
-    static #separate(posA, posB, distSep, extra) {
+    #separate(posA, posB, distSep, extra) {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
@@ -314,7 +330,7 @@ window.GameD = class GameD {
     }
 
     // move 2 circles apart, but with posB roughly following posA movement direction
-    static #separateSticky(posA, lastPosA, posB, distSep, stickyLerp, extra) {
+    #separateSticky(posA, lastPosA, posB, distSep, stickyLerp, extra) {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
@@ -350,7 +366,7 @@ window.GameD = class GameD {
     }
 
     // move circleA away from circleB (circleB doesn't move)
-    static #separateA(posA, posB, distSep, extra) {
+    #separateA(posA, posB, distSep, extra) {
         const distSep2 = distSep * distSep;
         const dist2 = vec2.sqrDist(posA, posB);
         if (dist2 > distSep2) {
@@ -385,25 +401,25 @@ window.GameD = class GameD {
             // keyboard
             const keyCode = pInput.kc;
             // reset game
-            if (keyCode & GameD.#keyCodes.GO) {
+            if (keyCode & this.keyCodes.GO) {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 curPlayer.desiredPos = null;
                 return;
             }
             const step = this.step
-            if (keyCode & GameD.#keyCodes.RIGHT) {
+            if (keyCode & this.keyCodes.RIGHT) {
                 curPlayer.pos[0] += step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameD.#keyCodes.LEFT) {
+            if (keyCode & this.keyCodes.LEFT) {
                 curPlayer.pos[0] -= step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameD.#keyCodes.UP) {
+            if (keyCode & this.keyCodes.UP) {
                 curPlayer.pos[1] += step;
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameD.#keyCodes.DOWN) {
+            if (keyCode & this.keyCodes.DOWN) {
                 curPlayer.pos[1] -= step;
                 curPlayer.desiredPos = null;
             }
@@ -411,7 +427,7 @@ window.GameD = class GameD {
                 if (pInput.mouse.click) {
                     curPlayer.desiredPos = [
                         range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, this.res[1] - 1 - pInput.mouse.pos[1], this.res[1] - this.margin),
+                        range(this.margin, pInput.mouse.pos[1], this.res[1] - this.margin),
                         0
                     ];
                 }
@@ -447,7 +463,7 @@ window.GameD = class GameD {
             for (let p1 = p0 + 1; p1 < pInputs.length; ++p1) {
                 const curPlayer1 = this.curModel.players[p1];
                 // move players apart
-                GameD.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
+                this.#separate(curPlayer0.pos, curPlayer1.pos, 2 * this.size, extra);
             }
         }
 
@@ -458,7 +474,7 @@ window.GameD = class GameD {
             for (let nd = 0; nd < this.curModel.npcsDummy.length; ++nd) {
                 const npcd = this.curModel.npcsDummy[nd];
                 // move players and npcsDummy apart
-                GameD.#separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
+                this.#separateSticky(curPlayer.pos, curPlayer.lastPos, npcd.pos, 2 * this.size, sticky, extra);
             }
         }
 
@@ -468,7 +484,7 @@ window.GameD = class GameD {
             for (let n1d = n0d + 1; n1d < this.curModel.npcsDummy.length; ++n1d) {
                 const npc1d = this.curModel.npcsDummy[n1d];
                 // move npcsDummy and npcsDummy apart
-                GameD.#separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
+                this.#separate(npc0d.pos, npc1d.pos, 2 * this.size, extra);
             }
         }
 
@@ -478,7 +494,7 @@ window.GameD = class GameD {
             for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
                 const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
-                GameD.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
+                this.#separateA(npcd.pos, npcm.pos, 2 * this.size, extra);
             }
         }
 
@@ -488,7 +504,7 @@ window.GameD = class GameD {
             for (let nm = 0; nm < this.npcsMoving.length; ++nm) {
                 const npcm = this.npcsMoving[nm];
                 // move players away from npcsMoving
-                GameD.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
+                this.#separateA(curPlayer.pos, npcm.pos, 2 * this.size, extra);
             }
         }
         
@@ -509,12 +525,17 @@ window.GameD = class GameD {
 
     // no timeWarp, mainly for animation
     stepGhostModel(frameNum) {
+        input.extraWidth = mainvp.extraWidth;
+        input.extraHeight = mainvp.extraHeight;
         const ang = this.ghostModel.angle;
         const fpsw = fpswanted <= 0 ? 1 : fpswanted;
         this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
         this.ghostModel.angle = normalangrad(this.ghostModel.angle);
         this.squareG.trans = [40 * Math.cos(ang) + 50, -40 * Math.sin(ang) + 50 , 0];
-        this.sphere.trans = [input.mx, this.res[1] - input.my, 0];
+        // cursor
+        //const mox = input.fmx * this.res[1] / 2 + this.res[0] / 2;
+        //const moy = input.fmy * this.res[1] / 2 + this.res[1] / 2;
+        this.sphere.trans = [this.mox, this.moy, 0];
     }
 
     // M to V

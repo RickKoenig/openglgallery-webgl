@@ -2,7 +2,7 @@
 
 // run a networked test game, fixed point
 window.GameC = class GameC {
-    static #keyCodes = {
+    keyCodes = {
         UP: 1,
         DOWN: 2,
         RIGHT: 4,
@@ -235,20 +235,20 @@ window.GameC = class GameC {
     //    kc: bitfield of up, down, left, right
     //    mouse: pos and click
     //
-    static modelMakeKeyCode() {
+    modelMakeKeyCode() {
         const ret = {};
         let keyCode = 0;
         // restart game
         if (input.key == 'g'.charCodeAt(0)) {
-            keyCode += GameC.#keyCodes.GO;
+            keyCode += this.keyCodes.GO;
             ret.kc = keyCode;
             return ret;
         }
         // move with arrow keys
-        if (input.keystate[keycodes.LEFT]) keyCode += GameC.#keyCodes.LEFT;
-        if (input.keystate[keycodes.RIGHT]) keyCode += GameC.#keyCodes.RIGHT;
-        if (input.keystate[keycodes.UP]) keyCode += GameC.#keyCodes.UP;
-        if (input.keystate[keycodes.DOWN]) keyCode += GameC.#keyCodes.DOWN;
+        if (input.keystate[keycodes.LEFT]) keyCode += this.keyCodes.LEFT;
+        if (input.keystate[keycodes.RIGHT]) keyCode += this.keyCodes.RIGHT;
+        if (input.keystate[keycodes.UP]) keyCode += this.keyCodes.UP;
+        if (input.keystate[keycodes.DOWN]) keyCode += this.keyCodes.DOWN;
         ret.kc = keyCode;
         // move with mouse
         ret.mouse = {
@@ -262,8 +262,8 @@ window.GameC = class GameC {
     predictLogic(prevInput, frameNum) {
         return prevInput; // full prediction
         //const kc = 0; // wait, no prediction
-        //const kc = GameC.#keyCodes.RIGHT; // test, predict right
-        //const kc = GameC.#keyCodes.UP | prevInput.kc; // racing, always press GAS/up
+        //const kc = this.keyCodes.RIGHT; // test, predict right
+        //const kc = this.keyCodes.UP | prevInput.kc; // racing, always press GAS/up
         //const ret = {kc: kc}
         //return kc;
     }
@@ -367,28 +367,28 @@ window.GameC = class GameC {
             // keyboard
             const keyCode = pInput.kc;
             // reset game
-            if (keyCode & GameC.#keyCodes.GO) {
+            if (keyCode & this.keyCodes.GO) {
                 this.curModel = clone(this.resetModel); // the current model is the init model
                 curPlayer.desiredPos = null;
                 return;
             }
             const step = this.step
-            if (keyCode & GameC.#keyCodes.RIGHT) {
+            if (keyCode & this.keyCodes.RIGHT) {
                 //curPlayer.pos[0] += step;
                 curPlayer.pos[0] = this.FP.add(curPlayer.pos[0], step);
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameC.#keyCodes.LEFT) {
+            if (keyCode & this.keyCodes.LEFT) {
                 //curPlayer.pos[0] -= step;
                 curPlayer.pos[0] = this.FP.sub(curPlayer.pos[0], step);
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameC.#keyCodes.UP) {
+            if (keyCode & this.keyCodes.UP) {
                 //curPlayer.pos[1] += step;
                 curPlayer.pos[1] = this.FP.add(curPlayer.pos[1], step);
                 curPlayer.desiredPos = null;
             }
-            if (keyCode & GameC.#keyCodes.DOWN) {
+            if (keyCode & this.keyCodes.DOWN) {
                 //curPlayer.pos[1] -= step;
                 curPlayer.pos[1] = this.FP.sub(curPlayer.pos[1], step);
                 curPlayer.desiredPos = null;

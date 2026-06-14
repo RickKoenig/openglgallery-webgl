@@ -35,6 +35,10 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 	mainvp.extraWidth = 4 / 3;
 	mainvp.extraHeight = 1;//7 / 5;
 	mainvp.clearcolor = [.125, .125, .125, 1];
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	//input.extraWidth = mainvp.extraWidth;
+	//input.extraHeight = mainvp.extraHeight;
 
 	// ui
 	race_gameState_standalone.showHud = true;
@@ -98,7 +102,7 @@ race_gameState_standalone.proc = function() {
 	}
 
 	// get some input
-	let keyCode = race_gameState_standalone.gameClass.modelMakeKeyCode(race_gameState_standalone.mvc.game);
+	let keyCode = race_gameState_standalone.mvc.game.modelMakeKeyCode();
 	// run model 1 time
 	let myKeyCode = keyCode;
 	race_gameState_standalone.mvc.controlToModel(race_gameState_standalone.count, race_gameState_standalone.mySlot, myKeyCode);

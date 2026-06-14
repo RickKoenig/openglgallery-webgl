@@ -145,7 +145,7 @@ window.GameB = class RaceGameNetwork {
         kc: bitfield of up, down, left, right
         //mouse: pos and click
     */
-    static modelMakeKeyCode(parent) {
+    modelMakeKeyCode() {
         const ret = {};
         let keyCode = 0;
         // restart game
@@ -154,7 +154,7 @@ window.GameB = class RaceGameNetwork {
             ret.kc = keyCode;
             return ret;
         }
-        switch(parent.mode) {
+        switch(this.mode) {
             case race_car_network.modeEnums.human:
                 // move with arrow keys
                 if (input.keystate[keycodes.LEFT]) keyCode += RaceGameNetwork.keyCodes.LEFT;
@@ -165,8 +165,8 @@ window.GameB = class RaceGameNetwork {
             case race_car_network.modeEnums.ai:
             case race_car_network.modeEnums.revai:
                 const aiNoTurnAng = 5 * Math.PI / 180; // don't turn if almost heading in right direction
-                const carModel = parent.curModel[parent.youPlayer];
-                let dir = race_track.getAiTrack(race_trackData.race_track1, carModel.pos, parent.mode == race_car_network.modeEnums.revai);
+                const carModel = this.curModel[this.youPlayer];
+                let dir = race_track.getAiTrack(race_trackData.race_track1, carModel.pos, this.mode == race_car_network.modeEnums.revai);
                 let deltaDir = normalangrad(dir - carModel.dir);
                 keyCode |= RaceGameNetwork.keyCodes.UP;
                 if (deltaDir >= aiNoTurnAng) {

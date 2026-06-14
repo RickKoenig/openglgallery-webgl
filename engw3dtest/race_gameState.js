@@ -213,6 +213,14 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.125, .125, .125, 1];
 
+	// the 3D viewport
+	mainvp = defaultviewport();
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;//7 / 5;
+	mainvp.clearcolor = [.125, .125, .125, 1];
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+
 	// ui
 	race_gameState.showHud = true;
 	setbutsname('ingame');
@@ -430,7 +438,7 @@ race_gameState.proc = function() {
 		}
 
 		// get some input
-		let keyCode = race_gameState.gameClass.modelMakeKeyCode(race_gameState.mvc.game);
+		let keyCode = race_gameState.mvc.game.modelMakeKeyCode();
 
 		race_gameState.catchupAccum;
 

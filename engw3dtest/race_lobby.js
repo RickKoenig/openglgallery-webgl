@@ -58,7 +58,7 @@ race_lobby.autoCommandJoin = function() {
 }
 
 race_lobby.autoCommand1P = function(g) {
-	// log in and connect to room p0
+	// log in and make room p0 and go
 	race_lobby.doCommand('e');
 	race_lobby.doCommand('m');
 	race_lobby.doCommand('go ' + g);
@@ -328,7 +328,6 @@ race_lobby.doCommand = function(cmdStr) {
 				race_lobby.terminal.print("not connected!");
 			}
 			break;
-
 		default:
 			// local, not a valid command
 			this.print("unrecognized command '" + cmdStr + "'");
@@ -456,6 +455,7 @@ race_lobby.testJSON = function() {
 }
 
 race_lobby.init = function(intentData) {
+	race_lobby.count = 0;
 	//race_lobby.testJSON();
 	//race_lobby.testGameClass('a');
 	race_lobby.testFloat();
@@ -471,7 +471,7 @@ race_lobby.init = function(intentData) {
 	makeabr();
 	makeabut("start game(c), move and push V2 fixed", race_lobby.autoCommand1P.bind(this,'c'));
 	makeabr();
-	makeabut("start game(d), move and push MOBILE", race_lobby.autoCommand1P.bind(this,'d'));
+	makeabut("start game(d), move and push intended for MOBILE", race_lobby.autoCommand1P.bind(this,'d'));
 	makeabr();
 	makeabut("make room", race_lobby.autoCommandMake);
 	makeabut("join room", race_lobby.autoCommandJoin);
@@ -508,7 +508,15 @@ race_lobby.proc = function() {
 	race_lobby.terminal?.proc(input.key);
 	race_lobby.roottree.proc(); // probably does nothing
 	//doflycam(mainvp); // modify the trs of mainvp using flycam
-
+	const seconds = 6;
+	if (race_lobby.count == fpswanted * seconds) {
+		//changestate("onerps");
+		race_lobby.autoCommandJoin(); // auto login and join if mobile
+		race_lobby.count = 0;
+	}
+	if (window.isMobile) {
+		++race_lobby.count;
+	}
 	// draw
 	beginscene(mainvp);
 	race_lobby.roottree.draw();
