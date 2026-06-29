@@ -13,6 +13,11 @@ basic.load = function() {
 
 basic.init = function() {
 	logger("entering webgl basic 3D\n");
+	// ui
+	setbutsname('basic');
+	//scratch.inputtext = makeatext('URL','http://23.123.140.155:88/engw/engw3dtest/shaders/basic.ps',scratch.upfunctext);
+	//scratch.inputtext = makeatext('URL','http://127.0.0.1:88/engw/engw3dtest/textdata/text1.txt',scratch.upfunctext);
+	basic.info = makeaprintarea('info','hiho');
 
 	// build parent
 	basic.roottree = new Tree2("basic root tree");
@@ -45,6 +50,19 @@ basic.init = function() {
 	backgnd.mod.flags |= modelflagenums.DOUBLESIDED | modelflagenums.HASALPHA | modelflagenums.NOZBUFFER;
 	backgnd.trans = [0, 0, 1];
 	basic.roottree.linkchild(backgnd);
+
+		// build model font2, hilight
+	basic.font2 = new ModelFont("font2","font0.png","font2c",2, 2,100,100);
+    basic.font2.mat.fcolor = [1,1,1,1];
+    basic.font2.mat.bcolor = [0,0,0,1];
+	basic.font2.print("Hum");
+	basic.treef2 = new Tree2("basic.font2");
+	basic.treef2.trans = [-.25, .25, 1];
+	// TODO: stop using hard coded glyph sizes, (right now 16,32)
+	basic.treef2.scale = [16 / glc.clientHeight, 32 / glc.clientHeight, 1];
+	basic.treef2.setmodel(basic.font2);
+	basic.roottree.linkchild(basic.treef2);
+
 
 	if (URLparams.isOrtho) {
 		mainvp = defaultorthoviewport();
@@ -82,9 +100,46 @@ basic.proc = function() {
 	// reset extra ndc system, output
 	glc.extraHeight = 1;
 	glc.extraWidth = 1;
+	//basic.info.print("hi");
+	//printareadraw(basic.info,"scratch Info = " + fpsCurrent);
+	basic.updateInfo();
+};
+
+basic.updateInfo = function() {
+	const plotter2dBody = document.getElementById("body");		
+	const plotter2dDiv = document.getElementById("drawarea");		
+	const plotter2dCanvas = document.getElementById("mycanvas2");		
+
+	let infoStr;
+	const bodyWid = plotter2dBody.clientWidth;
+	const bodyHit = plotter2dBody.clientHeight;
+	const divWid = plotter2dDiv.clientWidth;
+	const divHit = plotter2dDiv.clientHeight;
+	const canWid = plotter2dCanvas.clientWidth;
+	const canHit = plotter2dCanvas.clientHeight;
+	const bufWid = plotter2dCanvas.width;
+	const bufHit = plotter2dCanvas.height;
+
+	if (basic.info) {
+		infoStr = "Info<br>"
+			+ "<br>div bod = " + bodyWid + ", " + bodyHit
+			+ "<br>div dim = " + divWid + ", " + divHit
+			+ "<br>can dim = " + canWid + ", " + canHit
+			+ "<br>buf dim = " + bufWid + ", " + bufHit
+			+ "<br>";
+		basic.info.innerHTML = infoStr;
+	}
+
+	infoStr = 
+		"div body = " + bodyWid + ", " + bodyHit
+		+ "\ndiv dim = " + divWid + ", " + divHit
+		+ "\ncan dim = " + canWid + ", " + canHit
+		+ "\nbuf dim = " + bufWid + ", " + bufHit;
+	basic.font2.print(infoStr);
 };
 
 basic.exit = function() {
+	clearbuts('basic');
 	// show current usage before cleanup
 	basic.roottree.log();
 	logrc();

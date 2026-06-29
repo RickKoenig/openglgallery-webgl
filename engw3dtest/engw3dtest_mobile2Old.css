@@ -1,0 +1,148 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+}
+
+body{
+	margin:0;
+	background: darkgray;
+	overflow: hidden;
+	height: 100%;
+	display: flex;
+	justify-content: space-around;
+	/*
+	padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);*/
+}
+
+bodyOld {
+	margin: 0px;
+	touch-action: pan-x pan-y;
+	/*height: 100%;
+	width: 100%;*/
+	overflow: hidden; 
+}
+
+select {
+	width: 100%;
+	background-color: #d9b9dc;
+}
+
+div.left {
+	background-color: lightblue;
+ 	width:15%;
+	height: 100vh;
+ 	/* height:200px; */
+ 	float:left;
+	/* font-size: 2px; */
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+div.centergOld {
+	background-color: gray;
+	clear: both;
+	text-align: center;
+ 	/*width: 100%;
+	height: 100%;*/
+}
+
+div.centerg {
+	background-color:#996633;
+ 	float:left;
+	position:relative;
+	outline:none;
+	width: 84.99%;
+	height: 100vh;
+	overflow: hidden; 
+}
+
+#myform {
+	text-align:left;
+}
+
+canvas.inside {
+	/*margin:0;
+	padding:0;*/
+	background-color: white;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;  	
+	/*
+ 	display:block;
+	text-align: center;*/
+}
+
+div.bottom {
+	background-color: red;
+ 	margin: auto; 
+	clear: both;
+	text-align: center;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}
+#chooseafile {
+	text-decoration: underline;
+	color: #0000ff;
+	margin: 20px;
+	font-size: 16px;
+}
+
+#linkback {
+	background-color: lightgreen;
+}
+
+#myformT0 {
+	background-color: lightblue;
+}
+
+#myformT {
+	background-color: lightblue;
+}
+
+#myformM {
+	background-color: #0fc0cf;
+}
+
+#myformB0 {
+	background-color: #8fe0cf;
+}
+
+#myformB {
+	background-color: #8fe0cf;
+}
+
+#fileLoadSave {
+	border: solid;
+	background-color: #cde;
+}
+
+input {
+	font-size: 2vw;
+}
+
+select {
+	font-size: 2vw;
+}
+
+pre, p, a {
+	margin:0;
+	text-align: center;
+	font-size: 2vw;
+	overflow: hidden;
+	white-space: pre-wrap;
+}

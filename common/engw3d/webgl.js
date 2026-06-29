@@ -49,8 +49,19 @@ function loggerV(str) {
 function gl_resize() {
 //	alert("gl_resize to " + x + " " + y);
 	 // set gl wid,hi
-	glc.width = glc.clientWidth*gllores;
-    glc.height = glc.clientHeight*gllores;
+	//glc.width = glc.clientWidth*gllores;
+    //glc.height = glc.clientHeight*gllores;
+	/* //TODO: RESTORE
+	if (window.isMobile) {
+		glc.width = window.innerWidth*gllores;
+		glc.height = window.innerHeight*gllores;
+	} else {
+		glc.width = middlewidth*gllores;
+		glc.height = middleheight*gllores;
+	}*/
+	glc.width = 640;
+	glc.height = 480;
+	//console.log("middleheight = " + middleheight);
 		//gl.drawingBufferWidth = glc.clientWidth*gllores;
 		//gl.drawingBufferHeight = glc.clientHeight*gllores;
      // set asp
@@ -130,6 +141,16 @@ function gl_init() {
 	checkglerror("start gl_init()");
 	// If we don't have a GL context, give up now
 	checkglerror("tried to get some webgl");
+	const testStyles = false;
+	// do in proc for now
+	if (testStyles) {
+		const centerg = document.getElementById("drawarea");
+		//centerg.style.height = "363px";
+		centerg.style.height = "273px";
+		const vp = document.getElementById("vp");
+		//centerg.style.height = "363px";
+		vp.style.height = "273px";
+	}
 	if (!gl) {
 		logger("no webgl\n");
 		var ctx=glc.getContext("2d");

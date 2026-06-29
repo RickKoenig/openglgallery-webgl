@@ -700,6 +700,12 @@ scratch.testPIBounce = function() {
 };
 
 scratch.init = function() {
+	// ui
+	setbutsname('scratch');
+	//scratch.inputtext = makeatext('URL','http://23.123.140.155:88/engw/engw3dtest/shaders/basic.ps',scratch.upfunctext);
+	//scratch.inputtext = makeatext('URL','http://127.0.0.1:88/engw/engw3dtest/textdata/text1.txt',scratch.upfunctext);
+	scratch.inputtext = makeatext('URL','textdata/json1.txt',scratch.upfunctext);
+
 	if (scratch.jobtest) {
 		logger("jobtest\n");
 		//scratch.testLinkList();

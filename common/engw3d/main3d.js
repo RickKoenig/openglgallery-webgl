@@ -287,8 +287,8 @@ function buildlayout() {
 		if (ch > 0 && ch < height)
 			height = ch;
 		var cv = document.getElementById("mycanvas2");
-		cv.style.width = width + "px";
-		cv.style.height = height + "px";
+		//cv.style.width = width + "px";
+		//cv.style.height = height + "px";
 		return;
 	}
 // play with styles
@@ -436,10 +436,11 @@ function loadingresize() {
 var defaultimage;
 
 function doresize() {
+	//return;
 		gl_resize();
 		debprint.resize();
 		loadingresize();
-		onresizestate();
+		//onresizestate();
 }
 
 // enter full screen
@@ -495,7 +496,13 @@ function exitfullscreenHandler()
 {
     if (!(document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement)) {
         // Run code on exit
-		buildlayout(); // for non fullscreen
+		if (!window.isMobile) {
+			buildlayout(); // for non fullscreen
+		} else {
+	        glc.style.width = null;
+	        glc.style.height = null;
+
+		}
 		infullscreen = false;
 	doresize();
     }
@@ -529,16 +536,18 @@ function sizeChangedInit() {
 	//return;
 	// add resize for MOBILE
 	window.addEventListener('resize', function() {
+		//return; // TEST
         // Code to execute when the window is resized
         console.log
 			('Window resized! New width:', window.innerWidth
 			, 'New height:', window.innerHeight);
-        glc.style.width = window.innerWidth + 'px';
+        /*glc.style.width = window.innerWidth + 'px';
         glc.style.height = window.innerHeight + 'px';
 		glc.width = window.innerWidth;
-		glc.height = window.innerHeight;
+		glc.height = window.innerHeight;*/
 		doresize();
     });
+	setTimeout(doresize, 1);
 }
 
 function maininit() {
@@ -571,6 +580,18 @@ function mainproc() {
 	Timers.setframerate(mainproc,fpswanted);
 	inputproc();
 // proc
+	const testStyles = true;
+	if (testStyles && window.isMobile) {
+		const centerg = document.getElementById("drawarea");
+		//const height = 273 + 120 * Math.sin(frame * Math.PI / 180 / 2);
+		const height = window.innerHeight;
+		centerg.style.height = Math.floor(height).toString() + "px";
+		const vp = document.getElementById("vp");
+		if (vp) {
+			vp.style.height = Math.floor(height).toString() + "px";
+		}
+		doresize();
+	}
 	debprint.proc();
 	procstate();
 	debprint.draw();
