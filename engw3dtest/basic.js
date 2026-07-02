@@ -57,7 +57,7 @@ basic.init = function() {
     basic.font2.mat.bcolor = [0,0,0,1];
 	basic.font2.print("Hum");
 	basic.treef2 = new Tree2("basic.font2");
-	basic.treef2.trans = [-.25, .25, 1];
+	basic.treef2.trans = [-.875, .25, 1];
 	// TODO: stop using hard coded glyph sizes, (right now 16,32)
 	basic.treef2.scale = [16 / glc.clientHeight, 32 / glc.clientHeight, 1];
 	basic.treef2.setmodel(basic.font2);

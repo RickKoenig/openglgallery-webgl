@@ -1,5 +1,7 @@
 var state14 = {};
 
+// TODO: remove glc
+
 state14.text = "WebGL: This state lets you swing around a pendulum with the mouse.";
 
 state14.title = "Pendulum";

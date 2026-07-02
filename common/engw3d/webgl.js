@@ -59,8 +59,10 @@ function gl_resize() {
 		glc.width = middlewidth*gllores;
 		glc.height = middleheight*gllores;
 	}*/
-	glc.width = 640;
-	glc.height = 480;
+	//glc.width = 80;
+	//glc.height = 60;
+	glc.width = glc.clientWidth * gllores;
+	glc.height = glc.clientHeight * gllores;
 	//console.log("middleheight = " + middleheight);
 		//gl.drawingBufferWidth = glc.clientWidth*gllores;
 		//gl.drawingBufferHeight = glc.clientHeight*gllores;

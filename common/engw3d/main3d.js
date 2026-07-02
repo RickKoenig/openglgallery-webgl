@@ -15,6 +15,7 @@ var layouts = false; // small
 var layoutm = false; // medium
 var layoutl = true; // large
 var layoutp = false; // portrait
+var panelWidthRatio = .2; // for mobile, default
 if (layouts) {
 	var leftwidth = 300;
 	var rightwidth = 100;
@@ -476,7 +477,7 @@ function gofullscreen() {
 // change resolution of canvas
 function changeres() {
 	if (gllores == 1)
-		gllores = .5;
+		gllores = .25;
 	else
 		gllores = 1;
 	doresize();
@@ -527,6 +528,7 @@ function doURLParams() {
 			}
 		}
 	}
+	return URLparams;
 }
 
 function sizeChangedInit() {
@@ -553,6 +555,10 @@ function sizeChangedInit() {
 function maininit() {
 	loadstatus = 0;
 	defaultimage = preloadedimages["maptestnck.png"];
+	const params = doURLParams();
+	if (params.panelWidthRatio) {
+		panelWidthRatio = params.panelWidthRatio ? +params.panelWidthRatio : .2;
+	}
 	gl_init();
 	checkglerror("after gl_init()");
 	initinput();
@@ -576,6 +582,19 @@ function maininit() {
 	}
 }
 
+// convert float number to css percent
+function floatToCSSPercent(f) {
+	if (f < 0) {
+		f = 0;
+	}
+	f *= 100;
+	const fs = f.toString();
+	const str = fs + "%";
+	return str;
+}
+
+var oldCanvasWidth = 0;
+var oldVpWidth = 0;
 function mainproc() {
 	Timers.setframerate(mainproc,fpswanted);
 	inputproc();
@@ -589,6 +608,16 @@ function mainproc() {
 		const vp = document.getElementById("vp");
 		if (vp) {
 			vp.style.height = Math.floor(height).toString() + "px";
+			const slightMargin = .001; // keep things from wrapping
+            const canvasWidth = 1 - window.panelWidthRatio;
+			const vpWidth = window.panelWidthRatio - slightMargin;
+			//if (canvasWidth != oldCanvasWidth || vpWidth != oldVpWidth) {
+				const divg = document.getElementById("drawarea");
+				centerg.style.width = floatToCSSPercent(canvasWidth);
+				vp.style.width = floatToCSSPercent(vpWidth);
+				oldCanvasWidth = canvasWidth;
+				oldVpWidth = vpWidth;
+			//}
 		}
 		doresize();
 	}

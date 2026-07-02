@@ -5,12 +5,23 @@
 	outline: 0;
 }
 
+html{
+	/*height: 100%;*/
+	/*height: -webkit-fill-available;*/
+}
+
+.noshow {
+	display: none;
+}
+
 body{
 	margin:0;
 	background: darkgray;
 	overflow: hidden;
-	height: 100%;
-	display: flex;
+	/*height: 100%;*/
+	/*height: -webkit-fill-available;*/
+	/*height: 100px;*/ 
+	/*display: flex;*/
 	justify-content: space-around;
 	/*
 	padding-top: env(safe-area-inset-top);
@@ -29,14 +40,21 @@ bodyOld {
 
 select {
 	width: 100%;
-	background-color: #d9b9dc;
+	background-color: #add1b0;
+	cursor: pointer;
+}
+
+select:hover {
+		background-color: #91ad93;
+		transition: .5s;
 }
 
 div.left {
 	background-color: lightblue;
- 	width:15%;
-	height: 100vh;
+ 	width:25%;
+	/*height: 100vh;*/
  	/* height:200px; */
+	height: 100%;
  	float:left;
 	/* font-size: 2px; */
 	overflow-x: hidden;
@@ -56,13 +74,13 @@ div.centerg {
  	float:left;
 	position:relative;
 	outline:none;
-	width: 84.99%;
-	height: 100vh;
+	width: 74.99%;
+	height: 272px;
 	overflow: hidden; 
 }
 
 #myform {
-	text-align:left;
+	text-align:center;
 }
 
 canvas.inside {
@@ -146,3 +164,25 @@ pre, p, a {
 	overflow: hidden;
 	white-space: pre-wrap;
 }
+
+input {
+	background-color: #ded0d9fa;
+	margin: 3px;
+}
+
+.centerv{
+	transition: .5s;
+	width: 85%;
+	border: none;
+	border-radius: 10px;
+	margin: 4px 4px 5px 4px;
+	cursor: pointer;
+	font-size: 2.2vw;
+	white-space: normal;
+	margin-left: auto;
+}
+
+.centerv:hover{
+	background:rgb(115, 151, 177);
+}
+

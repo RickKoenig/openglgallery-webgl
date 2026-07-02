@@ -484,12 +484,18 @@ race_lobby.init = function(intentData) {
 	race_lobby.socker = null; // the client socket
 	race_lobby.sockerInfo = null; // info about the socket
 
-	const termParams1 = {
+	const termParams1 = window.isMobile ? {
+		cols: 30,
+		rows: 4,
+		offx: 0,
+		offy: 0,
+		scale: 3
+	} : {
 		cols: 120,
 		rows: 45,
 		offx: 8,
 		offy: 8
-	};
+	}
 	race_lobby.terminal = new Terminal(race_lobby.roottree, [.1, 0, 0, 1], race_lobby.doCommand, termParams1);
 	race_lobby.terminal.print("Welcome");
 
@@ -508,15 +514,15 @@ race_lobby.proc = function() {
 	race_lobby.terminal?.proc(input.key);
 	race_lobby.roottree.proc(); // probably does nothing
 	//doflycam(mainvp); // modify the trs of mainvp using flycam
-	const seconds = 6;
+/*	const seconds = 6;
 	if (race_lobby.count == fpswanted * seconds) {
 		//changestate("onerps");
 		race_lobby.autoCommandJoin(); // auto login and join if mobile
 		race_lobby.count = 0;
 	}
 	if (window.isMobile) {
+	}*/
 		++race_lobby.count;
-	}
 	// draw
 	beginscene(mainvp);
 	race_lobby.roottree.draw();

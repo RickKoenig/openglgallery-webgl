@@ -1,5 +1,6 @@
 'use strict';
 
+// TODO: eliminate glc
 class Terminal {
     constructor(rootTree, backColor, cmdCallback, params) {
         let cols = 120;
@@ -64,10 +65,11 @@ class Terminal {
             if (this.cmdCallback) {
                 ++removeNL; // make room for prompt
             }
-            while(removeNL--) {
+            while(removeNL > 0) {
+                --removeNL;
                 const idx = str.indexOf('\n');
                 if (idx == -1) {
-                    alert("#pruneStr: idx = " + idx); // should never happen
+                    alertS("#pruneStr: idx = " + idx); // should never happen
                 }
                 str = str.slice(idx + 1); // remove string before and including newline
             }

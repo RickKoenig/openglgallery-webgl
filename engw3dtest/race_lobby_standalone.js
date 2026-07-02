@@ -41,24 +41,27 @@ race_lobby_standalone.init = function(intentData) {
 
 	// build simple terminal
 	const termParams1 = {
-		cols: 60,
-		rows: 22.5,
-		offx: 8,
-		offy: 8,
-		scale: 2
+		cols: 20,
+		rows: 4,
+		offx: 0,
+		offy: 0,
+		scale: 3
 	};
-	race_lobby_standalone.terminal = new Terminal(race_lobby_standalone.roottree, [.1, 0, 0, 1], race_lobby_standalone.doCommand, termParams1);
+	race_lobby_standalone.terminal 
+		= new Terminal(race_lobby_standalone.roottree, [.1, 0, 0, 1], race_lobby_standalone.doCommand, termParams1);
 	if (window.isMobile) {
-		race_lobby_standalone.terminal.print("Welcome, select a game letter 'a' thru '" 
-			+ race_lobby_standalone.lastGame + "' when in focus.");
+		race_lobby_standalone.terminal.print("Welcome\nselect a game\nfrom the left panel.");
 	} else {
-		race_lobby_standalone.terminal.print("Welcome, select a game from the left panel.");
+		race_lobby_standalone.terminal.print("Welcome\nselect a game letter\n'a' thru '" 
+			+ race_lobby_standalone.lastGame + "'\nwhen in focus.");
 	}
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;//7 / 5;
 
-	race_gameState_standalone.count = 0;
+	//race_gameState_standalone.count = 0;
 };
 
 race_lobby_standalone.onresize = function() {
@@ -67,15 +70,18 @@ race_lobby_standalone.onresize = function() {
 }
 
 race_lobby_standalone.proc = function() {
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
 	if (input.key >= 'a'.charCodeAt(0) && input.key <= race_lobby_standalone.lastGame.charCodeAt(0)) {
 		race_lobby_standalone.autoCommand1P.call(this, String.fromCharCode(input.key));
 	}
+	/*
 	++race_gameState_standalone.count;
 	const seconds = 8; // goto game if waiting
 	if (race_gameState_standalone.count >= fpswanted * seconds) {
 		race_lobby_standalone.autoCommand1P.call(this, 'd');
 	}
-	++race_gameState_standalone.count;
+	++race_gameState_standalone.count;*/
 	// draw
 	beginscene(mainvp);
 	race_lobby_standalone.roottree.draw();
@@ -95,4 +101,6 @@ race_lobby_standalone.exit = function() {
 	race_lobby_standalone.roottree = null;
 	clearbuts('console');
 	logger("exiting webgl race_lobby_standalone\n");
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;//7 / 5;
 };

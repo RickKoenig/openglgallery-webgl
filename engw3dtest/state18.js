@@ -392,7 +392,7 @@ state18.makeLevelSelect = function() {
 	var ret = [];
 	var i;
 	for (i=0;i<=state18.maxlevel;++i) {
-		var str = "Levvel " + i;
+		var str = "Level " + i;
 		ret.push(str);
 	}
 	return ret;

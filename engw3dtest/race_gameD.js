@@ -577,5 +577,7 @@ window.GameD = class GameD {
     }
 
     exit() {
+        input.extraWidth = 1;
+        input.extraHeight = 1;
     }
 }

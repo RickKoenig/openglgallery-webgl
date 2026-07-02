@@ -23,7 +23,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Run Race Net Lobby MOBILE",
-            "url": "http://localhost:88/engw/engw3dtest/indexMOBILE.html?startstate=race_lobby",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=race_lobby",
             "webRoot": "${workspaceFolder}"
         },
         {
@@ -44,7 +44,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Run Race Net Lobby Standalone MOBILE",
-            "url": "http://localhost:88/engw/engw3dtest/indexMOBILE.html?startstate=race_lobby_standalone",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=race_lobby_standalone",
             "webRoot": "${workspaceFolder}"
         },
         {
@@ -65,7 +65,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Run Scratch MOBILE",
-            "url": "http://localhost:88/engw/engw3dtest/indexMOBILE.html?startstate=scratch",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=scratch",
             "webRoot": "${workspaceFolder}"
         },
         {
@@ -100,14 +100,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "basic MOBILE",
-            "url": "http://localhost:88/engw/engw3dtest/indexMobile.html?startstate=basic",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "basic MOBILE 2",
-            "url": "http://localhost:88/engw/engw3dtest/indexMobile2.html?startstate=basic",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=basic",
             "webRoot": "${workspaceFolder}"
         },
         {
@@ -128,7 +121,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Sensors MOBILE",
-            "url": "http://localhost:88/engw/engw3dtest/indexMobile.html?startstate=sensors",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=sensors",
             "webRoot": "${workspaceFolder}"
         }
     ]
