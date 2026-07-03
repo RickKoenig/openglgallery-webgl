@@ -22,18 +22,6 @@ function normalangrad(rad) {
 	return rad;
 }
 
-/*function normang(a) {
-	if (a >= 1000*2*Math.PI)
-		undefined();
-	if (a <= -1000*2*Math.PI)
-		undefined();
-	while (a >= 2*Math.PI)
-		a -= 2*Math.PI;
-	while (a < 0)
-		a += 2*Math.PI;
-	return a;
-} */
-
 
 // handy functions
 
@@ -188,8 +176,6 @@ function cheapatan2delta(from,to) {
 		ang = 4 + ang;
 	return ang;
 }
-
-
 
 var NRECTPOINTS = 4;
 

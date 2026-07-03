@@ -33,12 +33,10 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;//7 / 5;
+	mainvp.extraHeight = 1;
 	mainvp.clearcolor = [.125, .125, .125, 1];
 	glc.extraWidth = mainvp.extraWidth;
 	glc.extraHeight = mainvp.extraHeight;
-	//input.extraWidth = mainvp.extraWidth;
-	//input.extraHeight = mainvp.extraHeight;
 
 	// ui
 	race_gameState_standalone.showHud = true;
@@ -62,7 +60,6 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 		, race_gameState_standalone.roottree
 		, ["player 0"]
 	);
-	//race_gameState_standalone.mvc.modelToView(race_gameState_standalone.count);
 	const termParams = {
 		cols: 39,
 		rows: 1,
@@ -142,6 +139,12 @@ race_gameState_standalone.exit = function() {
 	mainvp.lookat = null;
 	mainvp.inlookat = false;
 	debprint.removelist("ingame test variables");
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
 	mainvp.extraWidth = 1;
 	mainvp.extraHeight = 1;
+	// reset extra ndc system, input
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 };

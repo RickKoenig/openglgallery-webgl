@@ -159,7 +159,7 @@ function logger(str) {
 	console.log(str);
 }
 
-let startCount = 1; // 3;
+let startCount = 2; // 3;
 // only alert a certain number of times
 let alertSCount = startCount;
 

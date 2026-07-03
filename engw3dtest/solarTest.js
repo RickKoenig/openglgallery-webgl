@@ -803,6 +803,7 @@ solarTest.proc = function() {
 	checkglerror("solar test  shadowvp draw end check gl error");
 
 	// draw main scene
+	solarTest.mvp.asp = glc.asp; // TODO: fix asp for mobile
 	beginscene(solarTest.mvp);
 	solarTest.roottree.draw();
 	checkglerror("solar test rootree draw end check gl error");

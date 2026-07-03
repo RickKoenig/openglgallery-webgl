@@ -1296,6 +1296,14 @@ scratch.onresize = function() {
 };
 
 scratch.exit = function() {
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;
+	// reset extra ndc system, input
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 	if (scratch.datatexd) {
 		scratch.datatexd.glfree();
 		scratch.datatexd = null;

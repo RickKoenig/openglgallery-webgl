@@ -101,9 +101,6 @@ function bmousewheel(e) {
 	if (e.preventDefault)
         e.preventDefault();
 }
-/*
-*/
-
 
 // TOUCH
 
@@ -148,20 +145,19 @@ function mapinit() {
 	maparea = document.getElementById('drawarea');
 	if (!maparea)
 		maparea = document.getElementById('mycanvas2');
-	//if (isMobile) {
-		maparea.ontouchstart = btouchstart;
-		maparea.ontouchmove = btouchmove;
-		maparea.ontouchend = btouchend;
-	//} else {
-		maparea.onclick = bmousec;
-		maparea.onmousedown = bmoused;
-		maparea.onmouseup = bmouseu;
-		maparea.onmousemove = bmousem;
-		maparea.onmouseover = bmouseov;
-		maparea.onmouseout = bmouseou;
-		maparea.onmouseenter = bmouseenter;
-		maparea.addEventListener('wheel', bmousewheel);
-	//}
+	// mobile
+	maparea.ontouchstart = btouchstart;
+	maparea.ontouchmove = btouchmove;
+	maparea.ontouchend = btouchend;
+	// mouse
+	maparea.onclick = bmousec;
+	maparea.onmousedown = bmoused;
+	maparea.onmouseup = bmouseu;
+	maparea.onmousemove = bmousem;
+	maparea.onmouseover = bmouseov;
+	maparea.onmouseout = bmouseou;
+	maparea.onmouseenter = bmouseenter;
+	maparea.addEventListener('wheel', bmousewheel);
 }
 
 function mapproc()

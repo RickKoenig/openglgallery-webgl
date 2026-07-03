@@ -54,17 +54,6 @@ function makeuniq(str) {
 	return str + "__U" + uniqueval++;
 }
 
-/* function countProperties(obj) {
-    var count = 0;
-
-    for(var prop in obj) {
-        if(obj.hasOwnProperty(prop))
-            ++count;
-    }
-
-    return count;
-} */
-
 // running average class
 if (!Runavg) {
 	function Runavg(nele) {
@@ -405,22 +394,6 @@ function stripComments(str) {
 	}
 	return reCombined;
 }
-/*
-function floatToString(f,precision) {
-	if (Math.abs(f) < .00001)
-		return "0";
-	var fs = "" + f;
-	if (precision === undefined)
-		precision = 6;
-	if (fs.charAt(0) == '-') {
-		++precision;
-	}
-	if (fs.length > precision) {
-		fs = fs.substr(0,precision);
-	}
-	return fs;
-}
-*/
 
 function floatToString(f,precision) {
 	if (Math.abs(f) < .00000000001)

@@ -1,1 +1,0 @@
-var isMobile2 = true;

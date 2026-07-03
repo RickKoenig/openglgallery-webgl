@@ -64,9 +64,7 @@ window.GameC = class GameC {
 
         // build 3D scene
         const viewParent = new Tree2("viewParent");
-        //viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
         viewParent.trans = [-this.res[0] / 2, -this.res[1] / 2, this.res[1] / 2];
-        //viewParent.trans = [0, 0, this.res[1] / 2];
         root.linkchild(viewParent);
         // view players move
         const treeMasterPlayer = buildsphere("aplayer", size, "panel.jpg", "texc");
@@ -282,27 +280,12 @@ window.GameC = class GameC {
         if (input.keystate[keycodes.DOWN]) keyCode += this.keyCodes.DOWN;
         ret.kc = keyCode;
         // move with mouse
-        if (true) {
-        //if (window.isMobile) {
-            this.mox = input.fmx * this.res[1] / 2 + this.res[0] / 2;
-            this.moy = input.fmy * this.res[1] / 2 + this.res[1] / 2;
-            //console.log("fm = " + input.fmx.toFixed(3) + " " + input.fmy + " mox = " + this.mox + " moy = " + this.moy);
-            ret.mouse = {
-                pos: [this.mox, this.moy],
-                click: input.mclick[0]
-            }
-            /*
-            let mx = input.mx - (glc.clientWidth - this.res[0]) / 2;
-            let my = input.my - (glc.clientHeight - this.res[1]) / 2;
-            ret.mouse = {
-                pos: [mx, my],
-                click: input.mclick[0]
-            }*/
-        } else {
-            ret.mouse = {
-                pos: [input.mx, input.my],
-                click: input.mclick[0]
-            }
+        this.mox = input.fmx * this.res[1] / 2 + this.res[0] / 2;
+        this.moy = input.fmy * this.res[1] / 2 + this.res[1] / 2;
+        //console.log("fm = " + input.fmx.toFixed(3) + " " + input.fmy + " mox = " + this.mox + " moy = " + this.moy);
+        ret.mouse = {
+            pos: [this.mox, this.moy],
+            click: input.mclick[0]
         }
         return ret;
     }
@@ -451,11 +434,6 @@ window.GameC = class GameC {
                     curPlayer.desiredPos = [
                         x, y, 0
                     ];
-/*                    let x = this.FP.create(pInput.mouse.pos[0]);
-                    let y = this.FP.create(this.res[1] - 1 - pInput.mouse.pos[1]);
-                    x = this.FP.range(this.FtopLeftMargin, x, this.FrightMargin);
-                    y = this.FP.range(this.FtopLeftMargin, y, this.FbotMargin);
-                    curPlayer.desiredPos = [x, y];*/
                 }
             }
             
@@ -562,8 +540,6 @@ window.GameC = class GameC {
         this.ghostModel.angle = normalangrad(this.ghostModel.angle);
         this.squareG.trans = [40 * Math.cos(ang) + 50, -40 * Math.sin(ang) + 50 , 0];
         // cursor
-        //const mox = input.fmx * this.res[1] / 2 + this.res[0] / 2;
-        //const moy = input.fmy * this.res[1] / 2 + this.res[1] / 2;
         this.sphere.trans = [this.mox, this.moy, 0];
     }
 

@@ -3,22 +3,19 @@
 // run a networked test game
 // push circle objects around
 window.GameA = class GameA {
-    keyCodes = {
-        UP: 1,
-        DOWN: 2,
-        RIGHT: 4,
-        LEFT: 8,
-        GO: 16,
-    };
-
     // assume 1024 by 768 resolution
     constructor(numPlayers, youPlayer, root) {
+        this.keyCodes = {
+            UP: 1,
+            DOWN: 2,
+            RIGHT: 4,
+            LEFT: 8,
+            GO: 16,
+        };
 		mainvp.clearcolor = [.25 ,.55, 1, 1];
         this.res = [1024, 768];
-        //GameA.res = this.res;
         this.margin = 30; // border
         this.size = 30; // radius
-        this.viewDepth = glc.clientHeight / 2;
         this.numPlayers = numPlayers;
 
         // push these npcs around
@@ -48,8 +45,18 @@ window.GameA = class GameA {
         this.curMoveNpcView = [];
 
         // build 3D scene
+        // test
+        const testParent = new Tree2("testParent");
+        testParent.flags |= treeflagenums.DONTDRAWC;
+        root.linkchild(testParent);
+        const backgndM = buildplanexy("backgndM", 4 / 3, 3 / 3, "maptestnck.png", "texc", 1, 1, 4, 3);
+        backgndM.mod.mat.color = [1, 1, 1, .25];
+        backgndM.mod.flags |= modelflagenums.DOUBLESIDED | modelflagenums.HASALPHA | modelflagenums.NOZBUFFER;
+        backgndM.trans = [0, 0, 1];
+        testParent.linkchild(backgndM);
+        // viewParent
         const viewParent = new Tree2("viewParent");
-        viewParent.trans = [-glc.clientWidth / 2, -glc.clientHeight / 2, this.viewDepth];
+        viewParent.trans = [-this.res[0] / 2, -this.res[1] / 2, this.res[1] / 2];
         root.linkchild(viewParent);
         // view players move
         const treeMasterPlayer = buildsphere("aplayer", this.size, "panel.jpg", "texc");
@@ -89,7 +96,7 @@ window.GameA = class GameA {
         // view npcsDummy
         const treeMasterDummyNpc = buildsphere("aDummynpc", this.size, "panel.jpg", "texc");
         treeMasterDummyNpc.scale = [1, 1, .01];
-        treeMasterDummyNpc.mat.color = [.25, .75, .25, 1];
+        treeMasterDummyNpc.mat.color = [, 1.75, 0, 1];
         for (let n = 0; n < this.numDummyNpcs; ++n) {
             const npcDummyTree = treeMasterDummyNpc.newdup();
             this.curDummyNpcView[n] = npcDummyTree;
@@ -140,6 +147,33 @@ window.GameA = class GameA {
         this.sphere.trans = [250, 50, 0];
         this.sphere.rotvel = [0, 1, 0];
         viewParent.linkchild(this.sphere);
+
+        // corners
+        let sphere = this.sphere.newdup();
+        sphere.trans = [0, 0, 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+        
+        sphere = this.sphere.newdup();
+        sphere.trans = [this.res[0], 0, 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+
+        sphere = this.sphere.newdup();
+        sphere.trans = [0, this.res[1], 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+
+        sphere = this.sphere.newdup();
+        sphere.trans = [this.res[0], this.res[1], 0];
+        sphere.rotvel = [0, 1, 0];
+        viewParent.linkchild(sphere);
+
+        const backgnd = buildplanexy("backgnd", this.res[0] / 2, this.res[1] / 2, "maptestnck.png", "texc", 1, 1, 4, 3);
+        backgnd.mod.mat.color = [1, 1, 1, .125];
+	    backgnd.mod.flags |= modelflagenums.DOUBLESIDED | modelflagenums.HASALPHA | modelflagenums.NOZBUFFER;
+        backgnd.trans = [this.res[0] / 2, this.res[1] / 2, 0];
+        viewParent.linkchild(backgnd);
     }
 
     #setNpcsMoving(retModel) {
@@ -232,8 +266,11 @@ window.GameA = class GameA {
         if (input.keystate[keycodes.DOWN]) keyCode += this.keyCodes.DOWN;
         ret.kc = keyCode;
         // move with mouse
+        // for now, try mobile just here...
+        this.mox = input.fmx * this.res[1] / 2 + this.res[0] / 2;
+        this.moy = input.fmy * this.res[1] / 2 + this.res[1] / 2;
         ret.mouse = {
-            pos: [input.mx, input.my],
+            pos: [this.mox, this.moy],
             click: input.mclick[0]
         }
         return ret;
@@ -243,8 +280,8 @@ window.GameA = class GameA {
     predictLogic(prevInput, frameNum) {
         return prevInput; // full prediction, same as last time
         //const kc = 0; // wait, no prediction
-        //const kc = GameA.keyCodes.RIGHT; // test, predict right
-        //const kc = GameA.keyCodes.UP | prevInput.kc; // racing, always press GAS/up
+        //const kc = this.keyCodes.RIGHT; // test, predict right
+        //const kc = this.keyCodes.UP | prevInput.kc; // racing, always press GAS/up
         //const ret = {kc: kc}
         //return kc;
     }
@@ -371,7 +408,7 @@ window.GameA = class GameA {
                 if (pInput.mouse.click) {
                     curPlayer.desiredPos = [
                         range(this.margin, pInput.mouse.pos[0], this.res[0] - this.margin),
-                        range(this.margin, this.res[1] - 1 - pInput.mouse.pos[1], this.res[1] - this.margin),
+                        range(this.margin, pInput.mouse.pos[1], this.res[1] - this.margin),
                         0
                     ];
                 }
@@ -469,12 +506,15 @@ window.GameA = class GameA {
 
     // no timeWarp, mainly for animation
     stepGhostModel(frameNum) {
+        input.extraWidth = mainvp.extraWidth;
+        input.extraHeight = mainvp.extraHeight;
         const ang = this.ghostModel.angle;
         const fpsw = fpswanted <= 0 ? 1 : fpswanted;
         this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
         this.ghostModel.angle = normalangrad(this.ghostModel.angle);
         this.squareG.trans = [40 * Math.cos(ang) + 50, -40 * Math.sin(ang) + 50 , 0];
-        this.sphere.trans = [input.mx, this.res[1] - input.my, 0];
+        // cursor
+        this.sphere.trans = [this.mox, this.moy, 0];
     }
 
     // M to V
@@ -516,5 +556,7 @@ window.GameA = class GameA {
     }
 
     exit() {
+        input.extraWidth = 1;
+        input.extraHeight = 1;
     }
 }

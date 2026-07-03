@@ -152,7 +152,6 @@ race_lobby.setupCallbacks = function(socker, name) {
 	socker.on('news', function(strData) {
 		console.log("NEWS from server: " + strData + " client newsCount " 
 			+ race_lobby.clientNewsCount);
-			//race_lobby.terminal.print(strData);
 			++race_lobby.clientNewsCount;
 	});
 
@@ -317,10 +316,9 @@ race_lobby.doCommand = function(cmdStr) {
 				   // no new members, host can leave without destroying the room and game
 			if (race_lobby.socker) {
 				let gameType = words[0];
-				//if (!gameType) gameType = 'a'; // default
-				if (!gameType || gameType.length != 1 || gameType < 'a' || gameType > 'd') {
+				if (!gameType || gameType.length != 1 || gameType < 'a' || gameType > 'c') {
 					race_lobby.terminal.print("not a valid gameType '" + gameType + "'");
-					race_lobby.terminal.print("valid gameTypes are, 'a' thru 'd'");
+					race_lobby.terminal.print("valid gameTypes are, 'a' thru 'c'");
 					break;
 				}
 				race_lobby.socker.emit('go', gameType);
@@ -333,19 +331,6 @@ race_lobby.doCommand = function(cmdStr) {
 			this.print("unrecognized command '" + cmdStr + "'");
 			break;
 	}
-}
-
-race_lobby.testGameClass = function(gameType) {
-	console.log("start test game class");
-	const game = GameA;
-	const typeofgame = typeof game;
-	console.log("typeof game = " + typeofgame);
-	const gameClassStr = "Game" + gameType.toUpperCase();
-	console.log("game class string = " + gameClassStr);
-	const game2 = window[gameClassStr];
-	const typeofgame2 = typeof game2;
-	console.log("typeof game = " + typeofgame2);
-	console.log("finish test game class");
 }
 
 race_lobby.distColl = function(a, b, dist) {
@@ -376,31 +361,6 @@ race_lobby.showPointPairs = function(pps) {
 	}
 }
 
-race_lobby.testDistColl = function() {
-	const pointPairs = [
-		[[3, 4], [4, 5]],
-		[[3, 6], [4, 7]],
-		[[5, 0], [10, 0]],
-		[[10, 0], [5, 0]],
-		[[-5, 5], [4, 3]],
-		[[4, 5], [4, 5]],
-		[[4, 0], [-2, 0]],
-		[[-4, 0], [2, 0]],
-		[[2, 5], [2, 9]],
-		[[2, 9], [2, 5]],
-	];
-	const dist = 2;
-
-	console.log("TEST DIST COLL");
-	console.log("BEFORE separation");
-	race_lobby.showPointPairs(pointPairs);
-	for (const pp of pointPairs) {
-		race_lobby.distColl(pp[0], pp[1], dist);
-	}
-	console.log("AFTER separation");
-	race_lobby.showPointPairs(pointPairs);
-}
-
 // find and list floating point inconsistencies here between firefox and chrome
 race_lobby.testFloat = function() {
 	let ang = 4 * 2 * Math.PI / 6; // doesn't matter which library
@@ -427,56 +387,22 @@ race_lobby.testFloat = function() {
 	}
 }
 
-race_lobby.testJSON = function() {
-	console.log("test JSON");
-
-	const obj = {
-		hi: "ho",
-		num1: 13.14,
-		num4: 42.72,
-		num14: {x: 33n, y: -44n},
-		num3: '-3149999n',
-		num5: '34n',
-		num2: 2.72,
-		num6: '-34n',
-		num7: '-0n',
-		num8: '0n',
-		num9: '-0',
-		num10: '0',
-		num11: '-n',
-		num12: 'n',
-		num13: '',
-	}
-	const objStr = JSON.sortify(obj, JSONbigintReplacer, '   ');
-	const obj2 = JSON.parse(objStr, JSONbigintReviver);
-	console.log("objStr = " + objStr);
-	console.log(obj2);
-	console.log("end test JSON");
-}
-
 race_lobby.init = function(intentData) {
 	race_lobby.count = 0;
-	//race_lobby.testJSON();
-	//race_lobby.testGameClass('a');
 	race_lobby.testFloat();
-	//race_lobby.testDistColl();
 	race_lobby.keepSockInfo = false;
 	race_lobby.clientNewsCount = 0;
 	logger("entering webgl race_lobby\n");
 	// ui
 	setbutsname('lobby');
-	makeabut("start game(a), move and push", race_lobby.autoCommand1P.bind(this,'a'));
+	makeabut("start game(a), move and push intended for MOBILE", race_lobby.autoCommand1P.bind(this,'a'));
 	makeabr();
 	makeabut("start game(b), 2d race", race_lobby.autoCommand1P.bind(this,'b'));
 	makeabr();
 	makeabut("start game(c), move and push V2 fixed", race_lobby.autoCommand1P.bind(this,'c'));
 	makeabr();
-	makeabut("start game(d), move and push intended for MOBILE", race_lobby.autoCommand1P.bind(this,'d'));
-	makeabr();
 	makeabut("make room", race_lobby.autoCommandMake);
 	makeabut("join room", race_lobby.autoCommandJoin);
-	
-	//race_lobby.showIntent = makeaprintarea("intent = '" + intentData + "'");
 	
 	// build parent
 	race_lobby.roottree = new Tree2("race_lobby root tree");
@@ -513,16 +439,7 @@ race_lobby.proc = function() {
 	// proc
 	race_lobby.terminal?.proc(input.key);
 	race_lobby.roottree.proc(); // probably does nothing
-	//doflycam(mainvp); // modify the trs of mainvp using flycam
-/*	const seconds = 6;
-	if (race_lobby.count == fpswanted * seconds) {
-		//changestate("onerps");
-		race_lobby.autoCommandJoin(); // auto login and join if mobile
-		race_lobby.count = 0;
-	}
-	if (window.isMobile) {
-	}*/
-		++race_lobby.count;
+	++race_lobby.count;
 	// draw
 	beginscene(mainvp);
 	race_lobby.roottree.draw();

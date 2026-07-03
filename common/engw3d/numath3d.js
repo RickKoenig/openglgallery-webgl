@@ -41,28 +41,10 @@ function dir2rotY(dir) {
 
 // return Euler angles for rotating a vector pointing away i.e. (0,0,1) (LHC) to a vector pointing in dir (not need to be normalized)
 function dir2rotZ(dir) {
-/*	var ret = vec3.create();
-	var len = vec3.length(dir);
-	var lenxz = Math.sqrt(dir[0]*dir[0] + dir[2]*dir[2]);
-	if (lenxz < epsilon*len) {
-		if (dir[1] >= 0)
-			vec3.set(ret,0,0,0);
-		else
-			vec3.set(ret,Math.PI,0,0);
-	} else {
-		ret[0] = Math.atan2(lenxz,dir[1]);
-		ret[1] = Math.atan2(dir[0],dir[2]);
-	}
-	ret[0] -= Math.PI/2;
-	return ret; */
 	var ret = dir2rotY(dir);
 	ret[0] -= Math.PI/2;
 	return ret;
 }
-
-
-
-
 
 //// extend glmatrix library
 vec3.inv = function(out, a) {

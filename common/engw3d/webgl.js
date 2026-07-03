@@ -1,6 +1,5 @@
 var gl; // the main interface
 var glc; // canvas to make webgl
-//var d2edrawarea; // canvas to make webgl
 var gllores = 1; // lower resolution on a given canvas, the lower the number the faster the fragment shaders will be
 var dowebgl = true;
 var maxTextures = 16;
@@ -8,64 +7,22 @@ var webglVersion = 0;
 var mainvp;
 // list of all shaders
 var shaderlist;
-/* = [
-	"red",
-	"basic",
-	"flat",
-	"cvert",
-	"tex"
-]; */
-/*
-// these enums are defined in gl.
-var glenums = {
-	"GL_INT":5124,
-	"GL_FLOAT":5126,
-	"GL_FLOAT_VEC2":35664,
-	"GL_FLOAT_VEC3":35665,
-	"GL_FLOAT_VEC4":35666,
-	"GL_FLOAT_MAT4":35676
-	//"GL_SAMPLER_2D":35678
-};
-*/
 var globalmat = {
-	hi:3,
-	"ho":5,
 	alphacutoff:.03125,
-	//alphacutoff:.125,
-	//alphacutoff:.0625,
-	//alphacutoff:.125
-	//alphacutoff:.25
-	//alphacutoff:.5
-	//alphacutoff:.75
-	specpow:500,
+	specpow:500
 };
 
 const verbose = false;
 
 function loggerV(str) {
-	if (verbose) logger(str);
+	if (verbose) {
+		logger(str);
+	}
 }
 
 function gl_resize() {
-//	alert("gl_resize to " + x + " " + y);
-	 // set gl wid,hi
-	//glc.width = glc.clientWidth*gllores;
-    //glc.height = glc.clientHeight*gllores;
-	/* //TODO: RESTORE
-	if (window.isMobile) {
-		glc.width = window.innerWidth*gllores;
-		glc.height = window.innerHeight*gllores;
-	} else {
-		glc.width = middlewidth*gllores;
-		glc.height = middleheight*gllores;
-	}*/
-	//glc.width = 80;
-	//glc.height = 60;
 	glc.width = glc.clientWidth * gllores;
 	glc.height = glc.clientHeight * gllores;
-	//console.log("middleheight = " + middleheight);
-		//gl.drawingBufferWidth = glc.clientWidth*gllores;
-		//gl.drawingBufferHeight = glc.clientHeight*gllores;
      // set asp
 	glc.asp = glc.clientWidth/glc.clientHeight;
 	// set gl viewport
@@ -82,8 +39,6 @@ function gl_resize() {
 	}
 	gl.viewport(0, 0, xs*gl.drawingBufferWidth, ys*gl.drawingBufferHeight);
 	//gl.viewport(xo*gl.drawingBufferWidth, yo*gl.drawingBufferHeight, xs*gl.drawingBufferWidth, ys*gl.drawingBufferHeight);
-//	mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, glc.asp, 0.5, 2.0);
-	//mat4.perspectivelhc(pMatrix, Math.PI/180 * 90, glc.asp, 0.002,10000.0);
 }
 
 function gl_preinit() {
@@ -103,7 +58,6 @@ function gl_preinit() {
 	// get a webgl context (gl)
 	if (dowebgl) {
 		try {
-			
 			// Try to grab the new 'webgl2' context.
 			if (!gl && URLparams.webglversion != 1) {
 				gl = glc.getContext("webgl2",glattr);
@@ -130,7 +84,6 @@ function gl_preinit() {
 					webglVersion = 1;
 				}
 			}
-
 		}
 		catch(e) {
 			logger("err gl context\n");
@@ -143,66 +96,42 @@ function gl_init() {
 	checkglerror("start gl_init()");
 	// If we don't have a GL context, give up now
 	checkglerror("tried to get some webgl");
-	const testStyles = false;
-	// do in proc for now
-	if (testStyles) {
-		const centerg = document.getElementById("drawarea");
-		//centerg.style.height = "363px";
-		centerg.style.height = "273px";
-		const vp = document.getElementById("vp");
-		//centerg.style.height = "363px";
-		vp.style.height = "273px";
-	}
 	if (!gl) {
 		logger("no webgl\n");
 		var ctx=glc.getContext("2d");
         glc.width = glc.clientWidth;
         glc.height = glc.clientHeight;
-        //glc.style.width = glc.clientWidth;
-        //glc.style.height = glc.clientHeight;
 		ctx.font="20px Arial";
 		ctx.fillText("Your browser doesn't support WebGL.",20,40);
 		var instele = document.getElementById('instructions');
 		if (instele)
 			instele.innerHTML = 'GET WEBGL ' +
 			'<a href="http://get.webgl.org"> HERE</a>.';
-		//ctx=edrawarea.getContext("2d");
-		//ctx.font="30px Arial";
-		//ctx.fillText("2d Your browser doesn't support WebGL.",10,50);
-		//alert("Unable to initialize WebGL. Your browser may not support it.");
-		//glc.style.opacity = 1;	// hide the 2d canvas by showing the 3d canvas
+		return;
 	}
-	if (gl) {
-		logger("yes some webgl\n");
-		glc.extraHeight = 1;
-		glc.extraWidth = 1;
-	 // set gl wid,hit
-	// set gl viewport and asp
-		checkglerror("after gl_mid()");
-		gl_resize();
-		gl.enable(gl.BLEND);
-		gl.blendFunc (gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
-	    gl.clearColor(.7,.7,0,1);                      // Set clear color to yellow, fully opaque
-	    gl.enable(gl.DEPTH_TEST);                               // Enable depth testing
-	    gl.depthFunc(gl.LEQUAL);                                // Near things obscure far things
-	    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);      // Clear the color as well as the depth buffer.
-		// convert to d3d like left handed coord system by negating z, z now increases away in front of the camera, towards the horizon
-		//pMatrix[8] = -pMatrix[8]; pMatrix[9] = -pMatrix[9]; pMatrix[10] = -pMatrix[10]; pMatrix[11] = -pMatrix[11];
-		if (webglVersion == 1)
-			var dxdy = gl.getExtension("OES_standard_derivatives"); 
-	    initShaders();
-	    gl.frontFace(gl.CW);
-	    gl.cullFace(gl.BACK);
-	    gl.enable(gl.CULL_FACE);
-		
-		mainvp = defaultviewport();
-		//resetviewport(mainvp);
-/*	    initBuffers();
-	    inittextures(); */
-		
 
-		checkglerror("after gl_init()");
-	}
+	logger("yes some webgl\n");
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
+	// set gl wid,hit
+// set gl viewport and asp
+	checkglerror("after gl_mid()");
+	gl_resize();
+	gl.enable(gl.BLEND);
+	gl.blendFunc (gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+	gl.clearColor(.7,.7,0,1);                      // Set clear color to yellow, fully opaque
+	gl.enable(gl.DEPTH_TEST);                               // Enable depth testing
+	gl.depthFunc(gl.LEQUAL);                                // Near things obscure far things
+	gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);      // Clear the color as well as the depth buffer.
+	if (webglVersion == 1)
+		var dxdy = gl.getExtension("OES_standard_derivatives"); 
+	initShaders();
+	gl.frontFace(gl.CW);
+	gl.cullFace(gl.BACK);
+	gl.enable(gl.CULL_FACE);
+	
+	mainvp = defaultviewport();
+	checkglerror("after gl_init()");
 }
 
 function gl_exit() {
@@ -272,11 +201,6 @@ function initShaders() {
 	logger("init shaders");
 	for (j=0;j<n;++j) {
 		var shadName = shaderlist[j];
-		//if (shadName.startsWith("//")) {
-		//	continue;
-		//}
-	    //var vertexShader = getShader(gl, "shader-vs");
-	    //var fragmentShader = getShader(gl, "shader-fs");
 	    var vertexShader = getShader2v(gl, shadName + ".vert.glsl");
 		if (!vertexShader) {
 			continue;
@@ -302,12 +226,10 @@ function initShaders() {
 		for (i=0;i<nunif;++i) {
 			var au = gl.getActiveUniform(shaderProgram,i);
 			shaderProgram[au.name] = gl.getUniformLocation(shaderProgram,au.name);
-			//shaderProgram.unifs.push(au);
 			shaderProgram.actunifs[au.name] = au;
 		}
 		
 		shaderProgram.nattrib = gl.getProgramParameter(shaderProgram,gl.ACTIVE_ATTRIBUTES);
-		//shaderProgram.attribs = [];
 		loggerV("======== shader name = " + shaderProgram.name);
 		var decAtt = 0;
 		for (i=0;i<shaderProgram.nattrib;++i) {
@@ -322,22 +244,11 @@ function initShaders() {
 			} else {
 				shaderProgram[aa.name] = gl.getAttribLocation(shaderProgram,aa.name);
 			}
-			//shaderProgram.attribs.push(aa);
 		}
 		if (decAtt > 0)
 			shaderProgram.nattrib -= decAtt;
-/*		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-		shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
-		shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-		shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-		shaderProgram.bright = gl.getUniformLocation(shaderProgram, "bright");
-		shaderProgram.phase = gl.getUniformLocation(shaderProgram, "phase");
-		shaderProgram.sampler = gl.getUniformLocation(shaderProgram, "uSampler0");
-		shaderPrograms.basic = shaderProgram; */
 	    gl.useProgram(shaderProgram);
-		//setAttributes(shaderProgram);
 		setSamplerUniforms(shaderProgram);
-	    //setMatrixPersUniforms(shaderProgram);
 		shaderPrograms[shadName] = shaderProgram;
 		if (shaderProgram.name == "shadowmapbuild")
 			shadershadowmapbuild = shaderProgram;
@@ -345,10 +256,6 @@ function initShaders() {
 			shadershadowmapbuildnotex = shaderProgram;
 	}
 }
-
-
-//var wMatrix = mat4.create(); // world matrix, o2w
-//var vMatrix = mat4.create(); // view matrix, camera, w2v
 
 var mvMatrix = mat4.create(); // model view matrix, o2v, used in shaders, mvMatrix = vMatrix * wMatrix
 var mvMatrixNoScale = mat4.create(); // don't scale children by parent scale
@@ -359,11 +266,9 @@ globalmat.LpMatrix = mat4.create();
 // mv = v * w
 // ends up being p * mv = p * v * w
 
-//var activeattribs = [];
 var nactiveattribs = 0;
 // enable only the ones we need
 function setAttributes(shaderProgram) {
-	
 	var i,n = shaderProgram.nattrib;
 	// assume attribs count from 0
 	if (n > nactiveattribs) {
@@ -374,56 +279,16 @@ function setAttributes(shaderProgram) {
 		for (i=n;i<nactiveattribs;++i) {
 			gl.disableVertexAttribArray(i);	
 		}
-		
 	}
-	/*
-	var i,n = shaderProgram.nattrib;
-	for (i=0;i<nactiveattribs;++i)
-		gl.disableVertexAttribArray(i);
-	for (i=0;i<n;++i)
-		gl.enableVertexAttribArray(i);
-	*/
 	nactiveattribs = n;
-/*	gl.disableVertexAttribArray(0);
-	gl.disableVertexAttribArray(1);
-	for (i=0;i<n;++i) {
-		gl.enableVertexAttribArray(shaderProgram[shaderProgram.attribs[i].name]);
-	} */
-/*	var newattribs = [];
-	for (i=0;i<n;++i) {
-		var val = shaderProgram[shaderProgram.attribs[i].name];
-		newattribs[val] = true;
-	}
-	n = Math.max(activeattribs.length,n);
-	for (i=0;i<n;++i) {
-		if (!activeattribs[i] && newattribs[i]) {
-			gl.enableVertexAttribArray(i);
-			activeattribs[i] = true;
-		} else if (activeattribs[i] && !newattribs[i]) {
-			gl.disableVertexAttribArray(i);
-			activeattribs[i] = false;
-		}
-	} */
-	
-/*    gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-	if (shaderProgram.textureCoordAttribute !== undefined)
-		gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute); */
 }
 
-/*function setMatrixPersUniforms(shaderProgram) {
-    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-}
-*/
 function setMatrixModelViewUniforms(shaderProgram) {
-	// test
-	//mvMatrix[13] += 20.0;
-	// end test
-//	mat4.mul(mvMatrix,vMatrix,wMatrix);
-//	gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 	gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix); // model view
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix); // perspective
-	if (shaderProgram.v2wMatrix !== undefined) // view to world
+	if (shaderProgram.v2wMatrix !== undefined) { // view to world
 		gl.uniformMatrix4fv(shaderProgram.v2wMatrix, false, v2wMatrix); // for env map and shadowmapping
+	}
 }
 
 function setSamplerUniforms(shaderProgram) {
@@ -433,13 +298,7 @@ function setSamplerUniforms(shaderProgram) {
 			gl.uniform1i(shaderProgram[samplerName], i);
 		}
 	}
-//	if (shaderProgram.uSampler0 !== undefined)
-//		gl.uniform1i(shaderProgram.uSampler0, 0);
-//	if (shaderProgram.uSampler1 !== undefined)
-//		gl.uniform1i(shaderProgram.uSampler1, 1);
 }
-
-//var shaderProgram = null;
 
 function exitShaders() {
 	if (!gl)
@@ -458,32 +317,26 @@ function exitShaders() {
 	 shaderPrograms = {};
 }
 
-function checkglerror(m,ignore) {
-	//ignore = true; // uncomment to stop the alerts
-	//return;
-	//alert("checkglerror");
-	//ignore = false;
-	// check for gl errors
-	if (typeof gl === 'undefined') {
+function checkglerror(mess) {
+	if (!gl) {
 		return;
 	}
-
-	if (gl !== null) {
-		//alert("gl active");
-		//var watch = 10;
-		while(true) {
-			var err = gl.getError();
-			if (err != 0) {
-				if (!ignore) {
-					//alert("glerr : " + m + " " + err);
-				}
-			} else {
-				break;
-			}
-			//--watch;
+	const ignore = false;
+	if (ignore) {
+		return;
+	}
+	// check for gl errors
+	let watch = 10;
+	while(watch > 0) {
+		const err = gl.getError();
+		if (err) {
+			alertS("glerr : " + mess + " " + err);
+		} else {
+			break;
 		}
-		//if (watch == 0)
-		//	alert("watch == 0!");
+		--watch;
+	}
+	if (watch <= 0) {
+		alertS("watch == 0!");
 	}
 }
-

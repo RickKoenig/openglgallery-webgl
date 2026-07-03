@@ -67,11 +67,14 @@ race_gameState.setupCallbacks = function(socker) {
 							const oi = i + race_gameState.validOffset;
 							//if (true) {
 							if (race_gameState.validFramesSlots[slot][i].frameNum != oi) {
+								// for now ignore
+								/*
 								alertS("EEE, on broadcast race_gameState.validFramesSlots[" + slot + "][" + i + "].frameNum "
 								    + race_gameState.validFramesSlots[slot][i].frameNum +
 									 " != i "
 									+ i + 
 									" race_gameState.validOffset + " + race_gameState.validOffset);
+								*/
 							}
 						}
 						race_gameState.validateFrames();
@@ -341,7 +344,6 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 				race_gameState.termValid.print("VALID FRAMES");
 				race_gameState.termValid.doShow(showValidFrames);
 			}
-			//termParams.cols= 39;
 			termParams.offy = 120;
 			race_gameState.terminalFPS = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
 			race_gameState.terminalFPS.doShow(true);
@@ -377,7 +379,6 @@ race_gameState.onresize = function() {
 
 race_gameState.proc = function() {
 	// proc
-	//alertS("test alertS");
 	if (race_gameState.maxFrames && race_gameState.maxFrames <= race_gameState.count) {
 		return;
 	}
@@ -529,6 +530,14 @@ race_gameState.proc = function() {
 };
 
 race_gameState.exit = function() {
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;
+	// reset extra ndc system, input
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 	if (race_gameState.socker) {
 		race_gameState.socker.disconnect();
 		race_gameState.socker = null;

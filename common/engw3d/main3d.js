@@ -88,14 +88,11 @@ var maxWheelDelta = 0;
 function drawelements() {
 	// show state
 	if (showstate) {
-		//eoutstateman.firstChild.nodeValue = "State " + state;
 		printareadraw(eoutstateman,"State " + statelist.indexOf(state) + " WebGL version " + webglVersion + ".0");
 	}
 	
 	// show scroll
 	if (showscroll) {
-		//escroll.firstChild.nodeValue = 
-		//	" sclvel = " + scrollvelx + "," + scrollvely + " scl = " + scrollx + "," + scrolly;
 		printareadraw(escroll,"sclvel = " + scrollvelx + "," + scrollvely + " scl = " + scrollx + "," + scrolly);
 	}
 		
@@ -110,11 +107,9 @@ function drawelements() {
 			if (input.keystate[i])
 				ks += i.toString(16) + " ";
 		}
-		//eoutkeystate.firstChild.nodeValue = ks;
 		printareadraw(eoutkeystate,ks);
 		
 		// show input
-		//eoutinputstate.firstChild.nodeValue = "inputstate = mx " + input.mx + " my " + input.my + " mbut " + input.mbut + " mclick " + input.mclick + " key " + input.key;
 		if (input.wheelDelta > maxWheelDelta)
 			maxWheelDelta = input.wheelDelta;
 		if (input.wheelDelta < minWheelDelta)
@@ -137,15 +132,9 @@ function drawelements() {
 		if (inputevents.length > maxsize) {
 			inputevents = inputevents.substr(inputevents.length-maxsize,maxsize);
 		}
-		//eoutinputevents.firstChild.nodeValue = inputevents;
 		printareadraw(eoutinputevents,inputevents);
 		
 		// show logger
-/*		if (logger_str.length > maxsize) {
-//			logger_str = logger_str.substr(logger_str.length-maxsize,maxsize);
-		} */
-		//eoutlogger.outerHTML = "Howdy!";
-		//eoutlogger.firstChild.nodeValue = logger_str;
 		if (logmode)
 			printareadraw(eoutlogger,logger_str);
 		else {
@@ -153,12 +142,6 @@ function drawelements() {
 			logger_str = "";
 		}
 	}
-	
-	// show image cache
-/*	var str = "";
-	for (var nam in imagecacher) {
-		str += "C[" + nam + "] = " + imagecacher[nam].size+ ",";	
-	} */
 }
 
 function maindebugclear() {
@@ -205,7 +188,6 @@ function maindebugsetbefore() {
 	if (showstate && myform) {
 		var oldform = myform;
 		myform = myformT0;
-		// eoutstateman = document.getElementById('stateman');
 		setbutsname('stateman');
 		if (topShow) {
 			topBut = makeabut('Engw Options +', topToggle);
@@ -226,8 +208,6 @@ function maindebugsetbefore() {
 		makeabut("Change Res", changeres);
 		myform = myformT0;
 		makeahr();
-		//userStyle = true;
-		//oldform.appendChild(myform);
 		myform = oldform;
 	}
 }
@@ -240,18 +220,13 @@ function clearlog() {
 }
 
 function maindebugsetafter() {
-	//userStyle = false;
-	//if (showscroll || showprint)
-	//	makeahr();
 	if (showscroll) {
 		scrollerinit();
 	}
 	if (showprint) {
 		var oldform = myform;
 		myform = myformB0;
-		//myform = document.createElement('p');
 		setbutsname('debprint');
-		// eoutkeystate = document.getElementById('keystate');
 		makeahr();
 		if (botShow) {
 			botBut = makeabut('Show Log +',botToggle);
@@ -263,13 +238,9 @@ function maindebugsetafter() {
 		}
 		myform = myformB;
 		eoutkeystate = makeaprintarea();
-		// eoutinputstate = document.getElementById('inputstate');
 		eoutinputstate = makeaprintarea();
-		// eoutinputevents = document.getElementById('inputevents');
 		eoutinputevents = makeaprintarea();
-		// eoutlogger = document.getElementById('logger');
 		eoutlogger = makeaprintarea();
-		//oldform.appendChild(myform);
 		myform = oldform;
 	}
 }
@@ -288,8 +259,6 @@ function buildlayout() {
 		if (ch > 0 && ch < height)
 			height = ch;
 		var cv = document.getElementById("mycanvas2");
-		//cv.style.width = width + "px";
-		//cv.style.height = height + "px";
 		return;
 	}
 // play with styles
@@ -312,7 +281,6 @@ function buildlayout() {
 		}
 		var i;
 		for (i=0;i<eles.length;++i) {
-			//eles[i].style.width = "300px";
 			eles[i].style.width = layoutwidth[name] + "px";
 		}
 	}
@@ -363,25 +331,19 @@ function loadingproc() {
 			target:null,
 			// clear
 			clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-		//	clearcolor:[0,1,.75,1],
 			clearcolor:[0,0,0,1],
-		//	mat4.create();
 			// orientation
 			"trans":[0,0,-debprint_depth],
 			"rot":[0,0,0],
-		//	"scale":[1,1,1],
 			// frustum
 			near:.002,
 			far:10000.0,
 			zoom:1,
 			asp:glc.asp,
-			//isortho:true,
 			ortho_size:debprint_depth*2,
 			// optional target (overrides rot)
 			inlookat:false,
-			//lookat:null,
 			incamattach:false,
-			//camattach:null
 			// sub viewports
 			xo:0,
 			yo:0,
@@ -438,10 +400,10 @@ var defaultimage;
 
 function doresize() {
 	//return;
-		gl_resize();
-		debprint.resize();
-		loadingresize();
-		//onresizestate();
+	gl_resize();
+	debprint.resize();
+	loadingresize();
+	//onresizestate(); // for now, don't call user resize, let main3d handle it instead
 }
 
 // enter full screen
@@ -463,8 +425,6 @@ function gofullscreen() {
 	} else {
 		//alert("Fullscreen API is not supported");
 	}
-//	if (false) {
-//	if (true) {
 	if (didfullscreen) {
         glc.style.width = window.screen.width + 'px';
         glc.style.height = window.screen.height + 'px';
@@ -502,7 +462,6 @@ function exitfullscreenHandler()
 		} else {
 	        glc.style.width = null;
 	        glc.style.height = null;
-
 		}
 		infullscreen = false;
 	doresize();
@@ -511,10 +470,7 @@ function exitfullscreenHandler()
 
 function doURLParams() {
 	var ss = window.location.search;
-	
-//URLparams;
 	URLparams = {};
-
 	if (ss.charAt(0) == '?') {
 		// we have args
 		ss = ss.substring(1); // past '?'
@@ -535,18 +491,12 @@ function sizeChangedInit() {
 	if (!window.isMobile) {
 		return;
 	}
-	//return;
 	// add resize for MOBILE
 	window.addEventListener('resize', function() {
-		//return; // TEST
         // Code to execute when the window is resized
         console.log
 			('Window resized! New width:', window.innerWidth
 			, 'New height:', window.innerHeight);
-        /*glc.style.width = window.innerWidth + 'px';
-        glc.style.height = window.innerHeight + 'px';
-		glc.width = window.innerWidth;
-		glc.height = window.innerHeight;*/
 		doresize();
     });
 	setTimeout(doresize, 1);
@@ -575,7 +525,6 @@ function maininit() {
 		} else {
 			changestate(startstate);
 		}
-		//intervalid = window.setInterval(mainproc,intervaltime);
 		Timers.resetframestep();
 		Timers.setframerate(mainproc,fpswanted);
 		debprint.init();
@@ -602,7 +551,6 @@ function mainproc() {
 	const testStyles = true;
 	if (testStyles && window.isMobile) {
 		const centerg = document.getElementById("drawarea");
-		//const height = 273 + 120 * Math.sin(frame * Math.PI / 180 / 2);
 		const height = window.innerHeight;
 		centerg.style.height = Math.floor(height).toString() + "px";
 		const vp = document.getElementById("vp");
@@ -611,13 +559,11 @@ function mainproc() {
 			const slightMargin = .001; // keep things from wrapping
             const canvasWidth = 1 - window.panelWidthRatio;
 			const vpWidth = window.panelWidthRatio - slightMargin;
-			//if (canvasWidth != oldCanvasWidth || vpWidth != oldVpWidth) {
-				const divg = document.getElementById("drawarea");
-				centerg.style.width = floatToCSSPercent(canvasWidth);
-				vp.style.width = floatToCSSPercent(vpWidth);
-				oldCanvasWidth = canvasWidth;
-				oldVpWidth = vpWidth;
-			//}
+			const divg = document.getElementById("drawarea");
+			centerg.style.width = floatToCSSPercent(canvasWidth);
+			vp.style.width = floatToCSSPercent(vpWidth);
+			oldCanvasWidth = canvasWidth;
+			oldVpWidth = vpWidth;
 		}
 		doresize();
 	}

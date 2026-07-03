@@ -329,6 +329,11 @@ stoidCommand.exit = function() {
 	mainvp.clearcolor = stoidCommand.oldclearcolor;
 	fpswanted = sc.fpswantedsave;
 
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;
 	// reset extra ndc system, input
 	input.extraWidth = 1;
 	input.extraHeight = 1;

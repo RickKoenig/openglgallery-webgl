@@ -3,7 +3,6 @@
 class GameWarp {
     constructor(numPlayers, curPlayer, gameStatic, root, doChecksum, slotNames) {
         this.doChecksum = doChecksum;
-        //this.gameStatic = gameStatic;
         this.game = new gameStatic(numPlayers, curPlayer, root, slotNames); // instance
         this.validModel = this.game.getCurModel(); // the current model is the init model
         this.validFrameNum = 0;
@@ -26,10 +25,6 @@ class GameWarp {
             ];
         }
     }
-/*
-    static #toHex(kc) {
-        return kc.toString(16).toUpperCase().padStart(2,'0');
-    }*/
 
     // C to M
     controlToModel(frameNum, slot, pInput) { // update input buffers with this data: TODO: remove frameNum

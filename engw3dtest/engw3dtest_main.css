@@ -68,7 +68,6 @@ a {
 
 input {
 	font-size: 13px;
-	/*color: #0000ff;*/
 }
 
 div {
@@ -106,9 +105,7 @@ div.middle {
 div.left {
 	background-color: lightblue;
  	width:300px;
- 	/* height:200px; */
  	float:left;
-	/* font-size: 2px; */
 }
 
 div.centerg {
@@ -145,8 +142,6 @@ div.bottom {
 }
 
 .centerv {
-	/*text-align:center;*/
-	/*font-size: 16px;*/
 	border-width: 1px;
 	background-color: #ffd;
 	margin: 3px;
@@ -157,8 +152,6 @@ div.bottom {
 	text-align:center;
 	font-size: 16px;
 	border-width: 2px;
-	/*width: 80px;*/
-	/*margin: 0 10px 0 10px;*/
 }
 
 #myform {
@@ -189,7 +182,6 @@ canvas.inside {
  	width:1024px;
  	height:768px;
  	display:block;
-	/*border-style:none;*/
 }
 
 .inputfile {

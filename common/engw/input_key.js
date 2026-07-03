@@ -72,14 +72,6 @@ var keycodes = {
 	RIGHTWINDOWS:0xac,
 	WINDOWS:0xab,
 	MENU:0xad,
-/*	"up":0x26,
-	"down":0x28,
-	"left":0x25,
-	"right":0x27,
-	"pagegup":0x21,
-	"pagegdown":0x22,
-	//"squareleft":219,
-	//"squareright":221 */
 };
 
 var kukd2ascii = [ // convert keydown and keyups to ascii like keycodes
@@ -148,15 +140,6 @@ function getkeycode(e) {
 // event
 function bkeyp(e) {
 	inputevents += "(KP " + getkeycode(e).toString(16) + ") ";
-	//if (input.keybuff.length < 4)
-	//	input.keybuff.push(getkeycode(e));
-//	if (isbrowserdebugkey())
-//		return;
-	//if (getkeycode(e) == debugkey)
-	//	return;
-//	e.returnValue = false;
-//	if (e.preventDefault)
-//		e.preventDefault();
 }
 
 // event
@@ -200,21 +183,7 @@ function bkeyu(e) {
 function keyinit() {
 	keystatecur = new Array(); // keycode keys currently down 0 or 1, indexed by keycode
 	keystatehold = new Array(); // keycode keys currently down 0 or 1, indexed by keycode
-/*	var body = document.body;
-	//var body = null;
-	//body = document.getElementById('drawarea');
-	//if (!body)
-	//	body = document.getElementById('mycanvas2');
-	body.onkeydown = bkeyd;
-	body.onkeypress = bkeyp;
-	body.onkeyup = bkeyu; */
-	var keyarea = null;
-	//if (!keyarea)
-	//	keyarea = document.keyarea;
-	if (!keyarea)
-		keyarea = document.getElementById('drawarea');
-	//if (!keyarea)
-	//	keyarea = document.getElementById('mycanvas2');
+	const keyarea = document.getElementById('drawarea');
 	keyarea.focus();
 	keyarea.addEventListener('keydown',bkeyd,false);
 	keyarea.addEventListener('keypress',bkeyp,false);

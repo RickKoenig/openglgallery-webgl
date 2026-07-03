@@ -75,14 +75,7 @@ window.Timers = class Timers
 			Timers.#testrunavg = false;
 		}
 		fps = range(1, fps, 1000);
-/*		if (fps == 0)
-			fps = 1000;
-		if (fps > 1000)
-			fps = 1000; */
-		//if (fps > 0)
-			Timers.frametimewanted = 1000/fps;
-		//else
-		//	Timers.frametimewanted = 0;
+		Timers.frametimewanted = 1000/fps;
 		Timers.#curfpswanted = fps;
 		if (window.performance && window.performance.now) {
 			var measureProcEnd = performance.now();
