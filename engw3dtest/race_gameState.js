@@ -228,6 +228,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	race_gameState.showHud = true;
 	setbutsname('ingame');
 	race_lobby.fillButton = makeabut("lobby", race_gameState.gotoLobby);
+	makeabut("toggle stats", race_gameState.toggleStats);
 	makeaprintarea("GAME '" + race_gameState.gameType + "'", "font-size: 2.1em;");
 	makeabr();
 
@@ -377,6 +378,15 @@ race_gameState.onresize = function() {
 	race_gameState.terminal?.onresize();
 }
 
+race_gameState.toggleStats = function() {
+	if (race_gameState.showHud) {
+		race_gameState.negPingTree.flags ^= treeflagenums.DONTDRAWC;
+		race_gameState.indicatorTree.flags ^= treeflagenums.DONTDRAWC;
+		race_gameState.terminalFPS?.doShow(!race_gameState.terminalFPS.getShow());
+		race_gameState.termValid?.doShow(!race_gameState.termValid.getShow());
+	}
+}
+
 race_gameState.proc = function() {
 	// proc
 	if (race_gameState.maxFrames && race_gameState.maxFrames <= race_gameState.count) {
@@ -384,12 +394,7 @@ race_gameState.proc = function() {
 	}
 	// hide/show pings etc.
 	if (input.key == 'h'.charCodeAt()) {
-		if (race_gameState.showHud) {
-			race_gameState.negPingTree.flags ^= treeflagenums.DONTDRAWC;
-			race_gameState.indicatorTree.flags ^= treeflagenums.DONTDRAWC;
-			race_gameState.terminalFPS?.doShow(!race_gameState.terminalFPS.getShow());
-			race_gameState.termValid?.doShow(!race_gameState.termValid.getShow());
-		}
+		race_gameState.toggleStats();
 	}
 	// change frame rate
 	if (input.key == ','.charCodeAt()) {

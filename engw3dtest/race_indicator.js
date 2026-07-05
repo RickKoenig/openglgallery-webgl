@@ -55,23 +55,25 @@ class Indicator {
 		const termParams = {
 			cols: 10,
 			rows: 1,
-			offx: 40,
-			offy: 32,
-			scale: 2
+			offy: 32
 		};
+		termParams.offx = 60;
+		termParams.scale = 2;
+		termParams.cols = 10;
 		this.termLeft = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
 		this.termLeft.doShow(show);
-		termParams.offx += this.sep - 80 - 20;
+
+		termParams.offx = this.sep - 20;
 		termParams.scale = 4;
 		termParams.cols = 9;
 		this.termMiddle = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
 		this.termMiddle.doShow(show);
-		termParams.offx += this.sep - 60 + 80;
+
+		termParams.offx = 2 * this.sep - 40;
 		termParams.scale = 2;
 		termParams.cols = 10;
 		this.termRight = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
 		this.termRight.doShow(show);
-		this.termMiddle.print("0 sec at 60 HZ");
 	}
 
 	#setSeconds(maxVal) {

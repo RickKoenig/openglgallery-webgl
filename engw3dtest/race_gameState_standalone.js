@@ -42,6 +42,7 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 	race_gameState_standalone.showHud = true;
 	setbutsname('ingame');
 	makeabut("standalone lobby", race_gameState_standalone.gotoStandaloneLobby);
+	makeabut("toggle stats", race_gameState_standalone.toggleStats);
 	makeaprintarea("GAME '" + race_gameState_standalone.gameType + "'", "font-size: 2.1em;");
 	makeabr();
 
@@ -81,13 +82,17 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 	]);
 };
 
+race_gameState_standalone.toggleStats = function() {
+	if (race_gameState_standalone.showHud) {
+		race_gameState_standalone.terminalFPS?.doShow(!race_gameState_standalone.terminalFPS.getShow());
+	}
+}
+
 race_gameState_standalone.proc = function() {
 	// proc
 	// hide/show hud
 	if (input.key == 'h'.charCodeAt()) {
-		if (race_gameState_standalone.showHud) {
-			race_gameState_standalone.terminalFPS?.doShow(!race_gameState_standalone.terminalFPS.getShow());
-		}
+		race_gameState_standalone.toggleStats();
 	}
 	// change frame rate
 	if (input.key == ','.charCodeAt()) {
