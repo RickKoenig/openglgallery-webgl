@@ -2,6 +2,7 @@
 // 615 lines before remove old code and add new comments
 // 268 after
 var qcomp = {}; // the state, load this file first
+qcomp.hidden = window.isMobile; // can't be selected in the engine UI when in mobile mode
 
 // constants
 qcomp.SR2 = Math.sqrt(2);

@@ -74,6 +74,7 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 		race_gameState_standalone.terminalFPS = new Terminal(race_gameState_standalone.roottree, [.2, .2, .1, .25], null, termParams);
 		race_gameState_standalone.terminalFPS.doShow(true);
 	}
+	race_gameState_standalone.toggleStats();
 
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[

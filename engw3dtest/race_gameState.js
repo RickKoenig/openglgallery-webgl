@@ -353,6 +353,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 			race_gameState.roottree.linkchild(race_gameState.indicatorTree);
 			race_gameState.showPings = new Indicator(race_gameState.indicatorTree, room.slots.length, race_gameState.mySlot);
 		}
+		race_gameState.toggleStats();
 	}
 
 	// catchup parameters
