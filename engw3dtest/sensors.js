@@ -22,6 +22,10 @@ sensors.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 };
 
+sensors.toggleStats = function() {
+		sensors.terminal.doShow(!sensors.terminal.getShow());
+}
+
 sensors.init = function() {
 	logger("entering webgl sensors 3D\n");
 
@@ -55,10 +59,13 @@ sensors.init = function() {
 		offy: 8,
 		scale: 1.2
 	};
+	setbutsname('sensors');
+	makeabut("toggle stats", sensors.toggleStats);
 	sensors.terminal = new Terminal(sensors.roottree, [.1, 0, 0, 1], null, termParams1);
 	sensors.terminal.print("1\n12\n123\n1234\n12345\n123456\n1234567\n");
 
 	sensors.terminal.print("SECURE = " + window.isSecureContext);
+	sensors.terminal.doShow(false);
 
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [0,.25,.5,1];
@@ -100,6 +107,7 @@ sensors.proc = function() {
 
 sensors.exit = function() {
 	// show current usage before cleanup
+	clearbuts('sensors');
 	sensors.terminal = null;
 	sensors.roottree.log();
 	logrc();

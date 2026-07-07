@@ -4,7 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Run test fonts again MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=scratchfont",
+            "webRoot": "${workspaceFolder}"
+        },
         {
             "type": "chrome",
             "request": "launch",

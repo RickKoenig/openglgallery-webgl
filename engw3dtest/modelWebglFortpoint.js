@@ -1,4 +1,4 @@
-var state6 = {};
+var modelWebglFortpoint = {};
 
 // test webgl
 // do work at model level, instead of tree level
@@ -17,13 +17,13 @@ var modellist;
 var ang;
 //var toruspos = [0,0,0];
 
-state6.text = "WebGL: Load some binary .bwo files that contain multimaterial mesh data.\n" + 
+modelWebglFortpoint.text = "WebGL: Load some binary .bwo files that contain multimaterial mesh data.\n" + 
 			"These files automatically load shaders and textures as needed.\n" +
 			"Mix that with some procedurally generated shapes and some custom shaders.";
 
-state6.title = "bwo files";
+modelWebglFortpoint.title = "bwo files";
 
-state6.load = function() {
+modelWebglFortpoint.load = function() {
 	//if (!gl)
 	//	return;
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -36,13 +36,13 @@ state6.load = function() {
 	preloadbwo("fortpoint/fortpointL3.bwo");
 };
 
-state6.init = function() {
+modelWebglFortpoint.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
 	ang = 0;
 	//toruspos.x = 0;toruspos.y = 0;toruspos.z = 0;
-	logger("entering webgl state6\n");
+	logger("entering webgl modelWebglFortpoint\n");
 	
 // build model 0, test model, uvs and texture, 'basic' shader, test amp phase freq
     amod0 = new Model("mod0");
@@ -305,7 +305,7 @@ state6.init = function() {
 };
 
 //var once4 = true;
-state6.proc = function() {
+modelWebglFortpoint.proc = function() {
 	//if (!gl)
 	//	return;
 	doflycam(mainvp); // modify the trs of vp
@@ -433,7 +433,7 @@ state6.proc = function() {
 		ang -= 2*Math.PI;
 };
 
-state6.exit = function() {
+modelWebglFortpoint.exit = function() {
 	//alert("bye!");
 //	gl_mode(false);
 //	if (!gl)
@@ -446,5 +446,5 @@ state6.exit = function() {
 		modellist[i].glfree();
 	}
 	logrc();
-	logger("exiting webgl state6\n");
+	logger("exiting webgl modelWebglFortpoint\n");
 };

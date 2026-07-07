@@ -92,4 +92,6 @@ race_lobby_standalone.exit = function() {
 	logger("exiting webgl race_lobby_standalone\n");
 	mainvp.extraWidth = 1;
 	mainvp.extraHeight = 1;
+	glc.extraWidth = 1;
+	glc.extraHeight = 1;
 };

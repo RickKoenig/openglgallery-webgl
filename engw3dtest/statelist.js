@@ -3,9 +3,9 @@ var statelist = [
 	test3d, // simple 3d tests
 	caveexplorer, // explore tree nodes;
 	camblur, // camera bluring shaders, etc.
-	state4, // test webgl, model level, webgl level
+	modelWebgl, // test webgl, model level, webgl level
 
-	state6, // more webgl Model and Model2, some bwo's and a floor of fortpoint, model level
+	modelWebglFortpoint, // more webgl Model and Model2, some bwo's and a floor of fortpoint, model level
 	state7, // more webgl Tree2, the whole fortpoint scene, tree level
 	state7p, // more webgl Tree2, prehistoric
 	ghostcity, // another .bws of ghost city race track
@@ -28,8 +28,8 @@ var statelist = [
 	state15, // pendu2, coupled pendulums
 	state16, // pendu3, many coupled pendulums
 	state17, // arrows
-	state18, // Menger sponge
-	state19, // Lorenz attractor, Fixed!!!
+	menger, // Menger sponge
+	lorenz, // Lorenz attractor, Fixed!!!
 	state20, // shadow mapping, Fixed !!!
 	state21, // shadow mapping merge, Fixed!!
 	scratch, // anything goes

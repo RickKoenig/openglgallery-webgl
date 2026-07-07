@@ -1,5 +1,5 @@
 // no trees
-var state4 = {};
+var modelWebgl = {};
 
 // test webgl
 var ang;
@@ -14,13 +14,13 @@ var phase = 0;
 
 //var preloadedbwos = {};
 
-state4.text = "WebGL: First attempt at WebGL.\n" + 
+modelWebgl.text = "WebGL: First attempt at WebGL.\n" + 
 			"Uses shaders, blending, zbuffer, inline images\n" +
 			"and matrices.  Model level, no Tree2's";
 
-state4.title = "simple WebGL";
+modelWebgl.title = "simple WebGL";
 
-state4.load = function() {
+modelWebgl.load = function() {
 	//if (!gl)
 	//	return;
 //	preloadtext("shaders/basic.ps");
@@ -105,7 +105,7 @@ function inittextures() {
 	testttexture0 = image2gltexture(preloadedimages["coin_logo.png"]);
 }
 
-state4.init = function() {
+modelWebgl.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
@@ -119,7 +119,7 @@ state4.init = function() {
 	if (pbbb)
 		bbbsize = pbbb.byteLength;
 	logger(" (bytesize2 = " + bbbsize + " )\n");
-	logger("entering webgl state4\n");
+	logger("entering webgl modelWebgl\n");
 	ang = 0;
     // initShaders();
     initBuffers();
@@ -267,7 +267,7 @@ function drawScene(ang) {
 }
 
 //var once4 = true;
-state4.proc = function() {
+modelWebgl.proc = function() {
 	setview(mainvp);
 	//if (!gl)
 	//	return;
@@ -356,7 +356,7 @@ function exittextures() {
 	testttexture0 = null;
 }
 
-state4.exit = function() {
+modelWebgl.exit = function() {
 	//alert("bye!");
 //	gl_mode(false);
 //	if (!gl)
@@ -370,5 +370,5 @@ state4.exit = function() {
     // exitShaders();
     exitBuffers();
     exittextures();
-	logger_str += "exiting webgl state4\n";
+	logger_str += "exiting webgl modelWebgl\n";
 };

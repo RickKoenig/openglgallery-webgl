@@ -1,6 +1,6 @@
-var state18 = {};
+var menger = {};
 
-state18.text = "WebGL: Menger sponge, upto level 4.  " +
+menger.text = "WebGL: Menger sponge, upto level 4.  " +
 			"Toggle the 'flycam' using the 'C' key.  " +
 			"Reset the position of the camera with the 'R' key.  " +
 			"Aim the camera with the mouse.\n" + 
@@ -8,37 +8,37 @@ state18.text = "WebGL: Menger sponge, upto level 4.  " +
 			"Speed up and slow down camera movement with '+/=' and '-' keys.\n" +
 			"Tab through various states using the 'prev state' and 'next state' buttons.";
 			
-state18.title = "Menger sponge";
+menger.title = "Menger sponge";
 
-state18.curlevel = null;
-state18.maxlevel = 4;
+menger.curlevel = null;
+menger.maxlevel = 4;
 
-state18.sellev = null;
-state18.sellev2 = null;
+menger.sellev = null;
+menger.sellev2 = null;
 //var paslider = null;
 
-state18.lesslevel = function() {
-	if (state18.curlevel > 0)
-		--state18.curlevel;
-	state18.updatelevel();
+menger.lesslevel = function() {
+	if (menger.curlevel > 0)
+		--menger.curlevel;
+	menger.updatelevel();
 };
 
-state18.morelevel = function() {
-	if (state18.curlevel < state18.maxlevel)
-		++state18.curlevel;
-	state18.updatelevel();
+menger.morelevel = function() {
+	if (menger.curlevel < menger.maxlevel)
+		++menger.curlevel;
+	menger.updatelevel();
 };
 
-state18.selectlevel = function(sel) {
-	state18.curlevel = sel.selectedIndex;
-	state18.updatelevel();
+menger.selectlevel = function(sel) {
+	menger.curlevel = sel.selectedIndex;
+	menger.updatelevel();
 };
 	
-state18.pow3 = [];
-state18.trin;
+menger.pow3 = [];
+menger.trin;
 
 // return an value of binary has ones, base3 to base2 like
-state18.tobase3 = function(n,ndig) {
+menger.tobase3 = function(n,ndig) {
 	var ret = 0;
 	var i;
 	var p = 1;
@@ -52,25 +52,25 @@ state18.tobase3 = function(n,ndig) {
 	return ret;
 };
 
-state18.getones = function(lev) {
-	state18.trin = [];
-	var m = state18.pow3[lev];
+menger.getones = function(lev) {
+	menger.trin = [];
+	var m = menger.pow3[lev];
 	var i;
 	for (i=0;i<m;++i) {
-		var r = state18.tobase3(i,lev);
-		state18.trin.push(r);
+		var r = menger.tobase3(i,lev);
+		menger.trin.push(r);
 	}
 };
 
-state18.issolid = function(pos) {
+menger.issolid = function(pos) {
 	var br = [];
 	var i;
 	for (i=0;i<3;++i) {
 		var t = pos[i];
 		var b;
-		if (t<0 || t>=state18.trin.length)
+		if (t<0 || t>=menger.trin.length)
 			return false;
-		b = state18.trin[t];
+		b = menger.trin[t];
 		br.push(b);
 	}
 	if (br[0] & br[1])
@@ -82,7 +82,7 @@ state18.issolid = function(pos) {
 	return true;
 }
 	
-state18.smeshfaceposx = {
+menger.smeshfaceposx = {
 	verts: [
 		 0,1,1,
 		 0,1,0,
@@ -101,7 +101,7 @@ state18.smeshfaceposx = {
 	]
 };
 
-state18.smeshfacenegx = {
+menger.smeshfacenegx = {
 	verts: [
 		 0,1,0,
 		 0,1,1,
@@ -120,7 +120,7 @@ state18.smeshfacenegx = {
 	]
 };
 
-state18.smeshfaceposy = {
+menger.smeshfaceposy = {
 	verts: [
 		 0,0,0,
 		 1,0,0,
@@ -139,7 +139,7 @@ state18.smeshfaceposy = {
 	]
 };
 
-state18.smeshfacenegy = {
+menger.smeshfacenegy = {
 	verts: [
 		 0,0,1,
 		 1,0,1,
@@ -158,7 +158,7 @@ state18.smeshfacenegy = {
 	]
 };
 
-state18.smeshfaceposz = {
+menger.smeshfaceposz = {
 	verts: [
 		 0,1,0,
 		 1,1,0,
@@ -177,7 +177,7 @@ state18.smeshfaceposz = {
 	]
 };
 
-state18.smeshfacenegz = {
+menger.smeshfacenegz = {
 	verts: [
 		 1,1,0,
 		 0,1,0,
@@ -196,16 +196,16 @@ state18.smeshfacenegz = {
 	]
 };
 
-state18.meshes6 = [
-	state18.smeshfaceposz,
-	state18.smeshfacenegz,
-	state18.smeshfaceposx,
-	state18.smeshfacenegx,
-	state18.smeshfaceposy,
-	state18.smeshfacenegy
+menger.meshes6 = [
+	menger.smeshfaceposz,
+	menger.smeshfacenegz,
+	menger.smeshfaceposx,
+	menger.smeshfacenegx,
+	menger.smeshfaceposy,
+	menger.smeshfacenegy
 ];
 
-state18.off60 = [
+menger.off60 = [
 	[0,0,0],
 	[0,0,1],
 	[0,0,0],
@@ -213,7 +213,7 @@ state18.off60 = [
 	[0,0,0],
 	[0,1,0]
 ];
-state18.off62 = [
+menger.off62 = [
 	[0,0,-1],
 	[0,0,1],
 	[-1,0,0],
@@ -221,7 +221,7 @@ state18.off62 = [
 	[0,-1,0],
 	[0,1,0]
 ];
-state18.colss6 = [
+menger.colss6 = [
 	[1,.125,.125,1],
 	[.125,1,.125,1],
 	[.125,.125,1,1],
@@ -230,55 +230,55 @@ state18.colss6 = [
 	[.125,1,1,1]
 ];
 
-state18.smesh;
-state18.curmeshidx;
+menger.smesh;
+menger.curmeshidx;
 
-state18.clearsmesh = function() {
-	state18.smesh = {verts:[],faces:[],uvs:[]};
-	state18.curmeshidx = 0;
+menger.clearsmesh = function() {
+	menger.smesh = {verts:[],faces:[],uvs:[]};
+	menger.curmeshidx = 0;
 };
 
-state18.addsmesh = function(off,msh) {
+menger.addsmesh = function(off,msh) {
 	var i,j;
 	// 4 verts
 	for (i=0;i<4;++i) {
 		for (j=0;j<3;++j) {
-			state18.smesh.verts.push(msh.verts[3*i+j]+off[j]);
+			menger.smesh.verts.push(msh.verts[3*i+j]+off[j]);
 		}
 	}
 	// 4 uvs
 	for (i=0;i<4;++i) {
 		for (j=0;j<2;++j) {
-			state18.smesh.uvs.push(msh.uvs[2*i+j]);
+			menger.smesh.uvs.push(msh.uvs[2*i+j]);
 		}
 	}
 	// 2 faces
 	for (i=0;i<2;++i) {
 		for (j=0;j<3;++j) {
-			state18.smesh.faces.push(msh.faces[3*i+j]+state18.curmeshidx);
+			menger.smesh.faces.push(msh.faces[3*i+j]+menger.curmeshidx);
 		}
 	}
-	state18.curmeshidx += 4;
+	menger.curmeshidx += 4;
 };
 
-state18.makesponge = function(level,f) {
+menger.makesponge = function(level,f) {
 	var i,j,k,f;
-	var m = state18.pow3[level];
-	state18.getones(level);
-	state18.clearsmesh();
+	var m = menger.pow3[level];
+	menger.getones(level);
+	menger.clearsmesh();
 	for (k=0;k<=m;++k) {
 		for (j=0;j<=m;++j) {
 			for (i=0;i<=m;++i) {
 //				for (f=0;f<6;++f) {
-					var off0 = [i+state18.off60[f][0], j+state18.off60[f][1], k+state18.off60[f][2]];
+					var off0 = [i+menger.off60[f][0], j+menger.off60[f][1], k+menger.off60[f][2]];
 					var off1 = [i,j,k];
-					var off2 = [i+state18.off62[f][0], j+state18.off62[f][1], k+state18.off62[f][2]];
+					var off2 = [i+menger.off62[f][0], j+menger.off62[f][1], k+menger.off62[f][2]];
 					
 					// pz
 					//off1 = [i,j,k];
 					//off2 = [i,j,k-1];
-					if (state18.issolid(off1) && !state18.issolid(off2))
-						state18.addsmesh(off0,state18.meshes6[f]);
+					if (menger.issolid(off1) && !menger.issolid(off2))
+						menger.addsmesh(off0,menger.meshes6[f]);
 	/*				
 					// nz
 					offp1 = [i,j,k+1];
@@ -308,16 +308,16 @@ state18.makesponge = function(level,f) {
 			}
 		}
 	}
-	return state18.smesh;
+	return menger.smesh;
 };
 
-state18.updatelevel = function() {
+menger.updatelevel = function() {
 	//if (myform)
-		selectsetidx(state18.sellev,state18.curlevel);
-		slidersetidx(state18.sellev2,state18.curlevel);
+		selectsetidx(menger.sellev,menger.curlevel);
+		slidersetidx(menger.sellev2,menger.curlevel);
 	//else
 	//	curlevel = 2;
-	printareadraw(state18.levelarea,"Level : " + state18.curlevel);
+	printareadraw(menger.levelarea,"Level : " + menger.curlevel);
 	var lev,f;
 	/*
 	var childcopy = roottree.children.slice();
@@ -325,22 +325,22 @@ state18.updatelevel = function() {
 		childcopy[i].glfree();
 		childcopy[i].unlinkchild();
 	} */
-	state18.roottree.glfree();
-	state18.roottree = new Tree2("roottree");
+	menger.roottree.glfree();
+	menger.roottree = new Tree2("roottree");
 	var simple = false;
 	if (simple) {
 		var tree1 = buildprism("aprism2",[.5,.5,.5],"maptestnck.png","tex"); // helper, builds 1 prism returns a Tree2
-		state18.roottree.linkchild(tree1);
+		menger.roottree.linkchild(tree1);
 		return;
 	}
-	lev = Math.floor(state18.curlevel);
+	lev = Math.floor(menger.curlevel);
 	//for (lev=cur;lev<=3;++lev) {
 		for (var g=0;g<6;++g) {
 			// a modelpart
 			var amod = Model2.createmodel("spongemod m" + lev + "s" + g);
 			if (amod.refcount == 1) {
 				//amod.setmesh(smeshtemplate);
-				var msh = state18.makesponge(lev,g);//,[0,-lev*1.5,0]);
+				var msh = menger.makesponge(lev,g);//,[0,-lev*1.5,0]);
 				amod.setmesh(msh);
 				//amod.settexture("maptestnck.png");
 				//amod.setshader("tex");
@@ -354,7 +354,7 @@ state18.updatelevel = function() {
 					//amod.addmat("texc","BridgeCon1.png",fp,2*fp);
 					amod.addmat("texc","maptestnck.png",fp,2*fp);
 				}
-				amod.mat.color = state18.colss6[g];
+				amod.mat.color = menger.colss6[g];
 				//amod.mat.color = [.75,.75,.75,1];
 				amod.commit();
 				//amod.settexture();
@@ -363,24 +363,24 @@ state18.updatelevel = function() {
 				//atree.trans = [0,(4-lev)*1.5,0];
 				//atree.trans = [-.45,-.45,0];
 				atree.trans = [-.5,-.5,0];
-				var scl = 1.0/state18.pow3[lev];
+				var scl = 1.0/menger.pow3[lev];
 				atree.scale = [scl,scl,scl];
 				//pendpce0.rotvel = [.1,.5,0];
 				//pendpce0.flags |= treeflagenums.ALWAYSFACING;
-				state18.roottree.linkchild(atree);
+				menger.roottree.linkchild(atree);
 			}
 		}
 	//}
 };
 
-state18.sliderCallback = function(val) {
+menger.sliderCallback = function(val) {
 	//paslider.settext(val.value);
 	//printareadraw(paslider,val.value);
-	state18.curlevel = val.value;
-	state18.updatelevel();
+	menger.curlevel = val.value;
+	menger.updatelevel();
 };
 
-state18.load = function() {
+menger.load = function() {
 	//if (!gl)
 	//	return;
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -388,43 +388,43 @@ state18.load = function() {
 	preloadimg("fortpoint/BridgeCon1.png");
 };
 
-state18.makeLevelSelect = function() {
+menger.makeLevelSelect = function() {
 	var ret = [];
 	var i;
-	for (i=0;i<=state18.maxlevel;++i) {
+	for (i=0;i<=menger.maxlevel;++i) {
 		var str = "Level " + i;
 		ret.push(str);
 	}
 	return ret;
 };
 
-state18.init = function() {
+menger.init = function() {
 //	gl_mode(true);
 
-state18.pow3 = [1,3,9,27,81,243,729];
+menger.pow3 = [1,3,9,27,81,243,729];
 
-	state18.curlevel = 2; // actually 2
+	menger.curlevel = 2; // actually 2
 //	if (!gl)
 //		return;
-	logger("entering webgl state18\n");
+	logger("entering webgl menger\n");
 	
 	// build the scene
-	state18.roottree = new Tree2("root");
+	menger.roottree = new Tree2("root");
 	
 	
 	// ui
 	setbutsname('menger');
-	state18.levelarea = makeaprintarea('level: ');
-	makeabut("lower level",null,state18.lesslevel);
-	makeabut("higher level",null,state18.morelevel);
+	menger.levelarea = makeaprintarea('level: ');
+	makeabut("lower level",null,menger.lesslevel);
+	makeabut("higher level",null,menger.morelevel);
 	//if (myform)
-	var selstr = state18.makeLevelSelect();
-	state18.sellev = makeaselect(selstr,state18.selectlevel);
+	var selstr = menger.makeLevelSelect();
+	menger.sellev = makeaselect(selstr,menger.selectlevel);
 	//sellev = makeaselect(["Level 0","Level 1","Level 2","Level 3","Level 4"],selectlevel);
-	state18.sellev2 = makeaslider(0, state18.maxlevel, state18.curlevel, state18.sliderCallback);
+	menger.sellev2 = makeaslider(0, menger.maxlevel, menger.curlevel, menger.sliderCallback);
 	//paslider = makeaprintarea("slider output");
 	//printareadraw(paslider,sellev2.value);
-	state18.updatelevel();
+	menger.updatelevel();
 	
 /*	var tre = buildplanexy("testortho",Math.SQRT2,Math.SQRT2,"panel.jpg","tex");
 	tre.trans = [0,0,.5];
@@ -445,13 +445,13 @@ state18.pow3 = [1,3,9,27,81,243,729];
 	//mainvp.far = 1.75;
 };
 
-state18.proc = function() {
+menger.proc = function() {
 //	if (!gl)
 //		return;
 //    gl.clearColor(.25,.25,0,1);                      // Set clear color to yellow, fully opaque
 //    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	state18.roottree.proc();
+	menger.roottree.proc();
 	doflycam(mainvp); // modify the trs of the vp
 	
 	//pendpce0.trans = [0,0,0];
@@ -459,21 +459,21 @@ state18.proc = function() {
 	//mainvp.trans[0] += 1;
 	beginscene(mainvp);
 	//mainvp.trans[0] -= 1;
-	state18.roottree.draw();
+	menger.roottree.draw();
 	//endscene();
 };
 
-state18.exit = function() {
+menger.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
-	state18.roottree.log();
+	menger.roottree.log();
 	logrc();
 	logger("after roottree glfree\n");
-	state18.roottree.glfree();
+	menger.roottree.glfree();
 	logrc();
-	state18.roottree = null;
-	logger("exiting webgl state18\n");
+	menger.roottree = null;
+	logger("exiting webgl menger\n");
 	clearbuts('menger');
 	//mainvp.isortho = false;
 };
