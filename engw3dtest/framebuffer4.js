@@ -161,7 +161,7 @@ framebuffer4.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 	preloadimg("../common/sptpics/Bark.png");
-	preloadimg("../common/sptpics/smallfont.png");
+	preloadimg("../common/sptpics/fontsmall.png");
 	preloadimg("../common/sptpics/xpar.png");
 };
 
@@ -278,7 +278,7 @@ framebuffer4.init = function() {
 	
 	// build pixel perfect scene
 	// build pixel perfect font model and tree for screen output
-    framebuffer4.fontmodel = new ModelFont("pp model","smallfont.png","font2c",8,8,100,100);
+    framebuffer4.fontmodel = new ModelFont("pp model","fontsmall.png","font2c",8,8,100,100);
     framebuffer4.fontmodel.mat.fcolor = [0,1,0,1];
     framebuffer4.fontmodel.mat.bcolor = [0,0,0,1];
     framebuffer4.fontmodel.flags |= modelflagenums.NOZBUFFER; // always in front when drawn

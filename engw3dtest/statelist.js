@@ -13,6 +13,7 @@ var statelist = [
 	state8, // many, tree level, test web sockets
 	multiplayer, // test out multiplayer stuff
 
+	testTerminal, // refactor Terminal class
 	race_lobby, // more refined multiplayer stuff
 	race_lobby_standalone,
 	race_sentgo,

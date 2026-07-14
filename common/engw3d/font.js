@@ -21,7 +21,7 @@ function ModelFont(aname, fontname, shadname, cw, ch, maxcols, maxrows, wrap) {
 	this.refcount = 1;
 	//this.name = aname;
 	//this.mat = {}; // uniform materials, all user defined
-	this.flags = 0;
+	//this.flags = 0;
 	//this.texflags = globaltexflags;
 	refcountmodellist[aname] = this;
 // reference counter set
@@ -299,6 +299,14 @@ ModelFont.prototype.newdup = function() {
 		return ret;
 	}
 };
+
+ModelFont.prototype.changeFont = function(fontname) {
+	if (this.reftextures[0]) {
+		this.reftextures[0].glfree();
+	}
+	this.texturenames[0] = fontname;
+	this.reftextures[0] = Texture.createtexture(this.texturenames[0]); 
+}
 
 ModelFont.prototype.log = function() {
 	Model.prototype.log.call(this);

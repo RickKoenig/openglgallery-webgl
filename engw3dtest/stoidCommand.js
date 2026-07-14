@@ -32,7 +32,7 @@ sc.StoidMode = null;
 
 // load these before init
 stoidCommand.load = function() {
-	preloadimg("../common/sptpics/smallfont.png");
+	preloadimg("../common/sptpics/fontsmall.png");
 };
 
 stoidCommand.calcscale = function(bm) {
@@ -179,7 +179,7 @@ sc.init = function() {
 	sc.mycirc = new Bitmap32(32, 32, 0); // ,C32BLACK);
 	sc.mycirc.clipCircle(16, 16, 3, C32MAGENTA);
 
-	var animageF = preloadedimages["smallfont.png"];
+	var animageF = preloadedimages["fontsmall.png"];
 	stoidCommand.B32Sfont = new Bitmap32(animageF);
 	
 	stoidCommand.datatexd = DataTexture.createtexture("datatex",stoidCommand.B32S);

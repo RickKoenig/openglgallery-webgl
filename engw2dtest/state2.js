@@ -25,7 +25,7 @@ state2.proc = function() {
 	//x = 100;
 	//y = 100;
 	sprite_drawfont(x,y    ,"fontbiggreen.png","Hello World!\nABC\nDEF\nGHI");
-	sprite_drawfont(x,y+200,"smallfont.png"   ,"Hello World!\nABC\nDEF\nGHI");
+	sprite_drawfont(x,y+200,"fontsmall.png"   ,"Hello World!\nABC\nDEF\nGHI");
  
 	//sprite_setscale(1,1);
 	sprite_setscale(.5,.5);

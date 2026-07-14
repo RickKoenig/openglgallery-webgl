@@ -235,8 +235,8 @@ debprint.resize = function() {
 debprint.init = function() {
 	// get size of texture
 	var tex = Texture.createtexture(debprint.fontname);
-	debprint.glyw = tex.width/8; // 16
-	debprint.glyh = tex.height/16; // 32
+	debprint.glyw = 16;//tex.width/8; // 16
+	debprint.glyh = 32;//tex.height/16; // 32
 	debprint.resize();
 	debprint.vp = {
 	   	// where to draw

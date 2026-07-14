@@ -69,7 +69,7 @@ caveexplorer.title = "Cave Explorer";
 caveexplorer.text = "WebGL: This has a way of exploring a tree node structure.\n";
 
 caveexplorer.load = function() {
-	preloadimg("../common/sptpics/font3_new.png");
+	preloadimg("../common/sptpics/font3.png");
 	preloadimg("fortpoint/Asphalt.png");
 	preloadtime(250,false); // test loading screen by just waiting around a bit
 };
@@ -145,7 +145,7 @@ function boxify(str) {
 function buildanodece(n) {
 	var fwid = 6;
 	var fhit = 12;
-    var fnode = new ModelFont("fnode","font3_new.png","tex",fwid,fhit,100,100,true);
+    var fnode = new ModelFont("fnode","font3.png","tex",fwid,fhit,100,100,true);
     fnode.setfudge(true); // fudge because we might me scaling this and want it to look right, no perfection
 	var tnode = new Tree2(n.id);
 	tnode.setmodel(fnode);
@@ -323,7 +323,7 @@ caveexplorer.init = function() {
 	roottree = new Tree2("root");
 
     // build test font and tree
-    ftest = new ModelFont("ftest","font3_new.png","tex",fwid,fhit,100,100,true);
+    ftest = new ModelFont("ftest","font3.png","tex",fwid,fhit,100,100,true);
     //testfont.setfudge(true); // keep raw for checkerboard, perfection
 	var ttest = new Tree2("ttest");
 	var depth = glc.clientHeight/2;

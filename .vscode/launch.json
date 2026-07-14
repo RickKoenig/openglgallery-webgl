@@ -7,6 +7,20 @@
         {
             "type": "chrome",
             "request": "launch",
+            "name": "terminal test",
+            "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=testTerminal",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "terminal test MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=testTerminal",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
             "name": "Run test fonts again MOBILE",
             "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=scratchfont",
             "webRoot": "${workspaceFolder}"

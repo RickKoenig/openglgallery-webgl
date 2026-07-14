@@ -120,7 +120,7 @@ lattice3d.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 	preloadimg("../common/sptpics/Bark.png");
-	preloadimg("../common/sptpics/smallfont.png");
+	preloadimg("../common/sptpics/fontsmall.png");
 	preloadimg("../common/sptpics/xpar.png");
 };
 

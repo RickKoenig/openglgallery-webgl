@@ -169,7 +169,7 @@ qcomp.load = function() {
 	preloadimg("../common/sptpics/font1.png");
 	preloadimg("../common/sptpics/font2.png");
 	preloadimg("../common/sptpics/font3.png");
-	preloadimg("../common/sptpics/smallfont.png");
+	preloadimg("../common/sptpics/fontsmall.png");
 	preloadimg("../common/sptpics/light.jpg");
 	
 	// load qcomp assets (gates icons etc.)
@@ -895,7 +895,7 @@ qcomp.init = function() {
 	// another 3D font for show console
 	var conscale = 1;
 	qcomp.flargeconsolemodel = new ModelFont("flarge","font0.png","font2c",8*conscale,16*conscale,1000,100,true);
-	//qcomp.flargeconsolemodel = new ModelFont("fmodel2","smallfont.png","font2c",8*conscale,8*conscale,1000,100,true);
+	//qcomp.flargeconsolemodel = new ModelFont("fmodel2","fontsmall.png","font2c",8*conscale,8*conscale,1000,100,true);
 	qcomp.flargeconsolemodel.flags |= modelflagenums.DOUBLESIDED;
 	qcomp.flargeconsoletree = new Tree2("fmodel2");
 	//var depth = glc.clientHeight/2;
@@ -906,7 +906,7 @@ qcomp.init = function() {
 	qcomp.flargeconsoletree.flags |= treeflagenums.DONTDRAWC;
 	
 	//qcomp.flargeconsolemodel = new ModelFont("fmodel2","font0.png","font2c",8*conscale,16*conscale,1000,100,true);
-	qcomp.fsmallconsolemodel = new ModelFont("fsmall","smallfont.png","font2c",8*conscale,8*conscale,1000,100,true);
+	qcomp.fsmallconsolemodel = new ModelFont("fsmall","fontsmall.png","font2c",8*conscale,8*conscale,1000,100,true);
 	qcomp.fsmallconsolemodel.flags |= modelflagenums.DOUBLESIDED;
 	qcomp.fsmallconsoletree = new Tree2("fmodel2");
 	//var depth = glc.clientHeight/2;

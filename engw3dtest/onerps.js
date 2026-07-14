@@ -8,7 +8,7 @@ onerps.text = "WebGL: This has a way of measuring time deltas.\n";
 onerps.procDelay = 10; // milli seconds
 
 onerps.load = function() {
-	preloadimg("../common/sptpics/font3_new.png");
+	preloadimg("../common/sptpics/font3.png");
 	preloadtime(250,false); // test loading screen by just waiting around a bit
 };
 
@@ -73,7 +73,7 @@ onerps.buildnumberblock = function(n) {
 // size of font
 	var fwid = 24;
 	var fhit = 48;
-    var fnode = new ModelFont("fnode","font3_new.png","tex",fwid,fhit,100,100,true);
+    var fnode = new ModelFont("fnode","font3.png","tex",fwid,fhit,100,100,true);
     fnode.setfudge(true); // fudge because we might me scaling this and want it to look right, no perfection, slightly bigger
 	var tnode = new Tree2("numbers");
 	tnode.setmodel(fnode); // set tnode's model to fnode

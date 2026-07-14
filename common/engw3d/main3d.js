@@ -322,8 +322,8 @@ function loadingproc() {
 	if (!loadingvp) {
 		// get size of texture
 		var tex = Texture.createtexture("font0.png");
-		var glyw = tex.width/8; // 16
-		var glyh = tex.height/16; // 32
+		var glyw = 16;//tex.width/8; // 16
+		var glyh = 32;//tex.height/16; // 32
 		var debprint_depth = glc.clientHeight/2;
 		//debprint_depth *= 2; // half pixel still looks good
 		loadingvp = {
