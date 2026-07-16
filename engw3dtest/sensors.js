@@ -53,19 +53,21 @@ sensors.init = function() {
 
 	// build terminal
 		const termParams1 = {
-		cols: 60,
-		rows: 24,
-		offx: 8,
-		offy: 8,
-		scale: 1.2
+		cols: 40,
+		rows: 16,
+		glyphy: 2,
+		//offx: 8 / 24,
+		offy: .25,
+		scale: 1 / 16,
+		center: true,
 	};
 	setbutsname('sensors');
 	makeabut("toggle stats", sensors.toggleStats);
-	sensors.terminal = new Terminal(sensors.roottree, [.1, 0, 0, 1], null, termParams1);
+	sensors.terminal = new Terminal(sensors.roottree, null, termParams1);
 	sensors.terminal.print("1\n12\n123\n1234\n12345\n123456\n1234567\n");
 
 	sensors.terminal.print("SECURE = " + window.isSecureContext);
-	sensors.terminal.doShow(false);
+	//sensors.terminal.doShow(false);
 
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [0,.25,.5,1];
@@ -80,7 +82,14 @@ sensors.init = function() {
 	debprint.addlist("arrow",[
 		"sensors.arrowDir"
 	]);
-
+	// use ndc extra system
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;
+	// use ndc extra system
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 };
 
 sensors.proc = function() {
@@ -106,6 +115,15 @@ sensors.proc = function() {
 };
 
 sensors.exit = function() {
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;
+	// reset extra ndc system, input
+	input.extraWidth = 1;
+	input.extraHeight = 1;
+	sensors.terminal = null;
 	// show current usage before cleanup
 	clearbuts('sensors');
 	sensors.terminal = null;

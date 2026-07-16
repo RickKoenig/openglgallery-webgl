@@ -4,16 +4,17 @@
 class Indicator {
 	// array of values to display left to right
 	constructor(roottree, num, mySlot) {
+		//num = 4;
 		const show = true;
 		// assume 60 FPS
 		this.seconds = 1;
 		this.lastSeconds = -1;
 		this.index = 0; // index into scaling ranges
-		this.sep = 420;
-		const depth = glc.clientHeight / 2;
-        let offy = -200;
-		const stepy = 20;
-        offy += depth;
+		this.sep = 1.2;
+		//const depth = glc.clientHeight / 2;
+        let offy = .55;
+		const stepy = .1;
+        //offy += depth;
 		this.num = num;
 		// alignment lines
 		const lin = buildplanexy("alin",1,1,null,"flat");
@@ -22,8 +23,8 @@ class Indicator {
 		}
 		lin.mod.mat.color = [0, 1, 0, 1];
         lin.mod.flags |= modelflagenums.NOZBUFFER;
-		lin.trans = [0, offy - this.num * stepy * .5 + stepy * .5, depth];
-		lin.scale = [.5, this.num * stepy * .5, 1];
+		lin.trans = [0, offy + (1 - num) * stepy * .5, 1];
+		lin.scale = [.005, this.num * stepy * .5, 1];
 		for (let i = -1; i <= 1; ++i) { // min, 0, max indicator lines
 			const alin = lin.newdup();
 			alin.trans[0] = i * this.sep;
@@ -37,14 +38,14 @@ class Indicator {
 		if (!show) {
 			dot.flags |= treeflagenums.DONTDRAWC;
 		}
-		dot.scale = [4, 4, 1];
+		dot.scale = [.0125, .0125, 1];
 		this.trees = Array(this.num);
 		for (let i = 0; i < this.num; ++i) {
 			const tre = dot.newdup();
 			if (i == mySlot) {
-				tre.scale = [8, 8, 1];
+				tre.scale = [.02, .02, 1];
 			}
-			tre.trans = [0, offy, depth];
+			tre.trans = [0, offy, 1];
 			offy -= stepy;
 			roottree.linkchild(tre);
 			this.trees[i] = tre;
@@ -52,27 +53,36 @@ class Indicator {
 		dot.glfree();
 
 		// labels
-		const termParams = {
-			cols: 10,
+		const termParamsL = {
+			cols: 8,
 			rows: 1,
-			offy: 32
+			scale: 1 / 16,
+			offx: -1.05,
+			offy: .7,
+			centerx: true
 		};
-		termParams.offx = 60;
-		termParams.scale = 2;
-		termParams.cols = 10;
-		this.termLeft = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		const termParamsM = {
+			cols: 8,
+			rows: 1,
+			scale: 1 / 10,
+			offy: .925,
+			centerx: true
+		};
+		const termParamsR = {
+			cols: 8,
+			rows: 1,
+			scale: 1 / 16,
+			offx: 1.05,
+			offy: .7,
+			centerx: true
+		};
+		this.termLeft = new Terminal(roottree, null, termParamsL);
 		this.termLeft.doShow(show);
 
-		termParams.offx = this.sep - 20;
-		termParams.scale = 4;
-		termParams.cols = 9;
-		this.termMiddle = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		this.termMiddle = new Terminal(roottree, null, termParamsM);
 		this.termMiddle.doShow(show);
 
-		termParams.offx = 2 * this.sep - 40;
-		termParams.scale = 2;
-		termParams.cols = 10;
-		this.termRight = new Terminal(roottree, [.1, 0, 0, 1], null, termParams);
+		this.termRight = new Terminal(roottree, null, termParamsR);
 		this.termRight.doShow(show);
 	}
 

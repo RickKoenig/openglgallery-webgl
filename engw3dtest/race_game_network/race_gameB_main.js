@@ -19,13 +19,14 @@ window.GameB = class RaceGameNetwork {
         const str = "Welcome";
         infofontmodel.print(str);
         // make pixel perfect
-        //ftree.trans = [0, 1, 0];
-        ftree.trans = [-glc.asp / 2, 1, 0];
-        ftree.scale = [
+        ftree.trans = [-1.3, 1, 0];
+        ftree.scale = [1 / 20, 1 / 20, 1];
+        //ftree.trans = [-glc.asp / 2, 1, 0];
+        /*ftree.scale = [
             16 * 2 / glc.clientHeight * .5 * 1.5,
             32 * 2 / glc.clientHeight * .5 * 1.5,
             1
-        ];
+        ];*/
         ftree.setmodel(infofontmodel);
         return ftree;
     };

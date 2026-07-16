@@ -57,23 +57,10 @@ testTerminal.init = function(intentData) {
 	// build parent
 	testTerminal.roottree = new Tree2("testTerminal root tree");
 
-	// terminal
-	const termParams1 = {
-		cols: 8,
-		rows: 4,
-		offx: -.75,
-		offy: .25,
-		scale: 1 / 16,
-		wrap: true
-	};
-	testTerminal.terminal = new Terminal2(testTerminal.roottree, [.1, .5, 0, 1], testTerminal.doCommand, termParams1);
-	testTerminal.terminal.setPrompt('$');
-	testTerminal.terminal.print("Welcome");
-		
 	// background
 	const backgnd = buildplanexy("backgnd", 1, 1, "maptestnck.png", "texc", 1, 1, 4, 4);
-	backgnd.mod.mat.color = [1, 1, 1, .25];
-	backgnd.mod.flags |= modelflagenums.HASALPHA | modelflagenums.NOZBUFFER;
+	backgnd.mod.mat.color = [1, 1, 1, 1];
+	backgnd.mod.flags |= modelflagenums.NOZBUFFER;
 	backgnd.trans = [0, 0, 1];
 	testTerminal.roottree.linkchild(backgnd);
 
@@ -90,11 +77,27 @@ testTerminal.init = function(intentData) {
 		, 40, 20
 		, true);
     testTerminalmodel.flags |= modelflagenums.NOZBUFFER; // always in front when drawn
-	testTerminalmodel.print("Mouse Over");
+	testTerminalmodel.print("Modelfont");
 	testTerminal.afonttree.setmodel(testTerminalmodel);
 	testTerminal.afonttree.trans = [-.75, .75, 1];
 	testTerminal.roottree.linkchild(testTerminal.afonttree);
 
+	// terminal
+	const termParams1 = {
+		cols: 8,
+		rows: 4,
+		//offx: -.75,
+		//offy: .25,
+		scale: 1 / 16,
+		centerx: true,
+		centery: true,
+		//center: true,
+		wrap: true
+	};
+	testTerminal.terminal = new Terminal(testTerminal.roottree, null, termParams1);
+	//testTerminal.terminal.setPrompt('$');
+	testTerminal.terminal.print("Welcome");
+		
 	// setup viewport stuff
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];

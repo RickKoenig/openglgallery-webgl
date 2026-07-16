@@ -25,6 +25,18 @@ race_gameState_standalone.load = function() {
 	//preloadtime(3000); // show loading screen for minimum time
 }
 
+// Frames ( 60 HZ ) to MM : SS : FF
+race_gameState_standalone.frameToTime = function(f) {
+	let s = Math.floor(f / 60);
+	f %= 60;
+	let m = Math.floor(s / 60);
+	s %= 60
+	const padF = f.toString().padStart(2, "0");
+	const padS = s.toString().padStart(2, "0");
+	const padM = m.toString().padStart(2, "0");
+	return padM + ":" + padS + ":" + padF;
+}
+
 race_gameState_standalone.init = function(sockInfo) { // network state tranfered from race_sentgo
 	logger("entering webgl race_gameState_standalone with game '" + sockInfo?.game + "'\n");
 	race_gameState_standalone.count = 0; // counter for this state
@@ -32,11 +44,7 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 
 	// the 3D viewport
 	mainvp = defaultviewport();
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;
 	mainvp.clearcolor = [.125, .125, .125, 1];
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
 
 	// ui
 	race_gameState_standalone.showHud = true;
@@ -59,33 +67,53 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 	race_gameState_standalone.mvc = new GameWarp_standalone(1 //room.slots.length
 		, race_gameState_standalone.mySlot, race_gameState_standalone.gameClass
 		, race_gameState_standalone.roottree
-		, ["player 0"]
+		, ["p 0"]
 	);
-	const termParams = {
-		cols: 39,
-		rows: 1,
-		offx: 40,
-		offy: 80,
-		scale: 2
-	};
-
 	if (race_gameState_standalone.showHud) {
-		termParams.offy = 120;
-		race_gameState_standalone.terminalFPS = new Terminal(race_gameState_standalone.roottree, [.2, .2, .1, .25], null, termParams);
+		//termParams.offy = 120;
+		const termParams = {
+			cols: 32,
+			rows: 1,
+			//offx: -1.3,
+			offy: .8,
+			scale: 1 / 16,
+			centerx: true
+		};
+
+		race_gameState_standalone.terminalFPS = new Terminal(race_gameState_standalone.roottree, null, termParams);
 		race_gameState_standalone.terminalFPS.doShow(true);
+		const termParamsM = {
+			cols: 8,
+			rows: 1,
+			scale: 1 / 10,
+			offy: .925,
+			centerx: true
+		};
+
+		race_gameState_standalone.termMiddle = new Terminal(race_gameState_standalone.roottree, null, termParamsM);
+		race_gameState_standalone.termMiddle.doShow(true);
 	}
-	race_gameState_standalone.toggleStats();
+	//race_gameState_standalone.toggleStats();
 
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[
 		"fpswanted",
 		"Timers.fpsavg",
 	]);
+	// use ndc extra system
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;
+	// use ndc extra system
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 };
 
 race_gameState_standalone.toggleStats = function() {
 	if (race_gameState_standalone.showHud) {
 		race_gameState_standalone.terminalFPS?.doShow(!race_gameState_standalone.terminalFPS.getShow());
+		race_gameState_standalone.termMiddle?.doShow(!race_gameState_standalone.termMiddle.getShow());
 	}
 }
 
@@ -112,6 +140,8 @@ race_gameState_standalone.proc = function() {
 	if (race_gameState_standalone.mvc.game.stepGhostModel) {
 		race_gameState_standalone.mvc.game.stepGhostModel(race_gameState_standalone.count);
 	}
+	race_gameState_standalone.termMiddle.clear();
+	race_gameState_standalone.termMiddle.print(race_gameState_standalone.frameToTime(race_gameState_standalone.count));
 	++race_gameState_standalone.count;
 
 	race_gameState_standalone.roottree.proc(); // do animations that don't effect players

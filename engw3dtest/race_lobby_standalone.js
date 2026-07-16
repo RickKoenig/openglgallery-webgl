@@ -43,16 +43,13 @@ race_lobby_standalone.init = function(intentData) {
 		rows: 4,
 		offx: 0,
 		offy: 0,
-		scale: 3
+		glyphy: 1,
+		scale: 1 / 8,
+		center: true
 	};
 	race_lobby_standalone.terminal 
-		= new Terminal(race_lobby_standalone.roottree, [.1, 0, 0, 1], race_lobby_standalone.doCommand, termParams1);
-	if (window.isMobile) {
+		= new Terminal(race_lobby_standalone.roottree, null, termParams1);
 		race_lobby_standalone.terminal.print("Welcome\nselect a game\nfrom the left panel.");
-	} else {
-		race_lobby_standalone.terminal.print("Welcome\nselect a game letter\n'a' thru '" 
-			+ race_lobby_standalone.lastGame + "'\nwhen in focus.");
-	}
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];

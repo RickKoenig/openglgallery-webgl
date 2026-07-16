@@ -53,18 +53,11 @@ race_sentgo.setupCallbacks = function(socker) {
 		const waitSec = 1;
 		race_sentgo.timeout = setTimeout(() => {
 			race_sentgo.keepSockInfo = true;
-			if (race_sentgo.gameType) {
-				changestate("race_gameState", {
-					sock: socker,
-					info: race_sentgo.sockerInfo,
-					game: race_sentgo.gameType
-				});
-			} else {
-				changestate("race_ingame", {
-					sock: socker,
-					info: race_sentgo.sockerInfo,
-				});
-			}
+			changestate("race_gameState", {
+				sock: socker,
+				info: race_sentgo.sockerInfo,
+				game: race_sentgo.gameType
+			});
 		},waitSec * 1000);
 	});
 }
@@ -96,7 +89,17 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 
     // build 3D scene
 	race_sentgo.roottree = new Tree2("race_sentgo root tree");
-	race_sentgo.terminal = new Terminal(race_sentgo.roottree, [.2, .1, .1, 1]);
+	// build terminal
+		const testParams1 = {
+		cols: 40,
+		rows: 15,
+		glyphy: 2,
+		//offx: 8 / 24,
+		//offy: .25,
+		scale: 1 / 16,
+		center: true,
+	};
+	race_sentgo.terminal = new Terminal(race_sentgo.roottree,null,testParams1);
 	
 	// do network stuff
 	if (sockInfo) {
@@ -150,6 +153,14 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 	// the 3D viewport
 	mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
+	// use ndc extra system
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;
+	// use ndc extra system
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 };
 
 race_sentgo.onresize = function() {
@@ -162,7 +173,7 @@ race_sentgo.proc = function() {
 	// proc
 	++race_sentgo.count;
 	race_sentgo.roottree.proc(); // probably does nothing
-	//doflycam(mainvp); // modify the trs of mainvp using flycam
+	doflycam(mainvp); // modify the trs of mainvp using flycam
 	// draw
 	beginscene(mainvp);
 	race_sentgo.roottree.draw();
@@ -174,6 +185,14 @@ race_sentgo.onresize = function() {
 }
 
 race_sentgo.exit = function() {
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;
+	// reset extra ndc system, input
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 	if (!race_sentgo.socker) {
 		return;
 	}

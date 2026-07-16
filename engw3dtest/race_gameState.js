@@ -218,11 +218,7 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 	// the 3D viewport
 	mainvp = defaultviewport();
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;//7 / 5;
 	mainvp.clearcolor = [.125, .125, .125, 1];
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
 
 	// ui
 	race_gameState.showHud = true;
@@ -234,8 +230,14 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 
 	race_gameState.roottree = new Tree2("race_gameState root tree");
 	if (race_gameState.showHud) {
-		race_gameState.terminal = new Terminal(race_gameState.roottree, [.2, .2, .1, 1]);
-		race_gameState.terminal.doShow(false);
+		const termparams = {
+			scale: 1 / 16,
+			offx: -1.25,
+			offy: .75
+		};
+		race_gameState.terminal = new Terminal(race_gameState.roottree, null, termparams);
+		race_gameState.terminal.doShow(false); // show game info
+		race_gameState.terminal.print("hi");
 	}
 
 	race_gameState.checksum = [];
@@ -327,11 +329,11 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 				+ race_gameState.sockerInfo.id + " slot = " + race_gameState.sockerInfo.slotIdx);
 		}
 		const termParams = {
-			cols: 39,
+			cols: 18,
 			rows: 1,
-			offx: 40,
-			offy: 80,
-			scale: 2
+			offx: -1.3,
+			offy: .9,
+			scale: 1 / 22
 		};
 		race_gameState.validFrames = 0;
 		race_gameState.validOffset = 0; // shift race_gameState.discon, to save memory
@@ -340,20 +342,28 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		race_gameState.discon = Array(room.slots.length);
 		if (race_gameState.showHud) {
 			if (race_gameState.doChecksum) {
-				race_gameState.termValid = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
+				race_gameState.termValid = new Terminal(race_gameState.roottree, null, termParams);
 				const showValidFrames = true;
 				race_gameState.termValid.print("VALID FRAMES");
 				race_gameState.termValid.doShow(showValidFrames);
 			}
-			termParams.offy = 120;
-			race_gameState.terminalFPS = new Terminal(race_gameState.roottree, [.2, .2, .1, .25], null, termParams);
+			//termParams.offy = 120;
+			const termParams2 = {
+				cols: 32,
+				rows: 1,
+				//offx: -1.3,
+				offy: .8,
+				scale: 1 / 16,
+				centerx: true
+			};
+			race_gameState.terminalFPS = new Terminal(race_gameState.roottree, null, termParams2);
 			race_gameState.terminalFPS.doShow(true);
 
 			race_gameState.indicatorTree = new Tree2("indicator");
 			race_gameState.roottree.linkchild(race_gameState.indicatorTree);
 			race_gameState.showPings = new Indicator(race_gameState.indicatorTree, room.slots.length, race_gameState.mySlot);
 		}
-		race_gameState.toggleStats();
+		//race_gameState.toggleStats();
 	}
 
 	// catchup parameters
@@ -372,6 +382,14 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 		"race_gameState.catchup2",
 		"race_gameState.catchupAccum"
 	]);
+	// use ndc extra system
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;
+	// use ndc extra system
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 };
 
 race_gameState.onresize = function() {

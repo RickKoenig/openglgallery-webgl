@@ -13,15 +13,15 @@ const testDisconnect = 0;
 // 2 race_sentgo init
 // 3 race_sentgo proc soon after
 // 4 race_sentgo exit
-// 5 race_ingame init
-// 6 race_ingame proc soon after
+// 5 race_gameState init
+// 6 race_gameState proc soon after
 const testNotReady = 0;
 // when to say ready
 // 0 no test, send ready in all inits
 // 1 race_sentgo don't send ready
 // 2 race_sentgo proc send ready soon after
-// 3 race_ingame don't send ready
-// 4 race_ingame proc send ready soon after
+// 3 race_gameState don't send ready
+// 4 race_gameState proc send ready soon after
 // socket id to try to break
 const testId = 1;
 // END test internet breakage
@@ -39,10 +39,6 @@ race_lobby.load = function() {
 
 race_lobby.gotoLobby = function() {
     changestate("race_lobby");
-}
-
-race_lobby.gotoFill = function() {
-    changestate("race_sentgo");
 }
 
 race_lobby.autoCommandMake = function() {
@@ -410,24 +406,34 @@ race_lobby.init = function(intentData) {
 	race_lobby.socker = null; // the client socket
 	race_lobby.sockerInfo = null; // info about the socket
 
-	const termParams1 = window.isMobile ? {
+	/*const termParams1 = window.isMobile ? {
 		cols: 30,
 		rows: 4,
 		offx: 0,
 		offy: 0,
 		scale: 3
-	} : {
-		cols: 120,
-		rows: 45,
-		offx: 8,
-		offy: 8
+	} : {*/
+	const termParams1 = {
+		cols: 30,
+		rows: 24,
+		offx: 0,
+		offy: 0,
+		scale: 2 / 25,
+		center: true
 	}
-	race_lobby.terminal = new Terminal(race_lobby.roottree, [.1, 0, 0, 1], race_lobby.doCommand, termParams1);
+	race_lobby.terminal = new Terminal(race_lobby.roottree, race_lobby.doCommand, termParams1);
 	race_lobby.terminal.print("Welcome");
 
 	mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
-	const waitSec = 1;
+	// use ndc extra system
+	mainvp.extraWidth = 4 / 3;
+	mainvp.extraHeight = 1;
+	// use ndc extra system
+	glc.extraWidth = mainvp.extraWidth;
+	glc.extraHeight = mainvp.extraHeight;
+	input.extraWidth = mainvp.extraWidth;
+	input.extraHeight = mainvp.extraHeight;
 };
 
 race_lobby.onresize = function() {
@@ -446,6 +452,14 @@ race_lobby.proc = function() {
 };
 
 race_lobby.exit = function() {
+	// reset extra ndc system, output
+	glc.extraHeight = 1;
+	glc.extraWidth = 1;
+	mainvp.extraWidth = 1;
+	mainvp.extraHeight = 1;
+	// reset extra ndc system, input
+	input.extraWidth = 1;
+	input.extraHeight = 1;
 	race_lobby.terminal = null;
 	clearTimeout(race_lobby.timeout);
 	if (race_lobby.keepSockInfo) {
