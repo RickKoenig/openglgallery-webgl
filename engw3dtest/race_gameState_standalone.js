@@ -93,7 +93,6 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 		race_gameState_standalone.termMiddle = new Terminal(race_gameState_standalone.roottree, null, termParamsM);
 		race_gameState_standalone.termMiddle.doShow(true);
 	}
-	//race_gameState_standalone.toggleStats();
 
 	// UI debprint menu
 	debprint.addlist("ingame test variables",[

@@ -243,9 +243,7 @@ function sprite_draw(x,y,picname) {
 	}
 	if (!img) { // get new image from server
 		img = document.createElement("img");
-		img.src = serverip + "../common/sptpics/" + picname;
-//				img.src = picname;
-		// img.src = serverip + "/" + picname;
+		img.src = "../common/sptpics/" + picname;
 		img.alt = picname;
 		img.className = "absol";
 		img.frame = frame;

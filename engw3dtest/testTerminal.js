@@ -86,17 +86,13 @@ testTerminal.init = function(intentData) {
 	const termParams1 = {
 		cols: 8,
 		rows: 4,
-		//offx: -.75,
-		//offy: .25,
 		scale: 1 / 16,
-		centerx: true,
-		centery: true,
-		//center: true,
+		center: true,
 		wrap: true
 	};
 	testTerminal.terminal = new Terminal(testTerminal.roottree, null, termParams1);
 	//testTerminal.terminal.setPrompt('$');
-	testTerminal.terminal.print("Welcome");
+	testTerminal.terminal.print("1Welcome\n2\n3\n4");
 		
 	// setup viewport stuff
 	mainvp = defaultviewport();	

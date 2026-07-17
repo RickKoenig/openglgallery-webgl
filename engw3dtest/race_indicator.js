@@ -11,10 +11,8 @@ class Indicator {
 		this.lastSeconds = -1;
 		this.index = 0; // index into scaling ranges
 		this.sep = 1.2;
-		//const depth = glc.clientHeight / 2;
         let offy = .55;
 		const stepy = .1;
-        //offy += depth;
 		this.num = num;
 		// alignment lines
 		const lin = buildplanexy("alin",1,1,null,"flat");
@@ -68,6 +66,13 @@ class Indicator {
 			offy: .925,
 			centerx: true
 		};
+		const termParamsP = {
+			cols: 4,
+			rows: 1,
+			scale: 1 / 16,
+			offy: .7,
+			centerx: true
+		};
 		const termParamsR = {
 			cols: 8,
 			rows: 1,
@@ -81,6 +86,10 @@ class Indicator {
 
 		this.termMiddle = new Terminal(roottree, null, termParamsM);
 		this.termMiddle.doShow(show);
+
+		this.termPing = new Terminal(roottree, null, termParamsP);
+		this.termPing.print("ping");
+		this.termPing.doShow(show);
 
 		this.termRight = new Terminal(roottree, null, termParamsR);
 		this.termRight.doShow(show);
@@ -151,4 +160,3 @@ class Indicator {
 		}
 	}
 }
-

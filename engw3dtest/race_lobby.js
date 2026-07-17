@@ -406,13 +406,6 @@ race_lobby.init = function(intentData) {
 	race_lobby.socker = null; // the client socket
 	race_lobby.sockerInfo = null; // info about the socket
 
-	/*const termParams1 = window.isMobile ? {
-		cols: 30,
-		rows: 4,
-		offx: 0,
-		offy: 0,
-		scale: 3
-	} : {*/
 	const termParams1 = {
 		cols: 30,
 		rows: 24,
@@ -435,11 +428,6 @@ race_lobby.init = function(intentData) {
 	input.extraWidth = mainvp.extraWidth;
 	input.extraHeight = mainvp.extraHeight;
 };
-
-race_lobby.onresize = function() {
-	console.log("onresize");
-	race_lobby.terminal.onresize();
-}
 
 race_lobby.proc = function() {
 	// proc

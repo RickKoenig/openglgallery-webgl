@@ -13,12 +13,6 @@ var inputevents = "inputevents = ";
 var logger_str = "logger = ";
 
 // globals
-//var serverip = ""; // engine sprites
-var serverip = ""; // engine sprites 'searcher' web server
-var serverip2 = ""; // engine sprites2 'apache' web server
-//var serverip = "http://23.123.140.155:8080/"; // engine sprites 'searcher' web server
-//var serverip2 = "http://23.123.140.155/"; // engine sprites2 'apache' web server
-
 var eoutstateman;
 var escroll;
 var eoutkeystate;

@@ -89,9 +89,9 @@ sc.doUPDown = function() {
 	var del = 0;
 	if (window.isMobile) {
 		if (input.mbut[Input.MLEFT]) {
-			if (input.my < glc.clientHeight/2) {
+			if (input.fmy >= 0) {
 				del--;
-			} else if (input.my >= glc.clientHeight/2) {
+			} else {
 				del++;
 			}
 		}
@@ -295,13 +295,6 @@ stoidCommand.proc = function() {
 	// reset extra ndc system, output
 	glc.extraHeight = 1;
 	glc.extraWidth = 1;
-};
-
-stoidCommand.onresize = function() {
-	logger("stoidCommand resize to " + glc.clientWidth + "," + glc.clientHeight + "\n");
-	if (stoidCommand.B32S) {
-		stoidCommand.ptree.scale = stoidCommand.calcscale(stoidCommand.B32S);
-	}
 };
 
 stoidCommand.exit = function() {

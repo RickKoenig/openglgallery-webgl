@@ -1,6 +1,6 @@
 'use strict';
 
-// very minimalist 3D state
+// test out mobile sensors, for now keep commented code until it's figured out
 var sensors = {}; // the 'sensors' state
 
 sensors.text = "WebGL: Most sensors 3D drawing";

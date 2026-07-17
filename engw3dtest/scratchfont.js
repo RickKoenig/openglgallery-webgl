@@ -68,7 +68,6 @@ scratchfont.morefont = function() {
 scratchfont.updatefont = function() {
 	const fontName = scratchfont.fonts[scratchfont.curfont]
 	printareadraw(scratchfont.fontarea,"Font" + scratchfont.curfont + ": " + fontName);
-	//printareadraw(scratchfont.fontarea,"Font : " + scratchfont.curfont + " " + fontName);
 	scratchfont.fontMod.changeFont(fontName);
 };
 
@@ -96,8 +95,6 @@ scratchfont.init = function() {
 // font 1
 	scratchfont.f1tree = new Tree2("ascratchfont");
 	var scratchfontmodel = new ModelFont("reffont", "font3.png", "tex"
-		//, 2 * 16 / glc.clientHeight
-		//, 2 * 32 / glc.clientHeight
 		, .0625, .0625
 		, 40, 20
 		, true);
@@ -146,22 +143,6 @@ scratchfont.proc = function() {
 	f3str += "\n\n";
 	let allAsciiString = Array.from({ length: 128 }, (_, i) => String.fromCharCode(i)).join('');
 	f3str += allAsciiString;
-	/*f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";
-	f3str += "abcdefgh\n";*/
 	scratchfont.f3tree.mod.print(f3str);
 	scratchfont.roottree.proc();
 	// draw

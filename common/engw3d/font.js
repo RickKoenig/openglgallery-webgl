@@ -19,10 +19,6 @@ function ModelFont(aname, fontname, shadname, cw, ch, maxcols, maxrows, wrap) {
 	}
 
 	this.refcount = 1;
-	//this.name = aname;
-	//this.mat = {}; // uniform materials, all user defined
-	//this.flags = 0;
-	//this.texflags = globaltexflags;
 	refcountmodellist[aname] = this;
 // reference counter set
 
@@ -41,22 +37,6 @@ function ModelFont(aname, fontname, shadname, cw, ch, maxcols, maxrows, wrap) {
 	this.maxrows = maxrows;
 	this.maxcols = maxcols;
 	this.wrap = wrap;
-/*	this.verts = new Float32Array([
-		-1.0,  1.0,  0.0,
-         1.0,  1.0,  0.0,
-        -1.0, -1.0,  0.0,
-         1.0, -1.0,  0.0
-	]);
-	this.uvs = new Float32Array([
-		0.0,  0.0,
-		1.0,  0.0,
-		0.0,  1.0,
-		1.0,  1.0,
-	]);
-	this.faces = new Uint16Array([
-    	0,1,2,
-    	3,2,1
-	]); */
 	this.nc = 0; // number of chars printing including \n and space
 	this.ng = 0; // number of glyphs printing, just printable chars
 	this.ngcap = 0; // number of glyphs alloced, same as max of glyphs printed
@@ -84,8 +64,6 @@ ModelFont.prototype.print = function(text) { // commit
 	var i;
 	if (!this.shader)
 		alert("missing shader '" + this.shadername + "' on model '" + this.name + "'");
-	//if (!this.verts)
-	//	alert("missing verts on model '" + this.name + "'");
 	this.nc = text.length;
 	var numVerts = 0;
 	var x = 0;
@@ -259,7 +237,6 @@ ModelFont.prototype.glfree = function() {
 	delete refcountmodellist[this.name];
 // end use reference counter
 	
-	
 	if (this.glverts) {
 		gl.deleteBuffer(this.glverts);
 		decnglbuffers();
@@ -291,7 +268,6 @@ ModelFont.prototype.newdup = function() {
 	} else {
 		logger("ModelFont newdup copy of " + this.name);
 		var newname = makeuniq(this.name);
-		//var scratchfontmodel = new ModelFont("reffont","font3.png","tex",2*16/glc.clientHeight,2*32/glc.clientHeight,64,8,true);
 		var ret = new ModelFont(newname,this.texturenames[0],
 		  this.shadername,this.cw,this.ch,
 		  this.maxcols,this.maxrows,this.wrap);

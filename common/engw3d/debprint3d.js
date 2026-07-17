@@ -25,13 +25,11 @@ debprint.recurseLevel = 0;
 
 debprint.list = {
 	main:[
-		//{name:"debprint",key:"vp",obj:debprint},
 		"glc.width",
 		"glc.height",
 		"glc.clientWidth",
 		"glc.clientHeight",
 		"debprint.vp",
-		//{name:"debprint.fontmodel",key:"fcolor",obj:debprint.fontmodel.mat},
 
 		// Main3d, for Timers
 		"frame",
@@ -59,9 +57,6 @@ debprint.list = {
 	globalmat:[
 		"globalmat",
 	],
-/*	input:[
-		"input",
-	], // too much data */
 	input:[
 		"input.mbut",
 		"input.mx",
@@ -101,8 +96,6 @@ debprint.removelist = function(name) {
 	delete debprint.list[name];
 };
 
-//("testvar from state10");
-//	("fontmat",fml);
 // take a primitive (not and object or array) and return a string
 debprint.nicestr = function(obj) {
 	if (obj === undefined || obj === null)
@@ -235,17 +228,12 @@ debprint.resize = function() {
 debprint.init = function() {
 	// get size of texture
 	var tex = Texture.createtexture(debprint.fontname);
-	debprint.glyw = 16;//tex.width/8; // 16
-	debprint.glyh = 32;//tex.height/16; // 32
+	debprint.glyw = 16;
+	debprint.glyh = 32;
 	debprint.resize();
 	debprint.vp = {
 	   	// where to draw
 		target:null,
-		// clear
-	//	clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-	//	clearcolor:[0,.75,1,1],
-		// orientation
-		//"trans":[-debprint.depth/2,0,-debprint.depth],
 		"trans":[0,0,-debprint.depth],
 		"rot":[0,0,0],
 		// frustum
@@ -275,17 +263,14 @@ debprint.init = function() {
 	debprint.curline = 0;
 	debprint.lastmwheel = input.mwheel;
 	var fml = [
-//		{name:"debprint.fontmodel",key:"mat",obj:debprint.fontmodel},
 		"debprint.fontmodel.mat",
-//		{name:"debprint.fontmodel.mat",key:"fcolor",obj:debprint.fontmodel.mat},
-//		{name:"debprint.fontmodel.mat",key:"bcolor",obj:debprint.fontmodel.mat},
 	];
 	debprint.addlist("debprintfontmat",fml);
 };
 
 debprint.buildstrarr = function() {
 	var i,j;
-	var g;// = debprint.list.length;
+	var g;
 	debprint.strarr = [];
 	for (g in debprint.list) {
 		var sublist = debprint.list[g];
@@ -319,10 +304,9 @@ debprint.proc = function() {
 	// toggle debprint
 	if (debprint.enable && input.key == debprint.debugkey) {
 		debprint.indebprint = !debprint.indebprint;
-		if (!debprint.indebprint)
+		if (!debprint.indebprint) {
 			debprint.fontmodel.print(".");
-
-		//input.key = 0;
+		}
 	}
 	//debprint.fonttree.proc(); // proc the tree, probably does nothing
 	// convert list to printed list of variables and their values
@@ -438,8 +422,6 @@ debprint.proc = function() {
 		}
 	}
 	// display step
-	//text += "\nstep = " + debprint.step.toFixed(5) + "\n";
-	//text += "\nstep = " + debprint.step.toPrecision(5) + "\n";
 	if (debprint.step >= .25)
 		text += "\n      step = " + debprint.step + "\n";
 	else
@@ -448,7 +430,6 @@ debprint.proc = function() {
 	
 	// checkerboard pattern
 	var testalign = String.fromCharCode(127,127);
-	//var testalign = String.fromCharCode(24,25);
 	for (j=0;j<10;++j) {
 		for (i=0;i<5;++i) {
 			text += testalign;

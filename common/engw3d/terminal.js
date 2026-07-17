@@ -1,6 +1,5 @@
 'use strict';
 
-// TODO: eliminate glc
 class Terminal {
     constructor(rootTree, cmdCallback, params) {
         let cols = 40;
@@ -30,32 +29,20 @@ class Terminal {
         if (centerx) offx -= cols * glyphx * scale / 2;
         if (centery) offy += rows * glyphy * scale / 2;
 
-        //const depth = glc.clientHeight / 2;
-        //const W2 = glc.clientWidth / 2
-        //offx += -W2;
-        //offy = -offy;
-        //offy += depth;
-
         this.backgnd = buildplanexy01(makeuniq("aplane2"), glyphx * cols, glyphy * rows, null, "flat", 1, 1);
         this.backgnd.mod.flags |= modelflagenums.NOZBUFFER ;
         this.backgnd.mod.mat.color = [0, 0, 0, 1];
-        //if (backColor[3] < .9) this.backgnd.mod.flags |= modelflagenums.HASALPHA;
         this.backgnd.trans = [offx, offy, 1];
         this.backgnd.scale = [scale, scale, scale];
-        //this.backgnd.flags |= treeflagenums.DONTDRAWC;
         rootTree.linkchild(this.backgnd);
         
         this.modelFont = new ModelFont(makeuniq("TerminalModelFont"), "font0.png", "tex"
             , glyphx, glyphy, cols, rows, wrap);
-        //this.modelFont.mat.fcolor = [1,1,0,1];
-		//this.modelFont.mat.bcolor = [0,1,0,.5];
-
         this.modelFont.flags |= modelflagenums.NOZBUFFER | modelflagenums.HASALPHA;
         this.treeFont = new Tree2("TerminalTreeFont");
         this.treeFont.setmodel(this.modelFont);
         this.treeFont.trans = [offx, offy, 1];
         this.treeFont.scale = [scale, scale, scale];
-        //this.treeFont.flags |= treeflagenums.DONTDRAWC;
         rootTree.linkchild(this.treeFont);
     
         this.maxX = this.modelFont.maxcols;
@@ -67,22 +54,10 @@ class Terminal {
         this.blink = 0;
         this.updateTime = 0;
         this.cursor = "_";
-        this.mainStr = '\n'.repeat(Math.max(0, this.maxY - 2));
-        //this.mainStr += "Welcome"; // results, etc.
+        this.mainStr = ""; // results, etc.
         this.maxRowCount = this.maxY - 1; // how many rows to keep in mainStr, reserve one row for cmdStr
         this.cmdStr = ""; // type in a command here, below mainStr
         this.#update(); // redraw
-
-/*
-        this.testbackgnd = buildplanexy01(makeuniq("testplane"), 1, 1, null, "flat", 1, 1);
-        this.testbackgnd.mod.flags |= modelflagenums.NOZBUFFER | modelflagenums.HASALPHA;
-        this.testbackgnd.mod.mat.color = [1,0,0,.5];
-        this.testbackgnd.trans = [-1, 1, 1];
-        this.testbackgnd.scale = [1, 1, 1];
-        //this.backgnd.flags |= treeflagenums.DONTDRAWC;
-        rootTree.linkchild(this.testbackgnd); */
-
-
     }
 
     // trim off the top to scroll the string up
@@ -139,7 +114,6 @@ class Terminal {
 
     print(str) {
         if (!str) return;
-        //console.log("Terminal print: '" + str + "'");
         str = doWordWrap(str, this.maxX);
         if (this.cmdCallback) {
             this.mainStr += '\n' + str + '\n';
@@ -166,7 +140,6 @@ class Terminal {
     }
 
     clear() {
-        //console.log(" ############### call clear");
         this.mainStr = "";
     }
 
@@ -201,12 +174,5 @@ class Terminal {
             this.updateTime = 0;
         }
         this.#update(); // redraw
-    }
-
-    onresize() {
-        /*
-        const depth = glc.clientHeight / 2;
-        this.backgnd.trans[2] = depth;
-        this.treeFont.trans[2] = depth;*/
     }
 };

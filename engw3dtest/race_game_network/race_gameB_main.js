@@ -21,12 +21,6 @@ window.GameB = class RaceGameNetwork {
         // make pixel perfect
         ftree.trans = [-1.3, 1, 0];
         ftree.scale = [1 / 20, 1 / 20, 1];
-        //ftree.trans = [-glc.asp / 2, 1, 0];
-        /*ftree.scale = [
-            16 * 2 / glc.clientHeight * .5 * 1.5,
-            32 * 2 / glc.clientHeight * .5 * 1.5,
-            1
-        ];*/
         ftree.setmodel(infofontmodel);
         return ftree;
     };
@@ -63,7 +57,6 @@ window.GameB = class RaceGameNetwork {
 
         // make game viewport
         this.gameViewPort = defaultviewport();
-        //this.gameViewPort.clearcolor = [1, 0, 0, 1];
         mainvp.clearflags = 0;
 
         // make the track
@@ -197,24 +190,22 @@ window.GameB = class RaceGameNetwork {
     // timeWarp
     stepModel(pInputs, frameNum/*, valid*/) {
         race_car_network.procCars(this.curModel, pInputs, this);
-        //if (valid) { // no predictions, final status
-            // update info about currently selected car
-            const curCarModel = this.curModel[this.curPlayerView];
-            const carStatus = curCarModel.discon ? "DISconnected" : "connected";
-            let slotName = this.slotNames[this.curPlayerView];
-            let modeStr = "";
-            if (slotName) {
-                modeStr = this.curPlayer == this.curPlayerView
-                ? ", mode local " + race_car_network.modeStrs[this.mode]
-                : ", mode " + carStatus;
-            } else {
-                slotName = "BOT";
-            }
-            this.#updateInfo("car " + this.curPlayerView + " < " + slotName + " >"
-                + modeStr
-                + ", speed " + (curCarModel.speed * 5000).toFixed(1)
-                + ", dir " + curCarModel.dir.toFixed(3));
-        //}
+        // update info about currently selected car
+        const curCarModel = this.curModel[this.curPlayerView];
+        const carStatus = curCarModel.discon ? "DISconnected" : "connected";
+        let slotName = this.slotNames[this.curPlayerView];
+        let modeStr = "";
+        if (slotName) {
+            modeStr = this.curPlayer == this.curPlayerView
+            ? ", mode local " + race_car_network.modeStrs[this.mode]
+            : ", mode " + carStatus;
+        } else {
+            slotName = "BOT";
+        }
+        this.#updateInfo("car " + this.curPlayerView + " < " + slotName + " >"
+            + modeStr
+            + ", speed " + (curCarModel.speed * 5000).toFixed(1)
+            + ", dir " + curCarModel.dir.toFixed(3));
     }
 
     // no timeWarp, mainly for animation

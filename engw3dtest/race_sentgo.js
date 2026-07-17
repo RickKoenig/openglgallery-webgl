@@ -9,7 +9,7 @@ race_sentgo.title = "race_sentgo";
 
 race_sentgo.gotoLobby = function() {
     changestate("race_lobby", "from SENTGO");
-}
+};
 
 race_sentgo.setupCallbacks = function(socker) {
 	// handle all events from SERVER
@@ -60,7 +60,7 @@ race_sentgo.setupCallbacks = function(socker) {
 			});
 		},waitSec * 1000);
 	});
-}
+};
 
 // load these before init
 race_sentgo.load = function() {
@@ -82,7 +82,6 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 	logger("entering webgl race_sentgo, gameType = '" + sockInfo?.gameType + "'\n");
 	race_sentgo.count = 0; // counter for this state
 
-
 	// ui
 	setbutsname('sentgo');
 	race_lobby.fillButton = makeabut("lobby", race_sentgo.gotoLobby);
@@ -94,8 +93,6 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 		cols: 40,
 		rows: 15,
 		glyphy: 2,
-		//offx: 8 / 24,
-		//offy: .25,
 		scale: 1 / 16,
 		center: true,
 	};
@@ -166,8 +163,7 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 race_sentgo.onresize = function() {
 	console.log("onresize");
 	race_sentgo.terminal.onresize();
-
-}
+};
 
 race_sentgo.proc = function() {
 	// proc
@@ -182,7 +178,7 @@ race_sentgo.proc = function() {
 race_sentgo.onresize = function() {
 	console.log("onresize");
 	race_lobby.terminal.onresize();
-}
+};
 
 race_sentgo.exit = function() {
 	// reset extra ndc system, output
