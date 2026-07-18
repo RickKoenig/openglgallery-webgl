@@ -417,7 +417,7 @@ race_lobby.init = function(intentData) {
 	race_lobby.terminal = new Terminal(race_lobby.roottree, race_lobby.doCommand, termParams1);
 	race_lobby.terminal.print("Welcome");
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	// use ndc extra system
 	mainvp.extraWidth = 4 / 3;

@@ -51,7 +51,7 @@ race_lobby_standalone.init = function(intentData) {
 		= new Terminal(race_lobby_standalone.roottree, null, termParams1);
 		race_lobby_standalone.terminal.print("Welcome\nselect a game\nfrom the left panel.");
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	mainvp.extraWidth = 4 / 3;
 	mainvp.extraHeight = 1;

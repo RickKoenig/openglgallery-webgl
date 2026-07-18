@@ -110,7 +110,7 @@ gridlines.init = function() {
 	var terrain = gridlines.buildterrain("some terrain",1,1,"maptestnck.png",startShader);
 	gridlines.roottree.linkchild(terrain);
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [0,0,1,1];
 	mainvp.trans = [.221, 1.35, -1.64];
 	mainvp.rot = [.896, -.245, 0];

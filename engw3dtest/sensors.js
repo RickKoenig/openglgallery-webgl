@@ -69,7 +69,7 @@ sensors.init = function() {
 	sensors.terminal.print("SECURE = " + window.isSecureContext);
 	//sensors.terminal.doShow(false);
 
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	mainvp.clearcolor = [0,.25,.5,1];
 
 	// sensor api remove and moved to bottom

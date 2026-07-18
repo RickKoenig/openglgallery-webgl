@@ -399,6 +399,11 @@ function doresize() {
 	//onresizestate(); // for now, don't call user resize, let main3d handle it instead
 }
 
+function stateInit() {
+	console.log("in state init !!!!!!!!!!!!!!!!");
+	mainvp = defaultviewport();
+}
+
 // enter full screen
 function gofullscreen() {
 	var didfullscreen = false;

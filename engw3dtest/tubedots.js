@@ -134,7 +134,7 @@ tubedots.init = function() {
 
 
 	// setup viewport
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	//mainvp.trans = [-2.1, 0, 0];
 };
 

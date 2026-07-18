@@ -58,6 +58,9 @@ function initstate() {
 	maindebugclear();
 	maindebugsetbefore(); // but debug before user
 	//showandgo("init" + state);
+	if (window.stateInit) {
+		stateInit();
+	}
 	showandgo(newstate.title, "init", passIntent);
 	maindebugsetafter(); // but debug after user
 	stateinited = true;

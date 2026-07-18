@@ -45,7 +45,7 @@ bargraph.init = function() {
 	bargraph.mod = bargraphTree.mod;
 	bargraph.mod.flags |= modelflagenums.DOUBLESIDED;
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [0,.5,0,1];
 	
 	bargraph.mod.mat.tile = bargraph.debvars.tile;

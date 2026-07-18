@@ -154,7 +154,7 @@ mandl.init = function() {
 	mandl.zoomNode.linkchild(mandl.plane);
 	mandl.roottree.linkchild(mandl.zoomNode);
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [0.05, .255, .505, 1.0];
 	
 	debprint.addlist("mandl variables, fps",[

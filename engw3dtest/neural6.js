@@ -336,7 +336,7 @@ neural6.init = function() {
 	neural6.treef2.setmodel(neural6.font2);
 	neural6.roottree.linkchild(neural6.treef2);
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 };
 

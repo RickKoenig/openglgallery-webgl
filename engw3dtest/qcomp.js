@@ -609,7 +609,7 @@ qcomp.init = function() {
 	qcomp.QState.test();
 	logger("entering webgl qcomp\n");
 	//qcomp.forceConsoleUpdate = false;
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearflags = gl.DEPTH_BUFFER_BIT; // clear depth buffer
 	mainvp.zoom = 1;
 	// initial qgate for the cursor
@@ -1290,5 +1290,5 @@ qcomp.exit = function() {
 	Tree2.treesort = true; // turn tree sorting back on, default
 	globalmat.alphacutoff = qcomp.alphacutoffsave;
 	
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 };

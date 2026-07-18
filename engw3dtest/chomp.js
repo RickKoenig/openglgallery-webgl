@@ -499,7 +499,7 @@ chomp.init = function() {
 	chomp.createTextInfo();
 	
 	// viewport
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	chomp.onresize(); // set textInfo trans a scale right
 	

@@ -1625,7 +1625,7 @@ physics3d.exit = function() {
 	//flyCamSpeed = ViewPort.mainvp.getFlyCamSpeed();
 	//ViewPort.mainvp = new ViewPort();
 	//mainvp.zoom = 1;
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	// show current usage
 	logger("before roottree glfree\n");
 	physics3d.roottree.log();

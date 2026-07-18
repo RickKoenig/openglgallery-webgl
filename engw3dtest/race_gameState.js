@@ -213,12 +213,12 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	CMath.enable();
 
 	// the 3D viewport
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	mainvp.clearcolor = [.125, .125, .125, 1];
 
 	// the 3D viewport
-	mainvp = defaultviewport();
-	mainvp.clearcolor = [.125, .125, .125, 1];
+	//mainvp = defaultviewport();
+	//mainvp.clearcolor = [.125, .125, .125, 1];
 
 	// ui
 	race_gameState.showHud = true;

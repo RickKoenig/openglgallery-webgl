@@ -148,7 +148,7 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 	}
 
 	// the 3D viewport
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
 	// use ndc extra system
 	mainvp.extraWidth = 4 / 3;

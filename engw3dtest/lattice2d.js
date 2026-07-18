@@ -128,7 +128,7 @@ lattice2d.init = function() {
 	lattice2d.oldspecpow = globalmat.specpow;
 	globalmat.specpow = 5000;
 	
-	mainvp = defaultviewport(); // VIEWPORT
+	//mainvp = defaultviewport(); // VIEWPORT
 	mainvp.trans = [0,0,5];
 	
 	//// build the scene
@@ -211,6 +211,6 @@ lattice2d.exit = function() {
 	logrc();
 	
 	// put everything the way it was
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	logger("exiting lattice 2d\n");
 };

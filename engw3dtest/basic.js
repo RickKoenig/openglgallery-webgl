@@ -55,7 +55,7 @@ basic.init = function() {
 		mainvp.clearcolor = [.75,.75,1,1];
 		backgnd.scale = [2.5, 2.5, 1];
 	} else {
-		mainvp = defaultviewport();
+		//mainvp = defaultviewport();
 		mainvp.clearcolor = [0,.5,1,1];
 	}
 	// use ndc extra system

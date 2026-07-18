@@ -95,7 +95,7 @@ testTerminal.init = function(intentData) {
 	testTerminal.terminal.print("1Welcome\n2\n3\n4");
 		
 	// setup viewport stuff
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	// use ndc extra system
 	mainvp.extraWidth = 4 / 3;

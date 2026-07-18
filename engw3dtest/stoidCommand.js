@@ -207,7 +207,7 @@ sc.init = function() {
 	}
 	stoidCommand.roottree.linkchild(stoidCommand.ptree);
 
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	mainvp.trans = [0,0,-2]; // for mouse test // move back some
 	stoidCommand.oldclearcolor = mainvp.clearcolor;
 	mainvp.clearcolor = F32DARKGRAY;

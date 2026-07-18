@@ -253,7 +253,7 @@ framebuffer4.init = function() {
 		ys:1
 	};
 
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	
 	//// build the off screen scene FB n
 	framebuffer4.roottreen = new Tree2("rootn");
@@ -495,7 +495,7 @@ framebuffer4.exit = function() {
 	logrc();
 	
 	// put everything the way it was
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 	
 	// remove custom debprint sections
 	debprint.removelist("framebuffer4 viewports");

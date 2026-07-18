@@ -602,7 +602,7 @@ nim.init = function() {
 	nim.createTextInfo();
 	
 	// viewport
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	nim.onresize(); // set textInfo trans a scale right
 	

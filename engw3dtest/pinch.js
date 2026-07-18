@@ -84,7 +84,7 @@ pinch.init = function() {
 	makeahr();
 	pinch.stateText = makeaprintarea('pinch zoom state');
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.2,.2,.2,1];
 	
 	// build parent
@@ -208,7 +208,7 @@ pinch.exit = function() {
 	pinch.roottree = null;
 	logger("exiting webgl pinch zoom 3D\n");
 
-	mainvp = defaultviewport();	
+	//mainvp = defaultviewport();	
 	// remove ui
 	clearbuts('pinch');
 };

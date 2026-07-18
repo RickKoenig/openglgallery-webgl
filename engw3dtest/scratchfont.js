@@ -113,7 +113,7 @@ scratchfont.init = function() {
 // test debug	
 	debprint.addlist("scratchfont_debug",["scratchfont.debvars"]);
 // default viewport
-	mainvp = defaultviewport();
+	//mainvp = defaultviewport();
 // ui
 	setbutsname('scratchfont');
 	scratchfont.fontarea = makeaprintarea('font: ');
