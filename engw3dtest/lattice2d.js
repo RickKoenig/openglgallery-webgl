@@ -128,7 +128,6 @@ lattice2d.init = function() {
 	lattice2d.oldspecpow = globalmat.specpow;
 	globalmat.specpow = 5000;
 	
-	//mainvp = defaultviewport(); // VIEWPORT
 	mainvp.trans = [0,0,5];
 	
 	//// build the scene
@@ -210,7 +209,5 @@ lattice2d.exit = function() {
 	// log resources used after glfree, should be empty (execpt for the global resources, fonts etc.)
 	logrc();
 	
-	// put everything the way it was
-	//mainvp = defaultviewport();
 	logger("exiting lattice 2d\n");
 };

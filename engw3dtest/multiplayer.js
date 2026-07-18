@@ -17,7 +17,6 @@ multiplayer.init = function() {
 	multiplayer.myId = undefined;
 	multiplayer.serverDisconneted = true; // only restart state when server disconnects, not the client
 	multiplayer.playerTrees = []; // active players
-	//mainvp = defaultviewport();
 	logger("entering webgl multiplayer with location host of " + location.host + "\n");
 	multiplayer.roottree = new Tree2("root");
 	multiplayer.treeMaster = buildprism("aprism", [.5, .5, .5], "panel.jpg", "texc");

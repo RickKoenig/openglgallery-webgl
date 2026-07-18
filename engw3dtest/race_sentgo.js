@@ -148,16 +148,9 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 	}
 
 	// the 3D viewport
-	//mainvp = defaultviewport();
 	mainvp.clearcolor = [.5,.5,1,1];
 	// use ndc extra system
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;
-	// use ndc extra system
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	glc.extraWidth = 4 / 3;
 };
 
 race_sentgo.onresize = function() {
@@ -181,14 +174,6 @@ race_sentgo.onresize = function() {
 };
 
 race_sentgo.exit = function() {
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
 	if (!race_sentgo.socker) {
 		return;
 	}

@@ -399,9 +399,12 @@ function doresize() {
 	//onresizestate(); // for now, don't call user resize, let main3d handle it instead
 }
 
+// call this before calling engw init state
 function stateInit() {
 	console.log("in state init !!!!!!!!!!!!!!!!");
 	mainvp = defaultviewport();
+	glc.extraWidth = 1;
+	glc.extraHeight = 1;
 }
 
 // enter full screen

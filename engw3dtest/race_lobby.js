@@ -417,16 +417,9 @@ race_lobby.init = function(intentData) {
 	race_lobby.terminal = new Terminal(race_lobby.roottree, race_lobby.doCommand, termParams1);
 	race_lobby.terminal.print("Welcome");
 
-	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	// use ndc extra system
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;
-	// use ndc extra system
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	glc.extraWidth = 4 / 3;
 };
 
 race_lobby.proc = function() {
@@ -440,14 +433,6 @@ race_lobby.proc = function() {
 };
 
 race_lobby.exit = function() {
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
 	race_lobby.terminal = null;
 	clearTimeout(race_lobby.timeout);
 	if (race_lobby.keepSockInfo) {

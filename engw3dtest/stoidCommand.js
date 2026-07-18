@@ -207,23 +207,16 @@ sc.init = function() {
 	}
 	stoidCommand.roottree.linkchild(stoidCommand.ptree);
 
-	//mainvp = defaultviewport();
 	mainvp.trans = [0,0,-2]; // for mouse test // move back some
 	stoidCommand.oldclearcolor = mainvp.clearcolor;
 	mainvp.clearcolor = F32DARKGRAY;
 	sc.fpswantedsave = fpswanted;
 	fpswanted = 30;
-	mainvp.extraWidth = sc.SWIDTH / sc.SHEIGHT;
-	mainvp.extraHeight = 1;
+	glc.extraWidth = sc.SWIDTH / sc.SHEIGHT;
 };
 
 stoidCommand.proc = function() {
 	// proc
-	// use ndc extra system
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
 	switch (sc.stoidMode) {
 	case sc.StoidModeE.PLAYING:
 		sc.B32S.clipRect(0, 0, sc.SWIDTH, sc.SHEIGHT, C32BLACK);
@@ -292,9 +285,6 @@ stoidCommand.proc = function() {
 	// draw
 	beginscene(mainvp);
 	stoidCommand.roottree.draw();
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
 };
 
 stoidCommand.exit = function() {
@@ -321,13 +311,4 @@ stoidCommand.exit = function() {
 	logger("exiting webgl stoidCommand\n");
 	mainvp.clearcolor = stoidCommand.oldclearcolor;
 	fpswanted = sc.fpswantedsave;
-
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
 };

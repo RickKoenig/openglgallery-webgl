@@ -131,11 +131,6 @@ tubedots.init = function() {
 	plane = tubedots.buildParticleMesh(tessx, tessy);
 	plane.trans = [2.1, 0, 0];
 	tubedots.roottree.linkchild(plane);
-
-
-	// setup viewport
-	//mainvp = defaultviewport();
-	//mainvp.trans = [-2.1, 0, 0];
 };
 
 tubedots.proc = function() {

@@ -1620,12 +1620,7 @@ physics3d.exit = function() {
 	
 	// reset main ViewPort to default
 	physics3d.viewPos = mainvp.trans.slice();
-	//viewRot = Arrays.copyOf(ViewPort.mainvp.rot,3);
 	physics3d.viewRot = mainvp.rot.slice();
-	//flyCamSpeed = ViewPort.mainvp.getFlyCamSpeed();
-	//ViewPort.mainvp = new ViewPort();
-	//mainvp.zoom = 1;
-	//mainvp = defaultviewport();
 	// show current usage
 	logger("before roottree glfree\n");
 	physics3d.roottree.log();
@@ -1642,7 +1637,6 @@ physics3d.exit = function() {
 	logger("worldobjectscene\n");
 	physics3d.worldobjectsscene.log();
 	physics3d.freeworldobjects();
-	//freephysicsobjects(); // JAVA will do automatically
 	for (i=0;i<physics3d.MAXWORLDOBJECTS;i++)
 		physics3d.objkindstr[i] = "";
 	physics3d.roottree.glfree();

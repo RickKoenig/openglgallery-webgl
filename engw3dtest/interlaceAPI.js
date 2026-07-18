@@ -54,24 +54,6 @@ function Interleave3D() {
 	}
 	globaltexflags &= ~textureflagenums.NOFLOAT;
 	
-/*
-	// build some viewports
-	Interleave3D.frametexnvp = {
-		target:Interleave3D.frametexn[0],
-		clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-		clearcolor:[0,1,0,.9375],
-		"trans":[0,0,5],
-		"rot":[0,0,0],
-		near:.002,
-		far:10000.0,
-		zoom:1,
-		asp:glc.asp,
-		xo:0,
-		yo:0,
-		xs:1,
-		ys:1
-	}; */
-	
 	Interleave3D.interleaveVP = defaultviewport();
 	
 	// build the main screen scene last so we can hook up render targets, depends on FB 1

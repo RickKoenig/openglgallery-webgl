@@ -532,8 +532,6 @@ window.GameC = class GameC {
 
     // no timeWarp, mainly for animation
     stepGhostModel(frameNum) {
-        input.extraWidth = mainvp.extraWidth;
-        input.extraHeight = mainvp.extraHeight;
         const ang = this.ghostModel.angle;
         const fpsw = fpswanted <= 0 ? 1 : fpswanted;
         this.ghostModel.angle += 2 * Math.PI / 10 / fpsw;
@@ -590,7 +588,5 @@ window.GameC = class GameC {
     }
 
     exit() {
-        input.extraWidth = 1;
-        input.extraHeight = 1;
     }
 }

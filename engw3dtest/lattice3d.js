@@ -133,7 +133,6 @@ lattice3d.init = function() {
 	lattice3d.oldspecpow = globalmat.specpow;
 	globalmat.specpow = 5000;
 	
-	//mainvp = defaultviewport(); // VIEWPORT
 	mainvp.trans = [0,0,5];
 	//mainvp.clearcolor = F32RED;
 	
@@ -222,7 +221,5 @@ lattice3d.exit = function() {
 	// log resources used after glfree, should be empty (execpt for the global resources, fonts etc.)
 	logrc();
 	
-	// put everything the way it was
-	//mainvp = defaultviewport();
 	logger("exiting lattice 2d\n");
 };

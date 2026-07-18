@@ -44,14 +44,11 @@ bargraph.init = function() {
 	bargraph.roottree.linkchild(bargraphTree);
 	bargraph.mod = bargraphTree.mod;
 	bargraph.mod.flags |= modelflagenums.DOUBLESIDED;
-
-	//mainvp = defaultviewport();	
-	mainvp.clearcolor = [0,.5,0,1];
-	
 	bargraph.mod.mat.tile = bargraph.debvars.tile;
 
-	debprint.addlist("bargraph_debug",["bargraph.debvars"]);
+	mainvp.clearcolor = [0,.5,0,1];
 
+	debprint.addlist("bargraph_debug",["bargraph.debvars"]);
 };
 
 bargraph.proc = function() {

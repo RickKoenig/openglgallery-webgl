@@ -111,8 +111,6 @@ function gl_init() {
 	}
 
 	logger("yes some webgl\n");
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
 	// set gl wid,hit
 // set gl viewport and asp
 	checkglerror("after gl_mid()");

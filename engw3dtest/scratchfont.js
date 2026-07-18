@@ -112,8 +112,6 @@ scratchfont.init = function() {
 	scratchfont.roottree.linkchild(scratchfont.f3tree);
 // test debug	
 	debprint.addlist("scratchfont_debug",["scratchfont.debvars"]);
-// default viewport
-	//mainvp = defaultviewport();
 // ui
 	setbutsname('scratchfont');
 	scratchfont.fontarea = makeaprintarea('font: ');
@@ -121,9 +119,7 @@ scratchfont.init = function() {
 	makeabut("next font",null,scratchfont.morefont);
 	scratchfont.curfont = 0;
 	scratchfont.updatefont();
-	mainvp.extraWidth = 4 / 3;
 	glc.extraWidth = 4 / 3;
-	input.extraWidth = 4 / 3;
 };
 
 scratchfont.proc = function() {
@@ -162,7 +158,4 @@ scratchfont.exit = function() {
 	logrc();
 	scratchfont.roottree = null;
 	logger("exiting webgl scratchfont\n");
-
-	glc.extraWidth = 1;
-	input.extraWidth = 1;
 };

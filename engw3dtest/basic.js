@@ -55,17 +55,10 @@ basic.init = function() {
 		mainvp.clearcolor = [.75,.75,1,1];
 		backgnd.scale = [2.5, 2.5, 1];
 	} else {
-		//mainvp = defaultviewport();
 		mainvp.clearcolor = [0,.5,1,1];
 	}
 	// use ndc extra system
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;
-	// use ndc extra system
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	glc.extraWidth = 4 / 3;
 };
 
 basic.proc = function() {
@@ -86,15 +79,6 @@ basic.proc = function() {
 };
 
 basic.exit = function() {
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
-
 	clearbuts('basic');
 	// show current usage before cleanup
 	basic.roottree.log();

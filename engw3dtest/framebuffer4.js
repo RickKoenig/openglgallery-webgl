@@ -253,8 +253,6 @@ framebuffer4.init = function() {
 		ys:1
 	};
 
-	//mainvp = defaultviewport();
-	
 	//// build the off screen scene FB n
 	framebuffer4.roottreen = new Tree2("rootn");
 	framebuffer4.roottreen.trans = [0,0,5];
@@ -493,9 +491,6 @@ framebuffer4.exit = function() {
 
 	// log resources used after glfree, should be empty (execpt for the global resources, fonts etc.)
 	logrc();
-	
-	// put everything the way it was
-	//mainvp = defaultviewport();
 	
 	// remove custom debprint sections
 	debprint.removelist("framebuffer4 viewports");

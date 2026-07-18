@@ -33,7 +33,6 @@ basic4textures.init = function() {
 
 	basic4textures.roottree.linkchild(basic4textures.planexy);
 
-	//mainvp = defaultviewport();
 	basic4textures.onresize();
 };
 

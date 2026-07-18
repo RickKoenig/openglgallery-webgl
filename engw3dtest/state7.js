@@ -140,5 +140,4 @@ state7.exit = function() {
 	logrc();
 	state7.roottree = null;
 	logger("exiting webgl state7\n");
-	//mainvp = defaultviewport();
 };

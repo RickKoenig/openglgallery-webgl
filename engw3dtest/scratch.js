@@ -1208,8 +1208,7 @@ scratch.init = function() {
 	mainvp.rot = [0,0,0]; // flycam
 
 	// use ndc extra system
-	mainvp.extraWidth = 7 / 5;
-	mainvp.extraHeight = 1;
+	glc.extraWidth = 7 / 5;
 
 	// ui, realtime log update
 	setbutsname('scratch');
@@ -1238,11 +1237,6 @@ scratch.init = function() {
 
 scratch.proc = function() {
 	// proc
-	// use ndc extra system
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
 	scratch.updateinfo();
 	if (scratch.test1 && input.mbut[0]) {
         scratch.dir[0] = input.fmx;
@@ -1283,9 +1277,6 @@ scratch.proc = function() {
 	if (scratch.frame >= Math.PI*2) {
 		scratch.frame -= Math.PI*2;
 	}
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
 };
 
 scratch.onresize = function() {
@@ -1296,14 +1287,6 @@ scratch.onresize = function() {
 };
 
 scratch.exit = function() {
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
 	if (scratch.datatexd) {
 		scratch.datatexd.glfree();
 		scratch.datatexd = null;
@@ -1311,7 +1294,6 @@ scratch.exit = function() {
 	scratch.bm32 = null;
 	debprint.removelist("scratch_debug");
 	// show current usage
-	//debprint.removelist("scratch");
 	scratch.roottree.log();
 	logrc();
 	logger("after roottree glfree\n");
@@ -1322,9 +1304,6 @@ scratch.exit = function() {
 	scratch.roottree = null;
 	logger("exiting webgl scratch\n");
 	clearbuts('scratch');
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
 };
 
 

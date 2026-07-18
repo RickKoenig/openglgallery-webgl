@@ -69,7 +69,6 @@ sensors.init = function() {
 	sensors.terminal.print("SECURE = " + window.isSecureContext);
 	//sensors.terminal.doShow(false);
 
-	//mainvp = defaultviewport();
 	mainvp.clearcolor = [0,.25,.5,1];
 
 	// sensor api remove and moved to bottom
@@ -83,13 +82,7 @@ sensors.init = function() {
 		"sensors.arrowDir"
 	]);
 	// use ndc extra system
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;
-	// use ndc extra system
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	glc.extraWidth = 4 / 3;
 };
 
 sensors.proc = function() {
@@ -115,14 +108,6 @@ sensors.proc = function() {
 };
 
 sensors.exit = function() {
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
 	sensors.terminal = null;
 	// show current usage before cleanup
 	clearbuts('sensors');

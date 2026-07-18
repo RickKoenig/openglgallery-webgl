@@ -95,22 +95,15 @@ testTerminal.init = function(intentData) {
 	testTerminal.terminal.print("1Welcome\n2\n3\n4");
 		
 	// setup viewport stuff
-	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
 	// use ndc extra system
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;
-	// use ndc extra system
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
-	input.extraWidth = mainvp.extraWidth;
-	input.extraHeight = mainvp.extraHeight;
+	glc.extraWidth = 4 / 3;
 };
 
 testTerminal.onresize = function() {
 	console.log("onresize");
 	testTerminal.terminal.onresize();
-}
+};
 
 testTerminal.proc = function() {
 	// proc
@@ -126,14 +119,6 @@ testTerminal.proc = function() {
 };
 
 testTerminal.exit = function() {
-	// reset extra ndc system, output
-	glc.extraHeight = 1;
-	glc.extraWidth = 1;
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	// reset extra ndc system, input
-	input.extraWidth = 1;
-	input.extraHeight = 1;
 	testTerminal.terminal = null;
 	clearTimeout(testTerminal.timeout);
 	// show current usage before cleanup

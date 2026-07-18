@@ -51,10 +51,8 @@ race_lobby_standalone.init = function(intentData) {
 		= new Terminal(race_lobby_standalone.roottree, null, termParams1);
 		race_lobby_standalone.terminal.print("Welcome\nselect a game\nfrom the left panel.");
 
-	//mainvp = defaultviewport();	
 	mainvp.clearcolor = [.5,.5,1,1];
-	mainvp.extraWidth = 4 / 3;
-	mainvp.extraHeight = 1;
+	glc.extraWidth = 4 / 3;
 };
 
 race_lobby_standalone.onresize = function() {
@@ -63,8 +61,6 @@ race_lobby_standalone.onresize = function() {
 }
 
 race_lobby_standalone.proc = function() {
-	glc.extraWidth = mainvp.extraWidth;
-	glc.extraHeight = mainvp.extraHeight;
 	if (input.key >= 'a'.charCodeAt(0) && input.key <= race_lobby_standalone.lastGame.charCodeAt(0)) {
 		race_lobby_standalone.autoCommand1P.call(this, String.fromCharCode(input.key));
 	}
@@ -87,8 +83,4 @@ race_lobby_standalone.exit = function() {
 	race_lobby_standalone.roottree = null;
 	clearbuts('console');
 	logger("exiting webgl race_lobby_standalone\n");
-	mainvp.extraWidth = 1;
-	mainvp.extraHeight = 1;
-	glc.extraWidth = 1;
-	glc.extraHeight = 1;
 };

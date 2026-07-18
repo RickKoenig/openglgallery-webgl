@@ -276,8 +276,6 @@ function defaultviewport() {
 		yo:0,
 		xs:1,
 		ys:1,
-		extraWidth:1,
-		extraHeight:1
 	};
 	return vp;
 }
@@ -310,8 +308,6 @@ function defaultorthoviewport() {
 		yo:0,
 		xs:1,
 		ys:1,
-		extraWidth:1,
-		extraHeight:1
 	};
 	return vpo;
 }
