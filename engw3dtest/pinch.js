@@ -31,11 +31,11 @@ pinch.load = function() {
 pinch.aspChanged = function() {
 	// resize quad depending on asps
 	// nothing // picture turned to square, picture y is matches screen y
-	// pinch.quad.scale = [mainvp.asp, 1, 1]; // square stretched to fill the full screen
-	if (mainvp.asp > pinch.picAsp) { // portrait, preserve Y, scrunch in X
+	// pinch.quad.scale = [glc.asp, 1, 1]; // square stretched to fill the full screen
+	if (glc.asp > pinch.picAsp) { // portrait, preserve Y, scrunch in X
 		pinch.quad.scale = [pinch.picAsp, 1,1 ]; // original picture asp y pic == y screen 
 	} else { // landscape, preserve X, scrunch in Y
-		pinch.quad.scale = [mainvp.asp, mainvp.asp/pinch.picAsp, 1]; // original picture asp x pic == x screen 
+		pinch.quad.scale = [glc.asp, glc.asp/pinch.picAsp, 1]; // original picture asp x pic == x screen 
 		
 	}
 };
@@ -139,20 +139,20 @@ pinch.proc = function() {
 	
 	// input for pinch zoom
 	//input.mx = 128;
-	if (mainvp.asp > pinch.picAsp) { // portrait
-		pinch.input.px = (1/pinch.picAsp)*mainvp.asp*input.mx/glc.clientWidth; // pivot point for scale, 0 to 1 across picture at scale 1
+	if (glc.asp > pinch.picAsp) { // portrait
+		pinch.input.px = (1/pinch.picAsp)*glc.asp*input.mx/glc.clientWidth; // pivot point for scale, 0 to 1 across picture at scale 1
 		pinch.input.py = input.my/glc.clientHeight;
-		pinch.input.px += (1 - (1/pinch.picAsp)*mainvp.asp)/2;
+		pinch.input.px += (1 - (1/pinch.picAsp)*glc.asp)/2;
 		//pinch.input.py += 0;
-		pinch.input.dx = (1/pinch.picAsp)*mainvp.asp*input.dmx/glc.clientWidth; // delta x
+		pinch.input.dx = (1/pinch.picAsp)*glc.asp*input.dmx/glc.clientWidth; // delta x
 		pinch.input.dy = input.dmy/glc.clientHeight;
 	} else { // landscape
 		pinch.input.px = input.mx/glc.clientWidth; // pivot point for scale, 0 to 1 across picture at scale 1
-		pinch.input.py = pinch.picAsp*input.my/mainvp.asp/glc.clientHeight;
+		pinch.input.py = pinch.picAsp*input.my/glc.asp/glc.clientHeight;
 		//pinch.input.px += 0;
-		pinch.input.py += (1 - (pinch.picAsp)/mainvp.asp)/2;
+		pinch.input.py += (1 - (pinch.picAsp)/glc.asp)/2;
 		pinch.input.dx = input.dmx/glc.clientWidth; // delta x
-		pinch.input.dy = pinch.picAsp*input.dmy/mainvp.asp/glc.clientHeight;
+		pinch.input.dy = pinch.picAsp*input.dmy/glc.asp/glc.clientHeight;
 	}
 	
 	// calculate pinch zoom from deltas and pivots
@@ -189,12 +189,12 @@ pinch.proc = function() {
 	beginscene(mainvp);
 	pinch.roottree.draw();
 };
-
+/*
 pinch.onresize = function() {
 	// mainvp's asp changes automatically
 	pinch.aspChanged();
 };
-
+*/
 pinch.exit = function() {
 	// show current usage before cleanup
 	pinch.roottree.log();

@@ -107,9 +107,11 @@ function procstate() {
 		checkglerror("end proc state");
 }
 
+/* maybe don't need to call this anymore
 function onresizestate() {
 		showandgo(state.title,"onresize");
 }
+*/
 
 function exitstate() {
 	//let durl = edrawarea.toDataURL();

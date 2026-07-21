@@ -14,7 +14,6 @@ sc.puzzcirc = null; // puzzle circles are drawn in this bitmap, left and right
 sc.mycirc = null; // magenta circle, my circle, up and down
 sc.SWIDTH = 320;
 sc.SHEIGHT = 200;
-sc.asp = sc.SWIDTH / sc.SHEIGHT;
 
 sc.level = null;
 sc.ypos = null;

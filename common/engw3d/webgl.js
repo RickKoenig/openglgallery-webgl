@@ -25,20 +25,6 @@ function gl_resize() {
 	glc.height = glc.clientHeight * gllores;
      // set asp
 	glc.asp = glc.clientWidth/glc.clientHeight;
-	// set gl viewport
-	//var xo = 0;
-	//var yo = 0;
-	var xs = 1;
-	var ys = 1;
-	if (window.mainvp) {
-		mainvp.asp = glc.asp;
-		//xo = mainvp.xo;
-		//yo = mainvp.yo;
-		xs = mainvp.xs;
-		ys = mainvp.ys;
-	}
-	gl.viewport(0, 0, xs*gl.drawingBufferWidth, ys*gl.drawingBufferHeight);
-	//gl.viewport(xo*gl.drawingBufferWidth, yo*gl.drawingBufferHeight, xs*gl.drawingBufferWidth, ys*gl.drawingBufferHeight);
 }
 
 function gl_preinit() {

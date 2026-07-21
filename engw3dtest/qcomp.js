@@ -2,7 +2,7 @@
 // 615 lines before remove old code and add new comments
 // 268 after
 var qcomp = {}; // the state, load this file first
-qcomp.hidden = window.isMobile; // can't be selected in the engine UI when in mobile mode
+qcomp.hidden = false;//window.isMobile; // can't be selected in the engine UI when in mobile mode
 
 // constants
 qcomp.SR2 = Math.sqrt(2);
@@ -23,9 +23,9 @@ qcomp.title = "Quantum Computer Simulator"; // entry in the state <select> UI
 // 3D section
 qcomp.roottree; // for 3d text
 qcomp.sphereroottree; // for Bloch sphere and axises
-qcomp.flabeltree; // for treecolor and onResize
+qcomp.flabeltree; // for treecolor and setsize
 qcomp.flabelmodel; // for print text to fontmodel
-qcomp.flabelredtree; // for treecolor and onResize RED
+qcomp.flabelredtree; // for treecolor and setsize RED
 qcomp.flabelredmodel; // for print RED text to fontmodel
 qcomp.flargeconsoletree;
 qcomp.flargeconsolemodel;
@@ -262,7 +262,7 @@ qcomp.loadcb = function(txt) { // text data of the file
 	if (xoff > 0)
 		qcomp.qf.setxoffset(xoff);
 	qcomp.resetui();
-	qcomp.onresize();
+	qcomp.setsize();
 	//qcomp.forceConsoleUpdate = true;
 	qcomp.printtoconsole(lasthlp);
 };
@@ -682,7 +682,7 @@ qcomp.init = function() {
 		qcomp.qf.lessqubits();
 		//qcomp.forceConsoleUpdate = true;
 		qcomp.resetui();
-		qcomp.onresize();
+		qcomp.setsize();
 	});
 	makeabut("Reset",function(){
 		var numqubits = qcomp.qf.getnumqubits();
@@ -702,7 +702,7 @@ qcomp.init = function() {
 		qcomp.qf.morequbits();
 		//qcomp.forceConsoleUpdate = true;
 		qcomp.resetui();
-		qcomp.onresize();
+		qcomp.setsize();
 	});
 
 	// next line of 4 buttons
@@ -1012,7 +1012,7 @@ qcomp.init = function() {
 	qcomp.spriteHandle = new Spriter();
 	//qcomp.frame = 0; // something to print
 	
-	qcomp.onresize(); // setup stuff depending on viewport size
+	qcomp.setsize(); // setup stuff depending on viewport size
 	qcomp.alphacutoffsave = globalmat.alphacutoff; // test alpha
 	//globalmat.alphacutoff = 0; // test sprites without alpha
 	qcomp.resetui();
@@ -1220,7 +1220,7 @@ qcomp.proc = function() {
 		qcomp.spinang -= qcomp.maxspinang;
 };
 
-qcomp.onresize = function() {
+qcomp.setsize = function() {
 	logger("qcomp resize!\n");
 	
 	// readjust spriter viewport

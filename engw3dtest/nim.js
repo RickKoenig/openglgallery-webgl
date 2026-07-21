@@ -603,7 +603,7 @@ nim.init = function() {
 	
 	// viewport
 	mainvp.clearcolor = [.5,.5,1,1];
-	nim.onresize(); // set textInfo trans a scale right
+	nim.setsize(); // set textInfo trans a scale right
 	
 // test debug	
 	//debprint.addlist("nim state",["nim"]); // TMI
@@ -642,7 +642,7 @@ nim.proc = function() {
 	nim.roottree.draw();
 };
 
-nim.onresize = function() {
+nim.setsize = function() {
 	logger("nim resize!\n");
 	nim.textInfo.trans = [-glc.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
 	// TODO: stop using hard coded glyph sizes, (right now 16,32)

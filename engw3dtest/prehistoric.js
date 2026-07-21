@@ -1,17 +1,17 @@
-var state7p = {};
+var prehistoric = {};
 
 // test webgl
 //var amod0,amod1,amod2;
 //var modellist;
 var roottree;
 
-state7p.text = "WebGL: Load a .bws file.  Prehistoric\n" +
+prehistoric.text = "WebGL: Load a .bws file.  Prehistoric\n" +
 			"This may take awhile to load.\n" +
 			"Press 'L' to look at the pterodactyl, Press 'C' then hold down 'up arrow' to begin your adventure!";
 
-state7p.title = "Prehistoric";
+prehistoric.title = "Prehistoric";
 
-state7p.load = function() {
+prehistoric.load = function() {
 	//if (!gl)
 	//	return;
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -20,11 +20,11 @@ state7p.load = function() {
 	preloadbws("prehistoric/prehistoric.BWS");
 };
 
-state7p.init = function() {
+prehistoric.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
-	logger("entering webgl state7p\n");
+	logger("entering webgl prehistoric\n");
 /*	
 // build model 0, test model, uvs and texture, 'tex' shader, test amp phase freq
     //var amod0 = new Model("mod0");
@@ -96,7 +96,7 @@ state7p.init = function() {
 };
 
 //var once4 = true;
-state7p.proc = function() {
+prehistoric.proc = function() {
 	//if (!gl)
 	//	return;
 	doflycam(mainvp); // modify the trs of vp
@@ -116,7 +116,7 @@ state7p.proc = function() {
 	roottree.draw();
 };
 
-state7p.exit = function() {
+prehistoric.exit = function() {
 	//alert("bye!");
 //	gl_mode(false);
 //	if (!gl)
@@ -134,5 +134,5 @@ state7p.exit = function() {
 	mainvp.incamattach = false;
 	mainvp.lookat = null;
 	mainvp.inlookat = false;
-	logger("exiting webgl state7p\n");
+	logger("exiting webgl prehistoric\n");
 };

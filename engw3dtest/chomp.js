@@ -500,7 +500,7 @@ chomp.init = function() {
 	
 	// viewport
 	mainvp.clearcolor = [.5,.5,1,1];
-	chomp.onresize(); // set textInfo trans a scale right
+	chomp.setsize(); // set textInfo trans a scale right
 	
 // test debug	
 	debprint.addlist("chomp state",["chomp.fsmStates", "chomp.turn", "chomp.curPiles"]);
@@ -542,7 +542,7 @@ chomp.proc = function() {
 	chomp.roottree.draw();
 };
 
-chomp.onresize = function() {
+chomp.setsize = function() {
 	logger("chomp resize!\n");
 	chomp.textInfo.trans = [-glc.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
 	// TODO: stop using hard coded glyph sizes, (right now 16,32)

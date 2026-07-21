@@ -153,10 +153,12 @@ race_sentgo.init = function(sockInfo) { // network state tranfered from race_lob
 	glc.extraWidth = 4 / 3;
 };
 
+/*
 race_sentgo.onresize = function() {
 	console.log("onresize");
 	race_sentgo.terminal.onresize();
 };
+*/
 
 race_sentgo.proc = function() {
 	// proc
@@ -166,11 +168,6 @@ race_sentgo.proc = function() {
 	// draw
 	beginscene(mainvp);
 	race_sentgo.roottree.draw();
-};
-
-race_sentgo.onresize = function() {
-	console.log("onresize");
-	race_lobby.terminal.onresize();
 };
 
 race_sentgo.exit = function() {

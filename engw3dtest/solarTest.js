@@ -1,6 +1,6 @@
 // webgl 2.0 seems to make this state look worse somehow, look at the edges, an edge case probably
-var solarTest = {}; // a state, like an Android Activity, a static class, has a title text init proc exit onresize
-solarTest.hidden = window.isMobile; // can't be selected in the engine UI when in mobile mode
+var solarTest = {}; // a state, like an Android Activity, a static class, has a title text init proc exit
+solarTest.hidden = false;//window.isMobile; // can't be selected in the engine UI when in mobile mode
 
 solarTest.title = "Solar Test";
 
@@ -619,7 +619,6 @@ solarTest.init = function() {
 	   	near:.01,
 	   	far:10000.0,
 	   	zoom:1,
-		asp:glc.asp, // aspect ratio
 		xo:0,
 		yo:0,
 		xs:1,
@@ -698,7 +697,7 @@ solarTest.init = function() {
 	]);
 	
 // sync	
-	solarTest.onresize();
+	//solarTest.setsize();
 	checkglerror("end of solarTest init");
 	solarTest.renderShadowMap = true; // set when need to change shadowmap
 	solarTest.keepRenderShadowMap = false; // set when always update shadowmap, when not set, update only when necessary
@@ -757,13 +756,13 @@ solarTest.init = function() {
 	checkglerror("done solar test init");
 
 };
-
+/*
 // adjust asp if viewport is resized
-solarTest.onresize = function() {
-	solarTest.mvp.asp = glc.asp;
-	solarTest.slidervp.asp = glc.asp;
+solarTest.setsize = function() {
+	//solarTest.mvp.asp = glc.asp;
+	//solarTest.slidervp.asp = glc.asp;
 };
-
+*/
 solarTest.proc = function() {
 	checkglerror("solar test proc start check gl error");
 	solarTest.updateTOD(); // do the TOD UI

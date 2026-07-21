@@ -76,7 +76,7 @@ function Interleave3D() {
 	Interleave3D.fbnPlaneXY.trans = [0,0,1];
 	Interleave3D.roottree.linkchild(Interleave3D.fbnPlaneXY);
 
-	this.onresize();
+	this.setsize();
 	debprint.addlist("interlaceAPI",[
 		"Interleave3D.interleaveVP",
 	]);
@@ -126,7 +126,7 @@ Interleave3D.prototype.glfree = function() {
 
 
 
-Interleave3D.prototype.onresize = function() {
+Interleave3D.prototype.setsize = function() {
 	globaltexflags |= textureflagenums.NOFLOAT;
 	for (var i = 0; i < Interleave3D.numTargets; ++i) {
 		var rt = Interleave3D.frametexn[i];

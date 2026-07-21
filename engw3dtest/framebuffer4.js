@@ -230,7 +230,7 @@ framebuffer4.init = function() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:glc.asp,
+		asp:1,
 		xo:0,
 		yo:0,
 		xs:1,
@@ -244,7 +244,7 @@ framebuffer4.init = function() {
 		// view volume
 		near:-100,
 		far:100,
-		asp:glc.asp,
+		asp:1,
 		isortho:true,
 		ortho_size:glc.clientHeight/2, // make pixel perfect
 		xo:0,
@@ -346,7 +346,7 @@ framebuffer4.init = function() {
 	debprint.addlist("rotate FB n scene",[
 		"framebuffer4.roottreen.rot",
 	]);
-	framebuffer4.onresize();
+	framebuffer4.setsize();
 
 };
 
@@ -441,12 +441,12 @@ framebuffer4.proc = function() {
 		framebuffer4.ang -= 2*Math.PI;
 };
 
-framebuffer4.onresize = function() {
+framebuffer4.setsize = function() {
 	for (var i = 0; i < framebuffer4.numTargets; ++i) {
 		var rt = framebuffer4.frametexn[i];
 		rt.resize(glc.clientWidth,glc.clientHeight);
 	}
-	//mainvp.asp = 1; // tweek the asp, hack, put this back to 1 after main3d onresize of mainvp, TODO: should use another viewport
+	//mainvp.asp = 1; // tweek the asp, hack, put this back to 1 after main3d setsize of mainvp, TODO: should use another viewport
 	framebuffer4.frametexnvp.asp = glc.asp;
 	framebuffer4.pixelPerfectVp.asp = glc.asp;
 	framebuffer4.pixelPerfectVp.ortho_size = glc.clientHeight/2; // make pixel perfect

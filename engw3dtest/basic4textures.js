@@ -33,7 +33,7 @@ basic4textures.init = function() {
 
 	basic4textures.roottree.linkchild(basic4textures.planexy);
 
-	basic4textures.onresize();
+	basic4textures.setsize();
 };
 
 basic4textures.proc = function() {
@@ -46,7 +46,7 @@ basic4textures.proc = function() {
 	basic4textures.roottree.draw();
 };
 
-basic4textures.onresize = function() {
+basic4textures.setsize = function() {
 	logger("basic4textures resize!\n");
 	// readjust planexy scale to fill the screen
 	basic4textures.planexy.scale = [glc.asp,1,1];

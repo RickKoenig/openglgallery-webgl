@@ -1,22 +1,22 @@
-var state7 = {};
+var fortpoint = {};
 
 // test webgl
 //var amod0,amod1,amod2;
 //var modellist;
-state7.roottree;
+fortpoint.roottree;
 
-state7.text = "Load a .bws file.  It's a scene file that references many .bwo files.  " +
+fortpoint.text = "Load a .bws file.  It's a scene file that references many .bwo files.  " +
 			"This is the ultimate stress test of the engine, " +
 			"over 100 high triangle models rendered with advanced shaders using a high level managed tree structure.\n" +
 			"This may take awhile to load.  " +
 			"This is an accurate rendering of the famous 'Fort Point'.  Let's start near one of the cannons.\n" +
 			"Press 'C' then hold down 'up arrow' to begin your adventure!";
 
-state7.title = "Fort Point";
+fortpoint.title = "Fort Point";
 
-state7.multiview;
+fortpoint.multiview;
 
-state7.load = function() {
+fortpoint.load = function() {
 	//if (!gl)
 	//	return;
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -25,13 +25,13 @@ state7.load = function() {
 	//preloadbwo("fortpoint/SFPD_car1W.bwo");
 };
 
-state7.init = function() {
+fortpoint.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
-	logger("entering webgl state7\n");
+	logger("entering webgl fortpoint\n");
 	// setup the whole multiview system
-	state7.multiview = new Interleave3D();
+	fortpoint.multiview = new Interleave3D();
 	
 // build model 0, test model, uvs and texture, 'tex' shader, test amp phase freq
     //var amod0 = new Model("mod0");
@@ -62,7 +62,7 @@ state7.init = function() {
 //	logger_str = "";
 	//modellist = [amod0];
 	
-	state7.roottree = new Tree2("root");
+	fortpoint.roottree = new Tree2("root");
 
 	var tree0 = new Tree2("right");
 	tree0.trans = vec3.fromValues(2,0,0);
@@ -74,27 +74,24 @@ state7.init = function() {
 	tree0sub.trans = vec3.fromValues(0,3,0);
 	tree0sub.setmodel(amod0);
 	tree0.linkchild(tree0sub);
-	state7.roottree.linkchild(tree0);
-	//state7.roottree.rotvel = vec3.fromValues(0,0,Math.PI*2/10);
+	fortpoint.roottree.linkchild(tree0);
+	//fortpoint.roottree.rotvel = vec3.fromValues(0,0,Math.PI*2/10);
 	
 	var tree1 = tree0.newdup();
 	tree1.name = "left";
 	tree1.trans = vec3.fromValues(-2,0,0);
-	state7.roottree.linkchild(tree1);
+	fortpoint.roottree.linkchild(tree1);
 	
 	mainvp.trans = [7.02316,51.149,167.413]; // flycam, near the cannon
 	//mainvp.trans = [0,0,-5]; // flycam
 	mainvp.rot = [0,0,0]; // flycam
 	var bwstree = new Tree2("fp7opt.BWS");
 	//var bwstree = new Tree2("SFPD_car1W.bwo");
-	state7.roottree.linkchild(bwstree);
-	
-	//state7.onresize();
-	//logger_str = "";
+	fortpoint.roottree.linkchild(bwstree);
 };
 
 //var once4 = true;
-state7.proc = function() {
+fortpoint.proc = function() {
 	//if (!gl)
 	//	return;
 	doflycam(mainvp); // modify the trs of vp
@@ -110,21 +107,21 @@ state7.proc = function() {
 */
 	// draw main vp
 	if (true) { // use interleave and 4 views
-		state7.multiview.beginsceneAndDraw(mainvp,state7.roottree);
+		fortpoint.multiview.beginsceneAndDraw(mainvp,fortpoint.roottree);
 	} else { // just normal 1 view drawing
 		beginscene(mainvp);
-		state7.roottree.draw(); // depends on FB 1,2,3
+		fortpoint.roottree.draw(); // depends on FB 1,2,3
 	}
 
 };
-
-state7.onresize = function() {
+/*
+fortpoint.onresize = function() {
 	// will need for multiview
-	logger("state7: onResize " + glc.clientWidth + " " + glc.clientHeight + "\n");
-	state7.multiview.onresize();
+	logger("fortpoint: onResize " + glc.clientWidth + " " + glc.clientHeight + "\n");
+	fortpoint.multiview.onresize();
 };
-
-state7.exit = function() {
+*/
+fortpoint.exit = function() {
 	//alert("bye!");
 //	gl_mode(false);
 //	if (!gl)
@@ -132,12 +129,12 @@ state7.exit = function() {
 /*	var i;
 	for (i=0;i<modellist.length;++i)
 		modellist[i].glfree(); */
-	state7.roottree.log();
+	fortpoint.roottree.log();
 	logrc();
 	logger("after roottree glfree\n");
-	state7.roottree.glfree();
-	state7.multiview.glfree();
+	fortpoint.roottree.glfree();
+	fortpoint.multiview.glfree();
 	logrc();
-	state7.roottree = null;
-	logger("exiting webgl state7\n");
+	fortpoint.roottree = null;
+	logger("exiting webgl fortpoint\n");
 };

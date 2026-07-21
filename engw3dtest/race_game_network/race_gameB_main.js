@@ -282,8 +282,6 @@ window.GameB = class RaceGameNetwork {
 
     draw() {
         // draw track and cars
-        //doflycam(this.gameViewPort);
-        this.gameViewPort.asp = mainvp.asp;
         beginscene(this.gameViewPort);
         this.gameParent.draw();
     }

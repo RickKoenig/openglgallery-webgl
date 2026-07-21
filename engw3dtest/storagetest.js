@@ -328,6 +328,7 @@ storagetest.proc = function() {
 	storagetest.roottree.draw();
 };
 
+/*
 storagetest.onresize = function() {
 	logger("storagetest resize!\n");
 	// readjust spriter viewport
@@ -339,6 +340,8 @@ storagetest.onresize = function() {
 	var depth = glc.clientHeight/2;
 	storagetest.ftree.trans = [-depth*glc.asp,depth,depth];
 };
+*/
+
 storagetest.exit = function() {
 	//localStorage.clear();
 	storagetest.roottree.log();

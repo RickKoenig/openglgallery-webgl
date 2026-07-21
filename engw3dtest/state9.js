@@ -94,7 +94,7 @@ state9.init = function() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:1, //glc.asp
+		asp:1,
 		xo:0,
 		yo:0,
 		xs:1,
@@ -113,36 +113,12 @@ state9.init = function() {
 		near:.002,
 		far:10000.0,
 		zoom:1,
-		asp:1, //glc.asp
+		asp:1,
 		xo:0,
 		yo:0,
 		xs:1,
 		ys:1
 	};
-
-/*	// where to draw
-	target:null,
-	// clear
-	clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-	clearcolor:[0,.75,1,1],
-//	mat4.create();
-	// orientation
-	"trans":[0,0,0],
-	"rot":[0,0,0],
-//	"scale":[1,1,1],
-	// frustum
-	near:.002,
-	far:10000.0,
-	zoom:1,
-	asp:glc.asp,
-	// optional target (overrides rot)
-	inlookat:0,
-	lookattrans:[0,0,0],
-	xo:0,
-	yo:0,
-	xs:1,
-	ys:1
-	*/
 
 	testdir = [0,0,1];
 

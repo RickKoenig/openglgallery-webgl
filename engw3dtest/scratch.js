@@ -1201,7 +1201,6 @@ scratch.init = function() {
 	// move view back some using LHC
 	if (scratch.test1) {
 		mainvp.trans = [0,0,-2]; // for mouse test
-		// mainvp.trans = [1.31321,3.39566,-3.53785]; // flycam for barn, near clipping
 	} else {
 		mainvp.trans = [0,0,0];
 	}
@@ -1279,12 +1278,14 @@ scratch.proc = function() {
 	}
 };
 
+/*
 scratch.onresize = function() {
 	var bottomLines = 20; // for console
 	logger("scratch resize to " + glc.clientWidth + "," + glc.clientHeight + "\n");
 	if (scratch.bm32)
 		;//scratch.ptree.scale = scratch.calcscale(scratch.bm32);
 };
+*/
 
 scratch.exit = function() {
 	if (scratch.datatexd) {

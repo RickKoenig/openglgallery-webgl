@@ -24,7 +24,7 @@ test2d.init = function() {
 	// now try new sprite package
 	test2d.spriteHandle = new Spriter();
 	//test2d.spritevp = Spriter.createspritervp();
-	test2d.onresize();
+	test2d.setsize();
 	//test2d.spriteHandle.setKeepList([
 	//	"wood_door.jpg"
 	//]);
@@ -59,7 +59,7 @@ test2d.proc = function() {
 	test2d.spriteHandle.draw();
 };
 
-test2d.onresize = function() {
+test2d.setsize = function() {
 	logger("test2d resize!\n");
 	// readjust spriter viewport
 	test2d.spritevp = Spriter.createspritervp();

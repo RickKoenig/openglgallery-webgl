@@ -24,13 +24,13 @@ bodyOld {
 
 select {
 	width: 100%;
-	background-color: #add1b0;
+	background: content-box radial-gradient(brown, lightgoldenrodyellow);
 	cursor: pointer;
 }
 
 select:hover {
-		background-color: #91ad93;
-		transition: .5s;
+	background: sandybrown;
+	transition: .5s;
 }
 
 div.left {
@@ -136,7 +136,7 @@ pre, p, a {
 	text-align: center;
 	font-size: 2vw;
 	overflow: hidden;
-	white-space: pre-wrap;
+	/*white-space: pre-wrap;*/
 }
 
 input {

@@ -332,7 +332,6 @@ function loadingproc() {
 			near:.002,
 			far:10000.0,
 			zoom:1,
-			asp:glc.asp,
 			ortho_size:debprint_depth*2,
 			// optional target (overrides rot)
 			inlookat:false,
@@ -376,11 +375,11 @@ function loadingexit() {
 	}
 }
 
+// TODO: don't use glc
 function loadingresize() {
 	var loading_depth = glc.clientHeight/2;//*8/h;
 	//loading_depth *= 2; // half pixel size still looks good, comment out for true 1 to 1 texel to pixel mapping
 	if (loadingvp) {
-		loadingvp.asp = glc.asp;
 		loadingvp.trans[2] = -loading_depth;
 		loadingvp.ortho_size = loading_depth*2;
 		if (loadingtreefont) {
@@ -392,11 +391,13 @@ function loadingresize() {
 var defaultimage;
 
 function doresize() {
+	
 	//return;
 	gl_resize();
 	debprint.resize();
 	loadingresize();
 	//onresizestate(); // for now, don't call user resize, let main3d handle it instead
+	
 }
 
 // call this before calling engw init state

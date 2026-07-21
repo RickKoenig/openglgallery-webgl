@@ -29,3 +29,17 @@
 	background-color: #2d5ba3;
 	color: white;
 }
+
+.loadsave.p {
+	display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;	
+	/*white-space: pre-wrap;*/
+}
+/*
+.loadsave {
+	white-space: normal;
+}
+*/

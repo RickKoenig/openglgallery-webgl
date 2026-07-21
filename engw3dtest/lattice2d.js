@@ -151,7 +151,7 @@ lattice2d.init = function() {
 	var fancyScene = lattice2d.buildFancyScene();
 	lattice2d.roottree.linkchild(fancyScene);
 
-	lattice2d.onresize();
+	lattice2d.setsize();
 };
 
 lattice2d.proc = function() {
@@ -184,9 +184,9 @@ lattice2d.proc = function() {
 		lattice2d.ang -= 2*Math.PI;
 };
 
-lattice2d.onresize = function() {
+lattice2d.setsize = function() {
 	// will need for lattice3d
-	logger("lattice2d: onResize " + glc.clientWidth + " " + glc.clientHeight + "\n");
+	logger("lattice2d: setsize " + glc.clientWidth + " " + glc.clientHeight + "\n");
 };
 
 lattice2d.exit = function() {

@@ -112,6 +112,13 @@
         {
             "type": "chrome",
             "request": "launch",
+            "name": "Quantum computer simulator MOBILE",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=qcomp",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
             "name": "basic",
             "url": "http://localhost:88/engw/engw3dtest/index.html?startstate=basic",
             "webRoot": "${workspaceFolder}"

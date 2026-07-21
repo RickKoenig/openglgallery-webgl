@@ -218,7 +218,6 @@ lorenz.init = function() {
 	   	near:.1,
 	   	far:10000.0,
 	   	zoom:1,
-		asp:glc.asp,
 		inlookat:true,
 		xo:0,
 		yo:0,
@@ -339,14 +338,14 @@ lorenz.init = function() {
 		"lorenz.mvp", // change cursor qgate for testing
 		"lorenz.shadowvp", // watch/modify the viewport that spriter.js uses
 	]);
-	lorenz.onresize();
+	//lorenz.setsize();
 
 };
-
-lorenz.onresize= function() {
+/*
+lorenz.setsize= function() {
 	lorenz.mvp.asp = glc.asp;
 };
-
+*/
 lorenz.proc = function() {
 	debprint.buildstrarr();
 	checkglerror("lorenz attractor proc start check gl error");

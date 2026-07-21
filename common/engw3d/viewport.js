@@ -45,6 +45,18 @@ function beginscene(vp) {
 }*/
 
 function setview(vp) {
+	let asp, extraWidth, extraHeight;
+	if (vp.asp) {
+		// for render targets
+		asp = vp.asp;
+		extraWidth = 1;
+		extraHeight = 1;
+	} else {
+		// for display
+		asp = glc.asp;
+		extraWidth = glc.extraWidth;
+		extraHeight = glc.extraHeight;
+	}
 	// lookat cam
 	if (vp.inlookat && vp.lookat) {
 
@@ -135,33 +147,33 @@ function setview(vp) {
 			// , left, right
 			// , bottom, top
 			// , near, far
-		if (vp.asp > glc.extraWidth / glc.extraHeight) { // landscape
+		if (asp > extraWidth / extraHeight) { // landscape
 		//if (false) {
 			mat4.ortholhc(pMatrix
-				, -vp.ortho_size * vp.asp * glc.extraHeight
-				, vp.ortho_size * vp.asp * glc.extraHeight
-				, -vp.ortho_size * glc.extraHeight
-				, vp.ortho_size * glc.extraHeight
+				, -vp.ortho_size * asp * extraHeight
+				, vp.ortho_size * asp * extraHeight
+				, -vp.ortho_size * extraHeight
+				, vp.ortho_size * extraHeight
 				, vp.near, vp.far);
 		} else { // portrait
 			mat4.ortholhc(pMatrix
-				, -vp.ortho_size * glc.extraWidth
-				, vp.ortho_size * glc.extraWidth
-				, -vp.ortho_size / vp.asp * glc.extraWidth
-				, vp.ortho_size / vp.asp * glc.extraWidth
+				, -vp.ortho_size * extraWidth
+				, vp.ortho_size * extraWidth
+				, -vp.ortho_size / asp * extraWidth
+				, vp.ortho_size / asp * extraWidth
 				, vp.near, vp.far);
 		}
 	} else {
 		// out
 		// ,zf,aspect
 		// ,near,far
-		mat4.perspectivelhczf(pMatrix,vp.zoom,vp.asp,vp.near,vp.far,glc.extraWidth,glc.extraHeight);
-		if (vp.asp > glc.extraWidth / glc.extraHeight) { // landscape
-			pMatrix[8] += vp.xo*2/glc.asp; // skew X
+		mat4.perspectivelhczf(pMatrix,vp.zoom,asp,vp.near,vp.far,extraWidth,extraHeight);
+		if (asp > extraWidth / extraHeight) { // landscape
+			pMatrix[8] += vp.xo*2/asp; // skew X
 			pMatrix[9] += vp.yo*2; // skew Y
 		} else {
 			pMatrix[8] += vp.xo*2; // skew X
-			pMatrix[9] += vp.yo*2*glc.asp; // skew Y
+			pMatrix[9] += vp.yo*2*asp; // skew Y
 		}
 	}
 	
@@ -264,7 +276,6 @@ function defaultviewport() {
 		near:.002, // webgl version
 		far:10000.0,
 		zoom:1,
-		asp:glc.asp,
 		isortho:false,
 		ortho_size:10,
 		// optional target (overrides rot)
@@ -297,7 +308,6 @@ function defaultorthoviewport() {
 		near:-1000.0,
 		far:1000.0,
 		zoom:1,
-		asp:glc.asp,
 		isortho:true,
 		ortho_size:1,
 		inlookat:false,

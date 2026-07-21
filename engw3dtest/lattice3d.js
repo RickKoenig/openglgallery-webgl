@@ -157,7 +157,7 @@ lattice3d.init = function() {
 	var fancyScene = lattice3d.buildFancyScene();
 	lattice3d.roottree.linkchild(fancyScene);
 
-	//lattice3d.onresize();
+	lattice3d.setsize();
 };
 
 lattice3d.proc = function() {
@@ -194,10 +194,10 @@ lattice3d.proc = function() {
 		lattice3d.ang -= 2*Math.PI;
 };
 
-lattice3d.onresize = function() {
+lattice3d.setsize = function() {
 	// will need for lattice3d
-	logger("lattice3d: onResize " + glc.clientWidth + " " + glc.clientHeight + "\n");
-	lattice3d.multiview.onresize();
+	logger("lattice3d: setsize " + glc.clientWidth + " " + glc.clientHeight + "\n");
+	lattice3d.multiview.setsize();
 };
 
 lattice3d.exit = function() {

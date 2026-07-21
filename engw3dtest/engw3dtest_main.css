@@ -34,7 +34,14 @@ img.resize {
 }
 
 select {
- 	width: 250px; 
+ 	width: 250px;
+	background: content-box radial-gradient(brown, lightgoldenrodyellow);
+	cursor: pointer;
+}
+
+select:hover {
+	background: sandybrown;
+	transition: .5s;
 }
 	
 p + input {

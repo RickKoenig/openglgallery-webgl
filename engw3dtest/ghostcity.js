@@ -60,9 +60,9 @@ ghostcity.proc = function() {
 	}
 };
 
-ghostcity.onresize = function() {
-	logger("ghostcity: onResize " + glc.clientWidth + " " + glc.clientHeight + "\n");
-	ghostcity.multiview.onresize();
+ghostcity.setsize = function() {
+	logger("ghostcity: setsize " + glc.clientWidth + " " + glc.clientHeight + "\n");
+	ghostcity.multiview.setsize();
 };
 
 ghostcity.exit = function() {
