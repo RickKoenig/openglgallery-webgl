@@ -12,9 +12,7 @@ sensors.init = function() {
 	debprint.addlist("arrow",[
 		"sensors.arrowDir"
 	]);
-
 };
-
 
 sensors.exit = function() {
 	// show current usage before cleanup
@@ -40,9 +38,6 @@ sensors.exit = function() {
 
 	debprint.removelist("arrow");
 };
-
-
-
 
 function requestDevicePermissions() {
 	sensors.div = document.createElement('div');

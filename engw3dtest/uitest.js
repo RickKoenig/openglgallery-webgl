@@ -280,22 +280,12 @@ uitest.proc = function() {
 	//uitest.roottree.draw();
 };
 
-/*
-uitest.onresize = function() {
-	logger("uitest resize!\n");
-	// readjust uitest viewport
-	uiclass.uitree.setres(glc.clientWidth,glc.clientHeight);
-	uiclass.uitree.settransscale(uitest.uiroottree);
-};
-*/
-
 uitest.exit = function() {
 	logger("exiting webgl uitest\n");
 	Tree2.treesort = true; // turn back on Tree2 sorting
 
 	logger("uitest.uiroottree.log\n");
 	uitest.uiroottree.log();
-	
 
 	var clonet = uitest.auitree.copy();
 	//uitest.auitree.dokillc();

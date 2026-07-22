@@ -1,9 +1,9 @@
-var state15 = {};
-state15.text = "WebGL: This state lets you play with coupled pendulums.";
+var pendu2 = {};
+pendu2.text = "WebGL: This state lets you play with coupled pendulums.";
 
-state15.title = "2 pendulums";
+pendu2.title = "2 pendulums";
 
-// some code and globals 'borrowed' from state14
+// some code and globals 'borrowed' from pendu1
 
 //var pendroot = null;
 var pend2pos = null;
@@ -27,64 +27,44 @@ function lessdamp2() {
 	dampval -= dampstep;
 	if (dampval < 0)
 		dampval = 0;
-	//updatedamp2();
 }
 
 function moredamp2() {
 	dampval += dampstep;
 	if (dampval >= damparr.length)
 		dampval = damparr.length - 1;
-	//updatedamp2();
 }
 
 function resetdamp2() {
 	dampval = 0;
-	//updatedamp2();
 }
 
-/*function pendfric(v) {
-	return (1-damparr[dampval])*v;
-}
-*/	
 function buildpend2() {
 	var ret = new Tree2("apend");
 	var pendpce0 = buildsphere("pend2pce0",.2,"panel.jpg","diffusespecp");
 	pendpce0.trans = [0,0,0];
-	//pendpce0.rotvel = [.1,.5,0];
-	//pendpce0.flags |= treeflagenums.ALWAYSFACING;
 	ret.linkchild(pendpce0);
 	
 	// rod 
 	var pendpce1 = buildcylinderxz("pend2pce1",.1,pendlen,"panel.jpg","diffusespecp");
 	pendpce1.trans = [0,0,0];
-	//pendpce0.rotvel = [.1,.5,0];
-	//pendpce0.flags |= treeflagenums.ALWAYSFACING;
 	ret.linkchild(pendpce1);
 
 	// bob 
-	//var pendpce2 = buildcylinderxz("pend2pce2",.4,.2,"panel.jpg","diffusespecp");
 	var pendpce2 = buildsphere3("pend2pce2",[.4,.1,.4],"panel.jpg","diffusespecp");
 	pendpce2.trans = [0,4,0];
-	//pendpce2.trans = [0,4,-.1];
 	pendpce2.rot = [Math.PI/2,0,0];
-	//pendpce0.rotvel = [.1,.5,0];
-	//pendpce0.flags |= treeflagenums.ALWAYSFACING;
 	ret.linkchild(pendpce2);
 	return ret;
 }
 
-state15.load = function() {
-	//if (!gl)
-	//	return;
+pendu2.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
-state15.init = function() {
-//	gl_mode(true);
-//	if (!gl)
-//		return;
-	logger("entering webgl state15\n");
+pendu2.init = function() {
+	logger("entering webgl pendu2\n");
 	
 	pend2pos = [-Math.PI/8,0];
 	pend2vel = [0,0];
@@ -104,9 +84,6 @@ state15.init = function() {
 	makeabut("more damp",null,moredamp2);
 	resetdamp2();
 	
-	//pendroot = new Tree2("pendroot");
-	//roottree.linkchild(pendroot);
-	
 	pend2tree0 = buildpend2();
 	pend2tree0.trans = [-2,0,0];
 	pend2tree0.rot = [0,0,0];
@@ -118,31 +95,17 @@ state15.init = function() {
 	roottree.linkchild(pend2tree1);
 
 	pend2spring = buildcylinderxz("pend2spring",.1,1,"panel.jpg","diffusespecp"); // spring
-	//pendpce0.rotvel = [.1,.5,0];
-	//pendpce0.flags |= treeflagenums.ALWAYSFACING;
 	roottree.linkchild(pend2spring);
 
-	// set the lights
-	//lights.wlightdir = vec3.fromValues(0,0,1);
-	
 	// set the camera
-	//mainvp.trans = [0,0,-15]; // flycam
 	mainvp.trans = [0,0,-camz]; // flycam
 	mainvp.rot = [0,0,0]; // flycam
 };
 
-state15.proc = function() {
-//	if (!gl)
-//		return;
-    //gl.clearColor(0,.25,0,1);                      // Set clear color to yellow, fully opaque
-    //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-	
+pendu2.proc = function() {
 	var pendpos = 0;
 	if (input.mbut[0]) {
-		var b = camz;
-		var m = 2*camz/glc.clientHeight;
-		pendpos = m*input.mx - b*glc.asp;
+		pendpos = input.fmx * camz;
 		if (lastbutsection < 0) {
 			if (pendpos < 0)
 				lastbutsection = 0;
@@ -154,7 +117,6 @@ state15.proc = function() {
 	}
 	
 	if (lastbutsection == 0) {
-		//pend2tree0.trans = pendpos;
 		pend2pos[0] = range(-Math.PI/8,(pendpos - pend2tree0.trans[0])/pendlen,Math.PI/8);
 		pend2vel[0] = 0;
 	} else if (lastbutsection == 1) {
@@ -162,19 +124,6 @@ state15.proc = function() {
 		pend2vel[1] = 0;
 	}	 
 ///////// start physics /////////
-/*	vec3.sub(pendvel,pendpos,oldpendpos);
-	vec3.sub(pendaccel,pendvel,oldpendvel);
-	pendaccel[1] += pendgrav;
-	vec3.copy(oldpendpos,pendpos);
-	vec3.copy(oldpendvel,pendvel);
-	
-	var torque = pendaccel[0]*Math.sin(pendrot) - pendaccel[1]*Math.cos(pendrot);
-
-	var pendrotaccel = torque/pendradius;
-	pendrotvel += pendrotaccel;
-	pendrotvel = pendfric(pendrotvel);
-	pendrot += pendrotvel; */
-	
 	var pend2accel = [];
 	
 	var sf = -(pend2pos[1] - pend2pos[0])*pend2k;
@@ -183,8 +132,6 @@ state15.proc = function() {
 	
 	pend2vel[0] += pend2accel[0];
 	pend2vel[1] += pend2accel[1];
-	//pend2vel[0] += pend2pos[0]*pend2g;
-	//pend2vel[1] += pend2pos[1]*pend2g;
 	
 	pend2vel[0] = pendfric(pend2vel[0]);
 	pend2vel[1] = pendfric(pend2vel[1]);
@@ -200,10 +147,8 @@ state15.proc = function() {
 	pend2spring.trans = springstart;
 	vec3.sub(delta2,springend,springstart);
 	var d = vec3.length(delta2);
-	//pend2spring.trans = springend;
 	pend2spring.scale = [1,d,1];
 	var rt = Math.atan2(delta2[1],delta2[0])-Math.PI/2;
-//	pend2spring.rot = [0,0,-Math.PI/2];
 	pend2spring.rot = [0,0,rt];
 
 ///////// end physics /////////
@@ -211,24 +156,19 @@ state15.proc = function() {
 	roottree.proc();
 	doflycam(mainvp);  // modify the trs of the vp
 	
-	//pendpce0.trans = [0,0,0];
 	beginscene(mainvp);
 
-	//dolights(); // get some lights to eye space
 	updatedamp2();
 	roottree.draw();
 };
 
-state15.exit = function() {
-//	gl_mode(false);
-//	if (!gl)
-//		return;
+pendu2.exit = function() {
 	roottree.log();
 	logrc();
 	logger("after roottree glfree\n");
 	roottree.glfree();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state15\n");
+	logger("exiting webgl pendu2\n");
 	clearbuts('pendu2');
 };

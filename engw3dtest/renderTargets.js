@@ -1,8 +1,8 @@
-var state9 = {};
+var renderTargets = {};
 
-state9.text = "WebGL: Test render targets.";
+renderTargets.text = "WebGL: Test render targets.";
 
-state9.title = "Render targets";
+renderTargets.title = "Render targets";
 
 var roottree;
 var roottree1; // the one with the off screen render target
@@ -65,18 +65,18 @@ if (window.Uint8Array) {
 	]);
 }
 
-state9.load = function() {
+renderTargets.load = function() {
 	if (!gl)
 		return;
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
-state9.init = function() {
+renderTargets.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
-	logger("entering webgl state9\n");
+	logger("entering webgl renderTargets\n");
 //// build render target
 //	datatex1 = FrameBufferTexture.createtexture("rendertex1",512,512);
 //	datatex2 = FrameBufferTexture.createtexture("rendertex2",512,512);
@@ -224,7 +224,7 @@ state9.init = function() {
 	updatedir();
 };
 
-state9.proc = function() {
+renderTargets.proc = function() {
 	//if (!gl)
 	//	return;
 	
@@ -276,7 +276,7 @@ state9.proc = function() {
 	roottree.draw();
 };
 
-state9.exit = function() {
+renderTargets.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
@@ -306,6 +306,6 @@ state9.exit = function() {
 	roottree1 = null;
 	roottree2 = null;
 	
-	logger("exiting webgl state9\n");
+	logger("exiting webgl renderTargets\n");
 	clearbuts('test');
 };

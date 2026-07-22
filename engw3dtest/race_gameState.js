@@ -383,13 +383,6 @@ race_gameState.init = function(sockInfo) { // network state tranfered from race_
 	glc.extraWidth = 4 / 3;
 };
 
-/*
-race_gameState.onresize = function() {
-	console.log("onresize");
-	race_gameState.terminal?.onresize();
-}
-*/
-
 race_gameState.toggleStats = function() {
 	if (race_gameState.showHud) {
 		race_gameState.negPingTree.flags ^= treeflagenums.DONTDRAWC;

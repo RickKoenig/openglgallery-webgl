@@ -10,21 +10,23 @@ camblur.title = "Camera Blurring";
 
 camblur.infocnt;
 
+camblur.tx = 0;
+camblur.ty = 0;
+
 // print some realtime info
 camblur.updateinfo = function() {
-	//var tx = input.mx / glc.clientWidth;
-	//var ty = input.my / glc.clientHeight;
-	var tx = (input.mx - (glc.clientWidth - glc.clientHeight)/2)/ glc.clientHeight;
-	var ty = input.my / glc.clientHeight;
-	printareadraw(camblur.infoarea,"Camblur Info = "  + camblur.infocnt++ + " tex (" + tx.toFixed(3) + "," + ty.toFixed(3) + ")");
-	//printareadraw(camblur.infoarea,"Camblur Info = "  + camblur.infocnt++ + " mouse (" + input.mx + "," + input.my + ")");
+	// convert from mouse to texture coords
+	camblur.tx = input.fmx / 2 + .5;
+	camblur.ty = .5 - input.fmy / 2;
+	printareadraw(camblur.infoarea,"Camblur Info = "  + camblur.infocnt++ 
+		+ " tex (" + camblur.tx.toFixed(3) + "," + camblur.ty.toFixed(3) + ")");
 };
 	
 // load these before init
 camblur.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
-	preloadimg("../common/sptpics/light.jpg");
+	preloadimg("../common/sptpics/light.jpg"); // world map
 };
 
 camblur.init = function() {
@@ -33,17 +35,12 @@ camblur.init = function() {
 	camblur.roottree = new Tree2("root");
 
 	// build parent prism
-	//camblur.atree = buildprism("aprism",[.5,.5,.5],"maptestnck.png","texc"); // helper, builds 1 prism returns a Tree2
 	camblur.atree =  buildplanexy("aplane",1,1,"light.jpg","imageblur");
+	camblur.atree.trans = [0,0,1];
 
-	//camblur.tree0.mod.flags |= modelflagenums.HASALPHA;
 	camblur.atree.mat.color=[1,.5,1,1];
 	camblur.atree.mat.coord = [.5,.5]; // blur coordinates
 	camblur.roottree.linkchild(camblur.atree);	
-
-	// move view back some using LHC
-	mainvp.trans = [0,0,-1]; // flycam
-	mainvp.rot = [0,0,0]; // flycam
 
 	// ui, realtime log update
 	setbutsname('camblur');
@@ -57,11 +54,8 @@ camblur.proc = function() {
 	camblur.updateinfo();
 	camblur.roottree.proc();
 	doflycam(mainvp); // modify the trs of vp using flycam
-	
-	// update uniform in imageblur shader
-	var tx = (input.mx - (glc.clientWidth - glc.clientHeight)/2)/ glc.clientHeight;
-	var ty = input.my / glc.clientHeight;
-	camblur.atree.mat.coord = [tx,ty];
+	// update shader uniform
+	camblur.atree.mat.coord = [camblur.tx,camblur.ty];
 	
 	// draw
 	beginscene(mainvp);
@@ -70,7 +64,6 @@ camblur.proc = function() {
 
 camblur.exit = function() {
 	// show current usage
-	//debprint.removelist("camblur");
 	camblur.roottree.log();
 	logrc();
 	logger("after roottree glfree\n");

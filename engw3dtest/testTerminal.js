@@ -100,13 +100,6 @@ testTerminal.init = function(intentData) {
 	glc.extraWidth = 4 / 3;
 };
 
-/*
-testTerminal.onresize = function() {
-	console.log("onresize");
-	testTerminal.terminal.onresize();
-};
-*/
-
 testTerminal.proc = function() {
 	// proc
 	testTerminal.terminal?.proc(input.key);

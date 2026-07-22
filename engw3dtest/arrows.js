@@ -1,8 +1,8 @@
-var state17 = {};
+var arrows = {};
 
-state17.text = "WebGL: Arrow Demo.";
+arrows.text = "WebGL: Arrow Demo.";
 
-state17.title = "Arrows";
+arrows.title = "Arrows";
 
 var arrowarea;
 var camz = 5;
@@ -203,18 +203,18 @@ function centerarrowsview() {
 		mainvp.trans[2] = -moveback+1;
 }
 
-state17.load = function() {
+arrows.load = function() {
 	//if (!gl)
 	//	return;
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
-state17.init = function() {
+arrows.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
-	logger("entering webgl state17\n");
+	logger("entering webgl arrows\n");
 	
 	// build the scene
 	arrowmaster = makearrowmaster();
@@ -252,7 +252,7 @@ state17.init = function() {
 	camvel = [0,0,0];
 };
 
-state17.proc = function() {
+arrows.proc = function() {
 //	if (!gl)
 //		return;
     //gl.clearColor(.25,.25,0,1);                      // Set clear color to yellow, fully opaque
@@ -281,7 +281,7 @@ state17.proc = function() {
 	roottree.draw();
 };
 
-state17.exit = function() {
+arrows.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
@@ -295,6 +295,6 @@ state17.exit = function() {
 	roottree.glfree();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state17\n");
+	logger("exiting webgl arrows\n");
 	clearbuts('arrow');
 };

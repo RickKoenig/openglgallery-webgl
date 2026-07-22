@@ -1,7 +1,7 @@
-var state11 = {};
+var shaderTest = {};
 
 // test webgl
-// should be inside state11
+// should be inside shaderTest
 var roottree;
 var tree0,tree1,tree2,tree3,tree4,tree5,tree6,tree7,tree8,tree9,tree10,tree11,tree12; // many different shaders
 var tree13,tree14,tree15,tree16; // specular
@@ -11,7 +11,7 @@ var tree19,tree20; // tree texture override
 var tree21,tree22; // change stuff on model
 var tree23;	// world
 var tree24; // no pers
-var state11ang;
+var shaderTestang;
 
 var scenelist11 = [
 	"cubemap_mountains.jpg",
@@ -35,7 +35,7 @@ var cubcurscene = null;
 
 
 // for animating textures
-var state11texlist = [
+var shaderTesttexlist = [
 	"maptestnck.png",
 	"panel.jpg",
 	"wonMedal.png",
@@ -46,7 +46,7 @@ var frame;
 var oldcnt;
 
  // instructions
- state11.text = "WebGL: This is a test area for various shaders.  " + 
+ shaderTest.text = "WebGL: This is a test area for various shaders.  " + 
 			"Toggle the 'flycam' using the 'C' key.  " +
 			"Reset the position of the camera with the 'R' key. Load different scenes with the 'T' key. Break skybox 'K'\n" +
 			"Aim the camera with the mouse. " + 
@@ -54,9 +54,9 @@ var oldcnt;
 			"Speed up and slow down camera movement with '+/=' and '-' keys.\n" +
 			"Tab through various states using the 'prev state' and 'next state' buttons.";
 
-state11.title = "Shaders";
+shaderTest.title = "Shaders";
 
-state11.load = function() {
+shaderTest.load = function() {
 //	if (!gl)
 //		return;
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -174,8 +174,8 @@ var cachedgltextures = [];
 
 function loadcachedtextures() {
 	var i;
-	for (i=0;i<state11texlist.length;++i)
-		cachedgltextures.push(Texture.createtexture(state11texlist[i]));
+	for (i=0;i<shaderTesttexlist.length;++i)
+		cachedgltextures.push(Texture.createtexture(shaderTesttexlist[i]));
 }
 
 function freecachedtextures() {
@@ -187,19 +187,19 @@ function freecachedtextures() {
 
 //var proc11once;
 
-state11.init = function() {
+shaderTest.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
 	//proc11once = true;
 	frame = 0;
 	oldcnt = -1;
-	logger("entering webgl state11\n");
+	logger("entering webgl shaderTest\n");
 	loadcachedtextures();
 	//testinheritance(); // physics2d will test this instead
 	//testsort();
 	
-	state11ang = 0;
+	shaderTestang = 0;
 	roottree = new Tree2("root");
 	
 	curscene = scenelist11[cursceneidx];
@@ -392,14 +392,14 @@ state11.init = function() {
 	mainvp.rot = [0,0,0]; // flycam
 };
 
-state11.proc = function() {
+shaderTest.proc = function() {
 	// change scene
 	if (input.key == "t".charCodeAt(0)) {
 		++cursceneidx;
 		if (cursceneidx >= scenelist11.length)
 			cursceneidx = 0;
-		changestate("state11");
-		//changestate(state11);
+		changestate("shaderTest");
+		//changestate(shaderTest);
 	}
 	// break skybox
 	if (input.key == "k".charCodeAt(0)) {
@@ -428,7 +428,7 @@ state11.proc = function() {
 	var cnt = Math.floor(frame/nzfpswanted);
 	cnt = cnt%4;
 	if (cnt != oldcnt) {
-		tree21.mod.changetexture(state11texlist[cnt]);
+		tree21.mod.changetexture(shaderTesttexlist[cnt]);
 		oldcnt = cnt; 
 	}
 	
@@ -437,13 +437,13 @@ state11.proc = function() {
 	doflycam(mainvp); //  // modify the trs of the vp
 	beginscene(mainvp);
 	roottree.draw();
-	state11ang += .01;
-	if (state11ang > 2*Math.PI)
-		state11ang -= 2*Math.PI;
+	shaderTestang += .01;
+	if (shaderTestang > 2*Math.PI)
+		shaderTestang -= 2*Math.PI;
 	//++frame;
 };
 
-state11.exit = function() {
+shaderTest.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
@@ -454,5 +454,5 @@ state11.exit = function() {
 	freecachedtextures();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state11\n");
+	logger("exiting webgl shaderTest\n");
 };

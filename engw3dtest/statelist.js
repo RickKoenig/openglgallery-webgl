@@ -1,18 +1,23 @@
 // added interleave
+// use 'G' to make groups
 var statelist = [
+	"G one",
+	camblur, // camera bluring shaders, etc.
 	test3d, // simple 3d tests
 	caveexplorer, // explore tree nodes;
-	camblur, // camera bluring shaders, etc.
 	modelWebgl, // test webgl, model level, webgl level
 
+	"G two",
 	modelWebglFortpoint, // more webgl Model and Model2, some bwo's and a floor of fortpoint, model level
 	fortpoint, // more webgl Tree2, the whole fortpoint scene, tree level
 	prehistoric, // more webgl Tree2, prehistoric
 	ghostcity, // another .bws of ghost city race track
 
+	"G three",
 	many, // many, tree level, test web sockets
 	multiplayer, // test out multiplayer stuff
 
+	"G four",
 	testTerminal, // refactor Terminal class
 	race_lobby, // more refined multiplayer stuff
 	race_lobby_standalone,
@@ -20,19 +25,19 @@ var statelist = [
 	race_gameState,
 	race_gameState_standalone,
 	
-	state9, // scratch, test render targets
-	state10, // multi texture, tree level, font test
-	state11, // shader test, lighting
-	state12, // surface patch
-	state13, // 3d Lissajous curves
-	state14, // pendu1, swing 1 pendulum around
-	state15, // pendu2, coupled pendulums
-	state16, // pendu3, many coupled pendulums
-	state17, // arrows
+	renderTargets, // scratch, test render targets
+	fontTest, // multi texture, tree level, font test
+	shaderTest, // shader test, lighting
+	surfacePatch, // surface patch
+	lissajousCurves3D, // 3d Lissajous curves
+	pendu1, // pendu1, swing 1 pendulum around
+	pendu2, // pendu2, coupled pendulums
+	pendu3, // pendu3, many coupled pendulums
+	arrows, // arrows
 	menger, // Menger sponge
 	lorenz, // Lorenz attractor, Fixed!!!
-	state20, // shadow mapping, Fixed !!!
-	state21, // shadow mapping merge, Fixed!!
+	shadowMapping, // shadow mapping, Fixed !!!
+	shadowMappingMerge, // shadow mapping merge, Fixed!!
 	scratch, // anything goes
 	cubemaptest, // test cube maps
 	onerps, // measure latency between cameras
@@ -62,5 +67,22 @@ var statelist = [
 	mandl, // the Mandelbrot set
 	neural6, // use deep learning to recognize hand written digits
 ];
+console.log("STATELIST size = " + statelist.length);
+var stateGroups = [];
+// remove 'G' from statelist, and make an array of group idices
+for (let i = 0; i < statelist.length; ) {
+	const sl = statelist[i];
+	if (typeof sl === 'string') {
+		let grp = statelist[i].split(" ");
+		if (grp[0] === 'G') {
+			statelist.splice(i, 1);
+			const g = {"name": grp[1], "index": i};
+			stateGroups.push(g);
+		}
+	} else {
+		++i;
+	}
+}
+console.log("STATE GROUPS = " + stateGroups);
 
 var startstate = solarTest;

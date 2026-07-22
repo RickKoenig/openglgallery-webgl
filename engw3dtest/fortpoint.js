@@ -114,13 +114,7 @@ fortpoint.proc = function() {
 	}
 
 };
-/*
-fortpoint.onresize = function() {
-	// will need for multiview
-	logger("fortpoint: onResize " + glc.clientWidth + " " + glc.clientHeight + "\n");
-	fortpoint.multiview.onresize();
-};
-*/
+
 fortpoint.exit = function() {
 	//alert("bye!");
 //	gl_mode(false);

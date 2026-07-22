@@ -1,4 +1,4 @@
-var state10 = {};
+var fontTest = {};
 
 // test webgl
 var roottree;
@@ -16,13 +16,13 @@ var keytest = false;
 var manyfonttest = true; // if true then test the 'many' character render of a font
 
 // instructions and info
-state10.text = "WebGL: This has 3D fonts and some texture blending shaders.\n" +
+fontTest.text = "WebGL: This has 3D fonts and some texture blending shaders.\n" +
 			"The 'flycam' interface works in all WebGL states except state 4.\n" +
 			"Modifying 10000 characters at 60fps.";
 
-state10.title = "3D Fonts";
+fontTest.title = "3D Fonts";
 
-state10.load = function() {
+fontTest.load = function() {
 //	if (!gl)
 //		return;
 	preloadimg("../common/sptpics/font0.png");
@@ -36,19 +36,19 @@ state10.load = function() {
 	preloadtime(750,false); // test loading screen
 };
 
-state10.testvar = {
+fontTest.testvar = {
 	s1:31,
 	s2:47,
 };
 
-state10.init = function() {
+fontTest.init = function() {
 	// scratchtest(); // test some serious javascript stuff
 	//keytest = true;
 	keyteststr = "keyteststr";
 //	gl_mode(true);
 //	if (!gl)
 //		return;
-	logger("entering webgl state10\n");
+	logger("entering webgl fontTest\n");
 	
 	frame = 0;
 	
@@ -265,13 +265,13 @@ state10.init = function() {
 	//logger_str = "";
 	
 	var fml = [
-//		{name:"state10",key:"testvar",obj:state10},
-		"state10.testvar",
+//		{name:"fontTest",key:"testvar",obj:fontTest},
+		"fontTest.testvar",
 	];
-	debprint.addlist("testvar from state10",fml);
+	debprint.addlist("testvar from fontTest",fml);
 };
 
-state10.proc = function() {
+fontTest.proc = function() {
 	
 	if (!manyfonttest) {
 		amod7.mats[2].blend = input.my/glc.clientHeight;
@@ -322,7 +322,7 @@ state10.proc = function() {
 			str = keyteststr;
 			//input.key = 0;
 		}
-		//str += "\nstate10.testvar " + JSON.stringify(state10.testvar);
+		//str += "\nfontTest.testvar " + JSON.stringify(fontTest.testvar);
 		//str = "hi";
 		amodf1big.print(str);
 		
@@ -338,16 +338,16 @@ state10.proc = function() {
 	roottree.draw();
 };
 
-state10.exit = function() {
+fontTest.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
-	debprint.removelist("testvar from state10");
+	debprint.removelist("testvar from fontTest");
 	roottree.log();
 	logrc();
 	logger("after roottree glfree\n");
 	roottree.glfree();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state10\n");
+	logger("exiting webgl fontTest\n");
 };

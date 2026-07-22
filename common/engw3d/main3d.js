@@ -191,7 +191,7 @@ function maindebugsetbefore() {
 		myform = myformT;
 		eoutstateman = makeaprintarea();
 		var statetitles = getstatetitles();
-		statesel = makeaselect(statetitles, selstate);
+		statesel = makeaselect(statetitles, selstate, stateGroups);
 		selectsetidx(statesel, statelist.indexOf(state));
 		makeabut('Prev State', prevstate);
 		makeabut('Reload State', reloadstate);
@@ -396,7 +396,6 @@ function doresize() {
 	gl_resize();
 	debprint.resize();
 	loadingresize();
-	//onresizestate(); // for now, don't call user resize, let main3d handle it instead
 	
 }
 

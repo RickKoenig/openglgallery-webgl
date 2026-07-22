@@ -695,7 +695,7 @@ solarTest.init = function() {
 		//"solarTest.shadowvp", // watch/modify the viewport that spriter.js uses
 		"solarTest.showCursor3D",
 	]);
-	
+
 // sync	
 	//solarTest.setsize();
 	checkglerror("end of solarTest init");

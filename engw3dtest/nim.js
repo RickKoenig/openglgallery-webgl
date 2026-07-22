@@ -581,7 +581,6 @@ nim.init = function() {
 
 	// ui
 	setbutsname('nim');
-	//makeabut("Reset level",nim.resetLevel); // temp, TEST
 	nim.rulesButton = makeabut("Change rules", nim.changeRules);
 	nim.changePilesButton = makeabut("Change piles", nim.createPiles);
 	nim.levelDest = makeaprintarea('level:');

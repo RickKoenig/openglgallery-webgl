@@ -127,7 +127,7 @@ function makeabut(name,clickfunc,repfunc,upfunc,widemargins) {
 	return bn;
 }
 
-function makeaselect(options,clickfunc) {
+function makeaselect(options, clickfunc, groups = []) {
 	if (!myform)
 		return;
 	var sl = document.createElement('select');
@@ -135,12 +135,25 @@ function makeaselect(options,clickfunc) {
 	sl.name = curname;
 	sl.onchange = selecthandleclick_this;
 	sl.onclicknotthis = clickfunc;
-	var i;
-	for (i=0;i<options.length;++i) {
+	let optgroup = null;
+	for (let i = 0; i< options.length; ++i) {
+		const v = groups.find(v => v.index == i);
+		if (v !== undefined) {
+			//<optgroup label="Vegetables"></optgroup>
+			const hr = document.createElement("hr");
+			sl.appendChild(hr);
+			optgroup = document.createElement('optgroup');
+			optgroup.label = v.name;
+			sl.appendChild(optgroup);
+		}
 		var op = document.createElement('option');
 		op.text = options[i];
 		op.value = i + 1;
-		sl.add(op,null);
+		if (optgroup) {
+			optgroup.appendChild(op);
+		} else {
+			sl.appendChild(op);
+		}
 	}
 	myform.appendChild(sl);
 	++nchilds;

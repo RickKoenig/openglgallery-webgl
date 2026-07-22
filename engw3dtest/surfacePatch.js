@@ -1,11 +1,11 @@
-var state12 = {};
+var surfacePatch = {};
 
 // test webgl
 var roottree;
 
-state12.text = "WebGL: This state tests surface patches including strands and braids. Drag the mouse left and right to see an effect.";
+surfacePatch.text = "WebGL: This state tests surface patches including strands and braids. Drag the mouse left and right to see an effect.";
 
-state12.title = "Surface patches";
+surfacePatch.title = "Surface patches";
 
 var phasestrand = 0;
 var phasearea = null;
@@ -78,18 +78,18 @@ function buildbraid() {
 	return ret;
 }
 
-state12.load = function() {
+surfacePatch.load = function() {
 //	if (!gl)
 //		return;
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
-state12.init = function() {
+surfacePatch.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
-	logger("entering webgl state12\n");
+	logger("entering webgl surfacePatch\n");
 	// build the scene
 	roottree = new Tree2("root");
 	
@@ -172,7 +172,7 @@ state12.init = function() {
 	resetphase();
 };
 
-state12.proc = function() {
+surfacePatch.proc = function() {
 //	if (!gl)
 //		return;
 	
@@ -197,7 +197,7 @@ state12.proc = function() {
 	roottree.draw();
 };
 
-state12.exit = function() {
+surfacePatch.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
@@ -207,6 +207,6 @@ state12.exit = function() {
 	roottree.glfree();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state12\n");
+	logger("exiting webgl surfacePatch\n");
 	clearbuts('braid');
 };

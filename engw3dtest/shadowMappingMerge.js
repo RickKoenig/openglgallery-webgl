@@ -1,8 +1,8 @@
-var state21 = {};
+var shadowMappingMerge = {};
 
-state21.text = "WebGL: Shadow Mapping merge.";
+shadowMappingMerge.text = "WebGL: Shadow Mapping merge.";
 
-state21.title = "Shadow mapping merge";
+shadowMappingMerge.title = "Shadow mapping merge";
 
 // texture
 var shadowtexture;
@@ -10,18 +10,18 @@ var shadowtexture;
 // trees
 var roottree,floor,wall,cyl1,cyl2,light,viewer;
 
-state21.lightdist = 20;
-state21.lightloc = [0,state21.lightdist,-state21.lightdist];
+shadowMappingMerge.lightdist = 20;
+shadowMappingMerge.lightloc = [0,shadowMappingMerge.lightdist,-shadowMappingMerge.lightdist];
 
 var frm;
 
-state21.load = function() {
+shadowMappingMerge.load = function() {
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
-state21.init = function() {
-	logger("entering webgl state21\n");
+shadowMappingMerge.init = function() {
+	logger("entering webgl shadowMappingMerge\n");
 	frm = 0;
 	
 // build render target
@@ -29,12 +29,12 @@ state21.init = function() {
 	shadowtexture = FrameBufferTexture.createtexture("shadowmap",shadowmapres,shadowmapres);
 
 // shadow viewport
-	state21.shadowvp = {
+	shadowMappingMerge.shadowvp = {
 		target:shadowtexture,
 	   	clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
 		//clearcolor:[1,1,1,1],                    // Set clear color to yellow, fully opaque
 		clearcolor:[0,0,0,1],                    // Set clear color to yellow, fully opaque
-		trans:vec3.clone(state21.lightloc),
+		trans:vec3.clone(shadowMappingMerge.lightloc),
 		rot:[Math.PI/4,0,0], // part of lightdir
 	   	near:.1,
 	   	far:10000.0,
@@ -48,10 +48,10 @@ state21.init = function() {
 	};
 
 // main viewport for state 21
-	state21.mvp = {
+	shadowMappingMerge.mvp = {
 	   	clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
 		clearcolor:[.15,.25,.75,1],                    // Set clear color to yellow, fully opaque
-	//	trans:vec3.clone(state21.lightloc),
+	//	trans:vec3.clone(shadowMappingMerge.lightloc),
 		trans:[-10,20,-20],
 		rot:[Math.PI/4,0,0], // part of lightdir
 	   	near:.1,
@@ -115,19 +115,19 @@ state21.init = function() {
 	roottree.linkchild(cyl2);
 };
 
-state21.proc = function() {
-	doflycam(state21.mvp); // modify the trs of the vp
+shadowMappingMerge.proc = function() {
+	doflycam(shadowMappingMerge.mvp); // modify the trs of the vp
 	
 	cyl1.trans[2] = 10 + 15*Math.sin(2*frm);
 	// update trees
 	roottree.proc();
 	
 	// draw to shadowmap
-	beginscene(state21.shadowvp);
+	beginscene(shadowMappingMerge.shadowvp);
 	roottree.draw();
 
 	// draw main scene
-	beginscene(state21.mvp);	
+	beginscene(shadowMappingMerge.mvp);	
 	roottree.draw();
 
 	// update frame counter
@@ -136,7 +136,7 @@ state21.proc = function() {
 		frm -= 2*Math.PI;
 };
 
-state21.exit = function() {
+shadowMappingMerge.exit = function() {
 	roottree.log();
 	logrc();
 	logger("after roottree glfree\n");
@@ -144,5 +144,5 @@ state21.exit = function() {
 	shadowtexture.glfree();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state21\n");
+	logger("exiting webgl shadowMappingMerge\n");
 };

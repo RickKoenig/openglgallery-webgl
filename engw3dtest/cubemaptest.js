@@ -112,7 +112,7 @@ cubemaptest.proc = function() {
 		if (cursceneidx >= scenelistcmt.length)
 			cursceneidx = 0;
 		changestate("cubemaptest");
-		//changestate(state11);
+		//changestate(shaderTest);
 	}
 	cubemaptest.roottree.proc(); // animate
 	doflycam(mainvp); // modify the trs of vp using flycam

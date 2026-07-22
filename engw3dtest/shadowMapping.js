@@ -1,18 +1,18 @@
-var state20 = {};
+var shadowMapping = {};
 
-state20.text = "WebGL: Shadow Mapping.";
+shadowMapping.text = "WebGL: Shadow Mapping.";
 
-state20.title = "Shadow mapping";
+shadowMapping.title = "Shadow mapping";
 
 var shadowtexture;
 
 var atree1,atree1b,atree2,atree3,atree4,atree5,atree6,atree7;
 var frm;
 
-state20.lightdist = 20;
-state20.lightloc = [0,state20.lightdist,-state20.lightdist];
+shadowMapping.lightdist = 20;
+shadowMapping.lightloc = [0,shadowMapping.lightdist,-shadowMapping.lightdist];
 
-state20.load = function() {
+shadowMapping.load = function() {
 	//if (!gl)
 	//	return;
 	preloadimg("../common/sptpics/maptestnck.png");
@@ -20,26 +20,26 @@ state20.load = function() {
 	preloadimg("../common/sptpics/wonMedal.png");
 };
 
-state20.init = function() {
+shadowMapping.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
 		
 	frm = 0;
 	
-	logger("entering webgl state20\n");
+	logger("entering webgl shadowMapping\n");
 	
 // build render target
 	var shadowmapres = 2048;
 	shadowtexture = FrameBufferTexture.createtexture("shadowmap",shadowmapres,shadowmapres);
 
 // shadow viewport
-	state20.shadowvp = {
+	shadowMapping.shadowvp = {
 		target:shadowtexture,
 	   	clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
 		clearcolor:[0,0,0,1],                    // Set clear color to yellow, fully opaque
 	//	mat4.create();
-		"trans":vec3.clone(state20.lightloc),
+		"trans":vec3.clone(shadowMapping.lightloc),
 		"rot":[Math.PI/4,0,0], // part of lightdir
 		//"scale":[1,1,1],
 	   	near:.1,
@@ -54,12 +54,12 @@ state20.init = function() {
 	};
 
 // main viewport for state 20
-	state20.mvp = {
+	shadowMapping.mvp = {
 	   	clearflags:gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
 		clearcolor:[.15,.25,.75,1],                    // Set clear color to yellow, fully opaque
 	//	trans:[-21,-3,3],
 	/*
-		"trans":vec3.clone(state20.lightloc),
+		"trans":vec3.clone(shadowMapping.lightloc),
 		"rot":[Math.PI/4,0,0], // part of lightdir */
 		trans:[7,0,-3.05],
 		rot:[0,0,0],
@@ -183,7 +183,7 @@ state20.init = function() {
 	//lights.wlightdir = vec3.fromValues(0,-.7071,.7071);
 };
 
-state20.proc = function() {
+shadowMapping.proc = function() {
 //	if (!gl)
 //		return;
 	// move some spheres around
@@ -191,14 +191,14 @@ state20.proc = function() {
 	atree6.trans[2] = 10 + 15*Math.sin(3*frm);
 	atree5.trans[2] = 10 + 15*Math.sin(5*frm);
 	roottree.proc();
-	doflycam(state20.mvp); // modify the trs of the vp
+	doflycam(shadowMapping.mvp); // modify the trs of the vp
 	
 	// draw to shadowmap
-	beginscene(state20.shadowvp);
+	beginscene(shadowMapping.shadowvp);
 	roottree.draw();
 
 	// draw main scene
-	beginscene(state20.mvp);	
+	beginscene(shadowMapping.mvp);	
 	roottree.draw();
 
 	// update frame counter
@@ -207,7 +207,7 @@ state20.proc = function() {
 		frm -= 2*Math.PI;
 };
 
-state20.exit = function() {
+shadowMapping.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
@@ -218,5 +218,5 @@ state20.exit = function() {
 	shadowtexture.glfree();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state20\n");
+	logger("exiting webgl shadowMapping\n");
 };

@@ -1,10 +1,10 @@
-var state13 = {};
+var lissajousCurves3D = {};
 // test webgl
 var roottree;
 
-state13.text = "WebGL: Display 3D Lissajous curves, hold down mouse button to change phase";
+lissajousCurves3D.text = "WebGL: Display 3D Lissajous curves, hold down mouse button to change phase";
 
-state13.title = "3D Lissajous curves";
+lissajousCurves3D.title = "3D Lissajous curves";
 var phasestrand3 = [0,0,0];
 var freqstrand3 = [2,3,5];
 var freqmul = .99;//freqstrand3[0]*freqstrand3[1];
@@ -46,18 +46,18 @@ function lissagues_strand(freq,ff,phaser,size) {
     return functor;
 }
 
-state13.load = function() {
+lissajousCurves3D.load = function() {
 //	if (!gl)
 //		return;
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
-state13.init = function() {
+lissajousCurves3D.init = function() {
 //	gl_mode(true);
 //	if (!gl)
 //		return;
-	logger("entering webgl state13\n");
+	logger("entering webgl lissajousCurves3D\n");
 	// build the scene
 	roottree = new Tree2("root");
 	
@@ -99,7 +99,7 @@ state13.init = function() {
 	mainvp.rot = [0,0,0]; // flycam
 };
 
-state13.proc = function() {
+lissajousCurves3D.proc = function() {
 //	if (!gl)
 //		return;
     //gl.clearColor(0,.25,0,1);                      // Set clear color to yellow, fully opaque
@@ -121,7 +121,7 @@ state13.proc = function() {
 	roottree.draw();
 };
 
-state13.exit = function() {
+lissajousCurves3D.exit = function() {
 //	gl_mode(false);
 //	if (!gl)
 //		return;
@@ -131,6 +131,6 @@ state13.exit = function() {
 	roottree.glfree();
 	logrc();
 	roottree = null;
-	logger("exiting webgl state13\n");
+	logger("exiting webgl lissajousCurves3D\n");
 	clearbuts('lissa');
 };

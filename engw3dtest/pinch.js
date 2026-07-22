@@ -189,12 +189,7 @@ pinch.proc = function() {
 	beginscene(mainvp);
 	pinch.roottree.draw();
 };
-/*
-pinch.onresize = function() {
-	// mainvp's asp changes automatically
-	pinch.aspChanged();
-};
-*/
+
 pinch.exit = function() {
 	// show current usage before cleanup
 	pinch.roottree.log();

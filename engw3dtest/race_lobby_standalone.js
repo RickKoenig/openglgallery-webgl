@@ -55,13 +55,6 @@ race_lobby_standalone.init = function(intentData) {
 	glc.extraWidth = 4 / 3;
 };
 
-/*
-race_lobby_standalone.onresize = function() {
-	console.log("onresize");
-	race_lobby_standalone.terminal.onresize();
-}
-*/
-
 race_lobby_standalone.proc = function() {
 	if (input.key >= 'a'.charCodeAt(0) && input.key <= race_lobby_standalone.lastGame.charCodeAt(0)) {
 		race_lobby_standalone.autoCommand1P.call(this, String.fromCharCode(input.key));

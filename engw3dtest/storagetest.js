@@ -328,20 +328,6 @@ storagetest.proc = function() {
 	storagetest.roottree.draw();
 };
 
-/*
-storagetest.onresize = function() {
-	logger("storagetest resize!\n");
-	// readjust spriter viewport
-	//storagetest.spritevp = storagetest.spriteHandle.createspritervp();
-	//storagetest.spritevp.clearflags &= ~gl.COLOR_BUFFER_BIT; // don't clear viewport
-
-	//storagetest.sph.trans = [mainvp.asp*.9,-.9,1];
-	//var depth = storagetest.lines;
-	var depth = glc.clientHeight/2;
-	storagetest.ftree.trans = [-depth*glc.asp,depth,depth];
-};
-*/
-
 storagetest.exit = function() {
 	//localStorage.clear();
 	storagetest.roottree.log();
