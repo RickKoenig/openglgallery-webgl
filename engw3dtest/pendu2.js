@@ -5,7 +5,6 @@ pendu2.title = "2 pendulums";
 
 // some code and globals 'borrowed' from pendu1
 
-//var pendroot = null;
 var pend2pos = null;
 var pend2vel = null;
 var pend2spring = null;

@@ -89,8 +89,6 @@ chomp.fsmStateTable = [
 		endCondTime: true
 	}
 ];
-//chomp.fsmState = chomp.fsmStates.humanMove;
-//chomp.fsmState = chomp.fsmStates.compMove;
 chomp.fsmCounter = 0;
 chomp.fsmHumanTurnReady = false;
 
@@ -155,6 +153,7 @@ chomp.mouseToTurn = function() {
 	var len = chomp.pileDim[0];
 	var tpX = mx / chomp.pileSpace[0] + len / 2;
 	var turnPileX = Math.floor(tpX);
+	if (turnPileX < 0) turnPileX = 0;
 	var overPileX = turnPileX >= 0 && turnPileX < len;
 	if (!overPileX) {
 		chomp.turn = [0, -1, 0];
@@ -248,25 +247,33 @@ chomp.maxPileY = 8;
 chomp.changeXm = function() {
 	console.log("xm");
 	chomp.pileDim[0] = Math.max(chomp.pileDim[0] - 1, chomp.minPileX);
+	chomp.textInfo.unlinkchild();
 	chomp.createPiles();
+	chomp.roottree.linkchild(chomp.textInfo);
 }
 
 chomp.changeXp = function() {
 	console.log("xp");
 	chomp.pileDim[0] = Math.min(chomp.pileDim[0] + 1, chomp.maxPileX);
+	chomp.textInfo.unlinkchild();
 	chomp.createPiles();
+	chomp.roottree.linkchild(chomp.textInfo);
 }
 
 chomp.changeYm = function() {
 	console.log("ym");
 	chomp.pileDim[1] = Math.max(chomp.pileDim[1] - 1, chomp.minPileY);
+	chomp.textInfo.unlinkchild();
 	chomp.createPiles();
+	chomp.roottree.linkchild(chomp.textInfo);
 }
 
 chomp.changeYp = function() {
 	console.log("yp");
 	chomp.pileDim[1] = Math.min(chomp.pileDim[1] + 1, chomp.maxPileY);
+	chomp.textInfo.unlinkchild();
 	chomp.createPiles();
+	chomp.roottree.linkchild(chomp.textInfo);
 }
 
 chomp.createPiles = function() {
@@ -282,16 +289,11 @@ chomp.createPiles = function() {
 	chomp.curPiles = chomp.startPiles.slice(); // start with the preset piles
 
 	// build 3d assets
-	//function buildplanexy(name,wid,hit,texname,shadername,tessx,tessy) {
 	const master = buildplanexy("chompPiece", chomp.pileSize[0] / 2, chomp.pileSize[0] / 2
 		, "panel.jpg", "texc", 1, 1);
 	chomp.mainColor = [.83 * 1.75, .47 * 1.75, .09 * 1.75, 1];
 	master.mat.color = chomp.mainColor;
-	//const master = buildsphere3("chompPiece", [chomp.pileSize[0] / 2, chomp.pileSize[0] / 2 / 3, chomp.pileSize[0] / 2]
-	//,"panel.jpg","tex");
-	//master.mod.mat.specpow = .0001;
 	master.trans = [0,0,1];
-	//master.rot = [Math.PI/2,0,0];
 	
 	// free up some resources when changing piles
 	if (chomp.pilesTree) {
@@ -352,6 +354,10 @@ chomp.createTextInfo = function () {
 		fontSize, fontSize,
 		80, 20,
 		true);
+	const scl = 20;
+	const margin = .99;
+	chomp.textInfo.trans = [-glc.extraWidth * margin, margin, 1]; // upper left corner
+	chomp.textInfo.scale = [1 / (2 * scl), 1 / scl, 1];
 	scratchfontmodel.flags |= modelflagenums.DOUBLESIDED|modelflagenums.NOZBUFFER;
 	chomp.textInfo.setmodel(scratchfontmodel);
 	chomp.roottree.linkchild(chomp.textInfo);
@@ -363,7 +369,7 @@ chomp.updateTextInfo = function() {
 	var scoreInfo = "Score:\nYou " + chomp.humanScore + " ,Me " + chomp.compScore + "\n\n";
 
 	var stateInfo = 0;
-	var rulesInfo = "These are the rules:\n\n";
+	var rulesInfo = "These are the rules: ";
 	rulesInfo += "Chomp from upper right\n";
 	rulesInfo += "Who ever takes the last piece LOSES!\n\n";
 	var who1 = "#";
@@ -401,7 +407,7 @@ chomp.updateTextInfo = function() {
 			}
 		}
 	}
-	var pileInfo = "\n\n\nPiles: " + JSON.stringify(chomp.curPiles);
+	var pileInfo = "\n\n\n\n\n\n\n\n\n\n\n\nPiles: " + JSON.stringify(chomp.curPiles);
 	var info = rulesInfo + scoreInfo + turnInfo + pileInfo;
 	chomp.textInfo.mod.print(info);
 	printareadraw(chomp.levelDest, "Level = " + chomp.pileDescStr + " piles");
@@ -466,6 +472,7 @@ chomp.load = function() {
 
 chomp.init = function() {
 	logger("entering webgl chomp\n");
+	chomp.pileDim = [7, 4];
 	chomp.globalspecpow = globalmat.specpow;
 	globalmat.specpow = 2000;
 	chomp.poisonAngle = 0;
@@ -490,6 +497,8 @@ chomp.init = function() {
 	chomp.roottree = new Tree2("chomp root tree");
 	chomp.turnSelect = null;
 
+	// ndc extra system
+	glc.extraWidth = 1.4;
 	// build 3d assets
 	// piles
 	chomp.createPiles();
@@ -497,11 +506,8 @@ chomp.init = function() {
 	chomp.createTurnSelect();
 	// textInfo
 	chomp.createTextInfo();
-	
 	// viewport
 	mainvp.clearcolor = [.5,.5,1,1];
-	chomp.setsize(); // set textInfo trans a scale right
-	
 // test debug	
 	debprint.addlist("chomp state",["chomp.fsmStates", "chomp.turn", "chomp.curPiles"]);
 };
@@ -540,13 +546,6 @@ chomp.proc = function() {
 	chomp.poisonPiece.mat.color = chomp.mainColor.slice();
 	chomp.poisonPiece.mat.color[1] = chomp.mainColor[1] +  .5 * (1 - Math.cos(chomp.poisonAngle)); // green
 	chomp.roottree.draw();
-};
-
-chomp.setsize = function() {
-	logger("chomp resize!\n");
-	chomp.textInfo.trans = [-glc.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
-	// TODO: stop using hard coded glyph sizes, (right now 16,32)
-	chomp.textInfo.scale = [16 / glc.clientHeight, 32 / glc.clientHeight, 1];
 };
 
 chomp.exit = function() {

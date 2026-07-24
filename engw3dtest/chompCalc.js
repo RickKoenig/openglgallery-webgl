@@ -80,13 +80,14 @@ chomp.study = function(dim) {
 		++count;
 	}
 	// done studying
+	/*
 	console.log("count = " + count + ", loser count = " + chomp.losePositions.length);
 	console.log("lose piles");
 	for (const pile of chomp.losePositions) {
 		console.log("======================");
 		console.log("pile: " + pile);
 		chomp.showPile(pile, dim[1]);
-	}
+	}*/
 };
 
 chomp.calcMove = function(piles) {

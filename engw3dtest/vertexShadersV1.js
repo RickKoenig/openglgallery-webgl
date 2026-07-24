@@ -105,7 +105,7 @@ vertexShadersV1.init = function() {
 	// build a vertex pattern 1 independent triangles
 	var patt = buildMesh("aPattIndependent", "maptestnck.png", "tex", 
 		vertexShadersV1.pattMesh1, modelflagenums.DOUBLESIDED | modelflagenums.NOZBUFFER);
-	patt.trans = [400,0,0];
+	patt.trans = [-300,0,0];
 	patt.scale = [.5,.5,.5];
 	vertexShadersV1.roottree.linkchild(patt);
 	
@@ -114,20 +114,20 @@ vertexShadersV1.init = function() {
 	patt = buildMesh("aPattFan", "Bark.png", "tex", 
 		vertexShadersV1.pattMesh2, modelflagenums.DOUBLESIDED | modelflagenums.NOZBUFFER | modelflagenums.FAN);
 	patt.scale = [.5,.5,.5];
+	patt.trans = [-700,0,0];
 	vertexShadersV1.roottree.linkchild(patt);
 
 	// build a vertex pattern 3 strip
-//	patt = buildMesh("aPattStrip", "Bark.png", "tex", 
 	patt = buildMesh("aPattStrip", "maptestnck.png", "tex", 
 		vertexShadersV1.pattMesh3, modelflagenums.DOUBLESIDED | modelflagenums.NOZBUFFER | modelflagenums.STRIP);
-	patt.trans = [800,0,0];
+	patt.trans = [100,0,0];
 	patt.scale = [.5,.5,.5];
 	vertexShadersV1.roottree.linkchild(patt);
 
 	// build a vertex pattern using new format for GLSL
 	patt = buildMesh("aPattVersion", "Bark.png", "verttestversion", 
 		vertexShadersV1.pattMesh2, modelflagenums.DOUBLESIDED | modelflagenums.NOZBUFFER | modelflagenums.FAN);
-	patt.trans = [100,400,0];
+	patt.trans = [-600,400,0];
 	patt.scale = [.5,.5,.5];
 	vertexShadersV1.roottree.linkchild(patt);
 
@@ -136,7 +136,7 @@ vertexShadersV1.init = function() {
 	patt = buildMesh("aPattNoMesh", "maptestnck.png", "verttestnomesh", 
 		vertexShadersV1.pattMesh4, modelflagenums.DOUBLESIDED | modelflagenums.NOZBUFFER | modelflagenums.FAN);
 	patt.mod.numInstances = 5;
-	patt.trans = [500,400,0];
+	patt.trans = [-200,400,0];
 	patt.scale = [.5,.5,.5];
 	vertexShadersV1.roottree.linkchild(patt);
 // hi
@@ -146,7 +146,7 @@ vertexShadersV1.init = function() {
 		vertexShadersV1.pattMesh5, modelflagenums.DOUBLESIDED | modelflagenums.NOZBUFFER | modelflagenums.FAN);
 	patt.mod.mat.matColor = [1,0,0,1];
 	patt.mod.mat.UAradArray = [150,75,300,200]; // uniform array
-	patt.trans = [850,400,0];
+	patt.trans = [150,400,0];
 	patt.scale = [.5,.5,.5];
 	vertexShadersV1.roottree.linkchild(patt);
 
@@ -173,12 +173,6 @@ vertexShadersV1.proc = function() {
 };
 
 vertexShadersV1.setsize = function() {
-	/*
-	// fixup ortho viewport to handle the new size, lower left 0,0 to upper right XRES, YRES
-	logger("vertexShadersV1 resize!\n");
-	var scl = glc.clientHeight*.5;
-	mainvp.trans = [scl*glc.asp,scl,0];
-	mainvp.ortho_size = scl;*/
 	mainvp.trans = [0, 0, 0];
 	mainvp.ortho_size = 1500;
 };

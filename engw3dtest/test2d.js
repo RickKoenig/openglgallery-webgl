@@ -3,6 +3,7 @@ var test2d = {}; // test 2d sprites and the new spriter package
 
 test2d.text = "WebGL: Most basic 2D drawing, and new spriter package";
 test2d.title = "spriter basic 2D";
+test2d.hidden = window.isMobile; // can't be selected in the engine UI when in mobile mode
 
 // load these before init
 test2d.load = function() {

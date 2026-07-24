@@ -230,26 +230,12 @@ solarTest.planes = [
 
 // add to main scene a Tree2 of a house
 solarTest.buildAHouse = function() {
-/*    var mod = Model.createmodel("house");
-	if (mod.refcount == 1) {
-		mod.setshader("shadowmapuseblur");
-	    mod.setmesh(solarTest.houseMesh);
-	    mod.settexture("Rest_roof.png");
-	    mod.settexture("Rest_siding.png");
-	    mod.settexture2("shadowmapsharp");
-	    mod.commit(); // send data to GPU
-	} */
-	
 	var multimodel = Model2.createmodel("multimaterial");
 	//globaltexflags = textureflagenums.CLAMPU | textureflagenums.CLAMPV;
 	if (multimodel.refcount == 1) {
 		multimodel.setmesh(solarTest.houseMesh);
-		//multimodel.setshader("tex");
-		//multimodel.settexture("Bark.png");
 		multimodel.addmat2t("shadowmapuseblur","Rest_siding.png","shadowmapsharp",12,22);
-		//multimodel.addmat("tex","Bark.png",2,4);
 		multimodel.addmat2t("shadowmapuseblur","Rest_roof.png","shadowmapsharp",4,8);
-		//multimodel.mats[1].color = [0,1,0,1];
 		multimodel.commit();
 	}
 
@@ -286,8 +272,6 @@ solarTest.makeinvertermaster = function() {
 	var ret = new Tree2("inverter");
 	var chld = buildprism2t("inverter",[.558*.5,.430*.5,.446*.5],"panel.jpg","shadowmapsharp","shadowmapuseblur");
 	chld.trans = [0,.430*.5,0]; // bottom center is the origin
-	// inverter also scaled down .5, don't scale make twice as large to show it moving around scene better
-	//chld.scale = [.5,.5,.5]; made bigger, just to see inverters better on house and ground
 	ret.linkchild(chld);
 	return ret;
 };
@@ -370,11 +354,16 @@ solarTest.calcRayCast = function(vzdistn,vzdistf) {
 	var n = vec4.create();
 	// for debugging
 	if (overridemouse) {
-		n[0] = saveFmx / solarTest.mvp.asp; // -1 to 1
+		n[0] = saveFmx;// / solarTest.mvp.asp; // -1 to 1
 		n[1] = saveFmy; // -1 to 1
 	} else {
-		n[0] = input.fmx / solarTest.mvp.asp; // -1 to 1
-		n[1] = input.fmy; // -1 to 1
+		if (glc.asp >= 1) {
+			n[0] = input.fmx / glc.asp; // because we're using the v2c and w2c matrices
+			n[1] = input.fmy;
+		} else {
+			n[0] = input.fmx;
+			n[1] = input.fmy * glc.asp; // because we're using the v2c and w2c matrices
+		}
 		saveFmx = input.fmx;
 		saveFmy = input.fmy;
 	}
@@ -567,7 +556,7 @@ solarTest.updateSlider = function() {
 	if (!mb)
 		solarTest.dragSlider = false;
 	// see if mouse click on the slider sphere
-	if (mb && !lmb && input.fmy < -.92 && // mouse y near the bottom
+	if (mb && !lmb && input.fmy < -.72 && // mouse y near the bottom
 	  Math.abs(solarTest.sliderTree.trans[0] - input.fmx) < .04) { // mouse x near the slider
 		solarTest.dragSlider = true; // yes, mouse pressed on slider icon
 	}
@@ -575,7 +564,7 @@ solarTest.updateSlider = function() {
 		// slider engaged, update slider trans with mouse x
 		var todx = input.fmx;
 		todx = range(-1,todx,1);
-		solarTest.sliderTree.trans = [todx,-.95,0]; // update slider graphic
+		solarTest.sliderTree.trans = [todx,-.75,0]; // update slider graphic
 	}
 };
 
@@ -691,8 +680,6 @@ solarTest.init = function() {
 // UI debprint menu
 	debprint.addlist("solar test variables",[
 		"solarTest.rightCam",
-		//"solarTest.mvp", // change cursor qgate for testing
-		//"solarTest.shadowvp", // watch/modify the viewport that spriter.js uses
 		"solarTest.showCursor3D",
 	]);
 
@@ -739,11 +726,11 @@ solarTest.init = function() {
 	sliderBack.mod.flags |= modelflagenums.NOZBUFFER;
 	sliderBack.mod.mat.color = [1,1,1,.125];
 	sliderBack.mod.flags |= modelflagenums.HASALPHA;
-	sliderBack.trans = [0,-.95,1];
+	sliderBack.trans = [0,-.75,1];
 	solarTest.sliderRoot.linkchild(sliderBack);
 	
 	solarTest.sliderTree = buildsphere("theSlider",.025,null,"flat");
-	solarTest.sliderTree.trans = [-.55,-.95,0];
+	solarTest.sliderTree.trans = [-.55,-.75,0];
 	solarTest.sliderTree.mod.mat.color = [1,1,.5,1];
 	solarTest.sliderTree.mod.flags |= modelflagenums.HASALPHA;
 	solarTest.sliderTree.mod.flags |= modelflagenums.NOZBUFFER;
@@ -756,18 +743,10 @@ solarTest.init = function() {
 	checkglerror("done solar test init");
 
 };
-/*
-// adjust asp if viewport is resized
-solarTest.setsize = function() {
-	//solarTest.mvp.asp = glc.asp;
-	//solarTest.slidervp.asp = glc.asp;
-};
-*/
+
 solarTest.proc = function() {
 	checkglerror("solar test proc start check gl error");
 	solarTest.updateTOD(); // do the TOD UI
-	//solarTest.roottree.proc(); // run tree specific code like rotvel
-	//solarTest.sliderRoot.proc(); //  run tree specific code like rotvel
 	
 	doflycam(solarTest.mvp); // modify the trs of the vp
 	solarTest.doRightCam(); // do the cam UI, use right mouse button and mouse wheel to move the camera around
@@ -789,10 +768,6 @@ solarTest.proc = function() {
 		solarTest.roottree.draw();
 		checkglerror("done draw shadow map");
 		
-/*		// render shadow blur map
-		beginscene(solarTest.shadowblurvp);
-		solarTest.rootblurtree.draw(); */
-		
 		if (!solarTest.keepRenderShadowMap) {
 			solarTest.renderShadowMap = false;
 		}
@@ -803,7 +778,7 @@ solarTest.proc = function() {
 	checkglerror("solar test  shadowvp draw end check gl error");
 
 	// draw main scene
-	solarTest.mvp.asp = glc.asp; // TODO: fix asp for mobile
+	//solarTest.mvp.asp = glc.asp; // TODO: fix asp for mobile
 	beginscene(solarTest.mvp);
 	solarTest.roottree.draw();
 	checkglerror("solar test rootree draw end check gl error");
@@ -819,8 +794,6 @@ solarTest.exit = function() {
 	solarTest.roottree.log();
 	logger("sliderRoot log\n");
 	solarTest.sliderRoot.log();
-	//logger("rootblurtree log\n");
-	//solarTest.rootblurtree.log();
 	logger("model and texture logs before free\n");
 	logrc();
 	logger("after roottree glfree\n");
@@ -828,10 +801,8 @@ solarTest.exit = function() {
 	// free everything
 	solarTest.roottree.glfree();
 	solarTest.shadowtexturesharp.glfree();
-	//solarTest.shadowtextureblur.glfree();
 	solarTest.invertermaster.glfree();
 	solarTest.sliderRoot.glfree();
-	//solarTest.rootblurtree.glfree();	
 	// show freed state
 	logrc();
 	solarTest.roottree = null;

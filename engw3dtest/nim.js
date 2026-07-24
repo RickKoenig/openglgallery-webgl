@@ -210,8 +210,6 @@ nim.countPieces = function(arr) {
 // also append a 1 if losing, 0 if winning to return array
 nim.calcMove = function() {
 	// assume rightmost pile is the largest
-	//reason = "std";
-	//reasonArr = new Array(nim.startPiles.length).fill("pile");
 	nim.mod = (nim.threeMax ? 3 : nim.startPiles[nim.startPiles.length - 1]) + 1;
 	var xor = 0;
 	for (var np of nim.curPiles) {
@@ -233,13 +231,11 @@ nim.calcMove = function() {
 				var newPile = nim.doMove(nim.curPiles, i, amount);
 				var ones = nim.isOnes(newPile, i);
 				if (ones >= 0) {
-					//reason = "spc1";
 					var goodPile = 1 - ones; // try to get an odd number of ones
 					var amount = nim.curPiles[i] - goodPile;
 					if (amount > 0) {
 						amount %= nim.mod;
 					} else {
-						//reason = "spc2";
 						amount = 0;
 					}
 				} 
@@ -255,9 +251,6 @@ nim.calcMove = function() {
 		for (var i = 0; i < nim.startPiles.length; ++i) {
 			ret[i] = nim.curPiles[i] > 0 ? 1 : 0;
 		}
-	//	ret.push(1);
-	//} else {
-	//	ret.push(0);
 	}
 	return {moves: ret, win: !!cp};
 };
@@ -359,22 +352,11 @@ nim.createPiles = function() {
 						(nim.maxPile - 1) * -nim.pileSpace[1] /2];
 	nim.curPiles = nim.startPiles.slice(); // start with the preset piles
 
-	// build 3d assets
-	/*
-	var master = buildplanexy("a nim piece", nim.pileSize[0] / 2, nim.pileSize[1] / 2, "maptestnck.png", "texDoubleSided");
-	master.mod.flags |= modelflagenums.DOUBLESIDED|modelflagenums.NOZBUFFER;
-	master.trans = [0,0,1];
-	*/
-		// bob 
-	//var pendpce2 = buildcylinderxz("pend1pce2",.4,.2,"panel.jpg","diffusespecp");
 	var master = buildsphere3("pend1pce2",[nim.pileSize[0] / 2,nim.pileSize[0] / 2 / 3,nim.pileSize[0] / 2]
 	,"panel.jpg","diffusespecp");
 	master.mod.mat.specpow = .0001;
 	master.trans = [0,0,1];
-	//pendpce2.trans = [0,4,-.1];
 	master.rot = [Math.PI/2,0,0];
-	//pendpce0.rotvel = [.1,.5,0];
-	//pendpce0.flags |= treeflagenums.ALWAYSFACING;
 	nim.roottree.linkchild(master);
 	
 	// free up some resources when changing piles
@@ -430,7 +412,7 @@ nim.updatePiles = function() {
 // create
 nim.createTextInfo = function () {
 	nim.textInfo = new Tree2("nim game info");
-	var fontSize = 1.5;
+	var fontSize = 2;
 	var scratchfontmodel = new ModelFont("font for nim","font0.png","tex",
 		fontSize, fontSize,
 		80, 20,
@@ -450,12 +432,13 @@ nim.updateTextInfo = function() {
 	if (nim.threeMax) {
 		rulesInfo += "Take 1, 2 or 3 pieces\n from any one pile\n";
 	} else {
-		rulesInfo += "Take as many pieces as you want\n from any one pile\n";
+		rulesInfo += "Take any pieces\n from any one pile\n";
 	}
+	let rulesInfo2 = "\n\n\n\n\n\n\n\n\n";
 	if (nim.lastLoses) {
-		rulesInfo += "Who ever takes the last piece LOSES!\n\n";
+		rulesInfo2 += "Who ever takes the last piece LOSES!\n\n";
 	} else {
-		rulesInfo += "Who ever takes the last piece WINS!\n\n";
+		rulesInfo2 += "Who ever takes the last piece WINS!\n\n";
 	}
 	var who1 = "#";
 	var who2 = "$";
@@ -494,7 +477,7 @@ nim.updateTextInfo = function() {
 	//	+ ", FSM counter = " + nim.fsmCounter;
 	//	//+ ",fmx = " + input.fmx.toFixed(3);
 	var pileInfo = "\n\n\nPiles: " + JSON.stringify(nim.curPiles);
-	var info = rulesInfo + scoreInfo + turnInfo + pileInfo;
+	var info = rulesInfo + scoreInfo + turnInfo + pileInfo + rulesInfo2;
 	nim.textInfo.mod.print(info);
 	printareadraw(nim.levelDest, "Level = " + nim.pileDescStr + " piles");
 };
@@ -607,6 +590,7 @@ nim.init = function() {
 // test debug	
 	//debprint.addlist("nim state",["nim"]); // TMI
 	debprint.addlist("nim state",["nim.fsmStates", "nim.turn", "nim.curPiles", "nim.turnLine"]);
+	// use ndc extra system
 };
 
 nim.proc = function() {
@@ -643,9 +627,11 @@ nim.proc = function() {
 
 nim.setsize = function() {
 	logger("nim resize!\n");
-	nim.textInfo.trans = [-glc.asp + 64 / glc.clientHeight / 4, 1 - 64 / glc.clientHeight / 4, 1];
-	// TODO: stop using hard coded glyph sizes, (right now 16,32)
-	nim.textInfo.scale = [16 / glc.clientHeight, 32 / glc.clientHeight, 1];
+	glc.extraWidth = 4 / 3;
+	const scl = 20;
+	const margin = .9;
+	nim.textInfo.trans = [-glc.extraWidth * margin, margin, 1]; // upper left corner
+	nim.textInfo.scale = [1 / (2 * scl), 1 / scl, 1];
 };
 
 nim.exit = function() {

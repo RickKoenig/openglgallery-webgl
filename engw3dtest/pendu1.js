@@ -9,7 +9,6 @@ var dampstep = 1;//1.0/256.0;
 var damparea;
 var camz = 5;
 
-//var pendpce0 = null;
 var pendroot = null;
 
 var pendpos;

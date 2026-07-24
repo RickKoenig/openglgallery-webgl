@@ -3,6 +3,7 @@
 var uitest = {};
 uitest.text = "WebGL: Start testing 3d ui new ";
 uitest.title = "uitest new";
+uitest.hidden = window.isMobile; // can't be selected in the engine UI when in mobile mode
 
 uitest.roottree;
 uitest.uiroottree;

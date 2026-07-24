@@ -2,7 +2,7 @@
 // 615 lines before remove old code and add new comments
 // 268 after
 var qcomp = {}; // the state, load this file first
-qcomp.hidden = false;//window.isMobile; // can't be selected in the engine UI when in mobile mode
+qcomp.hidden = window.isMobile; // can't be selected in the engine UI when in mobile mode
 
 // constants
 qcomp.SR2 = Math.sqrt(2);
@@ -1238,10 +1238,10 @@ qcomp.setsize = function() {
 
 	qcomp.fsmallconsoletree.trans = qcomp.flargeconsoletree.trans; // position console
  
-	qcomp.slidervp.asp = glc.asp;
+	//qcomp.slidervp.asp = glc.asp;
 	qcomp.updateSlider(true);	
 	
-	qcomp.spherevp.asp = glc.asp;
+	//qcomp.spherevp.asp = glc.asp;
 };
 
 qcomp.exit = function() {

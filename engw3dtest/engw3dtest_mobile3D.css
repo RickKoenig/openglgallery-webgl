@@ -33,6 +33,15 @@ select:hover {
 	transition: .5s;
 }
 
+optgroup {
+  font-weight: bolder;
+}
+
+hr {
+height: 2px;
+  background-color: red;
+}
+
 div.left {
 	background-color: lightblue;
  	width:25%;

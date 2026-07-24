@@ -337,6 +337,8 @@ neural6.init = function() {
 	neural6.roottree.linkchild(neural6.treef2);
 
 	mainvp.clearcolor = [.5,.5,1,1];
+	// use ndc extra system
+	glc.extraWidth = 4 / 3;
 };
 
 neural6.proc = function() {

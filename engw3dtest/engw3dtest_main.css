@@ -65,6 +65,7 @@ span.user {
 hr {
 	margin:2px;
 	height:5px;
+	background-color: red;
 }
 
 a {

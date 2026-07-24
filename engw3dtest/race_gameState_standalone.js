@@ -69,11 +69,9 @@ race_gameState_standalone.init = function(sockInfo) { // network state tranfered
 		, ["p 0"]
 	);
 	if (race_gameState_standalone.showHud) {
-		//termParams.offy = 120;
 		const termParams = {
 			cols: 32,
 			rows: 1,
-			//offx: -1.3,
 			offy: .8,
 			scale: 1 / 16,
 			centerx: true

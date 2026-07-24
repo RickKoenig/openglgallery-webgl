@@ -391,7 +391,6 @@ function loadingresize() {
 var defaultimage;
 
 function doresize() {
-	
 	//return;
 	gl_resize();
 	debprint.resize();

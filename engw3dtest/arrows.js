@@ -35,13 +35,10 @@ function makearrowmaster() {
 	atree.trans = [.25,0,0];
 	atree.rot = [0,0,-Math.PI/2];
 	arrowmaster.linkchild(atree);
-	//atree.trans = [0,0,0];
-	//atree.rotvel = [.01,.05,0];
 	return arrowmaster;
 }
 
 function makeexpmaster() {
-	//expmaster = new Tree2("explosion");
 	// a modelpart
 	var atree = buildsphere("exp",.75,"maptestnck.png","texc");
 	atree.mat.color = [1,0,0,1];
@@ -56,15 +53,6 @@ function updatearrows() {
 }
 	
 function resetarrows() {
-	/*
-	arrowcnt = 0;
-	var i;
-	var childcopy = arrowlist.children.slice();
-	for (i=0;i<childcopy.length;++i) {
-		childcopy[i].glfree();
-		childcopy[i].unlinkchild();
-	}
-	*/
 	arrowcnt = 0;
 	arrowlist.unlinkchild();
 	arrowlist.glfree();
@@ -73,27 +61,7 @@ function resetarrows() {
 }
 
 var maxarrowcnt = 200;
-/*
-function arrowuserproc(t) {
-	--t.cnt;
-	if (t.cnt < 0) {
-		t.unlinkchild();
-		t.glfree();
-		var r = Math.random();
-		if (r < .5 && arrowcnt < maxarrowcnt) {
-			r = t.rot[2];
-			t = makeanarrow(t.trans,normalangrad(r + .2));
-			arrowlist.linkchild(t);
-			t = makeanarrow(t.trans,normalangrad(r - .2));
-			arrowlist.linkchild(t);
-		} else {
-			t = makeanexp(t.trans,t.transvel);
-			arrowlist.linkchild(t);
-		}
-		--arrowcnt;
-	}
-}
-*/
+
 function arrowuserproc(t) {
 	--t.cnt;
 	if (t.cnt < 0) {
@@ -124,8 +92,6 @@ function expuserproc(t) {
 	if (t.cnt < 0) {
 		t.unlinkchild();
 		t.glfree();
-		//t.cnt = 100;
-		//t.transvel[0] = -t.transvel[0];
 	} else {
 		t.mat.color = [1,0,0,t.cnt/15.0];
 		var s = 15 - t.cnt;
@@ -151,8 +117,6 @@ function makeanexp(pos,vel) {
 	t.trans = vec3.clone(pos);
 	t.scale = [0,0,0];
 	t.transvel = vel;
-	//t.transvel = [Math.cos(a),Math.sin(a),0];
-	//t.scalevel = [2,2,2];
 	t.cnt = 15;
 	t.userproc = expuserproc;
 	return t;
@@ -164,7 +128,6 @@ function centerarrowsview() {
 	var moveback = 2;
 	if (!cld.length) {
 		dpos = [0,0,-moveback]; // flycam
-		//mainvp.rot = [0,0,0]; // flycam
 	} else if (cld.length == 1) {
 		dpos = [cld[0].trans[0],cld[0].trans[1],-moveback]; // flycam
 	} else {
@@ -180,9 +143,8 @@ function centerarrowsview() {
 		vec3.scale(dpos,dpos,.5);
 		var spread = [];
 		vec3.sub(spread,maxpnt,minpnt);
-		dpos[2] = -.5*Math.max(spread[0]/glc.asp,spread[1]) - moveback;
+		dpos[2] = -.5*Math.max(spread[0],spread[1]) - moveback;
 	}
-//	vec3.lerp(mainvp.trans,mainvp.trans,dpos,driftview);
 	var newpos = [];
 	vec3.lerp(newpos,mainvp.trans,dpos,driftview);
 	
@@ -197,23 +159,17 @@ function centerarrowsview() {
 		vec3.scale(acc,acc,scl);
 	}
 	vec3.add(camvel,camvel,acc);
-	//vec3.lerp(dvel,camvel,dvel,driftvel);
 	vec3.add(mainvp.trans,mainvp.trans,camvel);
 	if (mainvp.trans[2] > -moveback+1)
 		mainvp.trans[2] = -moveback+1;
 }
 
 arrows.load = function() {
-	//if (!gl)
-	//	return;
 	preloadimg("../common/sptpics/maptestnck.png");
 	preloadimg("../common/sptpics/panel.jpg");
 };
 
 arrows.init = function() {
-//	gl_mode(true);
-//	if (!gl)
-//		return;
 	logger("entering webgl arrows\n");
 	
 	// build the scene
@@ -237,27 +193,12 @@ arrows.init = function() {
 	// a modelpart
 	ang = 0;
 	dela = 0;
-	//var atree = makeanarrow([0,0,0],ang);
-	//arrowlist.linkchild(atree);
-	//atree = makeanexp([0,0,0]);
-	//roottree.linkchild(atree);
-	
-	// set the lights
-	//lights.wlightdir = vec3.fromValues(0,0,1);
-	
-	// set the camera
-	//mainvp.trans = [0,0,-15]; // flycam
 	mainvp.trans = [0,0,-25]; // flycam
 	mainvp.rot = [0,0,0]; // flycam
 	camvel = [0,0,0];
 };
 
 arrows.proc = function() {
-//	if (!gl)
-//		return;
-    //gl.clearColor(.25,.25,0,1);                      // Set clear color to yellow, fully opaque
-    //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
 	if (input.mbut[0] || !arrowcnt) {
 		++dela;
 		if (dela == 6) {
@@ -271,8 +212,6 @@ arrows.proc = function() {
 	roottree.proc();
 	doflycam(mainvp);  // modify the trs of the vp
 	
-	//pendpce0.trans = [0,0,0];
-	//dolights(); // get some lights to eye space
 	updatearrows();
 	if (!flycamstate.inflycam) {
 		centerarrowsview();
@@ -282,9 +221,6 @@ arrows.proc = function() {
 };
 
 arrows.exit = function() {
-//	gl_mode(false);
-//	if (!gl)
-//		return;
 	arrowmaster.glfree();
 	arrowmaster = null;
 	expmaster.glfree();

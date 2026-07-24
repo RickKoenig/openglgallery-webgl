@@ -1,8 +1,11 @@
 // test pinch zoom
 var pinch = {}; // the 'pinch zoom' state
 
+// BIG TODO: convert to input.fmx and input.fmy
+
 pinch.text = "WebGL: Test pinch zoom, press 't' to change picture";
 pinch.title = "Pinch Zoom";
+pinch.hidden = window.isMobile; // can't be selected in the engine UI when in mobile mode
 
 pinch.curPic = 0; // default intent, show first picture
 
@@ -80,6 +83,7 @@ pinch.init = function() {
 
 	// UI
 	setbutsname('pinch');
+	makeabut("next texture",null,pinch.changeTexture);
 	pinch.inputText = makeaprintarea('mouse input');
 	makeahr();
 	pinch.stateText = makeaprintarea('pinch zoom state');
@@ -118,14 +122,18 @@ pinch.init = function() {
 	pinch.updateMaterial();
 };
 
+pinch.changeTexture = function() {
+	++pinch.curPic;
+	if (pinch.curPic == pinch.picList.length)
+		pinch.curPic = 0;
+	changestate(pinch); // relaunch state with new intent
+	//pinch.quad.mod.changetexture(pinch.picList[pinch.curPic]); // this works too
+}
+
 pinch.proc = function() {
 	// proc
 	if (input.key == "t".charCodeAt(0)) {
-		++pinch.curPic;
-		if (pinch.curPic == pinch.picList.length)
-			pinch.curPic = 0;
-		changestate(pinch); // relaunch state with new intent
-		//pinch.quad.mod.changetexture(pinch.picList[pinch.curPic]); // this works too
+		pinch.changeTexture();
 		
 	}
 	++pinch.count;
