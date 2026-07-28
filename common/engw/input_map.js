@@ -188,4 +188,9 @@ function mapproc()
 	input.dmy = input.my - input.lmy;
 	input.lmx = input.mx;
 	input.lmy = input.my;
+
+	input.dfmx = input.fmx - input.lfmx;
+	input.dfmy = input.fmy - input.lfmy;
+	input.lfmx = input.fmx;
+	input.lfmy = input.fmy;
 }

@@ -51,7 +51,7 @@ p + input {
 
 p {
 	font-size: 16px;
-	margin: 10px;
+	margin: 0px;
 }
 
 p.user {
@@ -63,8 +63,8 @@ span.user {
 }
 
 hr {
-	margin:2px;
-	height:5px;
+	margin:0;
+	height:2px;
 	background-color: red;
 }
 

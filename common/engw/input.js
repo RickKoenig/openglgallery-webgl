@@ -3,14 +3,21 @@ function Input() {
 	this.keybuff = new Array(); // unicode keys pressed
 	this.keystate = new Array(); // keycode keys currently down 0 or 1, indexed by keycode
 	this.key = 0;
+
 	this.mx = 0;
 	this.my = 0;
 	this.lmx = 0;
 	this.lmy = 0;
 	this.dmx = 0;
 	this.dmy = 0;
+
 	this.fmx = 0; // -1 to 1, more for asp
 	this.fmy = 0; //
+	this.lfmx = 0;
+	this.lfmy = 0;
+	this.dfmx = 0;
+	this.dfmy = 0;
+
 	this.mbut = [0,0,0];
 	this.lmbut = [0,0,0];
 	this.mclick = [0,0,0];

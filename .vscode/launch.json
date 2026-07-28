@@ -150,6 +150,13 @@
             "name": "Sensors MOBILE",
             "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=sensors",
             "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Pinch Zoom",
+            "url": "http://localhost:88/engw/engw3dtest/indexMobile3D.html?startstate=pinch",
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

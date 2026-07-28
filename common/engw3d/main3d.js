@@ -200,8 +200,8 @@ function maindebugsetbefore() {
 		makeabut("FULLSCREEN!", gofullscreen);
 		makeabut("Change Res", changeres);
 		myform = myformT0;
-		makeahr();
 		myform = oldform;
+		makeahr(); // user hr
 	}
 }
 
