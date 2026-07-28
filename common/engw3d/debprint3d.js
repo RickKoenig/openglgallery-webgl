@@ -67,6 +67,10 @@ debprint.list = {
 		"input.dmy",
 		"input.fmx",
 		"input.fmy",
+		"input.lfmx",
+		"input.lfmy",
+		"input.dfmx",
+		"input.dfmy",
 		"input.wheelPos",
 		"input.wheelDelta"
 	],

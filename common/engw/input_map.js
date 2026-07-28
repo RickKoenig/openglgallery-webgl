@@ -124,6 +124,11 @@ function btouchstart(e)
 {
 	//logger("touchstart\n");
 	touch(e);
+	// prevent large jumps between presses
+	input.lmx = input.my;
+	input.lmy = input.mx;
+	input.lfmx = input.fmx;
+	input.lfmy = input.fmy;
 }
 
 function btouchmove(e)
