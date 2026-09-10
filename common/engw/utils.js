@@ -1,9 +1,7 @@
 // hi there
-function range(a,b,c) {
-	if (b<a)
-		return a;
-	if (b>c)
-		return c;
+function range(a, b, c) {
+	if (b < a) return a;
+	if (b > c ) return c;
 	return b;
 }
 
@@ -12,10 +10,10 @@ function lerp(a, b, t) {
 }
 
 // inc but wrap
-function incWrap(val,num) {
-	++val;
-	if (val >= num)
-		val -= num;
+function moveWrap(val, maxNum, dir = 1) {
+	val += dir;
+	if (val >= maxNum) val -= maxNum;
+	if (val < 0) val += maxNum;
 	return val;
 }
 
@@ -55,6 +53,7 @@ function makeuniq(str) {
 }
 
 // running average class
+// BIG TODO: put utils into a very common place
 if (!Runavg) {
 	function Runavg(nele) {
 		this.nele = nele;
